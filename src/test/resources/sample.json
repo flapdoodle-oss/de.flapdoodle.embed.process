@@ -1,0 +1,29 @@
+[
+	{
+		"name" : "Cassandra",
+		"type" : "database",
+		"count" : 2,
+		"info" : {
+			"x" : 201,
+			"y" : 101
+		}
+	},
+	{
+		"name" : "HBase",
+		"type" : "database",
+		"count" : 3,
+		"info" : {
+			"x" : 2041,
+			"y" : 1041
+		}
+	},
+	{
+		"name" : "MongoDB",
+		"type" : "database",
+		"count" : 1,
+		"info" : {
+			"x" : 203,
+			"y" : 102
+		}
+	}
+]

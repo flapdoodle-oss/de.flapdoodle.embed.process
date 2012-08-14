@@ -1,0 +1,45 @@
+group = 'de.flapdoodle.embedmongo'
+version = '1.11x-SNAPSHOT'
+project.ext.gradleVersion = "1.0-milestone-9"
+apply plugin: 'java'
+apply plugin: 'eclipse'
+repositories { mavenCentral() }
+eclipse {
+
+    jdt {
+        //if you want to alter the java versions (by default they are configured with gradle java plugin settings):
+        sourceCompatibility = JavaVersion.VERSION_1_6
+        targetCompatibility = JavaVersion.VERSION_1_6
+    }
+    classpath {
+        //customizing the classes output directory:
+        defaultOutputDir = file('build-eclipse')
+    }
+}
+dependencies {
+    testCompile 'junit:junit:4.8.2'
+    testCompile 'org.mongodb:mongo-java-driver:2.6.3'
+    testCompile 'org.mockito:mockito-core:1.9.0'
+    testCompile 'org.mortbay.jetty:jetty:6.1.25'
+    compile 'commons-io:commons-io:2.1'
+    compile 'org.apache.commons:commons-compress:1.3'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = project.ext.gradleVersion
+}
+
+// we reset the last modified date of all test result files
+// for incremental builds which don't run the tests when no
+// chage has been made. otherwise jenkins will throw an exception then caused by
+// old test result files
+task jenkinsTest {
+    inputs.files test.outputs.files
+    doLast {
+        def timestamp = System.currentTimeMillis()
+        if (test.testResultsDir.exists())
+            test.testResultsDir.eachFile { it.lastModified = timestamp }
+    }
+}
+
+build.dependsOn(jenkinsTest)
