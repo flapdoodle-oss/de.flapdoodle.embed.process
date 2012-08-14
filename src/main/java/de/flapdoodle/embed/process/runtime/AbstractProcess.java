@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
@@ -50,11 +49,11 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 
 	private Distribution distribution;
 
-	public AbstractProcess(Distribution distribution, T config, IRuntimeConfig runtimeConfig, E mongodExecutable)
+	public AbstractProcess(Distribution distribution, T config, IRuntimeConfig runtimeConfig, E executable)
 			throws IOException {
 		this.config = config;
 		this.runtimeConfig = runtimeConfig;
-		this.executable = mongodExecutable;
+		this.executable = executable;
 		this.distribution = distribution;
 
 		ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
