@@ -35,6 +35,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 ### Projects using this Tool
 
 - Embedded MongoDB [embedmongo.flapdoodle.de](https://github.com/flapdoodle-oss/embedmongo.flapdoodle.de)
+- Embedded node.js [embedmongo.flapdoodle.de](https://github.com/flapdoodle-oss/de.flapdoodle.embed.nodejs)
 
 ### Changelog
 
