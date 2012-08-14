@@ -38,16 +38,10 @@ public interface IDownloadConfig {
 	
 	ITempNaming getFileNaming();
 
-	String getPath(Distribution distribution);
-
-	ArchiveType getArchiveType(Distribution distribution);
-
 	String getDownloadPrefix();
 
 	String getUserAgent();
 
-	String executableFilename(Distribution distribution);
-
-	Pattern executeablePattern(Distribution distribution);
+	IPackageResolver getPackageResolver();
 
 }

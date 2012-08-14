@@ -50,7 +50,7 @@ public class Downloader {
 	}
 
 	public static String getDownloadUrl(IDownloadConfig runtime, Distribution distribution) {
-		return runtime.getDownloadPath() + runtime.getPath(distribution);
+		return runtime.getDownloadPath() + runtime.getPackageResolver().getPath(distribution);
 	}
 
 	public static File download(IDownloadConfig runtime, Distribution distribution) throws IOException {
@@ -60,7 +60,7 @@ public class Downloader {
 		progress.start(progressLabel);
 
 		File ret = Files.createTempFile(runtime.getFileNaming()
-				.nameFor(runtime.getDownloadPrefix(), "." + runtime.getArchiveType(distribution)));
+				.nameFor(runtime.getDownloadPrefix(), "." + runtime.getPackageResolver().getArchiveType(distribution)));
 		if (ret.canWrite()) {
 
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(ret));

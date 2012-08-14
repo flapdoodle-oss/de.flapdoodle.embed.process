@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.IPackageResolver;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.exceptions.DistributionException;
 import de.flapdoodle.embed.process.extract.Extractors;
@@ -81,12 +82,13 @@ public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE 
 
 	protected File extractExe(Distribution distribution) throws IOException {
 		IDownloadConfig downloadConfig = runtime.getDownloadConfig();
+		IPackageResolver packageResolver = downloadConfig.getPackageResolver();
 		File artifact = LocalArtifactStore.getArtifact(downloadConfig, distribution);
-		IExtractor extractor = Extractors.getExtractor(downloadConfig.getArchiveType(distribution));
+		IExtractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));
 
 		File exe = Files.createTempFile(
-				runtime.getExecutableNaming().nameFor("extract", downloadConfig.executableFilename(distribution)));
-		extractor.extract(downloadConfig, artifact, exe, downloadConfig.executeablePattern(distribution));
+				runtime.getExecutableNaming().nameFor("extract", packageResolver.executableFilename(distribution)));
+		extractor.extract(downloadConfig, artifact, exe, packageResolver.executeablePattern(distribution));
 		return exe;
 	}
 
