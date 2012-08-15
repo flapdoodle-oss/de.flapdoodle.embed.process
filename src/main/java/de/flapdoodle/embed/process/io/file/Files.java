@@ -122,7 +122,21 @@ public class Files {
 			out.close();
 		}
 	}
-	
+
+	public static void write(InputStream in, File output) throws IOException {
+		FileOutputStream out = new FileOutputStream(output);
+
+		try {
+			byte[] buf = new byte[BYTE_BUFFER_LENGTH];
+			int read;
+			while ((read = in.read(buf, 0, buf.length)) != -1) {
+				out.write(buf, 0, read);
+			}
+		} finally {
+			out.close();
+		}
+	}
+
 	public static void write(String content, File output) throws IOException {
 		FileOutputStream out = new FileOutputStream(output);
 		OutputStreamWriter w=new OutputStreamWriter(out);
