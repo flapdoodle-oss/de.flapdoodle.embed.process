@@ -55,7 +55,7 @@ public class LocalArtifactStore {
 
 	private static void createOrCheckDir(File dir) {
 		if (!dir.exists()) {
-			if (!dir.mkdir())
+			if (!dir.mkdirs())
 				throw new IllegalArgumentException("Could NOT create Directory " + dir);
 		}
 		if (!dir.isDirectory())
