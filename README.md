@@ -21,7 +21,7 @@ Stable (Maven Central Repository, Released: 15.08.2012 - wait 24hrs for maven ce
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.20</version>
+		<version>1.21</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -29,7 +29,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.21-SNAPSHOT</version>
+		<version>1.22-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -41,8 +41,11 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 Initial Version starts with 1.19 SNAPSHOT as extract from Embedded MongoDB Project
 
-#### 1.21 (SNAPSHOT)
+#### 1.22 (SNAPSHOT)
 
+#### 1.21
+
+- "archive type" exe supported
 
 #### 1.20
 
