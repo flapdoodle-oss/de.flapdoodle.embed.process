@@ -41,7 +41,7 @@ public class ArchiveIsFileExtractor implements IExtractor {
 	public void extract(IDownloadConfig runtime, File source, File destination, Pattern file) throws IOException {
 
 		IProgressListener progressListener = runtime.getProgressListener();
-		String progressLabel = "Extract (not realy) " + source;
+		String progressLabel = "Extract (not really) " + source;
 		progressListener.start(progressLabel);
 
 		FileInputStream fin = new FileInputStream(source);
