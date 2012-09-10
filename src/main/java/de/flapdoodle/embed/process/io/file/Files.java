@@ -48,8 +48,7 @@ public class Files {
 
 	@Deprecated
 	public static File createTempFile(String tempFileName) throws IOException {
-		IDirectory directory=new PropertyOrPlatformTempDir();
-		return createTempFile(directory, tempFileName);
+		return createTempFile(PropertyOrPlatformTempDir.defaultInstance(), tempFileName);
 	}
 
 	public static File createTempFile(IDirectory directory, String tempFileName) throws IOException {

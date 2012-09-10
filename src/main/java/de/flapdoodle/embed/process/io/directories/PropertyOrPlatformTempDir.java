@@ -25,6 +25,8 @@ import java.io.File;
 
 public class PropertyOrPlatformTempDir extends PlatformTempDir {
 
+	private static PropertyOrPlatformTempDir _instance=new PropertyOrPlatformTempDir();
+
 	@Override
 	public File asFile() {
 		String customTempDir = System.getProperty("de.flapdoodle.embed.io.tmpdir");
@@ -32,5 +34,9 @@ public class PropertyOrPlatformTempDir extends PlatformTempDir {
 			return new File(customTempDir);
 		}
 		return super.asFile();
+	}
+
+	public static IDirectory defaultInstance() {
+		return _instance;
 	}
 }
