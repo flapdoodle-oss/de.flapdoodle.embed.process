@@ -48,7 +48,7 @@ public class LocalArtifactStore {
 	}
 
 	private static File createOrGetBaseDir(IDownloadConfig runtime) {
-		File dir = new File(runtime.getArtifactStorePathNaming().getPath());
+		File dir = runtime.getArtifactStorePath().asFile();
 		createOrCheckDir(dir);
 		return dir;
 	}

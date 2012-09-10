@@ -43,6 +43,8 @@ Initial Version starts with 1.19 SNAPSHOT as extract from Embedded MongoDB Proje
 
 #### 1.22 (SNAPSHOT)
 
+- you can change temp dir with code or system property "de.flapdoodle.embed.io.tmpdir"
+
 #### 1.21
 
 - "archive type" exe supported

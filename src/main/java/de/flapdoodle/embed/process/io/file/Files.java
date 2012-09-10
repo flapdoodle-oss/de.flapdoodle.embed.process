@@ -22,6 +22,9 @@ package de.flapdoodle.embed.process.io.file;
 
 import org.apache.commons.io.FileUtils;
 
+import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -43,8 +46,14 @@ public class Files {
 
 	}
 
+	@Deprecated
 	public static File createTempFile(String tempFileName) throws IOException {
-		File tempDir = new File(System.getProperty("java.io.tmpdir"));
+		IDirectory directory=new PropertyOrPlatformTempDir();
+		return createTempFile(directory, tempFileName);
+	}
+
+	public static File createTempFile(IDirectory directory, String tempFileName) throws IOException {
+		File tempDir = directory.asFile();
 		File tempFile = new File(tempDir, tempFileName);
 		if (!tempFile.createNewFile())
 			throw new IOException("Could not create Tempfile: " + tempFile);

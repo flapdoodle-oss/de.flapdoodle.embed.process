@@ -18,21 +18,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.io.directories;
+
+import java.io.File;
 
 
-/**
- *
- */
-public class ArtifactStoreInUserHome implements IArtifactStoragePathNaming {
-	private String postFix;
+public class PropertyOrPlatformTempDir extends PlatformTempDir {
 
-	public ArtifactStoreInUserHome(String postFix) {
-		this.postFix=postFix;
-	}
-	
 	@Override
-	public String getPath() {
-		return System.getProperty("user.home") + "/" + postFix + "/";
+	public File asFile() {
+		String customTempDir = System.getProperty("de.flapdoodle.embed.io.tmpdir");
+		if (customTempDir!=null) {
+			return new File(customTempDir);
+		}
+		return super.asFile();
 	}
 }

@@ -86,7 +86,7 @@ public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE 
 		File artifact = LocalArtifactStore.getArtifact(downloadConfig, distribution);
 		IExtractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));
 
-		File exe = Files.createTempFile(
+		File exe = Files.createTempFile(runtime.getTempDirFactory(),
 				runtime.getExecutableNaming().nameFor("extract", packageResolver.executableFilename(distribution)));
 		extractor.extract(downloadConfig, artifact, exe, packageResolver.executeablePattern(distribution));
 		return exe;

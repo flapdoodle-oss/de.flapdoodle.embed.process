@@ -18,21 +18,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.io.directories;
+
+import java.io.File;
+
+
 
 /**
  *
  */
-public class ArtifactStoreInFixedPath implements IArtifactStoragePathNaming {
+public class UserHome implements IDirectory {
+	private String postFix;
 
-	private String path;
-
-	public ArtifactStoreInFixedPath(String path) {
-		this.path = path;
+	public UserHome(String postFix) {
+		this.postFix=postFix;
 	}
-
+	
 	@Override
-	public String getPath() {
-		return this.path;
+	public File asFile() {
+		return new File(System.getProperty("user.home") + File.separator + postFix + File.separator);
 	}
 }

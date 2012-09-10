@@ -18,26 +18,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config;
+package de.flapdoodle.embed.process.io.directories;
 
-import de.flapdoodle.embed.process.config.io.ProcessOutput;
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.extract.ITempNaming;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
-import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
+import java.io.File;
 
 
-public interface IRuntimeConfig {
 
-	IDownloadConfig getDownloadConfig();
+public class PlatformTempDir implements IDirectory {
 
-	IDirectory getTempDirFactory();
-	
-	ITempNaming getDefaultfileNaming();
+	@Override
+	public File asFile() {
+		return new File(System.getProperty("java.io.tmpdir"));
+	}
 
-	ITempNaming getExecutableNaming();
-
-	ProcessOutput getProcessOutput();
-
-	ICommandLinePostProcessor getCommandLinePostProcessor();
 }

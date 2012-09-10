@@ -18,12 +18,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.io.directories;
+
+import java.io.File;
+
 
 /**
- * Interface for artifact storage
+ *
  */
-public interface IArtifactStoragePathNaming {
+public class FixedPath implements IDirectory {
 
-	String getPath();
+	private String path;
+
+	public FixedPath(String path) {
+		this.path = path;
+	}
+
+	@Override
+	public File asFile() {
+		return new File(this.path);
+	}
 }
