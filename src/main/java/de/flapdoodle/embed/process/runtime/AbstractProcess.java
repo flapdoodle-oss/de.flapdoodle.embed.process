@@ -33,7 +33,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 
-public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P> {
+public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable> implements IStopable {
 
 	private static Logger logger = Logger.getLogger(AbstractProcess.class.getName());
 
@@ -70,7 +70,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 			
 			process = ProcessControl.start(supportConfig(), processBuilder);
 
-			Runtime.getRuntime().addShutdownHook(new JobKiller());
+			ProcessControl.addShutdownHook(new JobKiller());
 
 			onAfterProcessStart(process, runtimeConfig);
 
@@ -136,7 +136,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	/**
 	 *
 	 */
-	class JobKiller extends Thread {
+	class JobKiller implements Runnable {
 
 		@Override
 		public void run() {

@@ -271,21 +271,7 @@ public class ProcessControl {
 		return process.waitFor();
 	}
 
-//	/**
-//	 *
-//	 */
-//	static class ProcessState {
-//
-//		protected int returnCode;
-//
-//		public boolean isKilled() {
-//			return killed;
-//		}
-//
-//		public void setKilled(boolean killed) {
-//			this.killed = killed;
-//		}
-//
-//		private boolean killed = false;
-//	}
+	public static void addShutdownHook(Runnable runable) {
+		Runtime.getRuntime().addShutdownHook(new Thread(runable));
+	}
 }

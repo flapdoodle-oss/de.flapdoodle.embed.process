@@ -22,14 +22,17 @@ package de.flapdoodle.embed.process.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
+
+import com.google.common.collect.Lists;
 
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.file.Files;
 
-public abstract class Executable<T extends ExecutableProcessConfig,P> {
+public abstract class Executable<T extends ExecutableProcessConfig,P extends IStopable> {
 
 	private static Logger logger = Logger.getLogger(Executable.class.getName());
 
@@ -37,6 +40,8 @@ public abstract class Executable<T extends ExecutableProcessConfig,P> {
 	private final IRuntimeConfig runtimeConfig;
 	private final File executable;
 	private boolean stopped;
+	
+	List<IStopable> stopables=Lists.newArrayList();
 
 	private final Distribution distribution;
 
@@ -46,11 +51,16 @@ public abstract class Executable<T extends ExecutableProcessConfig,P> {
 		this.config = config;
 		this.runtimeConfig = runtimeConfig;
 		this.executable = executable;
-		Runtime.getRuntime().addShutdownHook(new JobKiller());
+		ProcessControl.addShutdownHook(new JobKiller());
 	}
 
 	public synchronized void cleanup() {
 		if (!stopped) {
+			for (IStopable s : stopables) {
+				s.stop();
+			}
+			stopables=Lists.newArrayList();
+			
 			if (executable.exists() && !Files.forceDelete(executable))
 				logger.warning("Could not delete executable NOW: " + executable);
 			stopped = true;
@@ -60,7 +70,7 @@ public abstract class Executable<T extends ExecutableProcessConfig,P> {
 	/**
 	 *
 	 */
-	class JobKiller extends Thread {
+	class JobKiller implements Runnable {
 
 		@Override
 		public void run() {
@@ -72,8 +82,16 @@ public abstract class Executable<T extends ExecutableProcessConfig,P> {
 		return executable;
 	}
 
-	public P start() throws IOException {
-		return start(distribution, config, runtimeConfig);
+	public synchronized P start() throws IOException {
+		if (stopped) throw new RuntimeException("Allready stopped");
+		
+		P start = start(distribution, config, runtimeConfig);
+		addStopable(start);
+		return start;
+	}
+
+	private void addStopable(P start) {
+		stopables.add(start);
 	}
 
 	protected abstract P start(Distribution distribution, T config, IRuntimeConfig runtime) throws IOException;

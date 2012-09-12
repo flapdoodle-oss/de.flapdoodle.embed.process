@@ -40,7 +40,7 @@ import de.flapdoodle.embed.process.store.Downloader;
 import de.flapdoodle.embed.process.store.LocalArtifactStore;
 
 
-public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE extends Executable<CONFIG, PROCESS>,PROCESS> {
+public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE extends Executable<CONFIG, PROCESS>,PROCESS extends IStopable> {
 	
 	private static Logger logger = Logger.getLogger(Starter.class.getName());
 	
