@@ -41,7 +41,13 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 Initial Version starts with 1.19 SNAPSHOT as extract from Embedded MongoDB Project
 
-#### 1.22 (SNAPSHOT)
+#### 1.24 (SNAPSHOT)
+
+#### 1.23
+
+- fixed some shutdown race conditions
+- removed File.deleteOnExit
+- shutdown hock refactoring
 
 #### 1.22
 
