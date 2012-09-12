@@ -78,8 +78,13 @@ public class Files {
 		return tempFile;
 	}
 
+	@Deprecated
 	public static File createTempDir(String prefix) throws IOException {
-		File tempDir = new File(System.getProperty("java.io.tmpdir"));
+		return createTempDir(PropertyOrPlatformTempDir.defaultInstance(), prefix);
+	}
+
+	public static File createTempDir(IDirectory directory, String prefix) throws IOException {
+		File tempDir=directory.asFile();
 		File tempFile = new File(tempDir, prefix + "-" + UUID.randomUUID().toString());
 		if (!tempFile.mkdir())
 			throw new IOException("Could not create Tempdir: " + tempFile);
