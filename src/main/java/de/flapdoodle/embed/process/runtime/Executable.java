@@ -32,7 +32,7 @@ import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.file.Files;
 
-public abstract class Executable<T extends ExecutableProcessConfig,P extends IStopable> {
+public abstract class Executable<T extends ExecutableProcessConfig,P extends IStopable> implements IStopable {
 
 	private static Logger logger = Logger.getLogger(Executable.class.getName());
 
@@ -54,7 +54,15 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 		ProcessControl.addShutdownHook(new JobKiller());
 	}
 
+	/**
+	 * use stop
+	 */
+	@Deprecated
 	public synchronized void cleanup() {
+		stop();
+	}
+	
+	public synchronized void stop() {
 		if (!stopped) {
 			for (IStopable s : stopables) {
 				s.stop();
@@ -74,7 +82,7 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 
 		@Override
 		public void run() {
-			cleanup();
+			stop();
 		}
 	}
 
