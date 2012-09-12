@@ -102,13 +102,8 @@ public class Files {
 			}
 		} catch (IOException e) {
 			logger.warning("Could not delete " + fileOrDir + ". Will try to delete it again when program exits.");
-			try {
-				FileUtils.forceDeleteOnExit(fileOrDir);
-				ret = true;
-			} catch (IOException ioe) {
-				logger.severe("Could not delete " + fileOrDir);
-				throw new IllegalStateException("Could not delete " + fileOrDir);
-			}
+			FileCleaner.forceDeleteOnExit(fileOrDir);
+			ret = true;
 		}
 
 		return ret;
