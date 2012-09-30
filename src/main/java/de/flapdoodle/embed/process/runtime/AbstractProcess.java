@@ -106,7 +106,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	public abstract void stop();
 
 	protected final void stopProcess() {
-		process.stop();
+		if (process!=null) process.stop();
 	}
 
 	public int waitFor() throws InterruptedException {

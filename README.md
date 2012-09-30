@@ -43,6 +43,8 @@ Initial Version starts with 1.19 SNAPSHOT as extract from Embedded MongoDB Proje
 
 #### 1.24 (SNAPSHOT)
 
+- fixed NPE on process start
+
 #### 1.23
 
 - fixed some shutdown race conditions
