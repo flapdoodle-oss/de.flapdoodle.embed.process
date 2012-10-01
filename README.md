@@ -16,12 +16,12 @@ Embedded Process Util will provide a platform neutral way for running processes 
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 12.09.2012 - wait 24hrs for maven central)
+Stable (Maven Central Repository, Released: 01.10.2012 - wait 24hrs for maven central)
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.23</version>
+		<version>1.24</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -29,7 +29,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.24-SNAPSHOT</version>
+		<version>1.25-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -41,7 +41,11 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 Initial Version starts with 1.19 SNAPSHOT as extract from Embedded MongoDB Project
 
-#### 1.24 (SNAPSHOT)
+#### 1.25 (SNAPSHOT)
+
+- fixed NPE on process start
+
+#### 1.24
 
 - fixed NPE on process start
 
