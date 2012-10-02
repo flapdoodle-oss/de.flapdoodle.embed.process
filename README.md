@@ -16,7 +16,7 @@ Embedded Process Util will provide a platform neutral way for running processes 
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 01.10.2012 - wait 24hrs for maven central)
+Stable (Maven Central Repository, Released: 01.10.2012 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
