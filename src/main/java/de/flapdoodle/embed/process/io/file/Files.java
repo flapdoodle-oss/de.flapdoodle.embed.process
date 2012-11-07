@@ -48,10 +48,12 @@ public class Files {
 
 	@Deprecated
 	public static File createTempFile(String tempFileName) throws IOException {
-		return createTempFile(PropertyOrPlatformTempDir.defaultInstance(), tempFileName);
+		return createTempFile(PropertyOrPlatformTempDir.defaultInstance(),
+				tempFileName);
 	}
 
-	public static File createTempFile(IDirectory directory, String tempFileName) throws IOException {
+	public static File createTempFile(IDirectory directory, String tempFileName)
+			throws IOException {
 		File tempDir = directory.asFile();
 		File tempFile = new File(tempDir, tempFileName);
 		if (!tempFile.createNewFile())
@@ -63,7 +65,7 @@ public class Files {
 		File tempFile = new File(dir);
 		if ((tempFile.exists()) && (tempFile.isDirectory()))
 			return tempFile;
-		if (!tempFile.mkdir())
+		if (!tempFile.mkdirs())
 			throw new IOException("Could not create Tempdir: " + tempFile);
 		return tempFile;
 	}
@@ -73,20 +75,23 @@ public class Files {
 		File tempFile = new File(tempDir, prefix);
 		if ((tempFile.exists()) && (tempFile.isDirectory()))
 			return tempFile;
-		if (!tempFile.mkdir())
+		if (!tempFile.mkdirs())
 			throw new IOException("Could not create Tempdir: " + tempFile);
 		return tempFile;
 	}
 
 	@Deprecated
 	public static File createTempDir(String prefix) throws IOException {
-		return createTempDir(PropertyOrPlatformTempDir.defaultInstance(), prefix);
+		return createTempDir(PropertyOrPlatformTempDir.defaultInstance(),
+				prefix);
 	}
 
-	public static File createTempDir(IDirectory directory, String prefix) throws IOException {
-		File tempDir=directory.asFile();
-		File tempFile = new File(tempDir, prefix + "-" + UUID.randomUUID().toString());
-		if (!tempFile.mkdir())
+	public static File createTempDir(IDirectory directory, String prefix)
+			throws IOException {
+		File tempDir = directory.asFile();
+		File tempFile = new File(tempDir, prefix + "-"
+				+ UUID.randomUUID().toString());
+		if (!tempFile.mkdirs())
 			throw new IOException("Could not create Tempdir: " + tempFile);
 		return tempFile;
 	}
@@ -101,7 +106,8 @@ public class Files {
 				ret = true;
 			}
 		} catch (IOException e) {
-			logger.warning("Could not delete " + fileOrDir + ". Will try to delete it again when program exits.");
+			logger.warning("Could not delete " + fileOrDir
+					+ ". Will try to delete it again when program exits.");
 			FileCleaner.forceDeleteOnExit(fileOrDir);
 			ret = true;
 		}
@@ -109,7 +115,8 @@ public class Files {
 		return ret;
 	}
 
-	public static void write(InputStream in, long size, File output) throws IOException {
+	public static void write(InputStream in, long size, File output)
+			throws IOException {
 		FileOutputStream out = new FileOutputStream(output);
 
 		try {
@@ -147,8 +154,8 @@ public class Files {
 
 	public static void write(String content, File output) throws IOException {
 		FileOutputStream out = new FileOutputStream(output);
-		OutputStreamWriter w=new OutputStreamWriter(out);
-		
+		OutputStreamWriter w = new OutputStreamWriter(out);
+
 		try {
 			w.write(content);
 			w.flush();
@@ -170,7 +177,8 @@ public class Files {
 		return true;
 	}
 
-	private static void copyFile(File source, File destination) throws IOException {
+	private static void copyFile(File source, File destination)
+			throws IOException {
 		FileInputStream reader = null;
 		FileOutputStream writer = null;
 		try {
