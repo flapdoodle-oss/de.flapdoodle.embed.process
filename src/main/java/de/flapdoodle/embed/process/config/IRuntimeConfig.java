@@ -25,19 +25,22 @@ import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
+import de.flapdoodle.embed.process.store.IArtifactStore;
 
 
 public interface IRuntimeConfig {
 
-	IDownloadConfig getDownloadConfig();
+//	IDownloadConfig getDownloadConfig();
 
-	IDirectory getTempDirFactory();
+//	IDirectory getTempDirFactory();
 	
-	ITempNaming getDefaultfileNaming();
+//	ITempNaming getDefaultfileNaming();
 
-	ITempNaming getExecutableNaming();
+//	ITempNaming getExecutableNaming();
 
 	ProcessOutput getProcessOutput();
 
 	ICommandLinePostProcessor getCommandLinePostProcessor();
+	
+	IArtifactStore getArtifactStore();
 }

@@ -27,9 +27,9 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.file.Files;
 
 /**
- *
+ * not part of public api
  */
-public class LocalArtifactStore {
+class LocalArtifactStore {
 
 	public static boolean checkArtifact(IDownloadConfig runtime, Distribution distribution) {
 		return getArtifact(runtime, distribution) != null;

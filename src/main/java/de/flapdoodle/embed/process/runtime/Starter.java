@@ -24,20 +24,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.config.store.IPackageResolver;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.exceptions.DistributionException;
-import de.flapdoodle.embed.process.extract.Extractors;
-import de.flapdoodle.embed.process.extract.IExtractor;
-import de.flapdoodle.embed.process.io.file.Files;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;
-import de.flapdoodle.embed.process.store.Downloader;
-import de.flapdoodle.embed.process.store.LocalArtifactStore;
+import de.flapdoodle.embed.process.store.IArtifactStore;
 
 
 public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE extends Executable<CONFIG, PROCESS>,PROCESS extends IStopable> {
@@ -50,24 +43,18 @@ public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE 
 		runtime = config;
 	}
 
-	protected boolean checkDistribution(Distribution distribution) throws IOException {
-		IDownloadConfig downloadConfig = runtime.getDownloadConfig();
-		if (!LocalArtifactStore.checkArtifact(downloadConfig, distribution)) {
-			return LocalArtifactStore.store(downloadConfig, distribution, Downloader.download(downloadConfig, distribution));
-		}
-		return true;
-	}
-
 	public EXECUTABLE prepare(CONFIG config) {
-		IProgressListener progress = runtime.getDownloadConfig().getProgressListener();
+//		IProgressListener progress = runtime.getDownloadConfig().getProgressListener();
 		
 		Distribution distribution = Distribution.detectFor(config.getVersion());
-		progress.done("Detect Distribution");
+//		progress.done("Detect Distribution");
 		
 		try {
-			if (checkDistribution(distribution)) {
-				progress.done("Check Distribution");
-				File exe = extractExe(distribution);
+			IArtifactStore artifactStore = runtime.getArtifactStore();
+			
+			if (artifactStore.checkDistribution(distribution)) {
+//				progress.done("Check Distribution");
+				File exe = runtime.getArtifactStore().extractExe(distribution);
 
 				return newExecutable(config, distribution, runtime, exe);
 			} else {
@@ -79,22 +66,5 @@ public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE 
 		}
 	}
 
-
-	protected File extractExe(Distribution distribution) throws IOException {
-		IDownloadConfig downloadConfig = runtime.getDownloadConfig();
-		IPackageResolver packageResolver = downloadConfig.getPackageResolver();
-		File artifact = LocalArtifactStore.getArtifact(downloadConfig, distribution);
-		IExtractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));
-
-		File exe = Files.createTempFile(runtime.getTempDirFactory(),
-				runtime.getExecutableNaming().nameFor("extract", packageResolver.executableFilename(distribution)));
-		extractor.extract(downloadConfig, artifact, exe, packageResolver.executeablePattern(distribution));
-		return exe;
-	}
-
 	protected abstract EXECUTABLE newExecutable(CONFIG config, Distribution distribution, IRuntimeConfig runtime, File exe);
-	
-//	protected abstract Pattern executeablePattern(Distribution distribution);
-//
-//	protected abstract String executableFilename(Distribution distribution);
 }
