@@ -68,14 +68,22 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 				s.stop();
 			}
 			stopables=Lists.newArrayList();
-			
-			if (executable.exists() && !Files.forceDelete(executable))
-				logger.warning("Could not delete executable NOW: " + executable);
-			stopped = true;
+
+            deleteExecutable();
+            stopped = true;
 		}
 	}
 
-	/**
+    /**
+     * Delete the executable at stop time; available here for
+     * subclassing.
+     */
+    protected void deleteExecutable() {
+        if (executable.exists() && !Files.forceDelete(executable))
+            logger.warning("Could not delete executable NOW: " + executable);
+    }
+
+    /**
 	 *
 	 */
 	class JobKiller implements Runnable {
