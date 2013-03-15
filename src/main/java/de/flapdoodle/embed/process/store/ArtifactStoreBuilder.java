@@ -1,11 +1,14 @@
 package de.flapdoodle.embed.process.store;
 
+import java.util.logging.Logger;
+
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 
 public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
+	private static Logger logger = Logger.getLogger(ArtifactStoreBuilder.class.getName());
 
 	private static final String EXECUTABLE_NAMING = "ExecutableNaming";
 	private static final String TEMP_DIR_FACTORY = "TempDir";
@@ -30,8 +33,21 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 		return this;
 	}
 	
+	public ArtifactStoreBuilder cache(boolean cache) {
+		set("Cache", Boolean.class, cache);
+		return this;
+	}
+	
 	@Override
 	public IArtifactStore build() {
-		return new ArtifactStore(get(IDownloadConfig.class),get(IDirectory.class), get(ITempNaming.class));
+		boolean useCache = get(Boolean.class,true);
+		
+		logger.severe("Build ArtifactStore(useCache:"+useCache+")");
+		
+		IArtifactStore artifactStore = new ArtifactStore(get(IDownloadConfig.class),get(IDirectory.class), get(ITempNaming.class));
+		if (useCache) {
+			artifactStore=new CachingArtifactStore(artifactStore);
+		}
+		return artifactStore;
 	}
 }

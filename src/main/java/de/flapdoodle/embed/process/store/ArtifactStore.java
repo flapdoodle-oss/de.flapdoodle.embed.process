@@ -2,6 +2,7 @@ package de.flapdoodle.embed.process.store;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.config.store.IPackageResolver;
@@ -14,6 +15,7 @@ import de.flapdoodle.embed.process.io.file.Files;
 
 
 public class ArtifactStore implements IArtifactStore {
+	private static Logger logger = Logger.getLogger(ArtifactStore.class.getName());
 
 	private IDownloadConfig _downloadConfig;
 	private IDirectory _tempDireFactory;
@@ -43,5 +45,11 @@ public class ArtifactStore implements IArtifactStore {
 				_executableNaming.nameFor("extract", packageResolver.executableFilename(distribution)));
 		extractor.extract(_downloadConfig, artifact, exe, packageResolver.executeablePattern(distribution));
 		return exe;
+	}
+
+	@Override
+	public void removeExecutable(Distribution distribution, File executable) {
+		if (executable.exists() && !Files.forceDelete(executable))
+			logger.warning("Could not delete executable NOW: " + executable);
 	}
 }

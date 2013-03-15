@@ -30,7 +30,6 @@ import com.google.common.collect.Lists;
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.io.file.Files;
 
 public abstract class Executable<T extends ExecutableProcessConfig,P extends IStopable> implements IStopable {
 
@@ -69,18 +68,10 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 			}
 			stopables=Lists.newArrayList();
 
-      deleteExecutable();
+			runtimeConfig.getArtifactStore().removeExecutable(distribution, executable);
+			
       stopped = true;
 		}
-	}
-
-	/**
-	 * Delete the executable at stop time; available here for
-	 * subclassing.
-	 */
-	protected void deleteExecutable() {
-		if (executable.exists() && !Files.forceDelete(executable))
-			logger.warning("Could not delete executable NOW: " + executable);
 	}
 
 	/**

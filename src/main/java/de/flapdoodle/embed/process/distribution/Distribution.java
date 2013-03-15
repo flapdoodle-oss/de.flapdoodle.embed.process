@@ -55,4 +55,43 @@ public class Distribution {
 	public static Distribution detectFor(IVersion version) {
 		return new Distribution(version, Platform.detect(), BitSize.detect());
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((bitsize == null)
+				? 0
+				: bitsize.hashCode());
+		result = prime * result + ((platform == null)
+				? 0
+				: platform.hashCode());
+		result = prime * result + ((version == null)
+				? 0
+				: version.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Distribution other = (Distribution) obj;
+		if (bitsize != other.bitsize)
+			return false;
+		if (platform != other.platform)
+			return false;
+		if (version == null) {
+			if (other.version != null)
+				return false;
+		} else if (!version.equals(other.version))
+			return false;
+		return true;
+	}
+	
+	
 }
