@@ -43,6 +43,8 @@ Initial Version starts with 1.19 SNAPSHOT as extract from Embedded MongoDB Proje
 
 #### 1.26 (SNAPSHOT)
 
+- major api changes, easier configuration
+
 #### 1.25
 
 - fixed NPE on process start
