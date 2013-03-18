@@ -41,6 +41,8 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 #### 1.27 (SNAPSHOT)
 
+- generic process builder (download and start packages)
+
 #### 1.26
 
 - major api changes, easier configuration
