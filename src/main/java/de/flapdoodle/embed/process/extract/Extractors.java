@@ -35,6 +35,8 @@ public class Extractors {
 		switch (archiveType) {
 			case TGZ:
 				return new TgzExtractor();
+			case TBZ2:
+				return new Tbz2Extractor();
 			case EXE:
 				return new ArchiveIsFileExtractor();
 			case ZIP:

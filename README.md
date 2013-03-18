@@ -35,11 +35,9 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 ### Projects using this Tool
 
 - Embedded MongoDB [embedmongo.flapdoodle.de](https://github.com/flapdoodle-oss/embedmongo.flapdoodle.de)
-- Embedded node.js [embedmongo.flapdoodle.de](https://github.com/flapdoodle-oss/de.flapdoodle.embed.nodejs)
+- Embedded node.js [nodejs.embed.flapdoodle.de](https://github.com/flapdoodle-oss/de.flapdoodle.embed.nodejs)
 
 ### Changelog
-
-Initial Version starts with 1.19 SNAPSHOT as extract from Embedded MongoDB Project
 
 #### 1.27 (SNAPSHOT)
 
@@ -76,7 +74,7 @@ Initial Version starts with 1.19 SNAPSHOT as extract from Embedded MongoDB Proje
 
 #### 1.19
 
-- initial cut out
+- initial cut out from Embedded MongoDB Project
 
 #### 1.18
 

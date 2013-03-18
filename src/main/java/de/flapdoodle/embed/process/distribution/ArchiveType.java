@@ -24,5 +24,5 @@ package de.flapdoodle.embed.process.distribution;
  *
  */
 public enum ArchiveType {
-	TGZ, ZIP, EXE;
+	TGZ, TBZ2, ZIP, EXE;
 }

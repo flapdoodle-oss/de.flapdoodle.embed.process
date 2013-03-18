@@ -27,7 +27,7 @@ import de.flapdoodle.embed.process.io.directories.IDirectory;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
 
-public abstract class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
+public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 
 	private static final String USER_AGENT = "UserAgent";
 	private static final String PROGRESS_LISTENER = "ProgressListener";
