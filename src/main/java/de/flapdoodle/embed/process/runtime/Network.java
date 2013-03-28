@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -32,18 +33,20 @@ import java.util.logging.Logger;
 public class Network {
 
 	private static Logger logger = Logger.getLogger(Network.class.getName());
-	public static final int IP_LENGTH = 4;
+	public static final int IPV4_LENGTH = 4;
 
 	private Network() {
 		throw new IllegalAccessError("singleton");
 	}
 
-	public static boolean localhostIsIPv6() throws UnknownHostException {
-		InetAddress addr = InetAddress.getLocalHost();
-		byte[] ipAddr = addr.getAddress();
-		if (ipAddr.length > IP_LENGTH)
-			return true;
-		return false;
+	public static boolean localhostIsIPv6() {
+		try {
+			byte[] ipAddr = InetAddress.getLocalHost().getAddress();
+			return (ipAddr.length > IPV4_LENGTH);
+		} catch (UnknownHostException e) {
+			logger.log(Level.WARNING, "Unable to determine if localhost is IPv6, will assume it is not", e);
+			return false;
+		}
 	}
 
 	public static InetAddress getLocalHost() throws UnknownHostException {
