@@ -30,14 +30,6 @@ import de.flapdoodle.embed.process.store.IArtifactStore;
 
 public interface IRuntimeConfig {
 
-//	IDownloadConfig getDownloadConfig();
-
-//	IDirectory getTempDirFactory();
-	
-//	ITempNaming getDefaultfileNaming();
-
-//	ITempNaming getExecutableNaming();
-
 	ProcessOutput getProcessOutput();
 
 	ICommandLinePostProcessor getCommandLinePostProcessor();

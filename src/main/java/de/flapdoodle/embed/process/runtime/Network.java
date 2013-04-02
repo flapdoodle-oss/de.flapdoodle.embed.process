@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -32,18 +33,28 @@ import java.util.logging.Logger;
 public class Network {
 
 	private static Logger logger = Logger.getLogger(Network.class.getName());
-	public static final int IP_LENGTH = 4;
+	
+	private static final String NO_LOCALHOST_ERROR_MESSAGE = "We could not detect if localhost is IPv4 or IPv6. " +
+			"Sometimes there is no entry for localhost. " +
+			"If 'ping localhost' does not work, it could help to add the right entry in your hosts configuration file.";
+	static final int IPV4_LENGTH = 4;
 
 	private Network() {
 		throw new IllegalAccessError("singleton");
 	}
 
 	public static boolean localhostIsIPv6() throws UnknownHostException {
-		InetAddress addr = InetAddress.getLocalHost();
-		byte[] ipAddr = addr.getAddress();
-		if (ipAddr.length > IP_LENGTH)
-			return true;
-		return false;
+		try {
+			InetAddress addr = getLocalHost();
+			byte[] ipAddr = addr.getAddress();
+			if (ipAddr.length > IPV4_LENGTH) {
+				return true;
+			}
+			return false;
+		} catch (UnknownHostException ux) {
+			logger.log(Level.SEVERE, NO_LOCALHOST_ERROR_MESSAGE, ux);
+			throw ux;
+		}
 	}
 
 	public static InetAddress getLocalHost() throws UnknownHostException {
@@ -60,7 +71,7 @@ public class Network {
 	public static int getFreeServerPort() throws IOException {
 		return getFreeServerPort(getLocalHost());
 	}
-	
+
 	public static int getFreeServerPort(InetAddress hostAdress) throws IOException {
 		int ret;
 		ServerSocket socket = new ServerSocket(0, 0, hostAdress);

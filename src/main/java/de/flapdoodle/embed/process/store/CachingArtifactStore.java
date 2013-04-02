@@ -79,8 +79,11 @@ public class CachingArtifactStore implements IArtifactStore {
 		synchronized (_lock) {
 			fileWithCounter = _distributionFiles.get(distribution);
 		}
-		fileWithCounter.free(executable);
-		//_delegate.removeExecutable(executable);
+		if (fileWithCounter!=null) {
+			fileWithCounter.free(executable);
+		} else {
+			_logger.warning("Allready removed "+executable+" for "+distribution+", emergency shutdown?");
+		}
 	}
 
 	protected void removeAll() {
