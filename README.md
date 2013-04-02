@@ -42,6 +42,8 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 #### 1.27 (SNAPSHOT)
 
 - generic process builder (download and start packages)
+- minor improvments
+- better network ipv6 detection error message
 
 #### 1.26
 
