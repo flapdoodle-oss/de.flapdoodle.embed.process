@@ -41,6 +41,11 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		return this;
 	}
 
+	public RuntimeConfigBuilder daemonProcess(boolean daemonProcess) {
+		set(Boolean.class, daemonProcess);
+		return this;
+	}
+
 	public RuntimeConfigBuilder commandLinePostProcessor(ICommandLinePostProcessor commandLinePostProcessor) {
 		set(ICommandLinePostProcessor.class, commandLinePostProcessor);
 		return this;
@@ -51,8 +56,9 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		IArtifactStore artifactStore = get(IArtifactStore.class);
 		ProcessOutput processOutput = get(ProcessOutput.class);
 		ICommandLinePostProcessor commandLinePostProcessor = get(ICommandLinePostProcessor.class);
+		Boolean daemonProcess = get(Boolean.class, true);
 
-		return new ImmutableRuntimeConfig(artifactStore, processOutput, commandLinePostProcessor);
+		return new ImmutableRuntimeConfig(artifactStore, processOutput, commandLinePostProcessor, daemonProcess);
 	}
 
 	static class ImmutableRuntimeConfig implements IRuntimeConfig {
@@ -60,13 +66,15 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		private final ProcessOutput _processOutput;
 		private final ICommandLinePostProcessor _commandLinePostProcessor;
 		private final IArtifactStore _artifactStore;
+		private final boolean _daemonProcess;
 
 		public ImmutableRuntimeConfig(IArtifactStore artifactStore, ProcessOutput processOutput,
-				ICommandLinePostProcessor commandLinePostProcessor) {
+				ICommandLinePostProcessor commandLinePostProcessor, boolean daemonProcess) {
 			super();
 			_artifactStore = artifactStore;
 			_processOutput = processOutput;
 			_commandLinePostProcessor = commandLinePostProcessor;
+			_daemonProcess = daemonProcess;
 		}
 
 		@Override
@@ -82,6 +90,11 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		@Override
 		public IArtifactStore getArtifactStore() {
 			return _artifactStore;
+		}
+
+		@Override
+		public boolean isDaemonProcess() {
+			return _daemonProcess;
 		}
 
 	}

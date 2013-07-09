@@ -35,4 +35,6 @@ public interface IRuntimeConfig {
 	ICommandLinePostProcessor getCommandLinePostProcessor();
 	
 	IArtifactStore getArtifactStore();
+
+	boolean isDaemonProcess();
 }

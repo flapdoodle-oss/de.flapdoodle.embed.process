@@ -70,7 +70,9 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 			
 			process = ProcessControl.start(supportConfig(), processBuilder);
 
-			ProcessControl.addShutdownHook(new JobKiller());
+			if (runtimeConfig.isDaemonProcess()) {
+				ProcessControl.addShutdownHook(new JobKiller());
+			}
 
 			onAfterProcessStart(process, runtimeConfig);
 

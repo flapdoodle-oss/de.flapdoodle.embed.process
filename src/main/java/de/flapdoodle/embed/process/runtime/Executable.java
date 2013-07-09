@@ -50,7 +50,11 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 		this.config = config;
 		this.runtimeConfig = runtimeConfig;
 		this.executable = executable;
-		ProcessControl.addShutdownHook(new JobKiller());
+		// only add shutdown hook for daemon processes,
+		// clis being invoked will usually die by themselves
+		if (runtimeConfig.isDaemonProcess()) {
+			ProcessControl.addShutdownHook(new JobKiller());
+		}
 	}
 
 	/**
@@ -70,7 +74,7 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 
 			runtimeConfig.getArtifactStore().removeExecutable(distribution, executable);
 			
-      stopped = true;
+			stopped = true;
 		}
 	}
 
@@ -90,7 +94,7 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 	}
 
 	public synchronized P start() throws IOException {
-		if (stopped) throw new RuntimeException("Allready stopped");
+		if (stopped) throw new RuntimeException("Already stopped");
 		
 		P start = start(distribution, config, runtimeConfig);
 		addStopable(start);
