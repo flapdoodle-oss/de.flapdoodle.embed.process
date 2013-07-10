@@ -68,8 +68,9 @@ public class Downloader {
 			URL url = new URL(getDownloadUrl(runtime, distribution));
 			URLConnection openConnection = url.openConnection();
 			openConnection.setRequestProperty("User-Agent",runtime.getUserAgent());
-			openConnection.setConnectTimeout(CONNECTION_TIMEOUT);
-			openConnection.setReadTimeout(READ_TIMEOUT);
+
+			setConnectionTimeout(runtime, openConnection);
+			setReadTimeout(runtime, openConnection);
 
 			InputStream downloadStream = openConnection.getInputStream();
 
@@ -101,6 +102,16 @@ public class Downloader {
 		}
 		progress.done(progressLabel);
 		return ret;
+	}
+
+	private static void setConnectionTimeout(IDownloadConfig runtime, URLConnection openConnection) {
+		final int connectionTimeout = runtime.getConnectionTimeout() == 0 ? CONNECTION_TIMEOUT : runtime.getConnectionTimeout();
+		openConnection.setConnectTimeout(connectionTimeout);
+	}
+
+	private static void setReadTimeout(IDownloadConfig runtime, URLConnection openConnection) {
+		final int readTimeout = runtime.getReadTimeout() == 0 ? READ_TIMEOUT : runtime.getReadTimeout();
+		openConnection.setReadTimeout(readTimeout);
 	}
 
 }

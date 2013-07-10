@@ -41,4 +41,8 @@ public interface IDownloadConfig {
 
 	IPackageResolver getPackageResolver();
 
+	int getConnectionTimeout();
+
+	int getReadTimeout();
+
 }

@@ -64,7 +64,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 		
 		logger.severe("Build ArtifactStore(useCache:"+useCache+")");
 		
-		IArtifactStore artifactStore = new ArtifactStore(get(IDownloadConfig.class),get(IDirectory.class), get(ITempNaming.class));
+		IArtifactStore artifactStore = new ArtifactStore(get(DOWNLOAD_CONFIG, IDownloadConfig.class),get(TEMP_DIR_FACTORY, IDirectory.class), get(EXECUTABLE_NAMING, ITempNaming.class));
 		if (useCache) {
 			artifactStore=new CachingArtifactStore(artifactStore);
 		}

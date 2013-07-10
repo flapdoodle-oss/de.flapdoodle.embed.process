@@ -20,13 +20,16 @@
  */
 package de.flapdoodle.embed.process.builder;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class AbstractEmbeddedBuilder<B> {
 
-	Map<Class<?>, Object> propertyMap = new HashMap<Class<?>, Object>();
+	Map<Pair<String, Class<?>>, Object> propertyMap = new HashMap<Pair<String, Class<?>>, Object>();
 	boolean _override = false;
 
 	protected void setOverride(boolean override) {
@@ -38,7 +41,7 @@ public class AbstractEmbeddedBuilder<B> {
 	}
 
 	protected <T> T set(String label, Class<T> type, T value) {
-		T old = (T) propertyMap.put(type, value);
+		T old = (T) propertyMap.put(new ImmutablePair(label, type), value);
 		if ((!_override) && (old!=null)) {
 			throw new RuntimeException("" + labelOrTypeAsString(label, type) + " allready set to " + old);
 		}
@@ -54,11 +57,18 @@ public class AbstractEmbeddedBuilder<B> {
 	}
 
 	protected <T> T get(String label, Class<T> type) {
-		T ret = (T) propertyMap.get(type);
+		T ret = (T) propertyMap.get(new ImmutablePair(label, type));
 		if (ret == null)
 			throw new RuntimeException("" + labelOrTypeAsString(label, type) + " not set");
 		return ret;
 	}
+
+	protected <T> T getOrDefault(String label, Class<T> type, T defaultValue) {
+			T ret = (T) propertyMap.get(new ImmutablePair(label, type));
+			if (ret == null)
+				ret = defaultValue;
+			return ret;
+		}
 
 	protected <T> T get(Class<T> type, T defaultValue) {
 		T ret = (T) propertyMap.get(type);
