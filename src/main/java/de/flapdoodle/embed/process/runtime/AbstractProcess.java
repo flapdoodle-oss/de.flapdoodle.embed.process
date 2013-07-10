@@ -135,6 +135,10 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 		return false;
 	}
 
+	public int getProcessId() {
+	    return processId;
+	}
+
 	/**
 	 *
 	 */
