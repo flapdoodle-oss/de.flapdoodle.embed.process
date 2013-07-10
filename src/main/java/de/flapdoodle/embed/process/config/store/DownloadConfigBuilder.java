@@ -36,7 +36,12 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 	private static final String PACKAGE_RESOLVER = "PackageResolver";
 	private static final String DOWNLOAD_PREFIX = "DownloadPrefix";
 	private static final String DOWNLOAD_PATH = "DownloadPath";
+	private static final String TIMEOUT_CONFIG = "TimeoutConfig";
 
+	public DownloadConfigBuilder() {
+		setDefault(TIMEOUT_CONFIG, ITimeoutConfig.class, new TimeoutConfigBuilder().defaults().build());
+	}
+	
 	public DownloadConfigBuilder downloadPath(String path) {
 		set(DOWNLOAD_PATH, DownloadPath.class, new DownloadPath(path));
 		return this;
@@ -72,6 +77,11 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 		return this;
 	}
 
+	public DownloadConfigBuilder userAgent(ITimeoutConfig timeoutConfig) {
+		set(TIMEOUT_CONFIG, ITimeoutConfig.class, timeoutConfig);
+		return this;
+	}
+
 	@Override
 	public IDownloadConfig build() {
 		final String downloadPath = get(DOWNLOAD_PATH, DownloadPath.class).value();
@@ -81,9 +91,10 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 		final ITempNaming fileNaming = get(FILE_NAMING, ITempNaming.class);;
 		final IProgressListener progressListener = get(PROGRESS_LISTENER, IProgressListener.class);
 		final String userAgent = get(USER_AGENT, UserAgent.class).value();
+		final ITimeoutConfig timeoutConfig = get(TIMEOUT_CONFIG, ITimeoutConfig.class);
 	
 		return new ImmutableDownloadConfig(downloadPath, downloadPrefix, packageResolver, artifactStorePath, fileNaming,
-				progressListener, userAgent);
+				progressListener, userAgent,timeoutConfig);
 	}
 
 	protected static class DownloadPath extends ImmutableContainer<String> {
@@ -119,9 +130,10 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 			private final String _downloadPrefix;
 			private final String _userAgent;
 			private final IPackageResolver _packageResolver;
+			private final ITimeoutConfig _timeoutConfig;
 	
 			public ImmutableDownloadConfig(String downloadPath, String downloadPrefix, IPackageResolver packageResolver,
-					IDirectory artifactStorePath, ITempNaming fileNaming, IProgressListener progressListener, String userAgent) {
+					IDirectory artifactStorePath, ITempNaming fileNaming, IProgressListener progressListener, String userAgent,ITimeoutConfig timeoutConfig) {
 				super();
 				_downloadPath = downloadPath;
 				_downloadPrefix = downloadPrefix;
@@ -130,6 +142,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 				_fileNaming = fileNaming;
 				_progressListener = progressListener;
 				_userAgent = userAgent;
+				_timeoutConfig = timeoutConfig;
 			}
 	
 			@Override
@@ -166,7 +179,11 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 			public IPackageResolver getPackageResolver() {
 				return _packageResolver;
 			}
-	
+
+			@Override
+			public ITimeoutConfig getTimeoutConfig() {
+				return _timeoutConfig;
+			}
 		}
 
 }

@@ -21,12 +21,16 @@
 package de.flapdoodle.embed.process.builder;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 public class AbstractEmbeddedBuilder<B> {
 
 	Map<Class<?>, Object> propertyMap = new HashMap<Class<?>, Object>();
+	Set<Class<?>> propertyHadDefaultValueMap = new HashSet<Class<?>>();
+	
 	boolean _override = false;
 
 	protected void setOverride(boolean override) {
@@ -37,9 +41,23 @@ public class AbstractEmbeddedBuilder<B> {
 		return set(null,type,value);
 	}
 
+	protected <T> T setDefault(String label, Class<T> type, T value) {
+		T old = set(label,type,value);
+		propertyHadDefaultValueMap.add(type);
+		return old;
+	}
+	
+	protected <T> void markDefaultValue(String label, Class<T> type) {
+		if (!propertyHadDefaultValueMap.add(type)) {
+			throw new RuntimeException("" + labelOrTypeAsString(label, type) + " allready marked as default value");
+		}
+	}
+	
 	protected <T> T set(String label, Class<T> type, T value) {
 		T old = (T) propertyMap.put(type, value);
-		if ((!_override) && (old!=null)) {
+		boolean onlyDefaultValueWasSet = propertyHadDefaultValueMap.remove(type);
+		
+		if ((!_override) && (old!=null) && (!onlyDefaultValueWasSet)) {
 			throw new RuntimeException("" + labelOrTypeAsString(label, type) + " allready set to " + old);
 		}
 		return old;
