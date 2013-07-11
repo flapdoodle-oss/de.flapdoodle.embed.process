@@ -37,6 +37,8 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	private final IArtifactStore _delegate;
 
+	private final ScheduledExecutorService executor;
+	
 	Object _lock=new Object();
 	
 	HashMap<Distribution, FileWithCounter> _distributionFiles = new HashMap<Distribution, FileWithCounter>();
@@ -45,8 +47,12 @@ public class CachingArtifactStore implements IArtifactStore {
 		_delegate = delegate;
 		ProcessControl.addShutdownHook(new CacheCleaner());
 		
-		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+		executor = Executors.newSingleThreadScheduledExecutor();
 		executor.scheduleAtFixedRate(new RemoveUnused(), 10, 10, TimeUnit.SECONDS);
+	}
+	
+	public void finalize(){
+	    executor.shutdownNow();
 	}
 
 	@Override
