@@ -20,27 +20,11 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
-import de.flapdoodle.embed.process.extract.ITempNaming;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
-
-public interface IDownloadConfig {
+public interface ITimeoutConfig {
 	
-	String getDownloadPath();
+	int getConnectionTimeout();
 	
-	IProgressListener getProgressListener();
-
-	IDirectory getArtifactStorePath();
-	
-	ITempNaming getFileNaming();
-
-	String getDownloadPrefix();
-
-	String getUserAgent();
-
-	IPackageResolver getPackageResolver();
-
-	ITimeoutConfig getTimeoutConfig();
+	int getReadTimeout();
 
 }

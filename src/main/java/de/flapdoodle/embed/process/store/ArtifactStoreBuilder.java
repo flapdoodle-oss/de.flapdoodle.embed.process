@@ -33,6 +33,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	private static final String EXECUTABLE_NAMING = "ExecutableNaming";
 	private static final String TEMP_DIR_FACTORY = "TempDir";
 	private static final String DOWNLOAD_CONFIG = "DownloadConfig";
+	private static final String USE_CACHE = "UseCache";
 	
 	public ArtifactStoreBuilder download(AbstractBuilder<IDownloadConfig> downloadConfigBuilder) {
 		return download(downloadConfigBuilder.build());
@@ -60,7 +61,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	
 	@Override
 	public IArtifactStore build() {
-		boolean useCache = get(Boolean.class,true);
+		boolean useCache = getOrDefault(USE_CACHE, Boolean.class, true);
 		
 		logger.severe("Build ArtifactStore(useCache:"+useCache+")");
 		

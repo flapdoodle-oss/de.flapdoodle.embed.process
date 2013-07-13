@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.ITimeoutConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.file.Files;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;
@@ -39,11 +40,9 @@ import de.flapdoodle.embed.process.io.progress.IProgressListener;
  */
 public class Downloader {
 
-	public static final int CONNECTION_TIMEOUT = 10000;
-	public static final int READ_TIMEOUT = 10000;
-	public static final int DEFAULT_CONTENT_LENGTH = 20 * 1024 * 1024;
-	public static final int BUFFER_LENGTH = 1024 * 8;
-	public static final int READ_COUNT_MULTIPLIER = 100;
+	static final int DEFAULT_CONTENT_LENGTH = 20 * 1024 * 1024;
+	static final int BUFFER_LENGTH = 1024 * 8;
+	static final int READ_COUNT_MULTIPLIER = 100;
 
 	private Downloader() {
 
@@ -68,9 +67,11 @@ public class Downloader {
 			URL url = new URL(getDownloadUrl(runtime, distribution));
 			URLConnection openConnection = url.openConnection();
 			openConnection.setRequestProperty("User-Agent",runtime.getUserAgent());
-
-			setConnectionTimeout(runtime, openConnection);
-			setReadTimeout(runtime, openConnection);
+			
+			ITimeoutConfig timeoutConfig = runtime.getTimeoutConfig();
+			
+			openConnection.setConnectTimeout(timeoutConfig.getConnectionTimeout());
+			openConnection.setReadTimeout(runtime.getTimeoutConfig().getReadTimeout());
 
 			InputStream downloadStream = openConnection.getInputStream();
 
@@ -104,14 +105,5 @@ public class Downloader {
 		return ret;
 	}
 
-	private static void setConnectionTimeout(IDownloadConfig runtime, URLConnection openConnection) {
-		final int connectionTimeout = runtime.getConnectionTimeout() == 0 ? CONNECTION_TIMEOUT : runtime.getConnectionTimeout();
-		openConnection.setConnectTimeout(connectionTimeout);
-	}
-
-	private static void setReadTimeout(IDownloadConfig runtime, URLConnection openConnection) {
-		final int readTimeout = runtime.getReadTimeout() == 0 ? READ_TIMEOUT : runtime.getReadTimeout();
-		openConnection.setReadTimeout(readTimeout);
-	}
 
 }

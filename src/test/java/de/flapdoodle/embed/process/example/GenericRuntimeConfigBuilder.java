@@ -96,7 +96,6 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 					.artifactStorePath(new UserHome(prefix))
 					.fileNaming(new UUIDTempNaming())
 					.progressListener(new StandardConsoleProgressListener())
-					.connectionTimeout(12000)
 					.userAgent("Mozilla/5.0 (compatible; embedded "+name+"; +https://github.com/flapdoodle-oss/de.flapdoodle.embed.process)"))
 				.tempDir(new PropertyOrPlatformTempDir())
 				.executableNaming(new UUIDTempNaming()))
