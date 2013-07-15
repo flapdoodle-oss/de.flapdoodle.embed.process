@@ -21,36 +21,41 @@
 package de.flapdoodle.embed.process.config;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
+import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
 import de.flapdoodle.embed.process.store.IArtifactStore;
 
-public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
+public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> { 
+	
+	private static final TypedProperty<IArtifactStore> ARTIFACT_STORE = TypedProperty.with("ArtifactStore", IArtifactStore.class);
+	private static final TypedProperty<ProcessOutput> PROCESS_OUTPUT = TypedProperty.with("ProcessOutput", ProcessOutput.class);
+	private static final TypedProperty<ICommandLinePostProcessor> CMD_POSTPROCESSOR = TypedProperty.with("CommandLinePostProcessor", ICommandLinePostProcessor.class);
 
 	public RuntimeConfigBuilder artifactStore(AbstractBuilder<IArtifactStore> artifactStoreBuilder) {
 		return artifactStore(artifactStoreBuilder.build());
 	}
 	
 	public RuntimeConfigBuilder artifactStore(IArtifactStore artifactStore) {
-		set(IArtifactStore.class, artifactStore);
+		set(ARTIFACT_STORE, artifactStore);
 		return this;
 	}
 
 	public RuntimeConfigBuilder processOutput(ProcessOutput processOutput) {
-		set(ProcessOutput.class, processOutput);
+		set(PROCESS_OUTPUT, processOutput);
 		return this;
 	}
 
 	public RuntimeConfigBuilder commandLinePostProcessor(ICommandLinePostProcessor commandLinePostProcessor) {
-		set(ICommandLinePostProcessor.class, commandLinePostProcessor);
+		set(CMD_POSTPROCESSOR, commandLinePostProcessor);
 		return this;
 	}
 
 	@Override
 	public IRuntimeConfig build() {
-		IArtifactStore artifactStore = get(IArtifactStore.class);
-		ProcessOutput processOutput = get(ProcessOutput.class);
-		ICommandLinePostProcessor commandLinePostProcessor = get(ICommandLinePostProcessor.class);
+		IArtifactStore artifactStore = get(ARTIFACT_STORE);
+		ProcessOutput processOutput = get(PROCESS_OUTPUT);
+		ICommandLinePostProcessor commandLinePostProcessor = get(CMD_POSTPROCESSOR);
 
 		return new ImmutableRuntimeConfig(artifactStore, processOutput, commandLinePostProcessor);
 	}

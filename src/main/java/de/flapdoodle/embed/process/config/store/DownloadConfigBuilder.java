@@ -22,78 +22,77 @@ package de.flapdoodle.embed.process.config.store;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.ImmutableContainer;
+import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
-
 public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 
-	private static final String USER_AGENT = "UserAgent";
-	private static final String PROGRESS_LISTENER = "ProgressListener";
-	private static final String FILE_NAMING = "FileNaming";
-	private static final String ARTIFACT_STORE_PATH = "ArtifactStorePath";
-	private static final String PACKAGE_RESOLVER = "PackageResolver";
-	private static final String DOWNLOAD_PREFIX = "DownloadPrefix";
-	private static final String DOWNLOAD_PATH = "DownloadPath";
+	private static final TypedProperty<UserAgent> USER_AGENT = TypedProperty.with("UserAgent", UserAgent.class);
+	private static final TypedProperty<IProgressListener> PROGRESS_LISTENER = TypedProperty.with("ProgressListener", IProgressListener.class);
+	private static final TypedProperty<ITempNaming> FILE_NAMING = TypedProperty.with("FileNaming", ITempNaming.class);
+	private static final TypedProperty<IDirectory> ARTIFACT_STORE_PATH = TypedProperty.with("ArtifactStorePath",	IDirectory.class);
+	private static final TypedProperty<IPackageResolver> PACKAGE_RESOLVER = TypedProperty.with("PackageResolver",	IPackageResolver.class);
+	private static final TypedProperty<DownloadPrefix> DOWNLOAD_PREFIX = TypedProperty.with("DownloadPrefix",	DownloadPrefix.class);
+	private static final TypedProperty<DownloadPath> DOWNLOAD_PATH = TypedProperty.with("DownloadPath",	DownloadPath.class);
 
-	private static final String TIMEOUT_CONFIG = "TimeoutConfig";
+	private static final TypedProperty<ITimeoutConfig> TIMEOUT_CONFIG = TypedProperty.with("TimeoutConfig",	ITimeoutConfig.class);
 
 	public DownloadConfigBuilder() {
-		setDefault(TIMEOUT_CONFIG, ITimeoutConfig.class, new TimeoutConfigBuilder().defaults().build());
+		setDefault(TIMEOUT_CONFIG, new TimeoutConfigBuilder().defaults().build());
 	}
 
 	public DownloadConfigBuilder downloadPath(String path) {
-		set(DOWNLOAD_PATH, DownloadPath.class, new DownloadPath(path));
+		set(DOWNLOAD_PATH, new DownloadPath(path));
 		return this;
 	}
 
 	public DownloadConfigBuilder downloadPrefix(String prefix) {
-		set(DOWNLOAD_PREFIX, DownloadPrefix.class, new DownloadPrefix(prefix));
+		set(DOWNLOAD_PREFIX, new DownloadPrefix(prefix));
 		return this;
 	}
 
 	public DownloadConfigBuilder packageResolver(IPackageResolver packageResolver) {
-		set(PACKAGE_RESOLVER, IPackageResolver.class, packageResolver);
+		set(PACKAGE_RESOLVER, packageResolver);
 		return this;
 	}
 
 	public DownloadConfigBuilder artifactStorePath(IDirectory artifactStorePath) {
-		set(ARTIFACT_STORE_PATH, IDirectory.class, artifactStorePath);
+		set(ARTIFACT_STORE_PATH, artifactStorePath);
 		return this;
 	}
 
 	public DownloadConfigBuilder fileNaming(ITempNaming fileNaming) {
-		set(FILE_NAMING, ITempNaming.class, fileNaming);
+		set(FILE_NAMING, fileNaming);
 		return this;
 	}
 
 	public DownloadConfigBuilder progressListener(IProgressListener progressListener) {
-		set(PROGRESS_LISTENER, IProgressListener.class, progressListener);
+		set(PROGRESS_LISTENER, progressListener);
 		return this;
 	}
 
 	public DownloadConfigBuilder userAgent(String userAgent) {
-		set(USER_AGENT, UserAgent.class, new UserAgent(userAgent));
+		set(USER_AGENT, new UserAgent(userAgent));
 		return this;
 	}
 
-
 	public DownloadConfigBuilder userAgent(ITimeoutConfig timeoutConfig) {
-		set(TIMEOUT_CONFIG, ITimeoutConfig.class, timeoutConfig);
+		set(TIMEOUT_CONFIG, timeoutConfig);
 		return this;
 	}
 
 	@Override
 	public IDownloadConfig build() {
-		final String downloadPath = get(DOWNLOAD_PATH, DownloadPath.class).value();
-		final String downloadPrefix = get(DOWNLOAD_PREFIX, DownloadPrefix.class).value();
-		final IPackageResolver packageResolver = get(PACKAGE_RESOLVER, IPackageResolver.class);
-		final IDirectory artifactStorePath = get(ARTIFACT_STORE_PATH, IDirectory.class);
-		final ITempNaming fileNaming = get(FILE_NAMING, ITempNaming.class);
-		final IProgressListener progressListener = get(PROGRESS_LISTENER, IProgressListener.class);
-		final String userAgent = get(USER_AGENT, UserAgent.class).value();
-		final ITimeoutConfig timeoutConfig = get(TIMEOUT_CONFIG, ITimeoutConfig.class);
+		final String downloadPath = get(DOWNLOAD_PATH).value();
+		final String downloadPrefix = get(DOWNLOAD_PREFIX).value();
+		final IPackageResolver packageResolver = get(PACKAGE_RESOLVER);
+		final IDirectory artifactStorePath = get(ARTIFACT_STORE_PATH);
+		final ITempNaming fileNaming = get(FILE_NAMING);
+		final IProgressListener progressListener = get(PROGRESS_LISTENER);
+		final String userAgent = get(USER_AGENT).value();
+		final ITimeoutConfig timeoutConfig = get(TIMEOUT_CONFIG);
 
 		return new ImmutableDownloadConfig(downloadPath, downloadPrefix, packageResolver, artifactStorePath, fileNaming,
 				progressListener, userAgent, timeoutConfig);
@@ -135,9 +134,8 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 		private final ITimeoutConfig _timeoutConfig;
 
 		public ImmutableDownloadConfig(String downloadPath, String downloadPrefix, IPackageResolver packageResolver,
-		                               IDirectory artifactStorePath, ITempNaming fileNaming,
-		                               IProgressListener progressListener, String userAgent,
-		                               ITimeoutConfig timeoutConfig) {
+				IDirectory artifactStorePath, ITempNaming fileNaming, IProgressListener progressListener, String userAgent,
+				ITimeoutConfig timeoutConfig) {
 			super();
 			_downloadPath = downloadPath;
 			_downloadPrefix = downloadPrefix;
@@ -190,6 +188,5 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 		}
 
 	}
-
 
 }

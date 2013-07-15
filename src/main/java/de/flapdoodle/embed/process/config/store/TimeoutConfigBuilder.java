@@ -22,32 +22,33 @@ package de.flapdoodle.embed.process.config.store;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.ImmutableContainer;
+import de.flapdoodle.embed.process.builder.TypedProperty;
 
 public class TimeoutConfigBuilder extends AbstractBuilder<ITimeoutConfig> {
 
-	private static final String READ_TIMEOUT = "ReadTimeout";
-	private static final String CONNECTION_TIMEOUT = "ConnectionTimeout";
+	private static final TypedProperty<ReadTimeout> READ_TIMEOUT = TypedProperty.with("ReadTimeout",ReadTimeout.class);
+	private static final TypedProperty<ConnectionTimeout> CONNECTION_TIMEOUT = TypedProperty.with("ConnectionTimeout",ConnectionTimeout.class);
 
 	public TimeoutConfigBuilder connectionTimeout(int connectionTimeout) {
-		set(CONNECTION_TIMEOUT, ConnectionTimeout.class, new ConnectionTimeout(connectionTimeout));
+		set(CONNECTION_TIMEOUT, new ConnectionTimeout(connectionTimeout));
 		return this;
 	}
 
 	public TimeoutConfigBuilder readTimeout(int connectionTimeout) {
-		set(READ_TIMEOUT, ReadTimeout.class, new ReadTimeout(connectionTimeout));
+		set(READ_TIMEOUT, new ReadTimeout(connectionTimeout));
 		return this;
 	}
 	
 	public TimeoutConfigBuilder defaults() {
-		setDefault(CONNECTION_TIMEOUT, ConnectionTimeout.class, new ConnectionTimeout(10000));
-		setDefault(READ_TIMEOUT, ReadTimeout.class, new ReadTimeout(10000));
+		setDefault(CONNECTION_TIMEOUT, new ConnectionTimeout(10000));
+		setDefault(READ_TIMEOUT, new ReadTimeout(10000));
 		return this;
 	}
 
 	@Override
 	public ITimeoutConfig build() {
-		final int connectionTimeout = get(CONNECTION_TIMEOUT, ConnectionTimeout.class).value();
-		final int readTimeout = get(READ_TIMEOUT, ReadTimeout.class).value();
+		final int connectionTimeout = get(CONNECTION_TIMEOUT).value();
+		final int readTimeout = get(READ_TIMEOUT).value();
 
 		return new ImmutableTimeoutConfig(connectionTimeout,readTimeout);
 	}

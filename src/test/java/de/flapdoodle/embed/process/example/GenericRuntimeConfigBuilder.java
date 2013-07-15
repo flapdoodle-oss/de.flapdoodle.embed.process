@@ -29,6 +29,7 @@ import org.omg.CORBA._PolicyStub;
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.AbstractEmbeddedBuilder;
 import de.flapdoodle.embed.process.builder.ImmutableContainer;
+import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -46,13 +47,17 @@ import de.flapdoodle.embed.process.store.ArtifactStoreBuilder;
 
 public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 
+	private static final TypedProperty<IPackageResolver> PACKAGE_RESOLVER = TypedProperty.with("PackageResolver",IPackageResolver.class);
+	private static final TypedProperty<DownloadPath> DOWNLOAD_PATH = TypedProperty.with(DownloadPath.class);
+	private static final TypedProperty<Name> NAME = TypedProperty.with(Name.class);
+
 	public GenericRuntimeConfigBuilder name(String name) {
-		set(Name.class,new Name("name"));
+		set(NAME,new Name("name"));
 		return this;
 	}
 	
 	public GenericRuntimeConfigBuilder downloadPath(String path) {
-		set(DownloadPath.class,new DownloadPath(path));
+		set(DOWNLOAD_PATH,new DownloadPath(path));
 		return this;
 	}
 	
@@ -61,7 +66,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 	}
 
 	private GenericRuntimeConfigBuilder packageResolver(MapGenericPackageResolver mapGenericPackageResolver) {
-		set(IPackageResolver.class,mapGenericPackageResolver);
+		set(PACKAGE_RESOLVER,mapGenericPackageResolver);
 		return this;
 	}
 	
@@ -81,10 +86,10 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 	
 	@Override
 	public IRuntimeConfig build() {
-		String downloadPath = get(DownloadPath.class).value();
-		String name = get(Name.class).value();
+		String downloadPath = get(DOWNLOAD_PATH).value();
+		String name = get(NAME).value();
 		
-		IPackageResolver packageResolver=get(IPackageResolver.class);
+		IPackageResolver packageResolver=get(PACKAGE_RESOLVER);
 		String prefix = "."+name;
 		
 		return new RuntimeConfigBuilder()
@@ -105,13 +110,16 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 	
 	public static class GenericPackageResolverBuilder extends AbstractEmbeddedBuilder<IPackageResolver> {
 		
+		private static final TypedProperty<ArchivePathMap> ARCHIVEPATH_MAP = TypedProperty.with("ArchivePath",ArchivePathMap.class);
+		private static final TypedProperty<ArchiveTypeMap> ARCHIVETYPE_MAP = TypedProperty.with("ArchiveType",ArchiveTypeMap.class);
+		private static final TypedProperty<ExecMap> EXEC_MAP = TypedProperty.with("Executable",ExecMap.class);
 		private final GenericRuntimeConfigBuilder _parent;
 
 		public GenericPackageResolverBuilder(GenericRuntimeConfigBuilder parent) {
 			_parent = parent;
 		}
 		
-		protected <T> T getAndSet(Class<T> type, T defaultValue) {
+		protected <T> T getAndSet(TypedProperty<T> type, T defaultValue) {
 			T ret=get(type,null);
 			if (ret==null) {
 				set(type,defaultValue);
@@ -122,7 +130,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 
 
 		public GenericPackageResolverBuilder executeable(Distribution distribution,String filename) {
-			Map<Distribution, String> map = getAndSet(ExecMap.class, new ExecMap(new HashMap<Distribution, String>())).value();
+			Map<Distribution, String> map = getAndSet(EXEC_MAP, new ExecMap(new HashMap<Distribution, String>())).value();
 			if (map.put(distribution, filename)!=null) {
 				throw new RuntimeException("executable for "+distribution+" allready set");
 			}
@@ -130,7 +138,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		}
 		
 		public GenericPackageResolverBuilder archiveType(Distribution distribution,ArchiveType arcType) {
-			Map<Distribution, ArchiveType> map = getAndSet(ArchiveTypeMap.class, new ArchiveTypeMap(new HashMap<Distribution, ArchiveType>())).value();
+			Map<Distribution, ArchiveType> map = getAndSet(ARCHIVETYPE_MAP, new ArchiveTypeMap(new HashMap<Distribution, ArchiveType>())).value();
 			if (map.put(distribution, arcType)!=null) {
 				throw new RuntimeException("archiveType for "+distribution+" allready set");
 			}
@@ -138,7 +146,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		}
 		
 		public GenericPackageResolverBuilder archivePath(Distribution distribution,String archivePath) {
-			Map<Distribution, String> map = getAndSet(ArchivePathMap.class, new ArchivePathMap(new HashMap<Distribution, String>())).value();
+			Map<Distribution, String> map = getAndSet(ARCHIVEPATH_MAP, new ArchivePathMap(new HashMap<Distribution, String>())).value();
 			if (map.put(distribution, archivePath)!=null) {
 				throw new RuntimeException("archivePath for "+distribution+" allready set");
 			}
@@ -146,9 +154,9 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		}
 		
 		public GenericRuntimeConfigBuilder build() {
-			Map<Distribution, String> execMap = get(ExecMap.class).value();
-			Map<Distribution, ArchiveType> arcTypeMap = get(ArchiveTypeMap.class).value();
-			Map<Distribution, String> archivePathMap = get(ArchivePathMap.class).value();
+			Map<Distribution, String> execMap = get(EXEC_MAP).value();
+			Map<Distribution, ArchiveType> arcTypeMap = get(ARCHIVETYPE_MAP).value();
+			Map<Distribution, String> archivePathMap = get(ARCHIVEPATH_MAP).value();
 			return _parent.packageResolver(new MapGenericPackageResolver(execMap,arcTypeMap,archivePathMap));
 		}
 	}

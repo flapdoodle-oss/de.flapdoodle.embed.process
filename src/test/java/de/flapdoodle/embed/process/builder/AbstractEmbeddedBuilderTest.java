@@ -48,11 +48,11 @@ public class AbstractEmbeddedBuilderTest {
 	public void get_shouldReturnValueForExistingKey() {
 		// Given
 		final Long expectedValue = 1L;
-		builder.set("TEST_PROPERTY1", Long.class, expectedValue);
-		builder.set("TEST_PROPERTY2", Long.class, 2L);
-		builder.set("TEST_PROPERTY3", Long.class, 3L);
+		builder.set(TypedProperty.with("TEST_PROPERTY1", Long.class), expectedValue);
+		builder.set(TypedProperty.with("TEST_PROPERTY2", Long.class), 2L);
+		builder.set(TypedProperty.with("TEST_PROPERTY3", Long.class), 3L);
 		// When
-		final Long actualValue = builder.get("TEST_PROPERTY1", Long.class);
+		final Long actualValue = builder.get(TypedProperty.with("TEST_PROPERTY1", Long.class));
 		// Then
 		assertEquals(expectedValue, actualValue);
 	}
@@ -61,12 +61,11 @@ public class AbstractEmbeddedBuilderTest {
 	public void get_shouldReturnValueForOverriddenKey() {
 		// Given
 		final Long expectedValue = 1L;
-		builder.setOverride(true);
-		builder.set("TEST_PROPERTY1", Long.class, 2L);
-		builder.set("TEST_PROPERTY1", Long.class, expectedValue);
+		builder.setDefault(TypedProperty.with("TEST_PROPERTY1", Long.class), 2L);
+		builder.set(TypedProperty.with("TEST_PROPERTY1", Long.class), expectedValue);
 
 		// When
-		final Long actualValue = builder.get("TEST_PROPERTY1", Long.class);
+		final Long actualValue = builder.get(TypedProperty.with("TEST_PROPERTY1", Long.class));
 		// Then
 		assertEquals(expectedValue, actualValue);
 	}
@@ -75,8 +74,8 @@ public class AbstractEmbeddedBuilderTest {
 	public void get_shouldThrowExceptionForOverriddenKeyWithoutOverrideOption() {
 		// Given
 		final Long expectedValue = 1L;
-		builder.set(Long.class, expectedValue);
-		builder.set(Long.class, expectedValue);
+		builder.set(TypedProperty.with("FU",Long.class), expectedValue);
+		builder.set(TypedProperty.with("FU",Long.class), expectedValue);
 		fail("RuntimeException should have been thrown");
 	}
 
@@ -84,9 +83,9 @@ public class AbstractEmbeddedBuilderTest {
 	public void get_shouldReturnDefaultValueForNotExistingKeyWhenDefaultIsDefined() {
 		// Given
 		final Long expectedValue = 1L;
-		builder.setDefault("TEST_PROPERTY", Long.class, expectedValue);
+		builder.setDefault(TypedProperty.with("TEST_PROPERTY", Long.class), expectedValue);
 		// When
-		final Long actualValue = builder.get("TEST_PROPERTY", Long.class);
+		final Long actualValue = builder.get(TypedProperty.with("TEST_PROPERTY", Long.class));
 		// Then
 		assertEquals(expectedValue, actualValue);
 	}
@@ -95,31 +94,8 @@ public class AbstractEmbeddedBuilderTest {
 	@Test(expected = RuntimeException.class)
 	public void get_shouldThrowExceptionForNotExistingKey() {
 		// When
-		final Long actualValue = builder.get("TEST_PROPERTY", Long.class);
+		final Long actualValue = builder.get(TypedProperty.with("TEST_PROPERTY", Long.class));
 		fail("RuntimeException should have been thrown");
-	}
-
-	@Test
-	public void get_shouldReturnValueWithoutLabel() {
-		// Given
-		final Long expectedValue = 1L;
-		builder.set(Long.class, expectedValue);
-		// When
-		final Long actualValue = builder.get(Long.class, expectedValue);
-		// Then
-		assertEquals(expectedValue, actualValue);
-	}
-
-	@Test
-	public void get_shouldThrowExceptionForValueWithoutLabel() {
-		// Given
-		final Long expectedValue = 1L;
-		builder.set(Long.class, expectedValue);
-		builder.set("dummy", Long.class, 2L);
-		// When
-		final Long actualValue = builder.get(Long.class, expectedValue);
-		// Then
-		assertEquals(expectedValue, actualValue);
 	}
 
 
@@ -128,7 +104,7 @@ public class AbstractEmbeddedBuilderTest {
 		// Given
 		final Long expectedValue = 1L;
 		// When
-		final Long actualValue = builder.getOrDefault("TEST_PROPERTY", Long.class, expectedValue);
+		final Long actualValue = builder.get(TypedProperty.with("TEST_PROPERTY", Long.class), expectedValue);
 		// Then
 		assertEquals(expectedValue, actualValue);
 	}
