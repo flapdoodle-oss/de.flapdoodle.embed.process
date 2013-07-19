@@ -31,11 +31,21 @@ public class AbstractEmbeddedBuilder<B> {
 	Map<TypedProperty<?>, Object> propertyMap = new HashMap<TypedProperty<?>, Object>();
 	Set<TypedProperty<?>> propertyHadDefaultValueMap = new HashSet<TypedProperty<?>>();
 
+	protected <T> IProperty<T> property(TypedProperty<T> typedProperty) {
+		return new Property<T>(typedProperty);
+	}
+	
 	protected <T> T setDefault(TypedProperty<T> property, T value) {
 		T old = set(property, value);
 		if (!propertyHadDefaultValueMap.add(property)) {
 			throw new RuntimeException("" + property + " is allready set with default value");
 		}
+		return old;
+	}
+
+	protected <T> T overwriteDefault(TypedProperty<T> property, T value) {
+		T old = set(property, value);
+		propertyHadDefaultValueMap.add(property);
 		return old;
 	}
 
@@ -63,4 +73,28 @@ public class AbstractEmbeddedBuilder<B> {
 				: defaultValue;
 	}
 
+	private class Property<T> implements IProperty<T> {
+
+		private final TypedProperty<T> typedProperty;
+
+		public Property(TypedProperty<T> typedProperty) {
+			this.typedProperty = typedProperty;
+		}
+		
+		@Override
+		public T set(T value) {
+			return AbstractEmbeddedBuilder.this.set(typedProperty, value);
+		}
+		
+		@Override
+		public T setDefault(T value) {
+			return AbstractEmbeddedBuilder.this.setDefault(typedProperty, value);
+		}
+		
+		@Override
+		public T overwriteDefault(T value) {
+			return AbstractEmbeddedBuilder.this.overwriteDefault(typedProperty, value);
+		}
+		
+	}
 }
