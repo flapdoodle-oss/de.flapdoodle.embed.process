@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
+import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -33,7 +34,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 
-public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable> implements IStopable {
+public abstract class AbstractProcess<T extends IExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable> implements IStopable {
 
 	private static Logger logger = Logger.getLogger(AbstractProcess.class.getName());
 

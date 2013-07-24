@@ -28,10 +28,11 @@ import java.util.logging.Logger;
 import com.google.common.collect.Lists;
 
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
+import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 
-public abstract class Executable<T extends ExecutableProcessConfig,P extends IStopable> implements IStopable {
+public abstract class Executable<T extends IExecutableProcessConfig,P extends IStopable> implements IStopable {
 
 	private static Logger logger = Logger.getLogger(Executable.class.getName());
 

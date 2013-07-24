@@ -21,6 +21,7 @@
 package de.flapdoodle.embed.process.config;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
+import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
@@ -41,16 +42,28 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		return this;
 	}
 
+	protected IProperty<IArtifactStore> artifactStore() {
+		return property(ARTIFACT_STORE);
+	}
+	
 	public RuntimeConfigBuilder processOutput(ProcessOutput processOutput) {
 		set(PROCESS_OUTPUT, processOutput);
 		return this;
 	}
 
+	protected IProperty<ProcessOutput> processOutput() {
+		return property(PROCESS_OUTPUT);
+	}
+	
 	public RuntimeConfigBuilder commandLinePostProcessor(ICommandLinePostProcessor commandLinePostProcessor) {
 		set(CMD_POSTPROCESSOR, commandLinePostProcessor);
 		return this;
 	}
 
+	protected IProperty<ICommandLinePostProcessor> commandLinePostProcessor() {
+		return property(CMD_POSTPROCESSOR);
+	}
+	
 	@Override
 	public IRuntimeConfig build() {
 		IArtifactStore artifactStore = get(ARTIFACT_STORE);

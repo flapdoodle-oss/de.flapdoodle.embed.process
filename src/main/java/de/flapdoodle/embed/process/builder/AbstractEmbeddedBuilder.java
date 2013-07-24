@@ -95,6 +95,12 @@ public class AbstractEmbeddedBuilder<B> {
 		public T overwriteDefault(T value) {
 			return AbstractEmbeddedBuilder.this.overwriteDefault(typedProperty, value);
 		}
+
+		@Override
+		public T get() {
+			return AbstractEmbeddedBuilder.this.get(typedProperty);
+		}
+		
 		
 	}
 }

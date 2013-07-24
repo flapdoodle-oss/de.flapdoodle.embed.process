@@ -41,7 +41,7 @@ import de.flapdoodle.embed.process.io.progress.IProgressListener;
 public class Downloader {
 
 	static final int DEFAULT_CONTENT_LENGTH = 20 * 1024 * 1024;
-	static final int BUFFER_LENGTH = 1024 * 8;
+	static final int BUFFER_LENGTH = 1024 * 8 * 8;
 	static final int READ_COUNT_MULTIPLIER = 100;
 
 	private Downloader() {
@@ -49,7 +49,7 @@ public class Downloader {
 	}
 
 	public static String getDownloadUrl(IDownloadConfig runtime, Distribution distribution) {
-		return runtime.getDownloadPath() + runtime.getPackageResolver().getPath(distribution);
+		return runtime.getDownloadPath().getPath(distribution) + runtime.getPackageResolver().getPath(distribution);
 	}
 
 	public static File download(IDownloadConfig runtime, Distribution distribution) throws IOException {
@@ -81,6 +81,8 @@ public class Downloader {
 			if (length == -1) length = DEFAULT_CONTENT_LENGTH;
 
 
+			long downloadStartedAt = System.currentTimeMillis();
+			
 			try {
 				BufferedInputStream bis = new BufferedInputStream(downloadStream);
 				byte[] buf = new byte[BUFFER_LENGTH];
@@ -93,6 +95,7 @@ public class Downloader {
 
 					progress.progress(progressLabel, (int) (readCount * READ_COUNT_MULTIPLIER / length));
 				}
+				progress.info(progressLabel, "downloaded with " + downloadSpeed(downloadStartedAt,length));
 			} finally {
 				downloadStream.close();
 				bos.flush();
@@ -103,6 +106,15 @@ public class Downloader {
 		}
 		progress.done(progressLabel);
 		return ret;
+	}
+
+	private static String downloadSpeed(long downloadStartedAt,long downloadSize) {
+		long timeUsed=(System.currentTimeMillis()-downloadStartedAt)/1000;
+		if (timeUsed==0) {
+			timeUsed=1;
+		}
+		long kbPerSecond=downloadSize/(timeUsed*1024);
+		return ""+kbPerSecond+"kb/s";
 	}
 
 

@@ -23,6 +23,7 @@ package de.flapdoodle.embed.process.store;
 import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
+import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.extract.ITempNaming;
@@ -44,20 +45,36 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 		set(DOWNLOAD_CONFIG, downloadConfig);
 		return this;
 	}
-	
+
+	protected IProperty<IDownloadConfig> download() {
+		return property(DOWNLOAD_CONFIG);
+	}
+
 	public ArtifactStoreBuilder tempDir(IDirectory tempDirFactory) {
 		set(TEMP_DIR_FACTORY, tempDirFactory);
 		return this;
 	}
 	
+	protected IProperty<IDirectory> tempDir() {
+		return property(TEMP_DIR_FACTORY);
+	}
+
 	public ArtifactStoreBuilder executableNaming(ITempNaming execNaming) {
 		set(EXECUTABLE_NAMING,execNaming);
 		return this;
 	}
 	
+	protected IProperty<ITempNaming> executableNaming() {
+		return property(EXECUTABLE_NAMING);
+	}
+
 	public ArtifactStoreBuilder useCache(boolean cache) {
 		set(USE_CACHE, cache);
 		return this;
+	}
+	
+	protected IProperty<Boolean> useCache() {
+		return property(USE_CACHE);
 	}
 	
 	/**

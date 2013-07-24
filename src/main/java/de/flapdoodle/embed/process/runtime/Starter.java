@@ -25,15 +25,14 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
+import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.exceptions.DistributionException;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
 import de.flapdoodle.embed.process.store.IArtifactStore;
 
 
-public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE extends Executable<CONFIG, PROCESS>,PROCESS extends IStopable> {
+public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE extends Executable<CONFIG, PROCESS>,PROCESS extends IStopable> {
 	
 	private static Logger logger = Logger.getLogger(Starter.class.getName());
 	
@@ -46,7 +45,7 @@ public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE 
 	public EXECUTABLE prepare(CONFIG config) {
 //		IProgressListener progress = runtime.getDownloadConfig().getProgressListener();
 		
-		Distribution distribution = Distribution.detectFor(config.getVersion());
+		Distribution distribution = Distribution.detectFor(config.version());
 //		progress.done("Detect Distribution");
 		
 		try {

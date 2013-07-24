@@ -28,4 +28,5 @@ public interface IProperty<T> {
 
 	T overwriteDefault(T value);
 
+	T get();
 }
