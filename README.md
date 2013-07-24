@@ -41,6 +41,8 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 #### 1.29 (SNAPSHOT)
 
+- added more builder for configurations
+
 #### 1.28
 
 - added download timeout config
