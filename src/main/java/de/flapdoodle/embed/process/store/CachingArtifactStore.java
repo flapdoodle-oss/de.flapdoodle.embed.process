@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -47,7 +48,15 @@ public class CachingArtifactStore implements IArtifactStore {
 		_delegate = delegate;
 		ProcessControl.addShutdownHook(new CacheCleaner());
 		
-		executor = Executors.newSingleThreadScheduledExecutor();
+		executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+		    @Override
+		    public Thread newThread(Runnable runnable) {
+		       Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+		       thread.setDaemon(true);
+		       thread.setName("de.flapdoodle.embed.process.store.CachingArtifactStore.RemoveUnused.RemoveUnused()");
+		       return thread;
+		    }
+		});
 		executor.scheduleAtFixedRate(new RemoveUnused(), 10, 10, TimeUnit.SECONDS);
 	}
 	

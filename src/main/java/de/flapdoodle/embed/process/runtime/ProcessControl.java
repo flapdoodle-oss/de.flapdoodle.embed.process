@@ -25,20 +25,18 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.io.CharStreams;
+import com.google.common.io.InputSupplier;
+
 import de.flapdoodle.embed.process.collections.Collections;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
@@ -74,6 +72,7 @@ public class ProcessControl {
 	}
 
 	public InputStreamReader getError() {
+//	    return new InputStreamReader(this.process.getErrorStream());
 		return error;
 	}
 
@@ -274,4 +273,45 @@ public class ProcessControl {
 	public static void addShutdownHook(Runnable runable) {
 		Runtime.getRuntime().addShutdownHook(new Thread(runable));
 	}
+	
+        public static boolean isProcessRunning(Platform platform, int pid) {
+        
+        	try {
+        	    final Process pidof;
+        	    if (platform == Platform.Linux || platform == Platform.OS_X) {
+        		pidof = Runtime.getRuntime().exec(
+        			new String[] { "kill", "-0", "" + pid });
+        		return pidof.waitFor() == 0;
+        	    } else {
+        		// windows
+        		pidof = Runtime.getRuntime().exec(
+        			new String[] { "tasklist.exe",
+        				"/FI \"PID eq " + pid + "\"",
+        				"/FI \"STATUS eq RUNNING\"", "/FO CSV" });
+        		pidof.waitFor();
+        		String output = CharStreams
+        			.toString(new InputSupplier<InputStreamReader>() {
+        			    public InputStreamReader getInput()
+        				    throws IOException {
+        				return new InputStreamReader(pidof
+        					.getInputStream());
+        			    }
+        			});
+        		if (output.contains("" + pid)) {
+        		    return true;
+        		}
+        	    }
+        
+        	} catch (IOException e) {
+        	    logger.severe("IOException when trying to get process status:"
+        		    + e.getMessage());
+        	    e.printStackTrace();
+        
+        	} catch (InterruptedException e) {
+        	    logger.severe("IOException when trying to get process status:"
+        		    + e.getMessage());
+        	    e.printStackTrace();
+        	}
+        	return false;
+         }
 }
