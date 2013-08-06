@@ -72,7 +72,6 @@ public class ProcessControl {
 	}
 
 	public Reader getError() {
-//	    return new InputStreamReader(this.process.getErrorStream());
 		return error;
 	}
 
@@ -283,14 +282,14 @@ public class ProcessControl {
         			new String[] { "kill", "-0", "" + pid });
         		return pidof.waitFor() == 0;
         	    } else {
-        		// windows
-        	    // process might be in either NOT RESPONDING due to firewall blocking, or could be RUNNING
-         	    // final String cmd = "tasklist.exe /FI \"PID eq " + pid + "\" /FI \"STATUS eq RUNNING\" /FO CSV";
-        	    final String cmd = "tasklist.exe /FI \"PID eq " + pid + "\" /FO CSV";
-        	    System.out.println("Command: " + cmd);
+                        // windows
+        	        // process might be in either NOT RESPONDING due to firewall blocking, or could be RUNNING
+         	        // final String cmd = "tasklist.exe /FI \"PID eq " + pid + "\" /FI \"STATUS eq RUNNING\" /FO CSV";
+        	        final String cmd = "tasklist.exe /FI \"PID eq " + pid + "\" /FO CSV";
+        	        logger.fine("Command: " + cmd);
           		pidof = Runtime.getRuntime().exec(cmd);
         		int returnStatus = pidof.waitFor();
-        		System.out.println("returnStatus: "+returnStatus);
+        		
         		String output = CharStreams
         			.toString(new InputSupplier<InputStreamReader>() {
         			    public InputStreamReader getInput()
@@ -299,16 +298,19 @@ public class ProcessControl {
         					.getInputStream());
         			    }
         			});
-        		System.out.println("tasklist.exe: " +output);
-        		String error = CharStreams
-        			.toString(new InputSupplier<InputStreamReader>() {
-        			    public InputStreamReader getInput()
-        				    throws IOException {
-        				return new InputStreamReader(pidof
-        					.getErrorStream());
-        			    }
-        			});
-        		System.out.println("tasklist.exe error: " +error);
+        		if (logger.isLoggable(Level.FINE)){
+        		    	logger.fine("returnStatus: "+returnStatus);
+                		logger.fine("tasklist.exe: " +output);
+                		String error = CharStreams
+                			.toString(new InputSupplier<InputStreamReader>() {
+                			    public InputStreamReader getInput()
+                				    throws IOException {
+                				return new InputStreamReader(pidof
+                					.getErrorStream());
+                			    }
+                			});
+                		logger.fine("tasklist.exe error: " +error);
+        		}
         		return output.contains("" + pid);
         	    }
         
