@@ -284,11 +284,11 @@ public class ProcessControl {
         		return pidof.waitFor() == 0;
         	    } else {
         		// windows
-        		pidof = Runtime.getRuntime().exec(
-        			new String[] { "tasklist.exe",//
-        				"/FI \"\"PID eq " + pid +"\"\"",//
-        				"/FI \"\"STATUS eq RUNNING\"\"",// 
-        				"/FO CSV" });
+        	    // process might be in either NOT RESPONDING due to firewall blocking, or could be RUNNING
+         	    // final String cmd = "tasklist.exe /FI \"PID eq " + pid + "\" /FI \"STATUS eq RUNNING\" /FO CSV";
+        	    final String cmd = "tasklist.exe /FI \"PID eq " + pid + "\" /FO CSV";
+        	    System.out.println("Command: " + cmd);
+          		pidof = Runtime.getRuntime().exec(cmd);
         		int returnStatus = pidof.waitFor();
         		System.out.println("returnStatus: "+returnStatus);
         		String output = CharStreams
