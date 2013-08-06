@@ -53,8 +53,8 @@ public class ProcessControl {
 
 	private Process process;
 
-	private Reader reader;
-	private Reader error;
+	private InputStreamReader reader;
+	private InputStreamReader error;
 
 	private Integer pid;
 	private ISupportConfig runtime;
@@ -67,11 +67,11 @@ public class ProcessControl {
 		pid = getProcessID();
 	}
 
-	public Reader getReader() {
+	public InputStreamReader getReader() {
 		return reader;
 	}
 
-	public Reader getError() {
+	public InputStreamReader getError() {
 		return error;
 	}
 
