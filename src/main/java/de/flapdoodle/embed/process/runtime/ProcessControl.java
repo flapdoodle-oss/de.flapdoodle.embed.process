@@ -53,8 +53,8 @@ public class ProcessControl {
 
 	private Process process;
 
-	private InputStreamReader reader;
-	private InputStreamReader error;
+	private Reader reader;
+	private Reader error;
 
 	private Integer pid;
 	private ISupportConfig runtime;
@@ -71,7 +71,7 @@ public class ProcessControl {
 		return reader;
 	}
 
-	public InputStreamReader getError() {
+	public Reader getError() {
 //	    return new InputStreamReader(this.process.getErrorStream());
 		return error;
 	}
@@ -285,9 +285,10 @@ public class ProcessControl {
         	    } else {
         		// windows
         		pidof = Runtime.getRuntime().exec(
-        			new String[] { "tasklist.exe",
-        				"/FI ","PID eq " + pid ,
-        				"/FI ","STATUS eq RUNNING", "/FO CSV" });
+        			new String[] { "tasklist.exe",//
+        				"/FI \"\"PID eq " + pid +"\"\"",//
+        				"/FI \"\"STATUS eq RUNNING\"\"",// 
+        				"/FO CSV" });
         		int returnStatus = pidof.waitFor();
         		System.out.println("returnStatus: "+returnStatus);
         		String output = CharStreams
