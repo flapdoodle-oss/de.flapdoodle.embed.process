@@ -131,6 +131,14 @@ public class ProcessControl {
 			} catch (TimeoutException e) {
 			}
 
+			try {
+				returnCode=task.get(2000, TimeUnit.MILLISECONDS);
+				stopped=true;
+			} catch (InterruptedException e) {
+			} catch (ExecutionException e) {
+			} catch (TimeoutException e) {
+			}
+
 			if (!stopped)	{
 				logger.severe(""+runtime.getName()+" NOT exited, thats why we destroy");
 				process.destroy();
