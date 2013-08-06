@@ -281,17 +281,13 @@ public class ProcessControl {
         	    if (platform == Platform.Linux || platform == Platform.OS_X) {
         		pidof = Runtime.getRuntime().exec(
         			new String[] { "kill", "-0", "" + pid });
-        		System.out.println(new String[] { "kill", "-0", "" + pid });
         		return pidof.waitFor() == 0;
         	    } else {
         		// windows
-        		System.out.println(new String[] { "tasklist.exe",
-				"/FI \"PID eq " + pid + "\"",
-				"/FI \"STATUS eq RUNNING\"", "/FO CSV" });
         		pidof = Runtime.getRuntime().exec(
         			new String[] { "tasklist.exe",
-        				"/FI \"PID eq " + pid + "\"",
-        				"/FI \"STATUS eq RUNNING\"", "/FO CSV" });
+        				"/FI ","PID eq " + pid ,
+        				"/FI ","STATUS eq RUNNING", "/FO CSV" });
         		int returnStatus = pidof.waitFor();
         		System.out.println("returnStatus: "+returnStatus);
         		String output = CharStreams
@@ -303,9 +299,16 @@ public class ProcessControl {
         			    }
         			});
         		System.out.println("tasklist.exe: " +output);
-        		if (output.contains("" + pid)) {
-        		    return true;
-        		}
+        		String error = CharStreams
+        			.toString(new InputSupplier<InputStreamReader>() {
+        			    public InputStreamReader getInput()
+        				    throws IOException {
+        				return new InputStreamReader(pidof
+        					.getErrorStream());
+        			    }
+        			});
+        		System.out.println("tasklist.exe error: " +error);
+        		return output.contains("" + pid);
         	    }
         
         	} catch (IOException e) {
