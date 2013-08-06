@@ -132,7 +132,7 @@ public class ProcessControl {
 			}
 
 			if (!stopped)	{
-//				logger.severe(""+runtime.getName()+" NOT exited, thats why we destroy");
+				logger.severe(""+runtime.getName()+" NOT exited, thats why we destroy");
 				process.destroy();
 			}
 		}
