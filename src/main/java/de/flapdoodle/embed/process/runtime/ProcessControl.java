@@ -67,7 +67,7 @@ public class ProcessControl {
 		pid = getProcessID();
 	}
 
-	public InputStreamReader getReader() {
+	public Reader getReader() {
 		return reader;
 	}
 
