@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
@@ -143,7 +146,15 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 		}
 		return false;
 	}
-
+	
+	public boolean isProcessRunning() {
+		if (getProcessId() > 0) {
+			return ProcessControl.isProcessRunning(
+					distribution.getPlatform(), getProcessId());
+		}
+		return false;
+	}
+	
 	public int getProcessId() {
 	    return processId;
 	}
@@ -159,4 +170,47 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 		}
 	}
 
+	protected int getPidFromFile(File pidFile) throws IOException {
+		// wait for file to be created
+		int tries = 0;
+		while (!pidFile.exists() && tries < 5) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+				// ignore
+			}
+			tries++;
+		}
+		// don't check file to be there. want to throw IOException if
+		// something
+		// happens
+		// read the file, wait for the pid string to appear
+		String fileContent = StringUtils.chomp(StringUtils.strip(FileUtils
+				.readFileToString(pidFile)));
+		tries = 0;
+		while (StringUtils.isBlank(fileContent) && tries < 5) {
+			fileContent = StringUtils.chomp(StringUtils.strip(FileUtils
+					.readFileToString(pidFile)));
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+				// ignore
+			}
+			tries++;
+		}
+		// check for empty file
+		if (StringUtils.isBlank(fileContent)) {
+			throw new IOException("Pidfile " + pidFile
+					+ "does not contain a pid. Waited for " + tries
+					* 100 + "ms.");
+		}
+		// pidfile exists and has content
+		try {
+			return Integer.parseInt(fileContent);
+		} catch (NumberFormatException e) {
+			throw new IOException("Pidfile " + pidFile
+					+ "does not contain a valid pid. Content: "
+					+ fileContent);
+		}
+	}
 }
