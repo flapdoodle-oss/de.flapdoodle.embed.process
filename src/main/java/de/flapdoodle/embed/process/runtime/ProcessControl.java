@@ -241,6 +241,14 @@ public class ProcessControl {
 		}
 		return false;
 	}
+	
+	public static boolean termProcess(ISupportConfig support,Platform platform, IStreamProcessor output, int pid) {
+	    if ((platform == Platform.Linux) || (platform == Platform.OS_X)) {
+		return executeCommandLine(support, "[term process]",
+			new ProcessConfig(Collections.newArrayList("kill", "" + pid), output));
+	    }
+	    return false;
+	}
 
 	public static boolean tryKillProcess(ISupportConfig support,Platform platform, IStreamProcessor output, int pid) {
 		if (platform == Platform.Windows) {

@@ -77,6 +77,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 			onAfterProcessStart(process, runtimeConfig);
 
 		} catch (IOException iox) {
+		    	logger.severe(iox.getMessage());
 			stop();
 			throw iox;
 		}
@@ -122,6 +123,14 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	protected boolean sendKillToProcess() {
 		if (processId > 0) {
 			return ProcessControl.killProcess(supportConfig(), distribution.getPlatform(),
+					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
+		}
+		return false;
+	}
+	
+	protected boolean sendTermToProcess() {
+		if (processId > 0) {
+			return ProcessControl.termProcess(supportConfig(), distribution.getPlatform(),
 					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
 		}
 		return false;
