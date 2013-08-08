@@ -23,6 +23,7 @@ package de.flapdoodle.embed.process.runtime;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
@@ -81,6 +82,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 
 		} catch (IOException iox) {
 		    	logger.severe(iox.getMessage());
+		    	logger.logp(Level.INFO, getClass().getSimpleName(),"ctor" ,config.toString());
 			stop();
 			throw iox;
 		}

@@ -23,6 +23,7 @@ package de.flapdoodle.embed.process.runtime;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.collect.Lists;
@@ -97,6 +98,7 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 		if (stopped) throw new RuntimeException("Already stopped");
 		
 		P start = start(distribution, config, runtimeConfig);
+		logger.logp(Level.INFO, getClass().getSimpleName(),"start" ,config.toString());
 		addStopable(start);
 		return start;
 	}
