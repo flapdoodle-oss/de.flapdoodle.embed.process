@@ -56,6 +56,10 @@ public class ProcessOutput {
 		return new ProcessOutput(Processors.namedConsole("["+label+" output]"),
 				Processors.namedConsole("["+label+" error]"), Processors.console());
 	}
+	
+	public static ProcessOutput getDefaultInstanceSilent() {
+		return new ProcessOutput(Processors.silent(),Processors.silent(),Processors.silent());
+	}
 
 	public static ProcessOutput getInstance(String label, Logger logger) {
 		return new ProcessOutput(Processors.named("["+label+" output]", Processors.logTo(logger, Level.INFO)),

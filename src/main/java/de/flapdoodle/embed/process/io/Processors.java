@@ -36,6 +36,10 @@ public class Processors {
 	public static IStreamProcessor console() {
 		return new ConsoleOutputStreamProcessor();
 	}
+	
+	public static IStreamProcessor silent() {
+		return new NullProcessor();
+	}
 
 	public static IStreamProcessor named(String name, IStreamProcessor destination) {
 		return new NamedOutputStreamProcessor(name, destination);
