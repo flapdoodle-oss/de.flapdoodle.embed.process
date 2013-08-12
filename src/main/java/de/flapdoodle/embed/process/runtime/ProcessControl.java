@@ -20,6 +20,7 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -32,6 +33,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.ptql.ProcessFinder;
 
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
@@ -57,11 +62,16 @@ public class ProcessControl {
 	private InputStreamReader error;
 
 	private Integer pid;
+	private File workDir;
+	private List<String> commands;
+
 	private ISupportConfig runtime;
 
-	public ProcessControl(ISupportConfig runtime, Process process) {
+	public ProcessControl(ISupportConfig runtime, List<String> commands, File workDir, Process process) {
 		this.process = process;
 		this.runtime = runtime;
+		this.workDir = workDir;
+		this.commands = commands;
 		reader = new InputStreamReader(this.process.getInputStream());
 		error = new InputStreamReader(this.process.getErrorStream());
 		pid = getProcessID();
@@ -205,7 +215,7 @@ public class ProcessControl {
 	}
 
 	public static ProcessControl start(ISupportConfig runtime, ProcessBuilder processBuilder) throws IOException {
-		return new ProcessControl(runtime,processBuilder.start());
+		return new ProcessControl(runtime, processBuilder.command(), processBuilder.directory(), processBuilder.start());
 	}
 
 	public static ProcessBuilder newProcessBuilder(List<String> commandLine, boolean redirectErrorStream) {
@@ -259,6 +269,7 @@ public class ProcessControl {
 	}
 
 	private Integer getProcessID() {
+		// that should work on Linux/MacOS for the most part
 		Class<?> clazz = process.getClass();
 		try {
 			if (clazz.getName().equals("java.lang.UNIXProcess")) {
@@ -278,6 +289,21 @@ public class ProcessControl {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
+		// Windows: try to use Sigar to find out process id
+		long pid;
+		try {
+			Sigar sigar = new Sigar();
+			// supply command name, this will be something like
+			// extract<md5hash>, so relatively exact. could also use
+			// workdir but would need to infer from parent java process.
+			ProcessFinder find = new ProcessFinder(sigar);
+			String exeFilename = new File(commands.get(0)).getName();
+			pid = find.findSingleProcess("Exe.Name.ct=" + exeFilename);
+			return (int) pid;
+		} catch (SigarException e) {
+			// ignore
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -289,6 +315,10 @@ public class ProcessControl {
 		Runtime.getRuntime().addShutdownHook(new Thread(runable));
 	}
 	
+	public Integer getPid() {
+		return pid;
+	}
+
 	public static boolean isProcessRunning(Platform platform, int pid) {
 
 		try {
