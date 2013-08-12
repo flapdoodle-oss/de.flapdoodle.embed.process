@@ -175,7 +175,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	protected int getPidFromFile(File pidFile) throws IOException {
 		// wait for file to be created
 		int tries = 0;
-		while (!pidFile.exists() && tries < 5) {
+		while (!pidFile.exists() && tries < 10) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
@@ -184,8 +184,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 			tries++;
 		}
 		// don't check file to be there. want to throw IOException if
-		// something
-		// happens
+		// something happens
 		// read the file, wait for the pid string to appear
 		String fileContent = StringUtils.chomp(StringUtils.strip(FileUtils
 				.readFileToString(pidFile)));

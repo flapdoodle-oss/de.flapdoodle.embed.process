@@ -289,57 +289,60 @@ public class ProcessControl {
 		Runtime.getRuntime().addShutdownHook(new Thread(runable));
 	}
 	
-        public static boolean isProcessRunning(Platform platform, int pid) {
-        
-        	try {
-        	    final Process pidof;
-        	    if (platform == Platform.Linux || platform == Platform.OS_X) {
-        		pidof = Runtime.getRuntime().exec(
-        			new String[] { "kill", "-0", "" + pid });
-        		return pidof.waitFor() == 0;
-        	    } else {
-                        // windows
-        	        // process might be in either NOT RESPONDING due to firewall blocking, or could be RUNNING
-         	        // final String cmd = "tasklist.exe /FI \"PID eq " + pid + "\" /FI \"STATUS eq RUNNING\" /FO CSV";
-        	        final String cmd = "tasklist.exe /FI \"PID eq " + pid + "\" /FO CSV";
-        	        logger.fine("Command: " + cmd);
-          		pidof = Runtime.getRuntime().exec(cmd);
-        		int returnStatus = pidof.waitFor();
-        		
-        		String output = CharStreams
-        			.toString(new InputSupplier<InputStreamReader>() {
-        			    public InputStreamReader getInput()
-        				    throws IOException {
-        				return new InputStreamReader(pidof
-        					.getInputStream());
-        			    }
-        			});
-        		if (logger.isLoggable(Level.FINE)){
-        		    	logger.fine("returnStatus: "+returnStatus);
-                		logger.fine("tasklist.exe: " +output);
-                		String error = CharStreams
-                			.toString(new InputSupplier<InputStreamReader>() {
-                			    public InputStreamReader getInput()
-                				    throws IOException {
-                				return new InputStreamReader(pidof
-                					.getErrorStream());
-                			    }
-                			});
-                		logger.fine("tasklist.exe error: " +error);
-        		}
-        		return output.contains("" + pid);
-        	    }
-        
-        	} catch (IOException e) {
-        	    logger.severe("IOException when trying to get process status:"
-        		    + e.getMessage());
-        	    e.printStackTrace();
-        
-        	} catch (InterruptedException e) {
-        	    logger.severe("IOException when trying to get process status:"
-        		    + e.getMessage());
-        	    e.printStackTrace();
-        	}
-        	return false;
-         }
+	public static boolean isProcessRunning(Platform platform, int pid) {
+
+		try {
+			final Process pidof;
+			if (platform == Platform.Linux || platform == Platform.OS_X) {
+				pidof = Runtime.getRuntime().exec(
+						new String[] { "kill", "-0", "" + pid });
+				return pidof.waitFor() == 0;
+			} else {
+				// windows
+				// process might be in either NOT RESPONDING due to
+				// firewall blocking, or could be RUNNING
+				// final String cmd = "tasklist.exe /FI \"PID eq " + pid
+				// + "\" /FI \"STATUS eq RUNNING\" /FO CSV";
+				final String cmd = "tasklist.exe /FI \"PID eq " + pid
+						+ "\" /FO CSV";
+				logger.fine("Command: " + cmd);
+				pidof = Runtime.getRuntime().exec(cmd);
+				int returnStatus = pidof.waitFor();
+
+				String output = CharStreams
+						.toString(new InputSupplier<InputStreamReader>() {
+							public InputStreamReader getInput()
+									throws IOException {
+								return new InputStreamReader(
+										pidof.getInputStream());
+							}
+						});
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("returnStatus: " + returnStatus);
+					logger.fine("tasklist.exe: " + output);
+					String error = CharStreams
+							.toString(new InputSupplier<InputStreamReader>() {
+								public InputStreamReader getInput()
+										throws IOException {
+									return new InputStreamReader(
+											pidof.getErrorStream());
+								}
+							});
+					logger.fine("tasklist.exe error: " + error);
+				}
+				return output.contains("" + pid);
+			}
+
+		} catch (IOException e) {
+			logger.severe("IOException when trying to get process status:"
+					+ e.getMessage());
+			e.printStackTrace();
+
+		} catch (InterruptedException e) {
+			logger.severe("IOException when trying to get process status:"
+					+ e.getMessage());
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
