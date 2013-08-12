@@ -181,10 +181,16 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 			} catch (InterruptedException e1) {
 				// ignore
 			}
+			logger.warning("Didn't find pid file in try " + tries
+					+ ", waiting 100ms...");
 			tries++;
 		}
 		// don't check file to be there. want to throw IOException if
 		// something happens
+		if (!pidFile.exists()) {
+			throw new IOException("Could not find pid file " + pidFile);
+		}
+
 		// read the file, wait for the pid string to appear
 		String fileContent = StringUtils.chomp(StringUtils.strip(FileUtils
 				.readFileToString(pidFile)));
