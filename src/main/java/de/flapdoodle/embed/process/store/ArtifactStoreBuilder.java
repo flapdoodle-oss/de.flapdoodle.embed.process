@@ -33,6 +33,8 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	private static final String EXECUTABLE_NAMING = "ExecutableNaming";
 	private static final String TEMP_DIR_FACTORY = "TempDir";
 	private static final String DOWNLOAD_CONFIG = "DownloadConfig";
+	private static final String CACHE = "Cache";
+	private static final String LIBRARIES = "Libraries";
 	
 	public ArtifactStoreBuilder download(AbstractBuilder<IDownloadConfig> downloadConfigBuilder) {
 		return download(downloadConfigBuilder.build());
@@ -54,7 +56,11 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	}
 	
 	public ArtifactStoreBuilder cache(boolean cache) {
-		set("Cache", Boolean.class, cache);
+		set(CACHE, Boolean.class, cache);
+		return this;
+	}
+	public ArtifactStoreBuilder libraries(String[] libraries) {
+		set(LIBRARIES, String[].class, libraries);
 		return this;
 	}
 	
@@ -62,7 +68,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	public IArtifactStore build() {
 		boolean useCache = get(Boolean.class,true);
 		
-		IArtifactStore artifactStore = new ArtifactStore(get(IDownloadConfig.class),get(IDirectory.class), get(ITempNaming.class));
+		IArtifactStore artifactStore = new ArtifactStore(get(IDownloadConfig.class),get(IDirectory.class), get(ITempNaming.class), get(String[].class, null));
 		if (useCache) {
 			artifactStore=new CachingArtifactStore(artifactStore);
 		}

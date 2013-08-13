@@ -23,6 +23,7 @@ package de.flapdoodle.embed.process.store;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.config.store.IPackageResolver;
@@ -40,11 +41,13 @@ public class ArtifactStore implements IArtifactStore {
 	private IDownloadConfig _downloadConfig;
 	private IDirectory _tempDireFactory;
 	private ITempNaming _executableNaming;
+	private String[] _libraries;
 	
-	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDireFactory,ITempNaming executableNaming) {
+	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDireFactory,ITempNaming executableNaming, String[] libraries) {
 		_downloadConfig=downloadConfig;
 		_tempDireFactory = tempDireFactory;
 		_executableNaming = executableNaming;
+		_libraries = libraries;
 	}
 	
 	@Override
@@ -64,12 +67,43 @@ public class ArtifactStore implements IArtifactStore {
 		File exe = Files.createTempFile(_tempDireFactory,
 				_executableNaming.nameFor("extract", packageResolver.executableFilename(distribution)));
 		extractor.extract(_downloadConfig, artifact, exe, packageResolver.executeablePattern(distribution));
+
+		// extract extra libraries, if any
+		if (_libraries != null) {
+			for (String lib : _libraries) {
+				File tempDir = _tempDireFactory.asFile();
+				File libFile = new File(tempDir, lib);
+						libFile.createNewFile();
+					extractor.extract(_downloadConfig, artifact,
+							libFile, libraryPattern(distribution,lib));
+			}
+		}
 		return exe;
+	}
+
+	private Pattern libraryPattern(Distribution distribution, String libname) {
+		switch (distribution.getPlatform()) {
+		case Linux:
+			return Pattern.compile(".*so");
+		case OS_X:
+			return Pattern.compile(".*dylib");
+		case Windows:
+			return Pattern.compile(".*"+libname, Pattern.CASE_INSENSITIVE);
+		default:
+			throw new IllegalStateException("unknown platform");
+		}
 	}
 
 	@Override
 	public void removeExecutable(Distribution distribution, File executable) {
-//		if (executable.exists() && !Files.forceDelete(executable))
-//			logger.warning("Could not delete executable NOW: " + executable);
+		if (_libraries != null) {
+			for (String lib : _libraries) {
+				File library = new File(_tempDireFactory.asFile(), lib);
+				if (library.exists() && !Files.forceDelete(library))
+					logger.warning("Could not delete library NOW: " + library);				
+			}
+		}
+		if (executable.exists() && !Files.forceDelete(executable))
+			logger.warning("Could not delete executable NOW: " + executable);
 	}
 }
