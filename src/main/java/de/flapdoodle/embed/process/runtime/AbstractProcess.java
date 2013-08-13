@@ -34,6 +34,7 @@ import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 
@@ -175,7 +176,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	protected int getPidFromFile(File pidFile) throws IOException {
 		// wait for file to be created
 		int tries = 0;
-		while (!pidFile.exists() && tries < 10) {
+		while (!pidFile.exists() && tries < 5) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {

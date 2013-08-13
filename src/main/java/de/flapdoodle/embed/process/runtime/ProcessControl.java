@@ -277,6 +277,7 @@ public class ProcessControl {
 				pidField.setAccessible(true);
 				Object value = pidField.get(process);
 				if (value instanceof Integer) {
+					logger.fine("Detected pid: " + value);
 					return (Integer) value;
 				}
 			}
@@ -299,10 +300,11 @@ public class ProcessControl {
 			ProcessFinder find = new ProcessFinder(sigar);
 			String exeFilename = new File(commands.get(0)).getName();
 			pid = find.findSingleProcess("Exe.Name.ct=" + exeFilename);
+			logger.fine("Detected pid: " + pid);
 			return (int) pid;
 		} catch (SigarException e) {
 			// ignore, will throw if there is no process matching the pattern
-		}
+		}		
 		return null;
 	}
 

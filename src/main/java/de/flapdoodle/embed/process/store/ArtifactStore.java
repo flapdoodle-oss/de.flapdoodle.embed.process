@@ -69,7 +69,7 @@ public class ArtifactStore implements IArtifactStore {
 
 	@Override
 	public void removeExecutable(Distribution distribution, File executable) {
-		if (executable.exists() && !Files.forceDelete(executable))
-			logger.warning("Could not delete executable NOW: " + executable);
+//		if (executable.exists() && !Files.forceDelete(executable))
+//			logger.warning("Could not delete executable NOW: " + executable);
 	}
 }
