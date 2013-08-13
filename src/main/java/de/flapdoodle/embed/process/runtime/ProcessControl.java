@@ -294,15 +294,14 @@ public class ProcessControl {
 		try {
 			Sigar sigar = new Sigar();
 			// supply command name, this will be something like
-			// extract<md5hash>, so relatively exact. could also use
-			// workdir but would need to infer from parent java process.
+			// extract<md5hash>, so somewhat reliable. could also query for
+			// workdir but would need to infer that from parent java process.
 			ProcessFinder find = new ProcessFinder(sigar);
 			String exeFilename = new File(commands.get(0)).getName();
 			pid = find.findSingleProcess("Exe.Name.ct=" + exeFilename);
 			return (int) pid;
 		} catch (SigarException e) {
-			// ignore
-			e.printStackTrace();
+			// ignore, will throw if there is no process matching the pattern
 		}
 		return null;
 	}
