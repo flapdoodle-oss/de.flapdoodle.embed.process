@@ -29,13 +29,20 @@
         </license>
     </licenses>
 
+	<scm>
+        <connection>scm:git:ssh://git@git0.svc1.demandware.net:7999/TOOL/flapdoodle-process.git</connection>
+        <developerConnection>scm:git:ssh://git@git0.svc1.demandware.net:7999/TOOL/flapdoodle-process.git</developerConnection>
+      <tag>HEAD</tag>
+    </scm>
 
+<!-- 
     <scm>
         <connection>scm:git:git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</connection>
         <developerConnection>scm:git:git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</developerConnection>
         <url>git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</url>
     </scm>
-
+ -->
+ 
     <!--
          https://docs.sonatype.org/display/Repository/Central+Sync+Requirements
          https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
