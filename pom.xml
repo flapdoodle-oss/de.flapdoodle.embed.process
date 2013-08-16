@@ -173,7 +173,7 @@
             </plugin>
         </plugins>
     </build>
-
+<!-- 
     <profiles>
         <profile>
             <id>release-sign-artifacts</id>
@@ -203,7 +203,7 @@
             </build>
         </profile>
     </profiles>
-
+ -->
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
