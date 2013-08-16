@@ -22,7 +22,9 @@ package de.flapdoodle.embed.process.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +36,6 @@ import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 
@@ -69,7 +70,8 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 
 			ProcessBuilder processBuilder = ProcessControl.newProcessBuilder(
 					runtimeConfig.getCommandLinePostProcessor().process(distribution,
-							getCommandLine(distribution, config, this.executable.getFile())), true);
+							getCommandLine(distribution, config, this.executable.getFile())),
+							getEnvironment(distribution, config, this.executable.getFile()), true);
 
 			onBeforeProcessStart(processBuilder,config, runtimeConfig);
 			
@@ -110,6 +112,11 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 
 	protected abstract List<String> getCommandLine(Distribution distribution, T config, File exe) throws IOException;
 
+	protected Map<String, String> getEnvironment(Distribution distribution, T config, File exe) {
+		// default implementation, override to provide your own environment
+		return new HashMap<String, String>();
+	}
+	
 	protected abstract ISupportConfig supportConfig();
 
 	public abstract void stop();

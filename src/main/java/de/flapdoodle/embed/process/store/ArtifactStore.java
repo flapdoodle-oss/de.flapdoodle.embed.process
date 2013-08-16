@@ -22,12 +22,14 @@ package de.flapdoodle.embed.process.store;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.config.store.IPackageResolver;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.extract.Extractors;
 import de.flapdoodle.embed.process.extract.IExtractor;
 import de.flapdoodle.embed.process.extract.ITempNaming;
@@ -41,9 +43,9 @@ public class ArtifactStore implements IArtifactStore {
 	private IDownloadConfig _downloadConfig;
 	private IDirectory _tempDireFactory;
 	private ITempNaming _executableNaming;
-	private String[] _libraries;
+	private Map<Platform,String[]> _libraries;
 	
-	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDireFactory,ITempNaming executableNaming, String[] libraries) {
+	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDireFactory,ITempNaming executableNaming,Map<Platform, String[]> libraries) {
 		_downloadConfig=downloadConfig;
 		_tempDireFactory = tempDireFactory;
 		_executableNaming = executableNaming;
@@ -70,7 +72,7 @@ public class ArtifactStore implements IArtifactStore {
 
 		// extract extra libraries, if any
 		if (_libraries != null) {
-			for (String lib : _libraries) {
+			for (String lib : _libraries.get(distribution.getPlatform())) {
 				File tempDir = _tempDireFactory.asFile();
 				File libFile = new File(tempDir, lib);
 						libFile.createNewFile();
@@ -82,22 +84,13 @@ public class ArtifactStore implements IArtifactStore {
 	}
 
 	private Pattern libraryPattern(Distribution distribution, String libname) {
-		switch (distribution.getPlatform()) {
-		case Linux:
-			return Pattern.compile(".*so");
-		case OS_X:
-			return Pattern.compile(".*dylib");
-		case Windows:
-			return Pattern.compile(".*"+libname, Pattern.CASE_INSENSITIVE);
-		default:
-			throw new IllegalStateException("unknown platform");
-		}
+		return Pattern.compile(".*" + libname, Pattern.CASE_INSENSITIVE);
 	}
 
 	@Override
 	public void removeExecutable(Distribution distribution, File executable) {
 		if (_libraries != null) {
-			for (String lib : _libraries) {
+			for (String lib : _libraries.get(distribution.getPlatform())) {
 				File library = new File(_tempDireFactory.asFile(), lib);
 				if (library.exists() && !Files.forceDelete(library))
 					logger.warning("Could not delete library NOW: " + library);				

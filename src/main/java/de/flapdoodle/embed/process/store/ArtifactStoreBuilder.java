@@ -20,10 +20,12 @@
  */
 package de.flapdoodle.embed.process.store;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 
@@ -59,8 +61,8 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 		set(CACHE, Boolean.class, cache);
 		return this;
 	}
-	public ArtifactStoreBuilder libraries(String[] libraries) {
-		set(LIBRARIES, String[].class, libraries);
+	public ArtifactStoreBuilder libraries(Map<Platform,String[]> libraries) {
+		set(LIBRARIES, Map.class, libraries);
 		return this;
 	}
 	
@@ -68,7 +70,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	public IArtifactStore build() {
 		boolean useCache = get(Boolean.class,true);
 		
-		IArtifactStore artifactStore = new ArtifactStore(get(IDownloadConfig.class),get(IDirectory.class), get(ITempNaming.class), get(String[].class, null));
+		IArtifactStore artifactStore = new ArtifactStore(get(IDownloadConfig.class),get(IDirectory.class), get(ITempNaming.class), get(Map.class, null));
 		if (useCache) {
 			artifactStore=new CachingArtifactStore(artifactStore);
 		}
