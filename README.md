@@ -41,7 +41,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 #### 1.30 (SNAPSHOT)
 
-- fixed thread daemon problem
+- fixed daemon thread problem
 - fixed multiple stop calls problem
 
 #### 1.29
