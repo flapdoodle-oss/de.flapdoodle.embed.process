@@ -90,7 +90,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	}
 
-	protected void onBeforeProcessStart(ProcessBuilder processBuilder, T config2, IRuntimeConfig runtimeConfig) {
+	protected void onBeforeProcessStart(ProcessBuilder processBuilder, T config, IRuntimeConfig runtimeConfig) {
 		
 	}
 	
@@ -104,7 +104,22 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected abstract ISupportConfig supportConfig();
 
-	public abstract void stop();
+	public synchronized final void stop() {
+		if (!stopped) {
+			stopped=true;
+			stopInternal();
+			onAfterProcessStop(this.config,this.runtimeConfig);
+			cleanupInternal();
+		}
+	}
+	
+	protected abstract void stopInternal();
+
+	protected abstract void cleanupInternal();
+
+	protected void onAfterProcessStop(T config, IRuntimeConfig runtimeConfig) {
+		
+	}
 
 	protected final void stopProcess() {
 		if (process!=null) process.stop();

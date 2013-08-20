@@ -37,8 +37,13 @@ public class GenericProcess extends AbstractProcess<GenericProcessConfig, Generi
 	}
 
 	@Override
-	public void stop() {
+	public void stopInternal() {
 		stopProcess();
+	}
+	
+	@Override
+	protected void cleanupInternal() {
+		
 	}
 
 	@Override

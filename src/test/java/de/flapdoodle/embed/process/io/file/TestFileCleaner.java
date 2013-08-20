@@ -25,13 +25,12 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
-
-import com.google.common.collect.Lists;
 
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
@@ -46,7 +45,7 @@ public class TestFileCleaner extends TestCase {
 
 		boolean runsOnWindows = Platform.detect() == Platform.Windows;
 
-		List<File> files = Lists.newArrayList();
+		List<File> files = new ArrayList<File>();
 
 		logger.info("create temp files");
 
@@ -54,7 +53,7 @@ public class TestFileCleaner extends TestCase {
 			files.add(Files.createTempFile(new PlatformTempDir(), "fileCleanerTest-" + prefix + "-some-" + i));
 		}
 
-		List<FileLock> locks = Lists.newArrayList();
+		List<FileLock> locks = new ArrayList<FileLock>();
 
 		logger.info("lock temp files");
 
@@ -104,7 +103,7 @@ public class TestFileCleaner extends TestCase {
 	
 	public void testMultipleFiles() throws IOException {
 		
-		List<File> files=Lists.newArrayList();
+		List<File> files=new ArrayList<File>();
 		
 		File lastFile = Files.createTempFile(new PlatformTempDir(), "fileCleanerTest-" + prefix + "-some-final");
 		for (int i=0;i<10000;i++) {

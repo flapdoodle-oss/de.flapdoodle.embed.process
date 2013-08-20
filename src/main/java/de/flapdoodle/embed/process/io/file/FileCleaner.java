@@ -22,13 +22,12 @@ package de.flapdoodle.embed.process.io.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
-
-import com.google.common.collect.Maps;
 
 public class FileCleaner {
 
@@ -84,7 +83,7 @@ public class FileCleaner {
 
 	static class Cleaner {
 
-		Map<File, Integer> fileToClean = Maps.newHashMap();
+		Map<File, Integer> fileToClean = new HashMap<File, Integer>();
 
 		public void clean() {
 			while (true)
@@ -99,7 +98,7 @@ public class FileCleaner {
 		}
 
 		protected void deleteFiles() {
-			Map<File, Integer> copy = Maps.newHashMap(fileToClean);
+			Map<File, Integer> copy = new HashMap<File, Integer>(fileToClean);
 			for (File f : copy.keySet()) {
 				try {
 					FileUtils.forceDelete(f);
