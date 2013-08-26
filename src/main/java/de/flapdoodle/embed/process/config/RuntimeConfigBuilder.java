@@ -21,42 +21,62 @@
 package de.flapdoodle.embed.process.config;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
+import de.flapdoodle.embed.process.builder.IProperty;
+import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
 import de.flapdoodle.embed.process.store.IArtifactStore;
 
-public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
+public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> { 
+	
+	private static final TypedProperty<IArtifactStore> ARTIFACT_STORE = TypedProperty.with("ArtifactStore", IArtifactStore.class);
+	private static final TypedProperty<ProcessOutput> PROCESS_OUTPUT = TypedProperty.with("ProcessOutput", ProcessOutput.class);
+	private static final TypedProperty<ICommandLinePostProcessor> CMD_POSTPROCESSOR = TypedProperty.with("CommandLinePostProcessor", ICommandLinePostProcessor.class);
+	private static final TypedProperty<Boolean> DAEMON_PROCESS = TypedProperty.with("DaemonProcess", Boolean.class);
 
 	public RuntimeConfigBuilder artifactStore(AbstractBuilder<IArtifactStore> artifactStoreBuilder) {
 		return artifactStore(artifactStoreBuilder.build());
 	}
 	
 	public RuntimeConfigBuilder artifactStore(IArtifactStore artifactStore) {
-		set(IArtifactStore.class, artifactStore);
+		set(ARTIFACT_STORE, artifactStore);
 		return this;
 	}
 
+	protected IProperty<IArtifactStore> artifactStore() {
+		return property(ARTIFACT_STORE);
+	}
+	
 	public RuntimeConfigBuilder processOutput(ProcessOutput processOutput) {
-		set(ProcessOutput.class, processOutput);
+		set(PROCESS_OUTPUT, processOutput);
 		return this;
 	}
 
-	public RuntimeConfigBuilder daemonProcess(boolean daemonProcess) {
-		set(Boolean.class, daemonProcess);
-		return this;
+	protected IProperty<ProcessOutput> processOutput() {
+		return property(PROCESS_OUTPUT);
 	}
+	
 
 	public RuntimeConfigBuilder commandLinePostProcessor(ICommandLinePostProcessor commandLinePostProcessor) {
-		set(ICommandLinePostProcessor.class, commandLinePostProcessor);
+		set(CMD_POSTPROCESSOR, commandLinePostProcessor);
+		return this;
+	}
+
+	protected IProperty<ICommandLinePostProcessor> commandLinePostProcessor() {
+		return property(CMD_POSTPROCESSOR);
+	}
+	
+	public RuntimeConfigBuilder daemonProcess(boolean daemonProcess) {
+		set(DAEMON_PROCESS, daemonProcess);
 		return this;
 	}
 
 	@Override
 	public IRuntimeConfig build() {
-		IArtifactStore artifactStore = get(IArtifactStore.class);
-		ProcessOutput processOutput = get(ProcessOutput.class);
-		ICommandLinePostProcessor commandLinePostProcessor = get(ICommandLinePostProcessor.class);
-		Boolean daemonProcess = get(Boolean.class, true);
+		IArtifactStore artifactStore = get(ARTIFACT_STORE);
+		ProcessOutput processOutput = get(PROCESS_OUTPUT);
+		ICommandLinePostProcessor commandLinePostProcessor = get(CMD_POSTPROCESSOR);
+		Boolean daemonProcess = get(DAEMON_PROCESS, true);
 
 		return new ImmutableRuntimeConfig(artifactStore, processOutput, commandLinePostProcessor, daemonProcess);
 	}

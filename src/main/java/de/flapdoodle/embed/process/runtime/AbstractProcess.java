@@ -32,6 +32,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
+import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -40,7 +41,7 @@ import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.io.file.Files;
 
-public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable> implements IStopable {
+public abstract class AbstractProcess<T extends IExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable> implements IStopable {
 
 	private static Logger logger = Logger.getLogger(AbstractProcess.class.getName());
 
@@ -102,7 +103,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 
 	}
 
-	protected void onBeforeProcessStart(ProcessBuilder processBuilder, T config2, IRuntimeConfig runtimeConfig) {
+	protected void onBeforeProcessStart(ProcessBuilder processBuilder, T config, IRuntimeConfig runtimeConfig) {
 		
 	}
 	
@@ -121,7 +122,22 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	
 	protected abstract ISupportConfig supportConfig();
 
-	public abstract void stop();
+	public synchronized final void stop() {
+		if (!stopped) {
+			stopped=true;
+			stopInternal();
+			onAfterProcessStop(this.config,this.runtimeConfig);
+			cleanupInternal();
+		}
+	}
+	
+	protected abstract void stopInternal();
+
+	protected abstract void cleanupInternal();
+
+	protected void onAfterProcessStop(T config, IRuntimeConfig runtimeConfig) {
+		
+	}
 
 	protected final void stopProcess() {
 		if (process!=null) process.stop();

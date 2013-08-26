@@ -38,8 +38,6 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	private final IArtifactStore _delegate;
 
-	private final ScheduledExecutorService executor;
-	
 	Object _lock=new Object();
 	
 	HashMap<Distribution, FileWithCounter> _distributionFiles = new HashMap<Distribution, FileWithCounter>();
@@ -48,20 +46,8 @@ public class CachingArtifactStore implements IArtifactStore {
 		_delegate = delegate;
 		ProcessControl.addShutdownHook(new CacheCleaner());
 		
-		executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-		    @Override
-		    public Thread newThread(Runnable runnable) {
-		       Thread thread = Executors.defaultThreadFactory().newThread(runnable);
-		       thread.setDaemon(true);
-		       thread.setName("de.flapdoodle.embed.process.store.CachingArtifactStore.RemoveUnused.RemoveUnused()");
-		       return thread;
-		    }
-		});
+		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new CustomThreadFactory());
 		executor.scheduleAtFixedRate(new RemoveUnused(), 10, 10, TimeUnit.SECONDS);
-	}
-	
-	public void finalize(){
-	    executor.shutdownNow();
 	}
 
 	@Override
@@ -185,5 +171,16 @@ public class CachingArtifactStore implements IArtifactStore {
 		}
 	}
 
+	class CustomThreadFactory implements ThreadFactory {
 
+		ThreadFactory factory=Executors.defaultThreadFactory();
+		
+		@Override
+		public Thread newThread(Runnable runnable) {
+			Thread ret = factory.newThread(runnable);
+			ret.setDaemon(true);
+			return ret;
+		}
+		
+	}
 }

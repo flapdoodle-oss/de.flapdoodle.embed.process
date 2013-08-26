@@ -21,49 +21,86 @@
 package de.flapdoodle.embed.process.builder;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 public class AbstractEmbeddedBuilder<B> {
 
-	Map<Class<?>, Object> propertyMap = new HashMap<Class<?>, Object>();
-	boolean _override = false;
+	Map<TypedProperty<?>, Object> propertyMap = new HashMap<TypedProperty<?>, Object>();
+	Set<TypedProperty<?>> propertyHadDefaultValueMap = new HashSet<TypedProperty<?>>();
 
-	protected void setOverride(boolean override) {
-		_override=override;
+	protected <T> IProperty<T> property(TypedProperty<T> typedProperty) {
+		return new Property<T>(typedProperty);
 	}
-
-	protected <T> T set(Class<T> type, T value) {
-		return set(null,type,value);
-	}
-
-	protected <T> T set(String label, Class<T> type, T value) {
-		T old = (T) propertyMap.put(type, value);
-		if ((!_override) && (old!=null)) {
-			throw new RuntimeException("" + labelOrTypeAsString(label, type) + " allready set to " + old);
+	
+	protected <T> T setDefault(TypedProperty<T> property, T value) {
+		T old = set(property, value);
+		if (!propertyHadDefaultValueMap.add(property)) {
+			throw new RuntimeException("" + property + " is allready set with default value");
 		}
 		return old;
 	}
 
-	private <T> String labelOrTypeAsString(String label, Class<T> type) {
-		return label!=null ? label : ""+type;
+	protected <T> T overwriteDefault(TypedProperty<T> property, T value) {
+		T old = set(property, value);
+		propertyHadDefaultValueMap.add(property);
+		return old;
 	}
 
-	protected <T> T get(Class<T> type) {
-		return get((String) null,type);
+	protected <T> T set(TypedProperty<T> property, T value) {
+		T old = (T) propertyMap.put(property, value);
+		boolean onlyDefaultValueWasSet = propertyHadDefaultValueMap.remove(property);
+
+		if ((old != null) && (!onlyDefaultValueWasSet)) {
+			throw new RuntimeException("" + property + " allready set to " + old);
+		}
+		return old;
 	}
 
-	protected <T> T get(String label, Class<T> type) {
-		T ret = (T) propertyMap.get(type);
+	protected <T> T get(TypedProperty<T> property) {
+		T ret = (T) propertyMap.get(property);
 		if (ret == null)
-			throw new RuntimeException("" + labelOrTypeAsString(label, type) + " not set");
+			throw new RuntimeException("" + property + " not set");
 		return ret;
 	}
 
-	protected <T> T get(Class<T> type, T defaultValue) {
-		T ret = (T) propertyMap.get(type);
+	protected <T> T get(TypedProperty<T> property, T defaultValue) {
+		T ret = (T) propertyMap.get(property);
 		return ret != null
 				? ret
 				: defaultValue;
+	}
+
+	private class Property<T> implements IProperty<T> {
+
+		private final TypedProperty<T> typedProperty;
+
+		public Property(TypedProperty<T> typedProperty) {
+			this.typedProperty = typedProperty;
+		}
+		
+		@Override
+		public T set(T value) {
+			return AbstractEmbeddedBuilder.this.set(typedProperty, value);
+		}
+		
+		@Override
+		public T setDefault(T value) {
+			return AbstractEmbeddedBuilder.this.setDefault(typedProperty, value);
+		}
+		
+		@Override
+		public T overwriteDefault(T value) {
+			return AbstractEmbeddedBuilder.this.overwriteDefault(typedProperty, value);
+		}
+
+		@Override
+		public T get() {
+			return AbstractEmbeddedBuilder.this.get(typedProperty);
+		}
+		
+		
 	}
 }

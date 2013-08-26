@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
+import de.flapdoodle.embed.process.builder.IProperty;
+import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.extract.ITempNaming;
@@ -32,45 +34,69 @@ import de.flapdoodle.embed.process.io.directories.IDirectory;
 public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	private static Logger logger = Logger.getLogger(ArtifactStoreBuilder.class.getName());
 
-	private static final String EXECUTABLE_NAMING = "ExecutableNaming";
-	private static final String TEMP_DIR_FACTORY = "TempDir";
-	private static final String DOWNLOAD_CONFIG = "DownloadConfig";
-	private static final String CACHE = "Cache";
-	private static final String LIBRARIES = "Libraries";
+	private static final TypedProperty<ITempNaming> EXECUTABLE_NAMING = TypedProperty.with("ExecutableNaming",ITempNaming.class);
+	private static final TypedProperty<IDirectory> TEMP_DIR_FACTORY = TypedProperty.with("TempDir",IDirectory.class);
+	private static final TypedProperty<IDownloadConfig> DOWNLOAD_CONFIG = TypedProperty.with("DownloadConfig",IDownloadConfig.class);
+	private static final TypedProperty<Boolean> USE_CACHE = TypedProperty.with("UseCache",Boolean.class);
+	private static final TypedProperty<Map> LIBRARIES = TypedProperty.with("Libraries", Map.class);
 	
 	public ArtifactStoreBuilder download(AbstractBuilder<IDownloadConfig> downloadConfigBuilder) {
 		return download(downloadConfigBuilder.build());
 	}
 	
 	public ArtifactStoreBuilder download(IDownloadConfig downloadConfig) {
-		set(DOWNLOAD_CONFIG, IDownloadConfig.class, downloadConfig);
+		set(DOWNLOAD_CONFIG, downloadConfig);
 		return this;
 	}
-	
+
+	protected IProperty<IDownloadConfig> download() {
+		return property(DOWNLOAD_CONFIG);
+	}
+
 	public ArtifactStoreBuilder tempDir(IDirectory tempDirFactory) {
-		set(TEMP_DIR_FACTORY, IDirectory.class, tempDirFactory);
+		set(TEMP_DIR_FACTORY, tempDirFactory);
 		return this;
 	}
 	
+	protected IProperty<IDirectory> tempDir() {
+		return property(TEMP_DIR_FACTORY);
+	}
+
 	public ArtifactStoreBuilder executableNaming(ITempNaming execNaming) {
-		set(EXECUTABLE_NAMING, ITempNaming.class, execNaming);
+		set(EXECUTABLE_NAMING,execNaming);
 		return this;
 	}
 	
-	public ArtifactStoreBuilder cache(boolean cache) {
-		set(CACHE, Boolean.class, cache);
+	protected IProperty<ITempNaming> executableNaming() {
+		return property(EXECUTABLE_NAMING);
+	}
+
+	public ArtifactStoreBuilder useCache(boolean cache) {
+		set(USE_CACHE, cache);
 		return this;
 	}
+	
+	protected IProperty<Boolean> useCache() {
+		return property(USE_CACHE);
+	}
+	
+	/**
+	 * @see ArtifactStoreBuilder#useCache(boolean)
+	 */
+	@Deprecated
+	public ArtifactStoreBuilder cache(boolean cache) {
+		return useCache(cache);
+	}
+	
 	public ArtifactStoreBuilder libraries(Map<Platform,String[]> libraries) {
-		set(LIBRARIES, Map.class, libraries);
+		set(LIBRARIES, libraries);
 		return this;
 	}
 	
 	@Override
 	public IArtifactStore build() {
-		boolean useCache = get(Boolean.class,true);
-		
-		IArtifactStore artifactStore = new ArtifactStore(get(IDownloadConfig.class),get(IDirectory.class), get(ITempNaming.class), get(Map.class, null));
+		boolean useCache = get(USE_CACHE, true);		
+		IArtifactStore artifactStore = new ArtifactStore(get(DOWNLOAD_CONFIG),get(TEMP_DIR_FACTORY), get(EXECUTABLE_NAMING), get(LIBRARIES, null));
 		if (useCache) {
 			artifactStore=new CachingArtifactStore(artifactStore);
 		}

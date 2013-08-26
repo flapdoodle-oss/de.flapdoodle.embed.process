@@ -27,7 +27,7 @@ import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
 public interface IDownloadConfig {
 	
-	String getDownloadPath();
+	IDownloadPath getDownloadPath();
 	
 	IProgressListener getProgressListener();
 
@@ -40,5 +40,7 @@ public interface IDownloadConfig {
 	String getUserAgent();
 
 	IPackageResolver getPackageResolver();
+
+	ITimeoutConfig getTimeoutConfig();
 
 }

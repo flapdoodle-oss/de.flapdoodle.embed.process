@@ -18,21 +18,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config;
+package de.flapdoodle.embed.process.builder;
 
-import de.flapdoodle.embed.process.distribution.IVersion;
+public interface IProperty<T> {
 
-public class ExecutableProcessConfig implements IExecutableProcessConfig {
+	T set(T value);
 
-	protected final IVersion version;
+	T setDefault(T value);
 
-	public ExecutableProcessConfig(IVersion version) {
-		this.version = version;
-	}
+	T overwriteDefault(T value);
 
-	@Override
-	public IVersion version() {
-		return version;
-	}
-
+	T get();
 }

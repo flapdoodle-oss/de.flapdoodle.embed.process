@@ -22,17 +22,9 @@ package de.flapdoodle.embed.process.config;
 
 import de.flapdoodle.embed.process.distribution.IVersion;
 
-public class ExecutableProcessConfig implements IExecutableProcessConfig {
 
-	protected final IVersion version;
+public interface IExecutableProcessConfig {
 
-	public ExecutableProcessConfig(IVersion version) {
-		this.version = version;
-	}
-
-	@Override
-	public IVersion version() {
-		return version;
-	}
+	IVersion version();
 
 }

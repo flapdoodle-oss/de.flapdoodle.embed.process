@@ -26,7 +26,8 @@ package de.flapdoodle.embed.process.distribution;
 public enum Platform {
 	Linux,
 	Windows,
-	OS_X;
+	OS_X,
+	Solaris;
 
 	public static Platform detect() {
 		String osName = System.getProperty("os.name");
@@ -36,6 +37,8 @@ public enum Platform {
 			return Windows;
 		if (osName.equals("Mac OS X"))
 			return OS_X;
+		if (osName.contains("sunos"))
+			return Solaris;
 		throw new IllegalArgumentException("Could not detect Platform: os.name=" + osName);
 	}
 }

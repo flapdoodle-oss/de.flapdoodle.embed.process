@@ -18,21 +18,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config;
+package de.flapdoodle.embed.process.config.store;
 
-import de.flapdoodle.embed.process.distribution.IVersion;
+import de.flapdoodle.embed.process.distribution.Distribution;
 
-public class ExecutableProcessConfig implements IExecutableProcessConfig {
 
-	protected final IVersion version;
-
-	public ExecutableProcessConfig(IVersion version) {
-		this.version = version;
-	}
-
-	@Override
-	public IVersion version() {
-		return version;
-	}
-
+public interface IDownloadPath {
+	String getPath(Distribution distribution);
 }

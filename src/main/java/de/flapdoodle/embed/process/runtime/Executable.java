@@ -22,17 +22,16 @@ package de.flapdoodle.embed.process.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.collect.Lists;
-
-import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
+import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 
-public abstract class Executable<T extends ExecutableProcessConfig,P extends IStopable> implements IStopable {
+public abstract class Executable<T extends IExecutableProcessConfig, P extends IStopable> implements IStopable {
 
 	private static Logger logger = Logger.getLogger(Executable.class.getName());
 
@@ -40,13 +39,12 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 	private final IRuntimeConfig runtimeConfig;
 	private final File executable;
 	private boolean stopped;
-	
-	List<IStopable> stopables=Lists.newArrayList();
+
+	List<IStopable> stopables = new ArrayList<IStopable>();
 
 	private final Distribution distribution;
 
-	public Executable(Distribution distribution, T config,
-			IRuntimeConfig runtimeConfig, File executable) {
+	public Executable(Distribution distribution, T config, IRuntimeConfig runtimeConfig, File executable) {
 		this.distribution = distribution;
 		this.config = config;
 		this.runtimeConfig = runtimeConfig;
@@ -65,16 +63,16 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 	public synchronized void cleanup() {
 		stop();
 	}
-	
+
 	public synchronized void stop() {
 		if (!stopped) {
 			for (IStopable s : stopables) {
 				s.stop();
 			}
-			stopables=Lists.newArrayList();
+			stopables = new ArrayList<IStopable>();
 
 			runtimeConfig.getArtifactStore().removeExecutable(distribution, executable);
-			
+
 			stopped = true;
 		}
 	}
@@ -96,7 +94,7 @@ public abstract class Executable<T extends ExecutableProcessConfig,P extends ISt
 
 	public synchronized P start() throws IOException {
 		if (stopped) throw new RuntimeException("Already stopped");
-		
+
 		P start = start(distribution, config, runtimeConfig);
 		logger.logp(Level.INFO, getClass().getSimpleName(),"start" ,config.toString());
 		addStopable(start);

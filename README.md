@@ -16,12 +16,12 @@ Embedded Process Util will provide a platform neutral way for running processes 
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 02.04.2013 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
+Stable (Maven Central Repository, Released: 25.08.2013 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.27</version>
+		<version>1.31</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -29,7 +29,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.28-SNAPSHOT</version>
+		<version>1.32-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -39,7 +39,24 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 ### Changelog
 
-#### 1.28 (SNAPSHOT)
+#### 1.32 (SNAPSHOT)
+
+#### 1.31
+
+- solaris support added
+
+#### 1.30
+
+- fixed daemon thread problem
+- fixed multiple stop calls problem
+
+#### 1.29
+
+- added more builder for configurations
+
+#### 1.28
+
+- added download timeout config
 
 #### 1.27
 
