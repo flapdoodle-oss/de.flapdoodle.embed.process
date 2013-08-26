@@ -38,6 +38,7 @@ import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
+import de.flapdoodle.embed.process.io.file.Files;
 
 public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable> implements IStopable {
 
@@ -50,7 +51,8 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	private final E executable;
 	private ProcessControl process;
 	private int processId;
-
+	protected File pidFile;
+	
 	private boolean stopped = false;
 
 	protected Distribution distribution;
@@ -227,5 +229,9 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 					+ "does not contain a valid pid. Content: "
 					+ fileContent);
 		}
+	}
+	
+	protected void forceWritePidFile(int pid) throws IOException {
+		Files.write(pid + "\n", pidFile);
 	}
 }
