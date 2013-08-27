@@ -93,6 +93,11 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 		return this;
 	}
 	
+	protected IProperty<Map> libraries() {
+		return property(LIBRARIES);
+	}
+
+	
 	@Override
 	public IArtifactStore build() {
 		boolean useCache = get(USE_CACHE, true);

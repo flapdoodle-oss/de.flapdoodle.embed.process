@@ -70,6 +70,11 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		set(DAEMON_PROCESS, daemonProcess);
 		return this;
 	}
+	
+	protected IProperty<Boolean> daemonProcess() {
+		return property(DAEMON_PROCESS);
+	}
+	
 
 	@Override
 	public IRuntimeConfig build() {
