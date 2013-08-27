@@ -50,7 +50,7 @@ public class ZipExtractor implements IExtractor {
 		try {
 			ZipArchiveEntry entry;
 			while ((entry = zipIn.getNextZipEntry()) != null) {
-				if (file.matcher(entry.getName()).matches()) {
+				if (!entry.isDirectory() && file.matcher(entry.getName()).matches()) {
 					if (zipIn.canReadEntryData(entry)) {
 						long size = entry.getSize();
 						Files.write(zipIn, size, destination);
