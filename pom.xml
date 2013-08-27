@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-<!--     <parent> -->
-<!--         <groupId>org.sonatype.oss</groupId> -->
-<!--         <artifactId>oss-parent</artifactId> -->
-<!--         <version>7</version> -->
-<!--     </parent> -->
-	<parent>
-        <groupId>dw.maventools</groupId>
-        <artifactId>project-pom</artifactId>
-        <version>13.5.0.5</version>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -29,19 +24,11 @@
         </license>
     </licenses>
 
-	<scm>
-        <connection>scm:git:ssh://git@git0.svc1.demandware.net:7999/TOOL/flapdoodle-process.git</connection>
-        <developerConnection>scm:git:ssh://git@git0.svc1.demandware.net:7999/TOOL/flapdoodle-process.git</developerConnection>
-      <tag>HEAD</tag>
-    </scm>
-
-<!-- 
     <scm>
         <connection>scm:git:git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</connection>
         <developerConnection>scm:git:git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</developerConnection>
         <url>git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</url>
     </scm>
- -->
  
     <!--
          https://docs.sonatype.org/display/Repository/Central+Sync+Requirements
@@ -173,7 +160,7 @@
             </plugin>
         </plugins>
     </build>
-<!-- 
+
     <profiles>
         <profile>
             <id>release-sign-artifacts</id>
@@ -203,7 +190,7 @@
             </build>
         </profile>
     </profiles>
- -->
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -232,12 +219,6 @@
             <artifactId>sigar</artifactId>
             <version>1.6.5.132-5</version>
         </dependency>
-<!--         <dependency> -->
-<!--         <groupId>org.hyperic</groupId> -->
-<!--             <artifactId>sigar-dist</artifactId> -->
-<!--             <version>1.6.5.132-5</version> -->
-<!--             <type>zip</type> -->
-<!--          </dependency> -->
          
         <dependency>
             <groupId>org.apache.commons</groupId>
