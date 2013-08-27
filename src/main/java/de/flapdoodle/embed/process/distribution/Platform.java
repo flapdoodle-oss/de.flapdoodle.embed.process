@@ -37,7 +37,7 @@ public enum Platform {
 			return Windows;
 		if (osName.equals("Mac OS X"))
 			return OS_X;
-		if (osName.contains("sunos"))
+		if (osName.contains("SunOS"))
 			return Solaris;
 		throw new IllegalArgumentException("Could not detect Platform: os.name=" + osName);
 	}

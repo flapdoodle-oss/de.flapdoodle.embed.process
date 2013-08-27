@@ -41,6 +41,8 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 #### 1.32 (SNAPSHOT)
 
+- solaris detection fixed
+
 #### 1.31
 
 - solaris support added
