@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.ILibraryStore;
 import de.flapdoodle.embed.process.config.store.IPackageResolver;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Platform;
@@ -43,9 +44,9 @@ public class ArtifactStore implements IArtifactStore {
 	private IDownloadConfig _downloadConfig;
 	private IDirectory _tempDireFactory;
 	private ITempNaming _executableNaming;
-	private Map<Platform,String[]> _libraries;
+	private ILibraryStore _libraries;
 	
-	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDireFactory,ITempNaming executableNaming,Map<Platform, String[]> libraries) {
+	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDireFactory,ITempNaming executableNaming,ILibraryStore libraries) {
 		_downloadConfig=downloadConfig;
 		_tempDireFactory = tempDireFactory;
 		_executableNaming = executableNaming;
@@ -72,7 +73,7 @@ public class ArtifactStore implements IArtifactStore {
 
 		// extract extra libraries, if any
 		if (_libraries != null) {
-			for (String lib : _libraries.get(distribution.getPlatform())) {
+			for (String lib : _libraries.getLibrary(distribution.getPlatform())) {
 				File tempDir = _tempDireFactory.asFile();
 				File libFile = new File(tempDir, lib);
 						libFile.createNewFile();
@@ -90,7 +91,7 @@ public class ArtifactStore implements IArtifactStore {
 	@Override
 	public void removeExecutable(Distribution distribution, File executable) {
 		if (_libraries != null) {
-			for (String lib : _libraries.get(distribution.getPlatform())) {
+			for (String lib : _libraries.getLibrary(distribution.getPlatform())) {
 				File library = new File(_tempDireFactory.asFile(), lib);
 				if (library.exists() && !Files.forceDelete(library))
 					logger.warning("Could not delete library NOW: " + library);				

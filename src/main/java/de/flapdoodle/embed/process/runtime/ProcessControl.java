@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -40,15 +42,15 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.ptql.ProcessFinder;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.InputSupplier;
-
 import de.flapdoodle.embed.process.collections.Collections;
 import de.flapdoodle.embed.process.config.ISupportConfig;
+import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.IStreamProcessor;
+import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 
 /**
  *
@@ -152,7 +154,7 @@ public class ProcessControl {
 			}
 
 			if (!stopped)	{
-				logger.severe(""+runtime.getName()+" NOT exited, thats why we destroy");
+//				logger.severe(""+runtime.getName()+" NOT exited, thats why we destroy");
 				process.destroy();
 			}
 		}
@@ -341,36 +343,19 @@ public class ProcessControl {
 				// windows
 				// process might be in either NOT RESPONDING due to
 				// firewall blocking, or could be RUNNING
-				// final String cmd = "tasklist.exe /FI \"PID eq " + pid
-				// + "\" /FI \"STATUS eq RUNNING\" /FO CSV";
-				final String cmd = "tasklist.exe /FI \"PID eq " + pid
-						+ "\" /FO CSV";
-				logger.fine("Command: " + cmd);
-				pidof = Runtime.getRuntime().exec(cmd);
-				int returnStatus = pidof.waitFor();
-
-				String output = CharStreams
-						.toString(new InputSupplier<InputStreamReader>() {
-							public InputStreamReader getInput()
-									throws IOException {
-								return new InputStreamReader(
-										pidof.getInputStream());
-							}
-						});
-				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("returnStatus: " + returnStatus);
-					logger.fine("tasklist.exe: " + output);
-					String error = CharStreams
-							.toString(new InputSupplier<InputStreamReader>() {
-								public InputStreamReader getInput()
-										throws IOException {
-									return new InputStreamReader(
-											pidof.getErrorStream());
-								}
-							});
-					logger.fine("tasklist.exe error: " + error);
-				}
-				return output.contains("" + pid);
+				final String[] cmd = { "tasklist.exe",
+						"/FI", "PID eq " + pid ,"/FO", "CSV" };
+				logger.finer("Command: " + Arrays.asList(cmd));
+				ProcessBuilder processBuilder = ProcessControl
+						.newProcessBuilder(Arrays.asList(cmd), true);
+				Process process = processBuilder.start();
+				// look for the PID in the output, pass it in for 'success' state
+				LogWatchStreamProcessor logWatch = new LogWatchStreamProcessor(""+pid,
+					new HashSet<String>(), StreamToLineProcessor.wrap(Processors.silent()));
+				Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
+				logWatch.waitForResult(2000);
+				logger.finer("logWatch output: " + logWatch.getOutput());
+				return logWatch.isInitWithSuccess();
 			}
 
 		} catch (IOException e) {

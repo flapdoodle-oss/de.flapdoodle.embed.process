@@ -56,7 +56,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	
 	private boolean stopped = false;
 
-	protected Distribution distribution;
+	private Distribution distribution;
 
 	public AbstractProcess(Distribution distribution, T config, IRuntimeConfig runtimeConfig, E executable)
 			throws IOException {
