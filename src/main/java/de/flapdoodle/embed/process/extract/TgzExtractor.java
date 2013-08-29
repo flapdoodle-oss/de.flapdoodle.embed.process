@@ -54,7 +54,7 @@ public class TgzExtractor implements IExtractor {
 		try {
 			TarArchiveEntry entry;
 			while ((entry = tarIn.getNextTarEntry()) != null) {
-				if (file.matcher(entry.getName()).matches()) {
+				if (!entry.isDirectory() && file.matcher(entry.getName()).matches()) {
 					if (tarIn.canReadEntryData(entry)) {
 						long size = entry.getSize();
 						Files.write(tarIn, size, destination);

@@ -18,23 +18,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config;
+package de.flapdoodle.embed.process.config.store;
 
-import de.flapdoodle.embed.process.config.io.ProcessOutput;
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.extract.ITempNaming;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
-import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
-import de.flapdoodle.embed.process.store.IArtifactStore;
+import java.util.List;
 
+import de.flapdoodle.embed.process.distribution.Platform;
 
-public interface IRuntimeConfig {
+public interface ILibraryStore {
 
-	ProcessOutput getProcessOutput();
-
-	ICommandLinePostProcessor getCommandLinePostProcessor();
-	
-	IArtifactStore getArtifactStore();
-
-	boolean isDaemonProcess();
+	List<String> getLibrary(Platform platform);
 }

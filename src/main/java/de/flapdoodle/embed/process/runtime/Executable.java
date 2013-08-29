@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
@@ -48,7 +49,11 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 		this.config = config;
 		this.runtimeConfig = runtimeConfig;
 		this.executable = executable;
-		ProcessControl.addShutdownHook(new JobKiller());
+		// only add shutdown hook for daemon processes,
+		// clis being invoked will usually die by themselves
+		if (runtimeConfig.isDaemonProcess()) {
+			ProcessControl.addShutdownHook(new JobKiller());
+		}
 	}
 
 	/**
@@ -88,10 +93,10 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 	}
 
 	public synchronized P start() throws IOException {
-		if (stopped)
-			throw new RuntimeException("Allready stopped");
+		if (stopped) throw new RuntimeException("Already stopped");
 
 		P start = start(distribution, config, runtimeConfig);
+		logger.logp(Level.INFO, getClass().getSimpleName(),"start" ,config.toString());
 		addStopable(start);
 		return start;
 	}

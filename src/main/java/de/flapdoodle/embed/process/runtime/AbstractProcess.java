@@ -22,8 +22,14 @@ package de.flapdoodle.embed.process.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
@@ -33,6 +39,7 @@ import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
+import de.flapdoodle.embed.process.io.file.Files;
 
 public abstract class AbstractProcess<T extends IExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable> implements IStopable {
 
@@ -45,7 +52,8 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	private final E executable;
 	private ProcessControl process;
 	private int processId;
-
+	protected File pidFile;
+	
 	private boolean stopped = false;
 
 	private Distribution distribution;
@@ -65,17 +73,22 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 			ProcessBuilder processBuilder = ProcessControl.newProcessBuilder(
 					runtimeConfig.getCommandLinePostProcessor().process(distribution,
-							getCommandLine(distribution, config, this.executable.getFile())), true);
+							getCommandLine(distribution, config, this.executable.getFile())),
+							getEnvironment(distribution, config, this.executable.getFile()), true);
 
 			onBeforeProcessStart(processBuilder,config, runtimeConfig);
 			
 			process = ProcessControl.start(supportConfig(), processBuilder);
 
-			ProcessControl.addShutdownHook(new JobKiller());
+			if (runtimeConfig.isDaemonProcess()) {
+				ProcessControl.addShutdownHook(new JobKiller());
+			}
 
 			onAfterProcessStart(process, runtimeConfig);
 
 		} catch (IOException iox) {
+		    	logger.severe(iox.getMessage());
+		    	logger.logp(Level.INFO, getClass().getSimpleName(),"ctor" ,config.toString());
 			stop();
 			throw iox;
 		}
@@ -102,6 +115,11 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected abstract List<String> getCommandLine(Distribution distribution, T config, File exe) throws IOException;
 
+	protected Map<String, String> getEnvironment(Distribution distribution, T config, File exe) {
+		// default implementation, override to provide your own environment
+		return new HashMap<String, String>();
+	}
+	
 	protected abstract ISupportConfig supportConfig();
 
 	public synchronized final void stop() {
@@ -140,6 +158,14 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		}
 		return false;
 	}
+	
+	protected boolean sendTermToProcess() {
+		if (processId > 0) {
+			return ProcessControl.termProcess(supportConfig(), distribution.getPlatform(),
+					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
+		}
+		return false;
+	}
 
 	protected boolean tryKillToProcess() {
 		if (processId > 0) {
@@ -147,6 +173,18 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
 		}
 		return false;
+	}
+	
+	public boolean isProcessRunning() {
+		if (getProcessId() > 0) {
+			return ProcessControl.isProcessRunning(
+					distribution.getPlatform(), getProcessId());
+		}
+		return false;
+	}
+	
+	public int getProcessId() {
+	    return processId;
 	}
 
 	/**
@@ -160,4 +198,56 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		}
 	}
 
+	protected static int getPidFromFile(File pidFile) throws IOException {
+		// wait for file to be created
+		int tries = 0;
+		while (!pidFile.exists() && tries < 5) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+				// ignore
+			}
+			logger.warning("Didn't find pid file in try " + tries
+					+ ", waiting 100ms...");
+			tries++;
+		}
+		// don't check file to be there. want to throw IOException if
+		// something happens
+		if (!pidFile.exists()) {
+			throw new IOException("Could not find pid file " + pidFile);
+		}
+
+		// read the file, wait for the pid string to appear
+		String fileContent = StringUtils.chomp(StringUtils.strip(FileUtils
+				.readFileToString(pidFile)));
+		tries = 0;
+		while (StringUtils.isBlank(fileContent) && tries < 5) {
+			fileContent = StringUtils.chomp(StringUtils.strip(FileUtils
+					.readFileToString(pidFile)));
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+				// ignore
+			}
+			tries++;
+		}
+		// check for empty file
+		if (StringUtils.isBlank(fileContent)) {
+			throw new IOException("Pidfile " + pidFile
+					+ "does not contain a pid. Waited for " + tries
+					* 100 + "ms.");
+		}
+		// pidfile exists and has content
+		try {
+			return Integer.parseInt(fileContent);
+		} catch (NumberFormatException e) {
+			throw new IOException("Pidfile " + pidFile
+					+ "does not contain a valid pid. Content: "
+					+ fileContent);
+		}
+	}
+	
+	protected void forceWritePidFile(int pid) throws IOException {
+		Files.write(pid + "\n", pidFile);
+	}
 }

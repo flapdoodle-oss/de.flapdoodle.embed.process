@@ -20,30 +20,37 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.ptql.ProcessFinder;
+
 import de.flapdoodle.embed.process.collections.Collections;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
+import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.IStreamProcessor;
+import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 
 /**
  *
@@ -59,11 +66,16 @@ public class ProcessControl {
 	private InputStreamReader error;
 
 	private Integer pid;
+	private File workDir;
+	private List<String> commands;
+
 	private ISupportConfig runtime;
 
-	public ProcessControl(ISupportConfig runtime, Process process) {
+	public ProcessControl(ISupportConfig runtime, List<String> commands, File workDir, Process process) {
 		this.process = process;
 		this.runtime = runtime;
+		this.workDir = workDir;
+		this.commands = commands;
 		reader = new InputStreamReader(this.process.getInputStream());
 		error = new InputStreamReader(this.process.getErrorStream());
 		pid = getProcessID();
@@ -103,7 +115,7 @@ public class ProcessControl {
 		try {
 			returnCode=process.exitValue();
 		} catch (IllegalThreadStateException itsx) {
-			
+		    	logger.info("stopOrDestroyProcess: "+itsx.getMessage() +" "+itsx.getCause() );
 			Callable<Integer> callable=new Callable<Integer>() {
 				
 				@Override
@@ -127,6 +139,14 @@ public class ProcessControl {
 			
 			try {
 				returnCode=task.get(900, TimeUnit.MILLISECONDS);
+				stopped=true;
+			} catch (InterruptedException e) {
+			} catch (ExecutionException e) {
+			} catch (TimeoutException e) {
+			}
+
+			try {
+				returnCode=task.get(2000, TimeUnit.MILLISECONDS);
 				stopped=true;
 			} catch (InterruptedException e) {
 			} catch (ExecutionException e) {
@@ -199,11 +219,18 @@ public class ProcessControl {
 	}
 
 	public static ProcessControl start(ISupportConfig runtime, ProcessBuilder processBuilder) throws IOException {
-		return new ProcessControl(runtime,processBuilder.start());
+		return new ProcessControl(runtime, processBuilder.command(), processBuilder.directory(), processBuilder.start());
 	}
 
 	public static ProcessBuilder newProcessBuilder(List<String> commandLine, boolean redirectErrorStream) {
+		return newProcessBuilder(commandLine,new HashMap<String,String>(), redirectErrorStream);
+	}
+	
+	public static ProcessBuilder newProcessBuilder(List<String> commandLine, Map<String,String> environment, boolean redirectErrorStream) {
 		ProcessBuilder processBuilder = new ProcessBuilder(commandLine);
+		if (!environment.isEmpty()){
+			processBuilder.environment().putAll(environment);
+		}
 		if (redirectErrorStream)
 			processBuilder.redirectErrorStream();
 		return processBuilder;
@@ -235,6 +262,14 @@ public class ProcessControl {
 		}
 		return false;
 	}
+	
+	public static boolean termProcess(ISupportConfig support,Platform platform, IStreamProcessor output, int pid) {
+	    if ((platform == Platform.Linux) || (platform == Platform.OS_X)) {
+		return executeCommandLine(support, "[term process]",
+			new ProcessConfig(Collections.newArrayList("kill", "" + pid), output));
+	    }
+	    return false;
+	}
 
 	public static boolean tryKillProcess(ISupportConfig support,Platform platform, IStreamProcessor output, int pid) {
 		if (platform == Platform.Windows) {
@@ -245,6 +280,7 @@ public class ProcessControl {
 	}
 
 	private Integer getProcessID() {
+		// that should work on Linux/MacOS for the most part
 		Class<?> clazz = process.getClass();
 		try {
 			if (clazz.getName().equals("java.lang.UNIXProcess")) {
@@ -252,6 +288,7 @@ public class ProcessControl {
 				pidField.setAccessible(true);
 				Object value = pidField.get(process);
 				if (value instanceof Integer) {
+					logger.fine("Detected pid: " + value);
 					return (Integer) value;
 				}
 			}
@@ -264,6 +301,21 @@ public class ProcessControl {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
+		// Windows: try to use Sigar to find out process id
+		long pid;
+		try {
+			Sigar sigar = new Sigar();
+			// supply command name, this will be something like
+			// extract<md5hash>, so somewhat reliable. could also query for
+			// workdir but would need to infer that from parent java process.
+			ProcessFinder find = new ProcessFinder(sigar);
+			String exeFilename = new File(commands.get(0)).getName();
+			pid = find.findSingleProcess("Exe.Name.ct=" + exeFilename);
+			logger.fine("Detected pid: " + pid);
+			return (int) pid;
+		} catch (SigarException e) {
+			// ignore, will throw if there is no process matching the pattern
+		}		
 		return null;
 	}
 
@@ -273,5 +325,49 @@ public class ProcessControl {
 
 	public static void addShutdownHook(Runnable runable) {
 		Runtime.getRuntime().addShutdownHook(new Thread(runable));
+	}
+	
+	public Integer getPid() {
+		return pid;
+	}
+
+	public static boolean isProcessRunning(Platform platform, int pid) {
+
+		try {
+			final Process pidof;
+			if (platform == Platform.Linux || platform == Platform.OS_X) {
+				pidof = Runtime.getRuntime().exec(
+						new String[] { "kill", "-0", "" + pid });
+				return pidof.waitFor() == 0;
+			} else {
+				// windows
+				// process might be in either NOT RESPONDING due to
+				// firewall blocking, or could be RUNNING
+				final String[] cmd = { "tasklist.exe",
+						"/FI", "PID eq " + pid ,"/FO", "CSV" };
+				logger.finer("Command: " + Arrays.asList(cmd));
+				ProcessBuilder processBuilder = ProcessControl
+						.newProcessBuilder(Arrays.asList(cmd), true);
+				Process process = processBuilder.start();
+				// look for the PID in the output, pass it in for 'success' state
+				LogWatchStreamProcessor logWatch = new LogWatchStreamProcessor(""+pid,
+					new HashSet<String>(), StreamToLineProcessor.wrap(Processors.silent()));
+				Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
+				logWatch.waitForResult(2000);
+				logger.finer("logWatch output: " + logWatch.getOutput());
+				return logWatch.isInitWithSuccess();
+			}
+
+		} catch (IOException e) {
+			logger.severe("IOException when trying to get process status:"
+					+ e.getMessage());
+			e.printStackTrace();
+
+		} catch (InterruptedException e) {
+			logger.severe("IOException when trying to get process status:"
+					+ e.getMessage());
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

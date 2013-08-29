@@ -32,6 +32,7 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 	private static final TypedProperty<IArtifactStore> ARTIFACT_STORE = TypedProperty.with("ArtifactStore", IArtifactStore.class);
 	private static final TypedProperty<ProcessOutput> PROCESS_OUTPUT = TypedProperty.with("ProcessOutput", ProcessOutput.class);
 	private static final TypedProperty<ICommandLinePostProcessor> CMD_POSTPROCESSOR = TypedProperty.with("CommandLinePostProcessor", ICommandLinePostProcessor.class);
+	private static final TypedProperty<Boolean> DAEMON_PROCESS = TypedProperty.with("DaemonProcess", Boolean.class);
 
 	public RuntimeConfigBuilder artifactStore(AbstractBuilder<IArtifactStore> artifactStoreBuilder) {
 		return artifactStore(artifactStoreBuilder.build());
@@ -55,6 +56,7 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		return property(PROCESS_OUTPUT);
 	}
 	
+
 	public RuntimeConfigBuilder commandLinePostProcessor(ICommandLinePostProcessor commandLinePostProcessor) {
 		set(CMD_POSTPROCESSOR, commandLinePostProcessor);
 		return this;
@@ -64,13 +66,24 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		return property(CMD_POSTPROCESSOR);
 	}
 	
+	public RuntimeConfigBuilder daemonProcess(boolean daemonProcess) {
+		set(DAEMON_PROCESS, daemonProcess);
+		return this;
+	}
+	
+	protected IProperty<Boolean> daemonProcess() {
+		return property(DAEMON_PROCESS);
+	}
+	
+
 	@Override
 	public IRuntimeConfig build() {
 		IArtifactStore artifactStore = get(ARTIFACT_STORE);
 		ProcessOutput processOutput = get(PROCESS_OUTPUT);
 		ICommandLinePostProcessor commandLinePostProcessor = get(CMD_POSTPROCESSOR);
+		Boolean daemonProcess = get(DAEMON_PROCESS, true);
 
-		return new ImmutableRuntimeConfig(artifactStore, processOutput, commandLinePostProcessor);
+		return new ImmutableRuntimeConfig(artifactStore, processOutput, commandLinePostProcessor, daemonProcess);
 	}
 
 	static class ImmutableRuntimeConfig implements IRuntimeConfig {
@@ -78,13 +91,15 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		private final ProcessOutput _processOutput;
 		private final ICommandLinePostProcessor _commandLinePostProcessor;
 		private final IArtifactStore _artifactStore;
+		private final boolean _daemonProcess;
 
 		public ImmutableRuntimeConfig(IArtifactStore artifactStore, ProcessOutput processOutput,
-				ICommandLinePostProcessor commandLinePostProcessor) {
+				ICommandLinePostProcessor commandLinePostProcessor, boolean daemonProcess) {
 			super();
 			_artifactStore = artifactStore;
 			_processOutput = processOutput;
 			_commandLinePostProcessor = commandLinePostProcessor;
+			_daemonProcess = daemonProcess;
 		}
 
 		@Override
@@ -100,6 +115,11 @@ public class RuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
 		@Override
 		public IArtifactStore getArtifactStore() {
 			return _artifactStore;
+		}
+
+		@Override
+		public boolean isDaemonProcess() {
+			return _daemonProcess;
 		}
 
 	}

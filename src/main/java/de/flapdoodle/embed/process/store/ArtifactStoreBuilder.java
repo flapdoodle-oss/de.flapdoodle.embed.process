@@ -20,12 +20,15 @@
  */
 package de.flapdoodle.embed.process.store;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.ILibraryStore;
+import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 
@@ -36,6 +39,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	private static final TypedProperty<IDirectory> TEMP_DIR_FACTORY = TypedProperty.with("TempDir",IDirectory.class);
 	private static final TypedProperty<IDownloadConfig> DOWNLOAD_CONFIG = TypedProperty.with("DownloadConfig",IDownloadConfig.class);
 	private static final TypedProperty<Boolean> USE_CACHE = TypedProperty.with("UseCache",Boolean.class);
+	private static final TypedProperty<ILibraryStore> LIBRARIES = TypedProperty.with("Libraries", ILibraryStore.class);
 	
 	public ArtifactStoreBuilder download(AbstractBuilder<IDownloadConfig> downloadConfigBuilder) {
 		return download(downloadConfigBuilder.build());
@@ -85,13 +89,23 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 		return useCache(cache);
 	}
 	
+	public ArtifactStoreBuilder libraries(ILibraryStore libraries) {
+		set(LIBRARIES, libraries);
+		return this;
+	}
+	
+	protected IProperty<ILibraryStore> libraries() {
+		return property(LIBRARIES);
+	}
+
+	
 	@Override
 	public IArtifactStore build() {
 		boolean useCache = get(USE_CACHE, true);
 		
-		logger.severe("Build ArtifactStore(useCache:"+useCache+")");
+		logger.fine("Build ArtifactStore(useCache:"+useCache+")");
 		
-		IArtifactStore artifactStore = new ArtifactStore(get(DOWNLOAD_CONFIG),get(TEMP_DIR_FACTORY), get(EXECUTABLE_NAMING));
+		IArtifactStore artifactStore = new ArtifactStore(get(DOWNLOAD_CONFIG),get(TEMP_DIR_FACTORY), get(EXECUTABLE_NAMING), get(LIBRARIES, null));
 		if (useCache) {
 			artifactStore=new CachingArtifactStore(artifactStore);
 		}
