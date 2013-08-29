@@ -198,7 +198,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		}
 	}
 
-	protected int getPidFromFile(File pidFile) throws IOException {
+	protected static int getPidFromFile(File pidFile) throws IOException {
 		// wait for file to be created
 		int tries = 0;
 		while (!pidFile.exists() && tries < 5) {
