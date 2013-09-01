@@ -192,6 +192,10 @@
         </profile>
     </profiles>
 
+		<properties>
+			<jna.version>4.0.0</jna.version>
+		</properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -215,11 +219,25 @@
            <version>3.1</version>
         </dependency>
         
+        <!--
+        Sigar is not in central repository.
          <dependency>
             <groupId>org.hyperic</groupId>
             <artifactId>sigar</artifactId>
             <version>1.6.5.132-5</version>
         </dependency>
+        -->
+        
+				<dependency>
+					<groupId>net.java.dev.jna</groupId>
+					<artifactId>jna</artifactId>
+					<version>${jna.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>net.java.dev.jna</groupId>
+					<artifactId>jna-platform</artifactId>
+					<version>${jna.version}</version>
+				</dependency>
          
         <dependency>
             <groupId>org.apache.commons</groupId>

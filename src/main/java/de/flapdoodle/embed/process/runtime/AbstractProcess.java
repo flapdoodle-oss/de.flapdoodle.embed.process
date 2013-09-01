@@ -153,7 +153,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected boolean sendKillToProcess() {
 		if (processId > 0) {
-			return ProcessControl.killProcess(supportConfig(), distribution.getPlatform(),
+			return Processes.killProcess(supportConfig(), distribution.getPlatform(),
 					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
 		}
 		return false;
@@ -161,7 +161,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	
 	protected boolean sendTermToProcess() {
 		if (processId > 0) {
-			return ProcessControl.termProcess(supportConfig(), distribution.getPlatform(),
+			return Processes.termProcess(supportConfig(), distribution.getPlatform(),
 					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
 		}
 		return false;
@@ -169,7 +169,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected boolean tryKillToProcess() {
 		if (processId > 0) {
-			return ProcessControl.tryKillProcess(supportConfig(), distribution.getPlatform(),
+			return Processes.tryKillProcess(supportConfig(), distribution.getPlatform(),
 					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
 		}
 		return false;
@@ -177,7 +177,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	
 	public boolean isProcessRunning() {
 		if (getProcessId() > 0) {
-			return ProcessControl.isProcessRunning(
+			return Processes.isProcessRunning(
 					distribution.getPlatform(), getProcessId());
 		}
 		return false;

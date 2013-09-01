@@ -41,4 +41,8 @@ public enum Platform {
 			return Solaris;
 		throw new IllegalArgumentException("Could not detect Platform: os.name=" + osName);
 	}
+	
+	public boolean isUnixLike() {
+		return this!=Windows;
+	}
 }

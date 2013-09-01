@@ -83,7 +83,7 @@ public class FileCleaner {
 
 	static class Cleaner {
 
-		Map<File, Integer> fileToClean = new HashMap<File, Integer>();
+		private final Map<File, Integer> fileToClean = new HashMap<File, Integer>();
 
 		public void clean() {
 			while (true)
@@ -97,20 +97,22 @@ public class FileCleaner {
 				}
 		}
 
-		protected void deleteFiles() {
-			Map<File, Integer> copy = new HashMap<File, Integer>(fileToClean);
-			for (File f : copy.keySet()) {
-				try {
-					FileUtils.forceDelete(f);
-					fileToClean.remove(f);
-					logger.info("Could delete " + f);
-				} catch (IOException iox) {
-					int newCounter = fileToClean.get(f) + 1;
-					if (newCounter > MAX_RETRIES) {
-						logger.log(Level.SEVERE, "Could not delete " + f + " after " + newCounter + " retries, leave it unchanged");
+		private void deleteFiles() {
+			synchronized (fileToClean) {
+				Map<File, Integer> copy = new HashMap<File, Integer>(fileToClean);
+				for (File f : copy.keySet()) {
+					try {
+						FileUtils.forceDelete(f);
 						fileToClean.remove(f);
-					} else {
-						fileToClean.put(f, newCounter);
+						logger.info("Could delete " + f);
+					} catch (IOException iox) {
+						int newCounter = fileToClean.get(f) + 1;
+						if (newCounter > MAX_RETRIES) {
+							logger.log(Level.SEVERE, "Could not delete " + f + " after " + newCounter + " retries, leave it unchanged");
+							fileToClean.remove(f);
+						} else {
+							fileToClean.put(f, newCounter);
+						}
 					}
 				}
 			}
