@@ -38,7 +38,7 @@ public class AbstractEmbeddedBuilder<B> {
 	protected <T> T setDefault(TypedProperty<T> property, T value) {
 		T old = set(property, value);
 		if (!propertyHadDefaultValueMap.add(property)) {
-			throw new RuntimeException("" + property + " is allready set with default value");
+			throw new RuntimeException("" + property + " is already set with default value");
 		}
 		return old;
 	}
@@ -54,7 +54,7 @@ public class AbstractEmbeddedBuilder<B> {
 		boolean onlyDefaultValueWasSet = propertyHadDefaultValueMap.remove(property);
 
 		if ((old != null) && (!onlyDefaultValueWasSet)) {
-			throw new RuntimeException("" + property + " allready set to " + old);
+			throw new RuntimeException("" + property + " already set to " + old);
 		}
 		return old;
 	}
