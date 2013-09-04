@@ -53,7 +53,9 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 	
 	@Override
 	public List<File> files(FileType type) {
-		return _files.get(type);
+		List<File> ret = _files.get(type);
+		if (ret==null) ret=Collections.emptyList();
+		return ret;
 	}
 	
 	public static Builder builder() {
