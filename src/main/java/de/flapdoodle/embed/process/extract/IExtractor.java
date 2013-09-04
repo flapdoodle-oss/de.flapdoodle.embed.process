@@ -22,8 +22,10 @@ package de.flapdoodle.embed.process.extract;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.regex.Pattern;
 
+import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 
 /**
@@ -31,6 +33,6 @@ import de.flapdoodle.embed.process.config.store.IDownloadConfig;
  */
 public interface IExtractor {
 
-	void extract(IDownloadConfig runtime, File source, File destination, Pattern file) throws IOException;
+	IExtractedFileSet extract(IDownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException;
 
 }

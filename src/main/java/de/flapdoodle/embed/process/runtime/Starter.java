@@ -29,6 +29,7 @@ import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.exceptions.DistributionException;
+import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.store.IArtifactStore;
 
 
@@ -53,7 +54,7 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 			
 			if (artifactStore.checkDistribution(distribution)) {
 //				progress.done("Check Distribution");
-				File exe = runtime.getArtifactStore().extractExe(distribution);
+				IExtractedFileSet exe = runtime.getArtifactStore().extractExe(distribution);
 
 				return newExecutable(config, distribution, runtime, exe);
 			} else {
@@ -65,5 +66,5 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 		}
 	}
 
-	protected abstract EXECUTABLE newExecutable(CONFIG config, Distribution distribution, IRuntimeConfig runtime, File exe);
+	protected abstract EXECUTABLE newExecutable(CONFIG config, Distribution distribution, IRuntimeConfig runtime, IExtractedFileSet exe);
 }

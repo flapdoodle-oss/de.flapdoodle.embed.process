@@ -23,48 +23,64 @@ package de.flapdoodle.embed.process.extract;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.regex.Pattern;
 
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 
+import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.extract.AbstractExtractor.ArchiveWrapper;
 import de.flapdoodle.embed.process.io.file.Files;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
 /**
  *
  */
-public class ZipExtractor implements IExtractor {
-	@Override
-	public void extract(IDownloadConfig runtime, File source, File destination, Pattern file) throws IOException {
-		IProgressListener progressListener = runtime.getProgressListener();
-		String progressLabel = "Extract " + source;
-		progressListener.start(progressLabel);
+public class ZipExtractor extends AbstractExtractor {
 
+	@Override
+	protected ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException {
 		FileInputStream fin = new FileInputStream(source);
 		BufferedInputStream in = new BufferedInputStream(fin);
 
 		ZipArchiveInputStream zipIn = new ZipArchiveInputStream(in);
-		try {
-			ZipArchiveEntry entry;
-			while ((entry = zipIn.getNextZipEntry()) != null) {
-				if (!entry.isDirectory() && file.matcher(entry.getName()).matches()) {
-					if (zipIn.canReadEntryData(entry)) {
-						long size = entry.getSize();
-						Files.write(zipIn, size, destination);
-						destination.setExecutable(true);
-						progressListener.done(progressLabel);
-					}
-					break;
+		return new ZipArchiveWrapper(zipIn);
+	}
+	
+	protected static class ZipArchiveWrapper implements ArchiveWrapper {
+		
+		private final ZipArchiveInputStream _is;
 
-				}
-			}
+		public ZipArchiveWrapper(ZipArchiveInputStream is) {
+			_is = is;
+		}
 
-		} finally {
-			zipIn.close();
+		@Override
+		public ArchiveEntry getNextEntry() throws IOException {
+			return _is.getNextZipEntry();
+		}
+
+		@Override
+		public boolean canReadEntryData(ArchiveEntry entry) {
+			return _is.canReadEntryData(entry);
+		}
+
+		@Override
+		public void close() throws IOException {
+			_is.close();
+		}
+
+		@Override
+		public InputStream asStream() {
+			return _is;
 		}
 
 	}
+
 }

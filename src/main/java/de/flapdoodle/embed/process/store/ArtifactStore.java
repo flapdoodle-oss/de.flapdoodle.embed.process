@@ -22,16 +22,25 @@ package de.flapdoodle.embed.process.store;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.config.store.ILibraryStore;
 import de.flapdoodle.embed.process.config.store.IPackageResolver;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.extract.Extractors;
+import de.flapdoodle.embed.process.extract.FilesToExtract;
+import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.IExtractor;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
@@ -42,15 +51,13 @@ public class ArtifactStore implements IArtifactStore {
 	private static Logger logger = Logger.getLogger(ArtifactStore.class.getName());
 
 	private IDownloadConfig _downloadConfig;
-	private IDirectory _tempDireFactory;
+	private IDirectory _tempDirFactory;
 	private ITempNaming _executableNaming;
-	private ILibraryStore _libraries;
 	
-	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDireFactory,ITempNaming executableNaming,ILibraryStore libraries) {
+	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDirFactory,ITempNaming executableNaming) {
 		_downloadConfig=downloadConfig;
-		_tempDireFactory = tempDireFactory;
+		_tempDirFactory = tempDirFactory;
 		_executableNaming = executableNaming;
-		_libraries = libraries;
 	}
 	
 	@Override
@@ -62,42 +69,42 @@ public class ArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public File extractExe(Distribution distribution) throws IOException {
+	public IExtractedFileSet extractExe(Distribution distribution) throws IOException {
 		IPackageResolver packageResolver = _downloadConfig.getPackageResolver();
 		File artifact = LocalArtifactStore.getArtifact(_downloadConfig, distribution);
 		IExtractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));
 
-		File exe = Files.createTempFile(_tempDireFactory,
-				_executableNaming.nameFor("extract", packageResolver.executableFilename(distribution)));
-		extractor.extract(_downloadConfig, artifact, exe, packageResolver.executeablePattern(distribution));
+		IExtractedFileSet extracted=extractor.extract(_downloadConfig, artifact, new FilesToExtract(_tempDirFactory, _executableNaming, packageResolver.getFileSet(distribution)));
+		
+//		File exe = Files.createTempFile(_tempDirFactory,
+//				_executableNaming.nameFor("extract", packageResolver.executableFilename(distribution)));
+//		extractor.extract(_downloadConfig, artifact, exe, packageResolver.executeablePattern(distribution));
 
-		// extract extra libraries, if any
-		if (_libraries != null) {
-			for (String lib : _libraries.getLibrary(distribution.getPlatform())) {
-				File tempDir = _tempDireFactory.asFile();
-				File libFile = new File(tempDir, lib);
-						libFile.createNewFile();
-					extractor.extract(_downloadConfig, artifact,
-							libFile, libraryPattern(distribution,lib));
-			}
-		}
-		return exe;
-	}
-
-	private Pattern libraryPattern(Distribution distribution, String libname) {
-		return Pattern.compile(".*" + libname, Pattern.CASE_INSENSITIVE);
+//		// extract extra libraries, if any
+//		List<File> libraryFiles=new ArrayList<File>();
+//		
+//		for (String lib : packageResolver.libraryFiles(distribution)) {
+//			File tempDir = _tempDirFactory.asFile();
+//			File libFile = new File(tempDir, lib);
+//					libFile.createNewFile();
+//				extractor.extract(_downloadConfig, artifact,
+//						libFile, libraryPattern(distribution,lib));
+//				libraryFiles.add(libFile);
+//		}
+		return extracted;
 	}
 
 	@Override
-	public void removeExecutable(Distribution distribution, File executable) {
-		if (_libraries != null) {
-			for (String lib : _libraries.getLibrary(distribution.getPlatform())) {
-				File library = new File(_tempDireFactory.asFile(), lib);
-				if (library.exists() && !Files.forceDelete(library))
-					logger.warning("Could not delete library NOW: " + library);				
+	public void removeExecutable(Distribution distribution, IExtractedFileSet all) {
+		for (FileType type : EnumSet.complementOf(EnumSet.of(FileType.Executable))) {
+			for (File file : all.files(type)) {
+				if (file.exists() && !Files.forceDelete(file))
+					logger.warning("Could not delete "+type+" NOW: " + file);				
 			}
 		}
-		if (executable.exists() && !Files.forceDelete(executable))
-			logger.warning("Could not delete executable NOW: " + executable);
+		File exe=all.executable();
+		if (exe.exists() && !Files.forceDelete(exe)) {
+			logger.warning("Could not delete executable NOW: " + exe);
+		}
 	}
 }

@@ -20,10 +20,9 @@
  */
 package de.flapdoodle.embed.process.example;
 
-import java.io.File;
-
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.Starter;
 
 public class GenericStarter extends Starter<GenericProcessConfig, GenericExecuteable, GenericProcess> {
@@ -34,7 +33,7 @@ public class GenericStarter extends Starter<GenericProcessConfig, GenericExecute
 
 	@Override
 	protected GenericExecuteable newExecutable(GenericProcessConfig config, Distribution distribution,
-			IRuntimeConfig runtimeConfig, File executable) {
+			IRuntimeConfig runtimeConfig, IExtractedFileSet executable) {
 		return new GenericExecuteable(distribution, config, runtimeConfig, executable);
 	}
 }

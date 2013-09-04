@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 
 public abstract class Executable<T extends IExecutableProcessConfig, P extends IStopable> implements IStopable {
 
@@ -37,14 +38,14 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 
 	private final T config;
 	private final IRuntimeConfig runtimeConfig;
-	private final File executable;
+	private final IExtractedFileSet executable;
 	private boolean stopped;
 
 	List<IStopable> stopables = new ArrayList<IStopable>();
 
 	private final Distribution distribution;
 
-	public Executable(Distribution distribution, T config, IRuntimeConfig runtimeConfig, File executable) {
+	public Executable(Distribution distribution, T config, IRuntimeConfig runtimeConfig, IExtractedFileSet executable) {
 		this.distribution = distribution;
 		this.config = config;
 		this.runtimeConfig = runtimeConfig;
@@ -88,7 +89,7 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 		}
 	}
 
-	public File getFile() {
+	public IExtractedFileSet getFile() {
 		return executable;
 	}
 

@@ -20,8 +20,10 @@
  */
 package de.flapdoodle.embed.process.example;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.omg.CORBA._PolicyStub;
@@ -34,6 +36,7 @@ import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.config.store.DownloadConfigBuilder;
+import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.IPackageResolver;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
@@ -112,7 +115,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		
 		private static final TypedProperty<ArchivePathMap> ARCHIVEPATH_MAP = TypedProperty.with("ArchivePath",ArchivePathMap.class);
 		private static final TypedProperty<ArchiveTypeMap> ARCHIVETYPE_MAP = TypedProperty.with("ArchiveType",ArchiveTypeMap.class);
-		private static final TypedProperty<ExecMap> EXEC_MAP = TypedProperty.with("Executable",ExecMap.class);
+		private static final TypedProperty<FileSetMap> FILESET_MAP = TypedProperty.with("FileSetMap",FileSetMap.class);
 		private final GenericRuntimeConfigBuilder _parent;
 
 		public GenericPackageResolverBuilder(GenericRuntimeConfigBuilder parent) {
@@ -129,9 +132,9 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		}
 
 
-		public GenericPackageResolverBuilder executeable(Distribution distribution,String filename) {
-			Map<Distribution, String> map = getAndSet(EXEC_MAP, new ExecMap(new HashMap<Distribution, String>())).value();
-			if (map.put(distribution, filename)!=null) {
+		public GenericPackageResolverBuilder files(Distribution distribution,FileSet files) {
+			Map<Distribution, FileSet> map = getAndSet(FILESET_MAP, new FileSetMap(new HashMap<Distribution, FileSet>())).value();
+			if (map.put(distribution, files)!=null) {
 				throw new RuntimeException("executable for "+distribution+" allready set");
 			}
 			return this;
@@ -154,16 +157,16 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		}
 		
 		public GenericRuntimeConfigBuilder build() {
-			Map<Distribution, String> execMap = get(EXEC_MAP).value();
+			Map<Distribution, FileSet> execMap = get(FILESET_MAP).value();
 			Map<Distribution, ArchiveType> arcTypeMap = get(ARCHIVETYPE_MAP).value();
 			Map<Distribution, String> archivePathMap = get(ARCHIVEPATH_MAP).value();
 			return _parent.packageResolver(new MapGenericPackageResolver(execMap,arcTypeMap,archivePathMap));
 		}
 	}
 	
-	static class ExecMap extends ImmutableContainer<Map<Distribution, String>> {
+	static class FileSetMap extends ImmutableContainer<Map<Distribution, FileSet>> {
 
-		public ExecMap(Map<Distribution, String> value) {
+		public FileSetMap(Map<Distribution, FileSet> value) {
 			super(value);
 		}
 	}
@@ -184,26 +187,27 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 	
 	static class MapGenericPackageResolver implements IPackageResolver {
 
-		private final Map<Distribution, String> _execNames;
+		private final Map<Distribution, FileSet> _fileSets;
+		
 		private final Map<Distribution, ArchiveType> _arcTypeMap;
 		private final Map<Distribution, String> _archivePathMap;
 		
-		public MapGenericPackageResolver(Map<Distribution, String> execNames, Map<Distribution, ArchiveType> arcTypeMap, Map<Distribution, String> archivePathMap) {
-			_execNames = execNames;
+		public MapGenericPackageResolver(Map<Distribution, FileSet> fileSets, Map<Distribution, ArchiveType> arcTypeMap, Map<Distribution, String> archivePathMap) {
+			_fileSets=fileSets;
 			_arcTypeMap = arcTypeMap;
 			_archivePathMap = archivePathMap;
 		}
 		
+//		@Deprecated
+//		public Pattern executeablePattern(Distribution distribution) {
+//			return Pattern.compile(".*"+executableFilename(distribution));
+//		}
+		
 		@Override
-		public Pattern executeablePattern(Distribution distribution) {
-			return Pattern.compile(".*"+executableFilename(distribution));
+		public FileSet getFileSet(Distribution distribution) {
+			return _fileSets.get(distribution);
 		}
-
-		@Override
-		public String executableFilename(Distribution distribution) {
-			return _execNames.get(distribution);
-		}
-
+		
 		@Override
 		public ArchiveType getArchiveType(Distribution distribution) {
 			return _arcTypeMap.get(distribution);
@@ -213,7 +217,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		public String getPath(Distribution distribution) {
 			return _archivePathMap.get(distribution);
 		}
-		
+
 	}
 
 }

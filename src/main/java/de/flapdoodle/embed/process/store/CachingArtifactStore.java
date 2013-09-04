@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
 
 public class CachingArtifactStore implements IArtifactStore {
@@ -40,7 +41,7 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	Object _lock=new Object();
 	
-	HashMap<Distribution, FileWithCounter> _distributionFiles = new HashMap<Distribution, FileWithCounter>();
+	HashMap<Distribution, FilesWithCounter> _distributionFiles = new HashMap<Distribution, FilesWithCounter>();
 
 	public CachingArtifactStore(IArtifactStore delegate) {
 		_delegate = delegate;
@@ -56,15 +57,15 @@ public class CachingArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public File extractExe(Distribution distribution) throws IOException {
+	public IExtractedFileSet extractExe(Distribution distribution) throws IOException {
 		
-		FileWithCounter fileWithCounter;
+		FilesWithCounter fileWithCounter;
 		
 		synchronized (_lock) {
 			fileWithCounter = _distributionFiles.get(distribution);
 			if (fileWithCounter == null) {
 				_logger.fine("cache NOT found for "+distribution);
-				fileWithCounter=new FileWithCounter(distribution);
+				fileWithCounter=new FilesWithCounter(distribution);
 				_distributionFiles.put(distribution, fileWithCounter);
 			} else {
 				_logger.fine("cache found for "+distribution);
@@ -75,8 +76,8 @@ public class CachingArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public void removeExecutable(Distribution distribution, File executable) {
-		FileWithCounter fileWithCounter;
+	public void removeExecutable(Distribution distribution, IExtractedFileSet executable) {
+		FilesWithCounter fileWithCounter;
 		synchronized (_lock) {
 			fileWithCounter = _distributionFiles.get(distribution);
 		}
@@ -89,7 +90,7 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	protected void removeAll() {
 		synchronized (_lock) {
-			for (FileWithCounter fc : _distributionFiles.values()) {
+			for (FilesWithCounter fc : _distributionFiles.values()) {
 				fc.forceDelete();
 			}
 			_distributionFiles.clear();
@@ -98,30 +99,30 @@ public class CachingArtifactStore implements IArtifactStore {
 	
 	public void removeUnused() {
 		synchronized (_lock) {
-			for (FileWithCounter fc : _distributionFiles.values()) {
+			for (FilesWithCounter fc : _distributionFiles.values()) {
 				fc.cleanup();
 			}
 		}
 	}
 
 
-	class FileWithCounter {
+	class FilesWithCounter {
 
-		private File _file;
+		private IExtractedFileSet _file;
 		int _counter=0;
 		private final Distribution _distribution;
 
-		public FileWithCounter(Distribution distribution) {
+		public FilesWithCounter(Distribution distribution) {
 			_distribution = distribution;
 		}
 
-		public synchronized void free(File executable) {
+		public synchronized void free(IExtractedFileSet executable) {
 			if (executable!=_file) throw new RuntimeException("Files does not match: "+_file+" != "+executable);
 			_logger.fine("Free "+_counter+" "+_file);
 			_counter--;
 		}
 
-		public synchronized File use() throws IOException {
+		public synchronized IExtractedFileSet use() throws IOException {
 			_counter++;
 			
 			if (_file==null) {

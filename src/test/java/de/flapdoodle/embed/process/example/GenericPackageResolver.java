@@ -20,21 +20,28 @@
  */
 package de.flapdoodle.embed.process.example;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.regex.Pattern;
 
+import de.flapdoodle.embed.process.config.store.FileSet;
+import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.IPackageResolver;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 
+/**
+ * @see GenericRuntimeConfigBuilder.MapGenericPackageResolver
+ * @author mosmann
+ *
+ */
 @Deprecated
 public class GenericPackageResolver implements IPackageResolver {
 
-	@Override
 	public Pattern executeablePattern(Distribution distribution) {
 		return Pattern.compile(".*"+executableFilename(distribution));
 	}
 
-	@Override
 	public String executableFilename(Distribution distribution) {
 		switch (distribution.getPlatform()) {
 			case Windows:
@@ -42,6 +49,19 @@ public class GenericPackageResolver implements IPackageResolver {
 		}
 		return "phantomjs";
 	}
+
+	@Override
+	public FileSet getFileSet(Distribution distribution) {
+		String execName="phantomjs";
+		switch (distribution.getPlatform()) {
+			case Windows:
+				execName="phantomjs.exe";
+				break;
+		}
+		
+		return FileSet.builder().addEntry(FileType.Executable,execName).build();
+	}
+	
 
 	@Override
 	public ArchiveType getArchiveType(Distribution distribution) {
@@ -81,5 +101,4 @@ public class GenericPackageResolver implements IPackageResolver {
 		}
 		return "phantomjs-"+distribution.getVersion().asInDownloadPath()+"-"+packagePrefix+bitVersion+packageExtension;
 	}
-	
 }

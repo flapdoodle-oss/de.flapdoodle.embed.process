@@ -37,6 +37,7 @@ import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.io.file.Files;
@@ -113,9 +114,9 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.getError()));
 	}
 
-	protected abstract List<String> getCommandLine(Distribution distribution, T config, File exe) throws IOException;
+	protected abstract List<String> getCommandLine(Distribution distribution, T config, IExtractedFileSet exe) throws IOException;
 
-	protected Map<String, String> getEnvironment(Distribution distribution, T config, File exe) {
+	protected Map<String, String> getEnvironment(Distribution distribution, T config, IExtractedFileSet exe) {
 		// default implementation, override to provide your own environment
 		return new HashMap<String, String>();
 	}

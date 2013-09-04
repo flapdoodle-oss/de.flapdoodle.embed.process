@@ -22,15 +22,16 @@ package de.flapdoodle.embed.process.store;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
-
+import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 
 public interface IArtifactStore {
 
 	boolean checkDistribution(Distribution distribution) throws IOException;
 
-	File extractExe(Distribution distribution) throws IOException;
+	IExtractedFileSet extractExe(Distribution distribution) throws IOException;
 
-	void removeExecutable(Distribution distribution, File executable);
+	void removeExecutable(Distribution distribution, IExtractedFileSet files);
 }

@@ -23,52 +23,23 @@ package de.flapdoodle.embed.process.extract;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.regex.Pattern;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.io.file.Files;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
 /**
  *
  */
-public class TgzExtractor implements IExtractor {
+public class TgzExtractor extends AbstractTarExtractor {
 
-	@Override
-	public void extract(IDownloadConfig runtime, File source, File destination, Pattern file) throws IOException {
-
-		IProgressListener progressListener = runtime.getProgressListener();
-		String progressLabel = "Extract " + source;
-		progressListener.start(progressLabel);
-
+	protected ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException {
 		FileInputStream fin = new FileInputStream(source);
 		BufferedInputStream in = new BufferedInputStream(fin);
 		GzipCompressorInputStream gzIn = new GzipCompressorInputStream(in);
 
 		TarArchiveInputStream tarIn = new TarArchiveInputStream(gzIn);
-		try {
-			TarArchiveEntry entry;
-			while ((entry = tarIn.getNextTarEntry()) != null) {
-				if (!entry.isDirectory() && file.matcher(entry.getName()).matches()) {
-					if (tarIn.canReadEntryData(entry)) {
-						long size = entry.getSize();
-						Files.write(tarIn, size, destination);
-						destination.setExecutable(true);
-						progressListener.done(progressLabel);
-					}
-					break;
-
-				}
-			}
-
-		} finally {
-			tarIn.close();
-			gzIn.close();
-		}
+		return new TarArchiveWrapper(tarIn);
 	}
 }

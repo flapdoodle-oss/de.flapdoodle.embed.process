@@ -25,6 +25,8 @@ import java.io.IOException;
 import org.junit.Test;
 
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.config.store.FileSet;
+import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.GenericVersion;
@@ -46,7 +48,7 @@ public class TestExampleReadMeCode {
 			.name("phantomjs")
 			.downloadPath("http://phantomjs.googlecode.com/files/")
 			.packageResolver()
-				.executeable(Distribution.detectFor(version), "phantomjs")
+				.files(Distribution.detectFor(version), FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
 				.archivePath(Distribution.detectFor(version), "phantomjs-"+version.asInDownloadPath()+"-linux-x86_64.tar.bz2")
 				.archiveType(Distribution.detectFor(version), ArchiveType.TBZ2)
 				.build()

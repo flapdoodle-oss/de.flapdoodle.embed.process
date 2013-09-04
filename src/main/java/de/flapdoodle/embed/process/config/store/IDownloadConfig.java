@@ -20,6 +20,7 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
+import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;

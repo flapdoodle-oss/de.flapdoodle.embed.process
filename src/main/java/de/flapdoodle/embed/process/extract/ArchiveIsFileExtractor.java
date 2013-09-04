@@ -24,37 +24,60 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.regex.Pattern;
-
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.io.file.Files;
+import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;
-
 
 public class ArchiveIsFileExtractor implements IExtractor {
 
 	@Override
-	public void extract(IDownloadConfig runtime, File source, File destination, Pattern file) throws IOException {
+	public IExtractedFileSet extract(IDownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
+		Builder builder = ImmutableExtractedFileSet.builder();
 
 		IProgressListener progressListener = runtime.getProgressListener();
 		String progressLabel = "Extract (not really) " + source;
 		progressListener.start(progressLabel);
 
-		FileInputStream fin = new FileInputStream(source);
-		BufferedInputStream in = new BufferedInputStream(fin);
-		try {
-			Files.write(in, destination);
-			destination.setExecutable(true);
-			progressListener.done(progressLabel);
+		IExtractionMatch match = toExtract.find(new FileAsArchiveEntry(source));
+		if (match != null) {
+			FileInputStream fin = new FileInputStream(source);
+			try {
+				BufferedInputStream in = new BufferedInputStream(fin);
+				builder.file(match.type(), match.write(in, source.length()));
 
-		} finally {
-			fin.close();
+				if (!toExtract.nothingLeft()) {
+					progressListener.info(progressLabel,
+							"Something went a little wrong. Listener say something is left, but we dont have anything");
+				}
+				progressListener.done(progressLabel);
+
+			} finally {
+				fin.close();
+			}
 		}
-		
+
+		return builder.build();
+	}
+
+	static class FileAsArchiveEntry implements IArchiveEntry {
+
+		private final File _source;
+
+		public FileAsArchiveEntry(File source) {
+			_source = source;
+		}
+
+		@Override
+		public boolean isDirectory() {
+			return _source.isDirectory();
+		}
+
+		@Override
+		public String getName() {
+			return _source.getName();
+		}
+
 	}
 
 }
