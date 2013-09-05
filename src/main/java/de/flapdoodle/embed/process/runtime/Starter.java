@@ -54,9 +54,9 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 			
 			if (artifactStore.checkDistribution(distribution)) {
 //				progress.done("Check Distribution");
-				IExtractedFileSet exe = runtime.getArtifactStore().extractExe(distribution);
+				IExtractedFileSet files = runtime.getArtifactStore().extractFileSet(distribution);
 
-				return newExecutable(config, distribution, runtime, exe);
+				return newExecutable(config, distribution, runtime, files);
 			} else {
 				throw new DistributionException("could not find Distribution",distribution);
 			}

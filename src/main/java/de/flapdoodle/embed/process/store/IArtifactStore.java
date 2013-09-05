@@ -31,7 +31,7 @@ public interface IArtifactStore {
 
 	boolean checkDistribution(Distribution distribution) throws IOException;
 
-	IExtractedFileSet extractExe(Distribution distribution) throws IOException;
+	IExtractedFileSet extractFileSet(Distribution distribution) throws IOException;
 
-	void removeExecutable(Distribution distribution, IExtractedFileSet files);
+	void removeFileSet(Distribution distribution, IExtractedFileSet files);
 }

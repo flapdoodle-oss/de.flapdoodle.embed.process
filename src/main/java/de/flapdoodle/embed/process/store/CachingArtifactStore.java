@@ -57,7 +57,7 @@ public class CachingArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public IExtractedFileSet extractExe(Distribution distribution) throws IOException {
+	public IExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
 		
 		FilesWithCounter fileWithCounter;
 		
@@ -76,7 +76,7 @@ public class CachingArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public void removeExecutable(Distribution distribution, IExtractedFileSet executable) {
+	public void removeFileSet(Distribution distribution, IExtractedFileSet executable) {
 		FilesWithCounter fileWithCounter;
 		synchronized (_lock) {
 			fileWithCounter = _distributionFiles.get(distribution);
@@ -126,7 +126,7 @@ public class CachingArtifactStore implements IArtifactStore {
 			_counter++;
 			
 			if (_file==null) {
-				_file=_delegate.extractExe(_distribution);
+				_file=_delegate.extractFileSet(_distribution);
 				_logger.fine("Not Cached "+_counter+" "+_file);
 			} else {
 				_logger.fine("Cached "+_counter+" "+_file);
@@ -139,7 +139,7 @@ public class CachingArtifactStore implements IArtifactStore {
 				if (_counter<0) _logger.warning("Counter < 0 for "+_distribution+" and "+_file);
 				if (_file!=null) {
 					_logger.fine("cleanup for "+_distribution+" and "+_file);
-					_delegate.removeExecutable(_distribution, _file);
+					_delegate.removeFileSet(_distribution, _file);
 					_file=null;
 				}
 			}
@@ -148,7 +148,7 @@ public class CachingArtifactStore implements IArtifactStore {
 		public synchronized void forceDelete() {
 			if (_file!=null) {
 				_logger.fine("force delete for "+_distribution+" and "+_file);
-				_delegate.removeExecutable(_distribution, _file);
+				_delegate.removeFileSet(_distribution, _file);
 				_file=null;
 				_counter=0;
 			}

@@ -69,7 +69,7 @@ public class ArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public IExtractedFileSet extractExe(Distribution distribution) throws IOException {
+	public IExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
 		IPackageResolver packageResolver = _downloadConfig.getPackageResolver();
 		File artifact = LocalArtifactStore.getArtifact(_downloadConfig, distribution);
 		IExtractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));
@@ -95,7 +95,7 @@ public class ArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public void removeExecutable(Distribution distribution, IExtractedFileSet all) {
+	public void removeFileSet(Distribution distribution, IExtractedFileSet all) {
 		for (FileType type : EnumSet.complementOf(EnumSet.of(FileType.Executable))) {
 			for (File file : all.files(type)) {
 				if (file.exists() && !Files.forceDelete(file))
