@@ -99,7 +99,7 @@ public class ProcessControl {
 		try {
 			returnCode=process.exitValue();
 		} catch (IllegalThreadStateException itsx) {
-		    	logger.info("stopOrDestroyProcess: "+itsx.getMessage() +" "+itsx.getCause() );
+		    	logger.info("stopOrDestroyProcess: "+itsx.getMessage() +" "+((itsx.getCause()!=null) ? itsx.getCause() : "") );
 			Callable<Integer> callable=new Callable<Integer>() {
 				
 				@Override
