@@ -103,6 +103,10 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	protected File pidFile(File executeableFile) {
 		return new File(executeableFile.getParentFile(),executableBaseName(executeableFile.getName())+".pid");
 	}
+	
+	protected File pidFile() {
+		return pidFile;
+	}
 
 	private String executableBaseName(String name) {
 		int idx=name.lastIndexOf('.');
