@@ -21,7 +21,7 @@ Stable (Maven Central Repository, Released: 06.10.2013 - wait 24hrs for [maven c
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.34</version>
+		<version>1.35</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -29,7 +29,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.35-SNAPSHOT</version>
+		<version>1.36-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -41,7 +41,11 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 ### Changelog
 
-#### 1.35 (SNAPSHOT)
+#### 1.36 (SNAPSHOT)
+
+#### 1.35
+
+- minor api change
 
 #### 1.34
 
