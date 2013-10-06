@@ -20,6 +20,7 @@
  */
 package de.flapdoodle.embed.process.io;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -36,12 +37,13 @@ public class LogWatchStreamProcessor implements IStreamProcessor {
 	private final Set<String> failures;
 
 	private boolean initWithSuccess = false;
+	private String failureFound = null;
 
 	private final IStreamProcessor destination;
 
 	public LogWatchStreamProcessor(String success, Set<String> failures, IStreamProcessor destination) {
 		this.success = success;
-		this.failures = failures;
+		this.failures = new HashSet<String>(failures);
 		this.destination = destination;
 	}
 
@@ -59,6 +61,7 @@ public class LogWatchStreamProcessor implements IStreamProcessor {
 		for (String failure : failures) {
 			if (output.indexOf(failure) != -1) {
 				initWithSuccess = false;
+				failureFound = failure;
 				gotResult();
 			}
 		}
@@ -83,6 +86,10 @@ public class LogWatchStreamProcessor implements IStreamProcessor {
 
 	public boolean isInitWithSuccess() {
 		return initWithSuccess;
+	}
+	
+	public String getFailureFound() {
+		return failureFound;
 	}
 
 	public String getOutput() {

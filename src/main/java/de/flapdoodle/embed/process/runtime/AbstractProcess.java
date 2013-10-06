@@ -53,11 +53,12 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	private final E executable;
 	private ProcessControl process;
 	private int processId;
-	protected File pidFile;
 
 	private boolean stopped = false;
 
 	private Distribution distribution;
+
+	private File pidFile;
 
 	public AbstractProcess(Distribution distribution, T config, IRuntimeConfig runtimeConfig, E executable)
 			throws IOException {
@@ -81,6 +82,10 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 			process = ProcessControl.start(supportConfig(), processBuilder);
 
+			pidFile = pidFile(this.executable.getFile().executable());
+			
+			writePidFile(pidFile, process.getPid());
+			
 			if (runtimeConfig.isDaemonProcess()) {
 				ProcessControl.addShutdownHook(new JobKiller());
 			}
@@ -93,6 +98,18 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 			stop();
 			throw iox;
 		}
+	}
+
+	protected File pidFile(File executeableFile) {
+		return new File(executeableFile.getParentFile(),executableBaseName(executeableFile.getName())+".pid");
+	}
+
+	private String executableBaseName(String name) {
+		int idx=name.lastIndexOf('.');
+		if (idx!=-1) {
+			return name.substring(0,idx);
+		}
+		return name;
 	}
 
 	public T getConfig() {
@@ -129,6 +146,9 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 			stopInternal();
 			onAfterProcessStop(this.config, this.runtimeConfig);
 			cleanupInternal();
+			if (!Files.forceDelete(pidFile)) {
+				logger.warning("Could not delete pid file: " + pidFile);
+			}
 		}
 	}
 
@@ -185,7 +205,8 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	}
 
 	public int getProcessId() {
-		return processId;
+		Integer pid = process.getPid();
+		return pid!=null ? pid : processId;
 	}
 
 	/**
@@ -241,7 +262,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		}
 	}
 
-	protected void forceWritePidFile(int pid) throws IOException {
+	protected void writePidFile(File pidFile, int pid) throws IOException {
 		Files.write(pid + "\n", pidFile);
 	}
 }
