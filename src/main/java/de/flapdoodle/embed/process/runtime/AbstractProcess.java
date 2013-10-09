@@ -66,7 +66,9 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		this.runtimeConfig = runtimeConfig;
 		this.executable = executable;
 		this.distribution = distribution;
-
+		// pid file needs to be set before ProcessBuilder is called
+		this.pidFile = pidFile(this.executable.getFile().executable());
+		
 		ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
 
 		try {
@@ -81,8 +83,6 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 			onBeforeProcessStart(processBuilder, config, runtimeConfig);
 
 			process = ProcessControl.start(supportConfig(), processBuilder);
-
-			pidFile = pidFile(this.executable.getFile().executable());
 			
 			writePidFile(pidFile, process.getPid());
 			
