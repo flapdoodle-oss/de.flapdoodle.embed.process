@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -65,7 +67,7 @@ public class Downloader {
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(ret));
 
 			URL url = new URL(getDownloadUrl(runtime, distribution));
-			URLConnection openConnection = url.openConnection();
+			URLConnection openConnection = useProxy() ? url.openConnection(getProxy()) : url.openConnection();
 			openConnection.setRequestProperty("User-Agent",runtime.getUserAgent());
 			
 			ITimeoutConfig timeoutConfig = runtime.getTimeoutConfig();
@@ -106,6 +108,22 @@ public class Downloader {
 		}
 		progress.done(progressLabel);
 		return ret;
+	}
+
+	private static Proxy getProxy() {
+		return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost(), proxyPort()));
+	}
+
+	private static int proxyPort() {
+		return Integer.valueOf(System.getProperty("http.proxyPort"));
+	}
+
+	private static String proxyHost() {
+		return System.getProperty("http.proxyHost");
+	}
+
+	private static boolean useProxy() {
+		return proxyHost() != null;
 	}
 
 	private static String downloadSpeed(long downloadStartedAt,long downloadSize) {
