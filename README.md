@@ -43,6 +43,8 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 #### 1.36 (SNAPSHOT)
 
+- detect executable creation collision
+
 #### 1.35
 
 - minor api change
