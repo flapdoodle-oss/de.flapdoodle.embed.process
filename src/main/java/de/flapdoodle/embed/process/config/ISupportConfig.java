@@ -25,4 +25,6 @@ public interface ISupportConfig {
 	String getName();
 
 	String getSupportUrl();
+
+	String messageOnException(Class<?> context, Exception exception);
 }

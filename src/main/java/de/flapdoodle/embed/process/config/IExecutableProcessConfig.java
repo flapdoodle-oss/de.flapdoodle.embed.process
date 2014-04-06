@@ -27,4 +27,6 @@ public interface IExecutableProcessConfig {
 
 	IVersion version();
 
+	ISupportConfig supportConfig();
+
 }

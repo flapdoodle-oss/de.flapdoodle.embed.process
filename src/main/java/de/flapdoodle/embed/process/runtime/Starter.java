@@ -20,7 +20,6 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,16 +43,13 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 	}
 
 	public EXECUTABLE prepare(CONFIG config) {
-//		IProgressListener progress = runtime.getDownloadConfig().getProgressListener();
 		
 		Distribution distribution = Distribution.detectFor(config.version());
-//		progress.done("Detect Distribution");
 		
 		try {
 			IArtifactStore artifactStore = runtime.getArtifactStore();
 			
 			if (artifactStore.checkDistribution(distribution)) {
-//				progress.done("Check Distribution");
 				IExtractedFileSet files = runtime.getArtifactStore().extractFileSet(distribution);
 
 				return newExecutable(config, distribution, runtime, files);
@@ -61,7 +57,11 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 				throw new DistributionException("could not find Distribution",distribution);
 			}
 		} catch (IOException iox) {
-			logger.log(Level.SEVERE, "start", iox);
+			String messageOnException = config.supportConfig().messageOnException(getClass(), iox);
+			if (messageOnException==null) {
+				messageOnException="prepare executable";
+			}
+			logger.log(Level.SEVERE, messageOnException, iox);
 			throw new DistributionException(distribution,iox);
 		}
 	}

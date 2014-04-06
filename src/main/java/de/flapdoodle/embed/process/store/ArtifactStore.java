@@ -76,21 +76,6 @@ public class ArtifactStore implements IArtifactStore {
 
 		IExtractedFileSet extracted=extractor.extract(_downloadConfig, artifact, new FilesToExtract(_tempDirFactory, _executableNaming, packageResolver.getFileSet(distribution)));
 		
-//		File exe = Files.createTempFile(_tempDirFactory,
-//				_executableNaming.nameFor("extract", packageResolver.executableFilename(distribution)));
-//		extractor.extract(_downloadConfig, artifact, exe, packageResolver.executeablePattern(distribution));
-
-//		// extract extra libraries, if any
-//		List<File> libraryFiles=new ArrayList<File>();
-//		
-//		for (String lib : packageResolver.libraryFiles(distribution)) {
-//			File tempDir = _tempDirFactory.asFile();
-//			File libFile = new File(tempDir, lib);
-//					libFile.createNewFile();
-//				extractor.extract(_downloadConfig, artifact,
-//						libFile, libraryPattern(distribution,lib));
-//				libraryFiles.add(libFile);
-//		}
 		return extracted;
 	}
 

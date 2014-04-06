@@ -20,7 +20,9 @@
  */
 package de.flapdoodle.embed.process.io;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -55,24 +57,24 @@ public class LogWatchStreamProcessor implements IStreamProcessor {
 		output.append(line);
 
 		if (output.indexOf(success) != -1) {
-			initWithSuccess = true;
-			gotResult();
-		}
-		for (String failure : failures) {
-			if (output.indexOf(failure) != -1) {
-				initWithSuccess = false;
-				failureFound = failure;
-				gotResult();
+			gotResult(true,null);
+		} else {
+			for (String failure : failures) {
+				if (output.indexOf(failure) != -1) {
+					gotResult(false,failure);
+				}
 			}
 		}
 	}
 
 	@Override
 	public void onProcessed() {
-		gotResult();
+		gotResult(false,"<EOF>");
 	}
 
-	private synchronized void gotResult() {
+	private synchronized void gotResult(boolean success, String failure) {
+		this.initWithSuccess=success;
+		this.failureFound=failure;
 		notify();
 	}
 

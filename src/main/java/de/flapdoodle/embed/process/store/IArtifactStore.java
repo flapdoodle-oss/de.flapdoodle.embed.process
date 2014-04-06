@@ -20,9 +20,7 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;

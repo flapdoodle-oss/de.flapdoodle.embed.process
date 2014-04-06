@@ -56,9 +56,4 @@ public class GenericProcess extends AbstractProcess<GenericProcessConfig, Generi
 		ret.add("--help");
 		return ret;
 	}
-
-	@Override
-	protected ISupportConfig supportConfig() {
-		return new GenericSupportConfig();
-	}
 }

@@ -82,7 +82,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 			onBeforeProcessStart(processBuilder, config, runtimeConfig);
 
-			process = ProcessControl.start(supportConfig(), processBuilder);
+			process = ProcessControl.start(config.supportConfig(), processBuilder);
 			
 			writePidFile(pidFile, process.getPid());
 			
@@ -142,8 +142,6 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		return new HashMap<String, String>();
 	}
 
-	protected abstract ISupportConfig supportConfig();
-
 	public synchronized final void stop() {
 		if (!stopped) {
 			stopped = true;
@@ -179,7 +177,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected boolean sendKillToProcess() {
 		if (processId > 0) {
-			return Processes.killProcess(supportConfig(), distribution.getPlatform(),
+			return Processes.killProcess(config.supportConfig(), distribution.getPlatform(),
 					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
 		}
 		return false;
@@ -187,7 +185,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected boolean sendTermToProcess() {
 		if (processId > 0) {
-			return Processes.termProcess(supportConfig(), distribution.getPlatform(),
+			return Processes.termProcess(config.supportConfig(), distribution.getPlatform(),
 					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
 		}
 		return false;
@@ -195,7 +193,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected boolean tryKillToProcess() {
 		if (processId > 0) {
-			return Processes.tryKillProcess(supportConfig(), distribution.getPlatform(),
+			return Processes.tryKillProcess(config.supportConfig(), distribution.getPlatform(),
 					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
 		}
 		return false;

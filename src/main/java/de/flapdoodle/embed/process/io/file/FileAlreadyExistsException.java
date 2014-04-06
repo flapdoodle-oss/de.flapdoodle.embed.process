@@ -18,24 +18,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.example;
+package de.flapdoodle.embed.process.io.file;
 
-import de.flapdoodle.embed.process.config.ISupportConfig;
+import java.io.File;
+import java.io.IOException;
 
-public class GenericSupportConfig implements ISupportConfig {
 
-	@Override
-	public String getName() {
-		return "generic";
+public class FileAlreadyExistsException extends IOException {
+
+	public FileAlreadyExistsException(String message, File file) {
+		super(message+": "+file);
 	}
 
-	@Override
-	public String getSupportUrl() {
-		return "https://github.com/flapdoodle-oss/de.flapdoodle.embed.process";
-	}
-	
-	@Override
-	public String messageOnException(Class<?> context, Exception exception) {
-		return null;
-	}
 }

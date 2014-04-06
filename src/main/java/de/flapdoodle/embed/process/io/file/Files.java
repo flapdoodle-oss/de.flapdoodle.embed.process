@@ -57,7 +57,7 @@ public class Files {
 		File tempDir = directory.asFile();
 		File tempFile = new File(tempDir, tempFileName);
 		if (!tempFile.createNewFile())
-			throw new IOException("Could not create Tempfile: " + tempFile);
+			throw new FileAlreadyExistsException("Could not create Tempfile",tempFile);
 		return tempFile;
 	}
 

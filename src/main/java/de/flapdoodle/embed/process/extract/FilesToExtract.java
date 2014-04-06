@@ -29,6 +29,7 @@ import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.FileSet.Entry;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
 import de.flapdoodle.embed.process.io.file.Files;
 
 public class FilesToExtract {
@@ -91,7 +92,11 @@ public class FilesToExtract {
 			File destination;
 			switch (_entry.type()) {
 				case Executable: 
-					destination=Files.createTempFile(_dirFactory,_exeutableNaming.nameFor("extract",_entry.destination()));
+					try {
+						destination=Files.createTempFile(_dirFactory,_exeutableNaming.nameFor("extract",_entry.destination()));
+					} catch (FileAlreadyExistsException ex) {
+						throw new ExecutableFileAlreadyExistsException(ex);
+					}
 					break;
 				default:
 					destination=Files.createTempFile(_dirFactory,_entry.destination());

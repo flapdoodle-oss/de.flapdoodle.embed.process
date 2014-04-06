@@ -25,9 +25,11 @@ import de.flapdoodle.embed.process.distribution.IVersion;
 public class ExecutableProcessConfig implements IExecutableProcessConfig {
 
 	protected final IVersion version;
+	private final ISupportConfig _supportConfig;
 
-	public ExecutableProcessConfig(IVersion version) {
+	public ExecutableProcessConfig(IVersion version, ISupportConfig supportConfig) {
 		this.version = version;
+		_supportConfig = supportConfig;
 	}
 
 	@Override
@@ -35,4 +37,8 @@ public class ExecutableProcessConfig implements IExecutableProcessConfig {
 		return version;
 	}
 
+	@Override
+	public ISupportConfig supportConfig() {
+		return _supportConfig;
+	}
 }
