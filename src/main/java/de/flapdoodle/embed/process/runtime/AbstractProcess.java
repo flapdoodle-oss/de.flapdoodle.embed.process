@@ -71,29 +71,46 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		
 		ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
 
+		// Refactor me - to much things done in this try/catch
+		String nextCall="";
 		try {
 
+			nextCall="onBeforeProcess()";
+
 			onBeforeProcess(runtimeConfig);
+			
+			nextCall="newProcessBuilder()";
 
 			ProcessBuilder processBuilder = ProcessControl.newProcessBuilder(
 					runtimeConfig.getCommandLinePostProcessor().process(distribution,
 							getCommandLine(distribution, config, this.executable.getFile())),
 					getEnvironment(distribution, config, this.executable.getFile()), true);
 
+			
+			nextCall="onBeforeProcessStart()";
+
 			onBeforeProcessStart(processBuilder, config, runtimeConfig);
+
+			nextCall="start()";
 
 			process = ProcessControl.start(config.supportConfig(), processBuilder);
 			
+			nextCall="writePidFile()";
+
 			writePidFile(pidFile, process.getPid());
 			
+			nextCall="addShutdownHook()";
+
 			if (runtimeConfig.isDaemonProcess()) {
 				ProcessControl.addShutdownHook(new JobKiller());
 			}
 
+			nextCall="onAfterProcessStart()";
+
 			onAfterProcessStart(process, runtimeConfig);
 
 		} catch (IOException iox) {
-			logger.severe(iox.getMessage());
+			logger.log(Level.SEVERE, "failed to call "+nextCall,iox);
 			logger.logp(Level.INFO, getClass().getSimpleName(), "ctor", config.toString());
 			stop();
 			throw iox;

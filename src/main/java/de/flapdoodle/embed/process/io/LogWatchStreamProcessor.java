@@ -60,8 +60,9 @@ public class LogWatchStreamProcessor implements IStreamProcessor {
 			gotResult(true,null);
 		} else {
 			for (String failure : failures) {
-				if (output.indexOf(failure) != -1) {
-					gotResult(false,failure);
+				int failureIndex = output.indexOf(failure);
+				if (failureIndex != -1) {
+					gotResult(false,output.substring(failureIndex));
 				}
 			}
 		}
@@ -72,9 +73,9 @@ public class LogWatchStreamProcessor implements IStreamProcessor {
 		gotResult(false,"<EOF>");
 	}
 
-	private synchronized void gotResult(boolean success, String failure) {
+	private synchronized void gotResult(boolean success, String message) {
 		this.initWithSuccess=success;
-		this.failureFound=failure;
+		failureFound=message;
 		notify();
 	}
 
@@ -93,7 +94,7 @@ public class LogWatchStreamProcessor implements IStreamProcessor {
 	public String getFailureFound() {
 		return failureFound;
 	}
-
+	
 	public String getOutput() {
 		return output.toString();
 	}
