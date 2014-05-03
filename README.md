@@ -43,6 +43,8 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 #### 1.38 (SNAPSHOT)
 
+- improved error logging
+
 #### 1.37
 
 - detect executable creation collision
