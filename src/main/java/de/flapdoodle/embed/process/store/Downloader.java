@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -109,8 +110,15 @@ public class Downloader {
 			throws MalformedURLException, IOException {
 		URL url = new URL(getDownloadUrl(downloadConfig, distribution));
 		
+		Proxy proxy = downloadConfig.proxyFactory().createProxy();
+		
 		try {
-			URLConnection openConnection = url.openConnection();
+			URLConnection openConnection;
+			if (proxy!=null) {
+				openConnection = url.openConnection(proxy);
+			} else {
+				openConnection = url.openConnection();
+			}
 			openConnection.setRequestProperty("User-Agent",downloadConfig.getUserAgent());
 			
 			ITimeoutConfig timeoutConfig = downloadConfig.getTimeoutConfig();
@@ -122,7 +130,7 @@ public class Downloader {
 	
 			return new InputStreamAndLength(downloadStream,openConnection.getContentLength());
 		} catch (IOException iox) {
-			throw new IOException("Could not open inputStream for "+url, iox);
+			throw new IOException("Could not open inputStream for "+url+(proxy!=null ? " with proxy "+proxy : ""), iox);
 		}
 	}
 

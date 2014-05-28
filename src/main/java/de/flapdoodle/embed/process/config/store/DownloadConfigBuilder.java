@@ -39,9 +39,11 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 	private static final TypedProperty<IDownloadPath> DOWNLOAD_PATH = TypedProperty.with("DownloadPath",	IDownloadPath.class);
 
 	private static final TypedProperty<ITimeoutConfig> TIMEOUT_CONFIG = TypedProperty.with("TimeoutConfig",	ITimeoutConfig.class);
+	private static final TypedProperty<IProxyFactory> PROXY_FACTORY = TypedProperty.with("ProxyFactory",	IProxyFactory.class);
 
 	public DownloadConfigBuilder() {
 		setDefault(TIMEOUT_CONFIG, new TimeoutConfigBuilder().defaults().build());
+		setDefault(PROXY_FACTORY, new NoProxyFactory());
 	}
 
 	public DownloadConfigBuilder downloadPath(String path) {
@@ -116,6 +118,15 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 		return property(TIMEOUT_CONFIG);
 	}
 
+	public DownloadConfigBuilder proxyFactory(IProxyFactory proxyFactory) {
+		set(PROXY_FACTORY, proxyFactory);
+		return this;
+	}
+
+	protected IProperty<IProxyFactory> proxyFactory() {
+		return property(PROXY_FACTORY);
+	}
+	
 	@Override
 	public IDownloadConfig build() {
 		final IDownloadPath downloadPath = get(DOWNLOAD_PATH);
@@ -126,9 +137,10 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 		final IProgressListener progressListener = get(PROGRESS_LISTENER);
 		final String userAgent = get(USER_AGENT).value();
 		final ITimeoutConfig timeoutConfig = get(TIMEOUT_CONFIG);
+		final IProxyFactory proxyFactory = get(PROXY_FACTORY);
 
 		return new ImmutableDownloadConfig(downloadPath, downloadPrefix, packageResolver, artifactStorePath, fileNaming,
-				progressListener, userAgent, timeoutConfig);
+				progressListener, userAgent, timeoutConfig, proxyFactory);
 	}
 
 	protected static class DownloadPrefix extends ImmutableContainer<String> {
@@ -157,10 +169,11 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 		private final String _userAgent;
 		private final IPackageResolver _packageResolver;
 		private final ITimeoutConfig _timeoutConfig;
+		private final IProxyFactory _proxyFactory;
 
 		public ImmutableDownloadConfig(IDownloadPath downloadPath, String downloadPrefix, IPackageResolver packageResolver,
 				IDirectory artifactStorePath, ITempNaming fileNaming, IProgressListener progressListener, String userAgent,
-				ITimeoutConfig timeoutConfig) {
+				ITimeoutConfig timeoutConfig, IProxyFactory proxyFactory) {
 			super();
 			_downloadPath = downloadPath;
 			_downloadPrefix = downloadPrefix;
@@ -170,6 +183,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 			_progressListener = progressListener;
 			_userAgent = userAgent;
 			_timeoutConfig = timeoutConfig;
+			_proxyFactory = proxyFactory;
 		}
 
 		@Override
@@ -212,6 +226,10 @@ public class DownloadConfigBuilder extends AbstractBuilder<IDownloadConfig> {
 			return _timeoutConfig;
 		}
 
+		@Override
+		public IProxyFactory proxyFactory() {
+			return _proxyFactory;
+		}
 	}
 
 }
