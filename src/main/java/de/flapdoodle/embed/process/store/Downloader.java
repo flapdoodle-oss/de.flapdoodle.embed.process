@@ -26,12 +26,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ConnectException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.config.store.ITimeoutConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 import de.flapdoodle.embed.process.io.file.Files;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
@@ -52,33 +55,27 @@ public class Downloader {
 		return runtime.getDownloadPath().getPath(distribution) + runtime.getPackageResolver().getPath(distribution);
 	}
 
-	public static File download(IDownloadConfig runtime, Distribution distribution) throws IOException {
+	public static File download(IDownloadConfig downloadConfig, Distribution distribution) throws IOException {
 
 		String progressLabel = "Download " + distribution;
-		IProgressListener progress = runtime.getProgressListener();
+		IProgressListener progress = downloadConfig.getProgressListener();
 		progress.start(progressLabel);
 
-		File ret = Files.createTempFile(runtime.getFileNaming()
-				.nameFor(runtime.getDownloadPrefix(), "." + runtime.getPackageResolver().getArchiveType(distribution)));
+		File ret = Files.createTempFile(PropertyOrPlatformTempDir.defaultInstance(), downloadConfig.getFileNaming()
+				.nameFor(downloadConfig.getDownloadPrefix(), "." + downloadConfig.getPackageResolver().getArchiveType(distribution)));
 		if (ret.canWrite()) {
 
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(ret));
 
-			URL url = new URL(getDownloadUrl(runtime, distribution));
-			URLConnection openConnection = url.openConnection();
-			openConnection.setRequestProperty("User-Agent",runtime.getUserAgent());
+			InputStreamAndLength downloadStreamAndLength = downloadInputStream(downloadConfig, distribution);
 			
-			ITimeoutConfig timeoutConfig = runtime.getTimeoutConfig();
+			long length = downloadStreamAndLength.contentLength();
+			InputStream downloadStream = downloadStreamAndLength.downloadStream();
 			
-			openConnection.setConnectTimeout(timeoutConfig.getConnectionTimeout());
-			openConnection.setReadTimeout(runtime.getTimeoutConfig().getReadTimeout());
-
-			InputStream downloadStream = openConnection.getInputStream();
-
-			long length = openConnection.getContentLength();
 			progress.info(progressLabel, "DownloadSize: " + length);
-
+			
 			if (length == -1) length = DEFAULT_CONTENT_LENGTH;
+
 
 
 			long downloadStartedAt = System.currentTimeMillis();
@@ -108,6 +105,27 @@ public class Downloader {
 		return ret;
 	}
 
+	private static InputStreamAndLength downloadInputStream(IDownloadConfig downloadConfig, Distribution distribution)
+			throws MalformedURLException, IOException {
+		URL url = new URL(getDownloadUrl(downloadConfig, distribution));
+		
+		try {
+			URLConnection openConnection = url.openConnection();
+			openConnection.setRequestProperty("User-Agent",downloadConfig.getUserAgent());
+			
+			ITimeoutConfig timeoutConfig = downloadConfig.getTimeoutConfig();
+			
+			openConnection.setConnectTimeout(timeoutConfig.getConnectionTimeout());
+			openConnection.setReadTimeout(downloadConfig.getTimeoutConfig().getReadTimeout());
+	
+			InputStream downloadStream = openConnection.getInputStream();
+	
+			return new InputStreamAndLength(downloadStream,openConnection.getContentLength());
+		} catch (IOException iox) {
+			throw new IOException("Could not open inputStream for "+url, iox);
+		}
+	}
+
 	private static String downloadSpeed(long downloadStartedAt,long downloadSize) {
 		long timeUsed=(System.currentTimeMillis()-downloadStartedAt)/1000;
 		if (timeUsed==0) {
@@ -118,4 +136,24 @@ public class Downloader {
 	}
 
 
+	static class InputStreamAndLength {
+
+		private final InputStream _downloadStream;
+		private final int _contentLength;
+
+		public InputStreamAndLength(InputStream downloadStream, int contentLength) {
+			_downloadStream = downloadStream;
+			_contentLength = contentLength;
+		}
+		
+		
+		public int contentLength() {
+			return _contentLength;
+		}
+		
+		public InputStream downloadStream() {
+			return _downloadStream;
+		}
+		
+	}
 }

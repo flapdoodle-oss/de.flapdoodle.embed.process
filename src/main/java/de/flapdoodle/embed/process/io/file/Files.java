@@ -102,7 +102,7 @@ public class Files {
 		try {
 			if ((fileOrDir != null) && (fileOrDir.exists())) {
 				FileUtils.forceDelete(fileOrDir);
-				logger.info("Could delete " + fileOrDir);
+				logger.fine("Could delete " + fileOrDir);
 				ret = true;
 			}
 		} catch (IOException e) {
