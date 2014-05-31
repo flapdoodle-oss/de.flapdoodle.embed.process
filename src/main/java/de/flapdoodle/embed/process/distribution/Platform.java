@@ -27,7 +27,8 @@ public enum Platform {
 	Linux,
 	Windows,
 	OS_X,
-	Solaris;
+	Solaris,
+	FreeBSD;
 
 	public static Platform detect() {
 		String osName = System.getProperty("os.name");
@@ -39,6 +40,8 @@ public enum Platform {
 			return OS_X;
 		if (osName.contains("SunOS"))
 			return Solaris;
+		if (osName.equals("FreeBSD"))
+			return FreeBSD;
 		throw new IllegalArgumentException("Could not detect Platform: os.name=" + osName);
 	}
 	
