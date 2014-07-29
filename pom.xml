@@ -12,6 +12,7 @@
     <artifactId>de.flapdoodle.embed.process</artifactId>
     <name>Flapdoodle Embedded Process Util</name>
     <version>1.39.1-SNAPSHOT</version>
+    <packaging>bundle</packaging>
 
     <description>A embedded process starter ...</description>
     <url>http://github.com/flapdoodle-oss/de.flapdoodle.embed.process</url>
@@ -159,6 +160,23 @@
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>2.3</version>
             </plugin>
+            
+           	<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Category>Utilities</Bundle-Category>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Description>${project.description}</Bundle-Description>
+						<Export-Package>${osgi.export}</Export-Package>
+						<Import-Package>${osgi.import}</Import-Package>
+					</instructions>
+				</configuration>				
+			</plugin>
+            
         </plugins>
     </build>
 
@@ -192,10 +210,40 @@
         </profile>
     </profiles>
 
-		<properties>
-			<jna.version>4.0.0</jna.version>
-		</properties>
-
+	<properties>
+		<jna.version>4.0.0</jna.version>
+		<osgi.category>Bundles</osgi.category>
+		<osgi.export>
+			de.flapdoodle.embed.process;version=${project.version},
+			de.flapdoodle.embed.process.builder;version=${project.version},
+			de.flapdoodle.embed.process.collections;version=${project.version},
+			de.flapdoodle.embed.process.config;version=${project.version},
+			de.flapdoodle.embed.process.config.io;version=${project.version},
+			de.flapdoodle.embed.process.config.process;version=${project.version},
+			de.flapdoodle.embed.process.config.store;version=${project.version},
+			de.flapdoodle.embed.process.distribution;version=${project.version},
+			de.flapdoodle.embed.process.exceptions;version=${project.version},
+			de.flapdoodle.embed.process.extract;version=${project.version},
+			de.flapdoodle.embed.process.io;version=${project.version},
+			de.flapdoodle.embed.process.io.directories;version=${project.version},
+			de.flapdoodle.embed.process.io.file;version=${project.version},
+			de.flapdoodle.embed.process.io.progress;version=${project.version},
+			de.flapdoodle.embed.process.runtime;version=${project.version},
+			de.flapdoodle.embed.process.store;version=${project.version}
+		</osgi.export>
+		<osgi.import>
+			com.sun.jna,
+			com.sun.jna.platform.win32,
+			org.apache.commons.compress.archivers,
+			org.apache.commons.compress.archivers.zip,
+			org.apache.commons.compress.archivers.tar,
+			org.apache.commons.compress.compressors.bzip2,
+			org.apache.commons.compress.compressors.gzip,
+			org.apache.commons.lang3,
+			org.apache.commons.io
+		</osgi.import>
+	</properties>
+	
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
