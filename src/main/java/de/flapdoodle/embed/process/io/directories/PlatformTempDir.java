@@ -30,5 +30,10 @@ public class PlatformTempDir implements IDirectory {
 	public File asFile() {
 		return new File(System.getProperty("java.io.tmpdir"));
 	}
+	
+	@Override
+	public boolean isGenerated() {
+		return false;
+	}
 
 }

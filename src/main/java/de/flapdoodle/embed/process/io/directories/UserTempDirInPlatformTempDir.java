@@ -18,14 +18,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.io.directories;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.distribution.Platform;
+import de.flapdoodle.embed.process.extract.UserTempNaming;
+import de.flapdoodle.embed.process.io.file.Files;
 
-public interface ILibraryStore {
 
-	List<String> getLibrary(Distribution distribution);
+
+public class UserTempDirInPlatformTempDir implements IDirectory {
+
+	@Override
+	public File asFile() {
+		try {
+			return Files.createDir(new File(new File(System.getProperty("java.io.tmpdir")),new UserTempNaming().nameFor("temp-for-", "")));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public boolean isGenerated() {
+		return true;
+	}
+
 }

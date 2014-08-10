@@ -38,4 +38,9 @@ public class UserHome implements IDirectory {
 	public File asFile() {
 		return new File(System.getProperty("user.home") + File.separator + postFix + File.separator);
 	}
+	
+	@Override
+	public boolean isGenerated() {
+		return false;
+	}
 }

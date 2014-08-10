@@ -33,11 +33,13 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 
 	private final File _executable;
 	private final Map<FileType,List<File>> _files;
+	private final File _generatedBaseDir;
 
-	ImmutableExtractedFileSet(File executable, Map<FileType,List<File>> files) {
+	ImmutableExtractedFileSet(File generatedBaseDir, File executable, Map<FileType,List<File>> files) {
 		if (executable==null) throw new NullPointerException("executable is NULL");
 		if (files==null) throw new NullPointerException("files is NULL");
 		
+		_generatedBaseDir=generatedBaseDir;
 		_executable = executable;
 		Map<FileType,List<File>> copy=new HashMap<FileType, List<File>>();
 		for (FileType key : files.keySet()) {
@@ -46,6 +48,11 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 		_files=Collections.unmodifiableMap(copy);
 	}
 
+	@Override
+	public File generatedBaseDir() {
+		return _generatedBaseDir;
+	}
+	
 	@Override
 	public File executable() {
 		return _executable;
@@ -58,17 +65,23 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 		return ret;
 	}
 	
-	public static Builder builder() {
-		return new Builder();
+	public static Builder builder(File generatedBaseDir) {
+		return new Builder().setGeneratedBaseDir(generatedBaseDir);
 	}
 
 	public static class Builder {
 		File _executable=null;
+		File _generatedBaseDir=null;
 		Map<FileType,List<File>> _files=new HashMap<FileType, List<File>>();
 		
 		public Builder executable(File executable) {
 			if (_executable!=null) throw new IllegalArgumentException("executable allready set to "+_executable);
 			_executable=executable;
+			return this;
+		}
+		
+		public Builder setGeneratedBaseDir(File generatedBaseDir) {
+			_generatedBaseDir=generatedBaseDir;
 			return this;
 		}
 
@@ -87,7 +100,7 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 		}
 		
 		public IExtractedFileSet build() {
-			return new ImmutableExtractedFileSet(_executable,_files);
+			return new ImmutableExtractedFileSet(_generatedBaseDir, _executable,_files);
 		}
 	}
 }

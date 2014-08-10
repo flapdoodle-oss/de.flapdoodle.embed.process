@@ -91,5 +91,11 @@ public class ArtifactStore implements IArtifactStore {
 		if (exe.exists() && !Files.forceDelete(exe)) {
 			logger.warning("Could not delete executable NOW: " + exe);
 		}
+		
+		if (all.generatedBaseDir()!=null) {
+			if (!Files.forceDelete(all.generatedBaseDir())) {
+				logger.warning("Could not delete generatedBaseDir: " + all.generatedBaseDir());
+			}
+		}
 	}
 }

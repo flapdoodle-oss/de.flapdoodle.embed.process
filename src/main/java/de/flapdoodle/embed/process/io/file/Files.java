@@ -55,6 +55,10 @@ public class Files {
 	public static File createTempFile(IDirectory directory, String tempFileName)
 			throws IOException {
 		File tempDir = directory.asFile();
+		return createTempFile(tempDir, tempFileName);
+	}
+
+	public static File createTempFile(File tempDir, String tempFileName) throws IOException, FileAlreadyExistsException {
 		File tempFile = new File(tempDir, tempFileName);
 		if (!tempFile.createNewFile())
 			throw new FileAlreadyExistsException("Could not create Tempfile",tempFile);
@@ -65,9 +69,7 @@ public class Files {
 		File tempFile = new File(dir);
 		if ((tempFile.exists()) && (tempFile.isDirectory()))
 			return tempFile;
-		if (!tempFile.mkdirs())
-			throw new IOException("Could not create Tempdir: " + tempFile);
-		return tempFile;
+		return createDir(tempFile);
 	}
 
 	public static File createOrCheckUserDir(String prefix) throws IOException {
@@ -75,9 +77,7 @@ public class Files {
 		File tempFile = new File(tempDir, prefix);
 		if ((tempFile.exists()) && (tempFile.isDirectory()))
 			return tempFile;
-		if (!tempFile.mkdirs())
-			throw new IOException("Could not create Tempdir: " + tempFile);
-		return tempFile;
+		return createDir(tempFile);
 	}
 
 	@Deprecated
@@ -89,8 +89,16 @@ public class Files {
 	public static File createTempDir(IDirectory directory, String prefix)
 			throws IOException {
 		File tempDir = directory.asFile();
+		return createTempDir(tempDir, prefix);
+	}
+
+	public static File createTempDir(File tempDir, String prefix) throws IOException {
 		File tempFile = new File(tempDir, prefix + "-"
 				+ UUID.randomUUID().toString());
+		return createDir(tempFile);
+	}
+
+	public static File createDir(File tempFile) throws IOException {
 		if (!tempFile.mkdirs())
 			throw new IOException("Could not create Tempdir: " + tempFile);
 		return tempFile;

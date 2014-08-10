@@ -38,4 +38,9 @@ public class FixedPath implements IDirectory {
 	public File asFile() {
 		return new File(this.path);
 	}
+
+	@Override
+	public boolean isGenerated() {
+		return false;
+	}
 }

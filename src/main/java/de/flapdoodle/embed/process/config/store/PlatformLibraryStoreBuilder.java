@@ -28,19 +28,20 @@ import java.util.Map;
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.ImmutableContainer;
 import de.flapdoodle.embed.process.builder.TypedProperty;
+import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Platform;
 
-public class LibraryStoreBuilder extends AbstractBuilder<ILibraryStore> {
+public class PlatformLibraryStoreBuilder extends AbstractBuilder<ILibraryStore> {
 
 	private static final TypedProperty<LibraryContainer> LIBRARIES = TypedProperty
 			.with("Libraries", LibraryContainer.class);
 
-	public LibraryStoreBuilder defaults() {
+	public PlatformLibraryStoreBuilder defaults() {
 		setDefault(LIBRARIES, null);
 		return this;
 	}
 
-	public LibraryStoreBuilder setLibraries(Platform platform,
+	public PlatformLibraryStoreBuilder setLibraries(Platform platform,
 			String[] libraries) {
 		LibraryContainer libraryContainer = get(LIBRARIES, null);
 		Map<Platform, List<String>> _libraries;
@@ -54,7 +55,7 @@ public class LibraryStoreBuilder extends AbstractBuilder<ILibraryStore> {
 		return this;
 	}
 
-	public LibraryStoreBuilder setLibrary(Platform platform, String library) {
+	public PlatformLibraryStoreBuilder setLibrary(Platform platform, String library) {
 		Map<Platform, List<String>> _libraries = get(LIBRARIES).value();
 		if (_libraries == null) {
 			_libraries = new HashMap<Platform, List<String>>();
@@ -87,8 +88,8 @@ public class LibraryStoreBuilder extends AbstractBuilder<ILibraryStore> {
 		}
 
 		@Override
-		public List<String> getLibrary(Platform platform) {
-			return _libraries.get(platform);
+		public List<String> getLibrary(Distribution distribution) {
+			return _libraries.get(distribution.getPlatform());
 		}
 
 	}

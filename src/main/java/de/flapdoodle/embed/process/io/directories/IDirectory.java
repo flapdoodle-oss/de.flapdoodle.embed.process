@@ -22,7 +22,9 @@ package de.flapdoodle.embed.process.io.directories;
 
 import java.io.File;
 
-
 public interface IDirectory {
+
 	File asFile();
+
+	boolean isGenerated();
 }

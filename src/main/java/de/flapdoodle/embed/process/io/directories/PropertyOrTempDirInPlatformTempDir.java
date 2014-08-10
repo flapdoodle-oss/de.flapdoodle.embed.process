@@ -18,14 +18,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.io.directories;
 
-import java.util.List;
+import java.io.File;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.distribution.Platform;
 
-public interface ILibraryStore {
+public class PropertyOrTempDirInPlatformTempDir extends TempDirInPlatformTempDir {
 
-	List<String> getLibrary(Distribution distribution);
+	private static PropertyOrTempDirInPlatformTempDir _instance=new PropertyOrTempDirInPlatformTempDir();
+
+	@Override
+	public File asFile() {
+		String customTempDir = System.getProperty("de.flapdoodle.embed.io.tmpdir");
+		if (customTempDir!=null) {
+			return new File(customTempDir);
+		}
+		return super.asFile();
+	}
+
+	public static IDirectory defaultInstance() {
+		return _instance;
+	}
 }

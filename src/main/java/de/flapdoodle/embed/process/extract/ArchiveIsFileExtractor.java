@@ -33,7 +33,7 @@ public class ArchiveIsFileExtractor implements IExtractor {
 
 	@Override
 	public IExtractedFileSet extract(IDownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
-		Builder builder = ImmutableExtractedFileSet.builder();
+		Builder builder = ImmutableExtractedFileSet.builder(toExtract.generatedBaseDir());
 
 		IProgressListener progressListener = runtime.getProgressListener();
 		String progressLabel = "Extract (not really) " + source;
