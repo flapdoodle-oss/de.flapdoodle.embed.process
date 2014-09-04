@@ -28,17 +28,31 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
+import de.flapdoodle.embed.process.io.LoggingOutputStreamProcessor;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
 public abstract class AbstractExtractor implements IExtractor {
-
+	
+	private static Logger _logger=Logger.getLogger(AbstractExtractor.class.getName());
+	
 	protected abstract ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException;
+
+	private ArchiveWrapper archiveStreamWithExceptionHint(File source) throws FileNotFoundException, IOException {
+		try {
+			return archiveStream(source);
+		} catch (IOException iox) {
+			_logger.log(Level.WARNING,"\n--------------------------\nIf you get this exception more than once, you should check if the file is corrupt.\nIf you remove the file ("+source.getAbsolutePath()+"), it will be downloaded again.\n--------------------------",iox);
+			throw new IOException("File "+source.getAbsolutePath(),iox);
+		}
+	}
 
 	@Override
 	public IExtractedFileSet extract(IDownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
@@ -48,7 +62,7 @@ public abstract class AbstractExtractor implements IExtractor {
 		String progressLabel = "Extract " + source;
 		progressListener.start(progressLabel);
 
-		ArchiveWrapper archive = archiveStream(source);
+		ArchiveWrapper archive = archiveStreamWithExceptionHint(source);
 
 		try {
 			ArchiveEntry entry;
