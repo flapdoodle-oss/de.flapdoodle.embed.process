@@ -20,24 +20,17 @@
  */
 package de.flapdoodle.embed.process.extract;
 
+import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
+import de.flapdoodle.embed.process.io.progress.IProgressListener;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.commons.compress.archivers.ArchiveEntry;
-
-import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.io.LoggingOutputStreamProcessor;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
 public abstract class AbstractExtractor implements IExtractor {
 	
@@ -71,7 +64,7 @@ public abstract class AbstractExtractor implements IExtractor {
 				if (match != null) {
 					if (archive.canReadEntryData(entry)) {
 						long size = entry.getSize();
-						builder.file(match.type(),match.write(archive.asStream(), size));
+						builder.file(match.type(),match.write(archive.asStream(entry), size));
 						//						destination.setExecutable(true);
 					}
 					if (toExtract.nothingLeft()) {
@@ -92,12 +85,11 @@ public abstract class AbstractExtractor implements IExtractor {
 
 		ArchiveEntry getNextEntry() throws IOException;
 
-		InputStream asStream();
+		InputStream asStream(ArchiveEntry entry) throws IOException;
 
 		void close() throws IOException;
 
 		boolean canReadEntryData(ArchiveEntry entry);
-
 	}
 
 }

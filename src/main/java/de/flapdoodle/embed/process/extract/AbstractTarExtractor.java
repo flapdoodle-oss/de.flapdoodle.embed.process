@@ -53,7 +53,7 @@ public abstract class AbstractTarExtractor extends AbstractExtractor {
 			}
 	
 			@Override
-			public InputStream asStream() {
+			public InputStream asStream(ArchiveEntry entry) {
 				return _is;
 			}
 	

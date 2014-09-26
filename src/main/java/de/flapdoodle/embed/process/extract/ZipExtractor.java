@@ -20,24 +20,14 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import java.io.BufferedInputStream;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.regex.Pattern;
-
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
-
-import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.extract.AbstractExtractor.ArchiveWrapper;
-import de.flapdoodle.embed.process.io.file.Files;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
+import java.util.Enumeration;
 
 /**
  *
@@ -45,42 +35,39 @@ import de.flapdoodle.embed.process.io.progress.IProgressListener;
 public class ZipExtractor extends AbstractExtractor {
 
 	@Override
-	protected ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException {
-		FileInputStream fin = new FileInputStream(source);
-		BufferedInputStream in = new BufferedInputStream(fin);
-
-		ZipArchiveInputStream zipIn = new ZipArchiveInputStream(in);
+	protected ArchiveWrapper archiveStream(File source) throws IOException {
+        ZipFile zipIn = new ZipFile(source);
 		return new ZipArchiveWrapper(zipIn);
 	}
 	
 	protected static class ZipArchiveWrapper implements ArchiveWrapper {
-		
-		private final ZipArchiveInputStream _is;
 
-		public ZipArchiveWrapper(ZipArchiveInputStream is) {
-			_is = is;
+        private final Enumeration<ZipArchiveEntry> entries;
+        private final ZipFile zFile;
+
+		public ZipArchiveWrapper(ZipFile source) {
+            zFile = source;
+            entries = source.getEntries();
 		}
 
 		@Override
 		public ArchiveEntry getNextEntry() throws IOException {
-			return _is.getNextZipEntry();
-		}
+            return entries.nextElement();
+        }
 
 		@Override
 		public boolean canReadEntryData(ArchiveEntry entry) {
-			return _is.canReadEntryData(entry);
+			return zFile.canReadEntryData(zFile.getEntry(entry.getName()));
 		}
 
 		@Override
 		public void close() throws IOException {
-			_is.close();
+            zFile.close();
 		}
 
 		@Override
-		public InputStream asStream() {
-			return _is;
-		}
-
+		public InputStream asStream(ArchiveEntry entry) throws IOException {
+            return zFile.getInputStream(zFile.getEntry(entry.getName()));
+        }
 	}
-
 }

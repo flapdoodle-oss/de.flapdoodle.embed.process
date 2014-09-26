@@ -125,15 +125,14 @@ public class Files {
 
 	public static void write(InputStream in, long size, File output)
 			throws IOException {
-		FileOutputStream out = new FileOutputStream(output);
-
+        FileOutputStream out = new FileOutputStream(output);
 		try {
 			byte[] buf = new byte[BYTE_BUFFER_LENGTH];
 			int read;
 			int left = buf.length;
 			if (left > size)
 				left = (int) size;
-			while ((read = in.read(buf, 0, left)) != -1) {
+			while ((read = in.read(buf, 0, left)) > 0) {
 
 				out.write(buf, 0, read);
 
