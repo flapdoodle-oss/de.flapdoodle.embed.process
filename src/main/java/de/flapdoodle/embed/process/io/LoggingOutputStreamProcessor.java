@@ -35,7 +35,7 @@ public class LoggingOutputStreamProcessor implements IStreamProcessor {
 
 	@Override
 	public void process(String block) {
-		_logger.log(_level, block);
+		_logger.log(_level, block.trim());
 	}
 
 	@Override
