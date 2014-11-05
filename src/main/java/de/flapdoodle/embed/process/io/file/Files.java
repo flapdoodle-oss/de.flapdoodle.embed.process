@@ -125,7 +125,7 @@ public class Files {
 
 	public static void write(InputStream in, long size, File output)
 			throws IOException {
-        FileOutputStream out = new FileOutputStream(output);
+		FileOutputStream out = new FileOutputStream(output);
 		try {
 			byte[] buf = new byte[BYTE_BUFFER_LENGTH];
 			int read;

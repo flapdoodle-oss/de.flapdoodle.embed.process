@@ -34,40 +34,40 @@ import java.util.Enumeration;
  */
 public class ZipExtractor extends AbstractExtractor {
 
-	@Override
-	protected ArchiveWrapper archiveStream(File source) throws IOException {
+    @Override
+    protected ArchiveWrapper archiveStream(File source) throws IOException {
         ZipFile zipIn = new ZipFile(source);
-		return new ZipArchiveWrapper(zipIn);
-	}
-	
-	protected static class ZipArchiveWrapper implements ArchiveWrapper {
+        return new ZipArchiveWrapper(zipIn);
+    }
+
+    protected static class ZipArchiveWrapper implements ArchiveWrapper {
 
         private final Enumeration<ZipArchiveEntry> entries;
         private final ZipFile zFile;
 
-		public ZipArchiveWrapper(ZipFile source) {
+        public ZipArchiveWrapper(ZipFile source) {
             zFile = source;
             entries = source.getEntries();
-		}
+        }
 
-		@Override
-		public ArchiveEntry getNextEntry() throws IOException {
+        @Override
+        public ArchiveEntry getNextEntry() throws IOException {
             return entries.nextElement();
         }
 
-		@Override
-		public boolean canReadEntryData(ArchiveEntry entry) {
-			return zFile.canReadEntryData(zFile.getEntry(entry.getName()));
-		}
+        @Override
+        public boolean canReadEntryData(ArchiveEntry entry) {
+            return zFile.canReadEntryData(zFile.getEntry(entry.getName()));
+        }
 
-		@Override
-		public void close() throws IOException {
+        @Override
+        public void close() throws IOException {
             zFile.close();
-		}
+        }
 
-		@Override
-		public InputStream asStream(ArchiveEntry entry) throws IOException {
+        @Override
+        public InputStream asStream(ArchiveEntry entry) throws IOException {
             return zFile.getInputStream(zFile.getEntry(entry.getName()));
         }
-	}
+    }
 }
