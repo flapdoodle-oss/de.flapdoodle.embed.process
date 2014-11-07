@@ -35,19 +35,19 @@ import de.flapdoodle.embed.process.io.file.Files;
 public class FilesToExtract {
 
 	private final ArrayList<FileSet.Entry> _files;
-	private final ITempNaming _exeutableNaming;
+	private final ITempNaming _executableNaming;
 	private final File _dirFactoryResult;
 	private final boolean _dirFactoryResultIsGenerated;
 
-	public FilesToExtract(IDirectory dirFactory, ITempNaming exeutableNaming, FileSet fileSet) {
+	public FilesToExtract(IDirectory dirFactory, ITempNaming executableNaming, FileSet fileSet) {
 		if (dirFactory==null) throw new NullPointerException("dirFactory is NULL");
-		if (exeutableNaming==null) throw new NullPointerException("exeutableNaming is NULL");
+		if (executableNaming==null) throw new NullPointerException("executableNaming is NULL");
 		if (fileSet==null) throw new NullPointerException("fileSet is NULL");
 		
 		_files = new ArrayList<FileSet.Entry>(fileSet.entries());
 		_dirFactoryResult = dirFactory.asFile();
 		_dirFactoryResultIsGenerated=dirFactory.isGenerated();
-		_exeutableNaming = exeutableNaming;
+		_executableNaming = executableNaming;
 	}
 
 	public File generatedBaseDir() {
@@ -73,18 +73,18 @@ public class FilesToExtract {
 				_files.remove(found);
 			}
 		}
-		return found!=null ? new Match(_dirFactoryResult,_exeutableNaming, found) : null;
+		return found!=null ? new Match(_dirFactoryResult,_executableNaming, found) : null;
 	}
 	
 	static class Match implements IExtractionMatch {
 
 		private final Entry _entry;
 		private final File _dirFactoryResult;
-		private final ITempNaming _exeutableNaming;
+		private final ITempNaming _executableNaming;
 
-		public Match(File dirFactoryResult,ITempNaming exeutableNaming, Entry entry) {
+		public Match(File dirFactoryResult,ITempNaming executableNaming, Entry entry) {
 			_dirFactoryResult = dirFactoryResult;
-			_exeutableNaming = exeutableNaming;
+			_executableNaming = executableNaming;
 			_entry = entry;
 		}
 		
@@ -99,7 +99,7 @@ public class FilesToExtract {
 			switch (_entry.type()) {
 				case Executable: 
 					try {
-						destination=Files.createTempFile(_dirFactoryResult,_exeutableNaming.nameFor("extract",_entry.destination()));
+						destination=Files.createTempFile(_dirFactoryResult,_executableNaming.nameFor("extract",_entry.destination()));
 					} catch (FileAlreadyExistsException ex) {
 						throw new ExecutableFileAlreadyExistsException(ex);
 					}
