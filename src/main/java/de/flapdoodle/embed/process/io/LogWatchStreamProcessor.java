@@ -20,18 +20,10 @@
  */
 package de.flapdoodle.embed.process.io;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
-/**
- *
- */
 public class LogWatchStreamProcessor implements IStreamProcessor {
-
-	private static Logger logger = Logger.getLogger(LogWatchStreamProcessor.class.getName());
 
 	//private final Reader _reader;
 	private final StringBuilder output = new StringBuilder();

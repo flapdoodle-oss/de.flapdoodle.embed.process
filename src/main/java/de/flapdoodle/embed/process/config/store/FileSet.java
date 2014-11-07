@@ -26,9 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import de.flapdoodle.embed.process.extract.IFileNaming;
-import de.flapdoodle.embed.process.extract.ITempNaming;
-
 public class FileSet {
 
 	private final List<Entry> _entries;

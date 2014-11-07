@@ -22,10 +22,7 @@ package de.flapdoodle.embed.process.extract;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.regex.Pattern;
 
-import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 
 /**
