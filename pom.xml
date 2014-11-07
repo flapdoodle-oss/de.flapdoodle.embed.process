@@ -110,6 +110,9 @@
                         <include>src/**</include>
                         <include>**/test/**</include>
                     </includes>
+                    <excludes>
+                        <include>**/*.txt</include>
+                    </excludes>
                     <!--
                              <excludes> <exclude>target/**</exclude>
                              <exclude>.clover/**</exclude> </excludes>
