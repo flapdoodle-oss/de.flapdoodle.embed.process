@@ -46,6 +46,7 @@ import de.flapdoodle.embed.process.io.directories.UserHome;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
 import de.flapdoodle.embed.process.store.ArtifactStoreBuilder;
+import de.flapdoodle.embed.process.store.Downloader;
 
 
 public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
@@ -105,6 +106,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 					.fileNaming(new UUIDTempNaming())
 					.progressListener(new StandardConsoleProgressListener())
 					.userAgent("Mozilla/5.0 (compatible; embedded "+name+"; +https://github.com/flapdoodle-oss/de.flapdoodle.embed.process)"))
+				.downloader(new Downloader())
 				.tempDir(new PropertyOrPlatformTempDir())
 				.executableNaming(new UUIDTempNaming()))
 			.processOutput(ProcessOutput.getDefaultInstance(name))

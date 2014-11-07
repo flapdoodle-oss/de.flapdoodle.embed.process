@@ -42,21 +42,17 @@ import de.flapdoodle.embed.process.io.progress.IProgressListener;
 /**
  * Class for downloading runtime
  */
-public class Downloader {
+public class Downloader implements IDownloader {
 
 	static final int DEFAULT_CONTENT_LENGTH = 20 * 1024 * 1024;
 	static final int BUFFER_LENGTH = 1024 * 8 * 8;
 	static final int READ_COUNT_MULTIPLIER = 100;
 
-	private Downloader() {
-
-	}
-
-	public static String getDownloadUrl(IDownloadConfig runtime, Distribution distribution) {
+	public String getDownloadUrl(IDownloadConfig runtime, Distribution distribution) {
 		return runtime.getDownloadPath().getPath(distribution) + runtime.getPackageResolver().getPath(distribution);
 	}
 
-	public static File download(IDownloadConfig downloadConfig, Distribution distribution) throws IOException {
+	public File download(IDownloadConfig downloadConfig, Distribution distribution) throws IOException {
 
 		String progressLabel = "Download " + distribution;
 		IProgressListener progress = downloadConfig.getProgressListener();
@@ -106,7 +102,7 @@ public class Downloader {
 		return ret;
 	}
 
-	private static InputStreamAndLength downloadInputStream(IDownloadConfig downloadConfig, Distribution distribution)
+	private InputStreamAndLength downloadInputStream(IDownloadConfig downloadConfig, Distribution distribution)
 			throws MalformedURLException, IOException {
 		URL url = new URL(getDownloadUrl(downloadConfig, distribution));
 		
@@ -134,7 +130,7 @@ public class Downloader {
 		}
 	}
 
-	private static String downloadSpeed(long downloadStartedAt,long downloadSize) {
+	private String downloadSpeed(long downloadStartedAt,long downloadSize) {
 		long timeUsed=(System.currentTimeMillis()-downloadStartedAt)/1000;
 		if (timeUsed==0) {
 			timeUsed=1;
