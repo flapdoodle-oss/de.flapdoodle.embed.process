@@ -23,7 +23,6 @@ package de.flapdoodle.embed.process.runtime;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,13 +35,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.config.ISupportConfig;
-import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.io.Processors;
 
-/**
- *
- */
 public class ProcessControl {
 
 	private static Logger logger = Logger.getLogger(ProcessControl.class.getName());
