@@ -88,9 +88,9 @@
             </plugin>
 
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.9.0</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.6</version>
                 <configuration>
                     <!--
                                         <basedir>${basedir}</basedir>
@@ -130,7 +130,11 @@
                         <lic.username>Michael Mosmann</lic.username>
                         <lic.email2>m.joehren@googlemail.com</lic.email2>
                         <lic.username2>Martin Jöhren</lic.username2>
-                        <lic.developers>konstantin-ba@github,Archimedes Trajano (trajano@github)</lic.developers>
+                        <lic.developers>
+	konstantin-ba@github,
+	Archimedes Trajano (trajano@github),
+	Kevin D. Keck (kdkeck@github),
+	Ben McCann (benmccann@github)</lic.developers>
                     </properties>
                     <encoding>UTF-8</encoding>
                     <!--
