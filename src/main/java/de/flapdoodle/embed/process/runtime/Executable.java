@@ -26,8 +26,8 @@ package de.flapdoodle.embed.process.runtime;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
@@ -36,7 +36,7 @@ import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 
 public abstract class Executable<T extends IExecutableProcessConfig, P extends IStopable> implements IStopable {
 
-	private static Logger logger = Logger.getLogger(Executable.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(Executable.class);
 
 	private final T config;
 	private final IRuntimeConfig runtimeConfig;
@@ -99,7 +99,7 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 		if (stopped) throw new RuntimeException("Already stopped");
 
 		P start = start(distribution, config, runtimeConfig);
-		logger.logp(Level.INFO, getClass().getSimpleName(),"start" ,config.toString());
+		logger.info("start {}", config);
 		addStopable(start);
 		return start;
 	}

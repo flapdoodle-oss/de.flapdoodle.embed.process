@@ -31,7 +31,8 @@ import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
@@ -40,7 +41,7 @@ import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
 
 public class TestFileCleaner extends TestCase {
 
-	private static Logger logger = Logger.getLogger(TestFileCleaner.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(TestFileCleaner.class.getName());
 
 	String prefix = UUID.randomUUID().toString();
 	

@@ -27,14 +27,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FileUtils;
 
 public class FileCleaner {
 
-	private static Logger logger = Logger.getLogger(FileCleaner.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(FileCleaner.class);
 
 	static final int MAX_FILES_TO_CLEAN = 10000;
 	static final int MAX_RETRIES = 100;
@@ -111,7 +111,7 @@ public class FileCleaner {
 					} catch (IOException iox) {
 						int newCounter = fileToClean.get(f) + 1;
 						if (newCounter > MAX_RETRIES) {
-							logger.log(Level.SEVERE, "Could not delete " + f + " after " + newCounter + " retries, leave it unchanged");
+							logger.error("Could not delete {} after {} retries, leave it unchanged", f, newCounter);
 							fileToClean.remove(f);
 						} else {
 							fileToClean.put(f, newCounter);
@@ -126,7 +126,7 @@ public class FileCleaner {
 				synchronized (fileToClean) {
 					if (fileToClean.size() < MAX_FILES_TO_CLEAN) {
 						Integer oldValue = fileToClean.put(fileOrDir, 0);
-						if (oldValue!=null) logger.log(Level.SEVERE, "forceDelete " + fileOrDir + ", but allready in list with " + oldValue + " tries.");
+						if (oldValue!=null) logger.error("forceDelete {}, but allready in list with {} tries.", fileOrDir, oldValue);
 						fileToClean.notify();
 					} else {
 						throw new RuntimeException("filesToClean exceeded " + MAX_FILES_TO_CLEAN

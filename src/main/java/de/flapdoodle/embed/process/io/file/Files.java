@@ -35,14 +35,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.UUID;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class Files {
 
-	private static Logger logger = Logger.getLogger(Files.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(Files.class);
 	public static final int BYTE_BUFFER_LENGTH = 1024 * 16;
 
 	private Files() {
@@ -113,12 +114,11 @@ public class Files {
 		try {
 			if ((fileOrDir != null) && (fileOrDir.exists())) {
 				FileUtils.forceDelete(fileOrDir);
-				logger.fine("Could delete " + fileOrDir);
+				logger.debug("Could delete {}", fileOrDir);
 				ret = true;
 			}
 		} catch (IOException e) {
-			logger.warning("Could not delete " + fileOrDir
-					+ ". Will try to delete it again when program exits.");
+			logger.warn("Could not delete {}. Will try to delete it again when program exits.", fileOrDir);
 			FileCleaner.forceDeleteOnExit(fileOrDir);
 			ret = true;
 		}

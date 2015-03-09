@@ -111,7 +111,8 @@
                         <include>**/test/**</include>
                     </includes>
                     <excludes>
-                        <include>**/*.txt</include>
+                        <exclude>**/*.txt</exclude>
+                        <exclude>**/*.properties</exclude>
                     </excludes>
                     <!--
                              <excludes> <exclude>target/**</exclude>

@@ -32,12 +32,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractExtractor implements IExtractor {
 	
-	private static Logger _logger=Logger.getLogger(AbstractExtractor.class.getName());
+	private static Logger _logger=LoggerFactory.getLogger(AbstractExtractor.class);
 	
 	protected abstract ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException;
 
@@ -45,7 +45,10 @@ public abstract class AbstractExtractor implements IExtractor {
 		try {
 			return archiveStream(source);
 		} catch (IOException iox) {
-			_logger.log(Level.WARNING,"\n--------------------------\nIf you get this exception more than once, you should check if the file is corrupt.\nIf you remove the file ("+source.getAbsolutePath()+"), it will be downloaded again.\n--------------------------",iox);
+			_logger.warn("\n--------------------------\n"
+                    + "If you get this exception more than once, you should check if the file is corrupt.\n"
+                    + "If you remove the file ({}), it will be downloaded again.\n"
+                    + "--------------------------", source.getAbsolutePath(), iox);
 			throw new IOException("File "+source.getAbsolutePath(),iox);
 		}
 	}

@@ -28,8 +28,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
@@ -46,7 +46,7 @@ import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 
 public abstract class Processes {
 
-	private static Logger logger = Logger.getLogger(ProcessControl.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(ProcessControl.class);
 
 	private Processes() {
 		// no instance
@@ -68,7 +68,7 @@ public abstract class Processes {
 				pidField.setAccessible(true);
 				Object value = pidField.get(process);
 				if (value instanceof Integer) {
-					logger.fine("Detected pid: " + value);
+					logger.debug("Detected pid: {}", value);
 					return (Integer) value;
 				}
 			}
@@ -102,7 +102,7 @@ public abstract class Processes {
 				WinNT.HANDLE handle = new WinNT.HANDLE();
 				handle.setPointer(Pointer.createConstant(handl));
 				int ret = kernel.GetProcessId(handle);
-				logger.fine("Detected pid: " + ret);
+				logger.debug("Detected pid: {}", ret);
 				return ret;
 			} catch (Throwable e) {
 				e.printStackTrace();
@@ -149,7 +149,7 @@ public abstract class Processes {
 				// firewall blocking, or could be RUNNING
 				final String[] cmd = { "tasklist.exe",
 						"/FI", "PID eq " + pid ,"/FO", "CSV" };
-				logger.finer("Command: " + Arrays.asList(cmd));
+				logger.trace("Command: {}", Arrays.asList(cmd));
 				ProcessBuilder processBuilder = ProcessControl
 						.newProcessBuilder(Arrays.asList(cmd), true);
 				Process process = processBuilder.start();
@@ -158,16 +158,16 @@ public abstract class Processes {
 					new HashSet<String>(), StreamToLineProcessor.wrap(Processors.silent()));
 				Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
 				logWatch.waitForResult(2000);
-				logger.finer("logWatch output: " + logWatch.getOutput());
+				logger.trace("logWatch output: {}", logWatch.getOutput());
 				return logWatch.isInitWithSuccess();
 			}
 	
 		} catch (IOException e) {
-			logger.log(Level.SEVERE,"Trying to get process status",e);
+			logger.error("Trying to get process status", e);
 			e.printStackTrace();
 	
 		} catch (InterruptedException e) {
-			logger.log(Level.SEVERE,"Trying to get process status",e);
+			logger.error("Trying to get process status", e);
 			e.printStackTrace();
 		}
 		return false;

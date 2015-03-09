@@ -23,7 +23,8 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.IProperty;
@@ -34,7 +35,7 @@ import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 
 public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
-	private static Logger logger = Logger.getLogger(ArtifactStoreBuilder.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(ArtifactStoreBuilder.class);
 
 	private static final TypedProperty<ITempNaming> EXECUTABLE_NAMING = TypedProperty.with("ExecutableNaming",ITempNaming.class);
 	private static final TypedProperty<IDirectory> TEMP_DIR_FACTORY = TypedProperty.with("TempDir",IDirectory.class);
@@ -114,7 +115,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	public IArtifactStore build() {
 		boolean useCache = get(USE_CACHE, true);
 		
-		logger.fine("Build ArtifactStore(useCache:"+useCache+")");
+		logger.debug("Build ArtifactStore(useCache: {})", useCache);
 		
 		IArtifactStore artifactStore = new ArtifactStore(get(DOWNLOAD_CONFIG),get(TEMP_DIR_FACTORY), get(EXECUTABLE_NAMING), get(DOWNLOADER));
 		if (useCache) {

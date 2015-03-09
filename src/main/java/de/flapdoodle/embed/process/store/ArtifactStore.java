@@ -26,7 +26,8 @@ package de.flapdoodle.embed.process.store;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
@@ -42,7 +43,7 @@ import de.flapdoodle.embed.process.io.file.Files;
 
 
 public class ArtifactStore implements IArtifactStore {
-	private static Logger logger = Logger.getLogger(ArtifactStore.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(ArtifactStore.class);
 
 	private IDownloadConfig _downloadConfig;
 	private IDirectory _tempDirFactory;
@@ -80,17 +81,17 @@ public class ArtifactStore implements IArtifactStore {
 		for (FileType type : EnumSet.complementOf(EnumSet.of(FileType.Executable))) {
 			for (File file : all.files(type)) {
 				if (file.exists() && !Files.forceDelete(file))
-					logger.warning("Could not delete "+type+" NOW: " + file);				
+					logger.warn("Could not delete {} NOW: {}", type, file);
 			}
 		}
 		File exe=all.executable();
 		if (exe.exists() && !Files.forceDelete(exe)) {
-			logger.warning("Could not delete executable NOW: " + exe);
+			logger.warn("Could not delete executable NOW: {}", exe);
 		}
 		
 		if (all.generatedBaseDir()!=null) {
 			if (!Files.forceDelete(all.generatedBaseDir())) {
-				logger.warning("Could not delete generatedBaseDir: " + all.generatedBaseDir());
+				logger.warn("Could not delete generatedBaseDir: {}", all.generatedBaseDir());
 			}
 		}
 	}

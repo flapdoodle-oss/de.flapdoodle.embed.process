@@ -29,7 +29,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
@@ -37,7 +38,7 @@ import de.flapdoodle.embed.process.runtime.ProcessControl;
 
 public class CachingArtifactStore implements IArtifactStore {
 
-	private static Logger _logger = Logger.getLogger(CachingArtifactStore.class.getName());
+	private static Logger _logger = LoggerFactory.getLogger(CachingArtifactStore.class);
 
 	private final IArtifactStore _delegate;
 
@@ -66,11 +67,11 @@ public class CachingArtifactStore implements IArtifactStore {
 		synchronized (_lock) {
 			fileWithCounter = _distributionFiles.get(distribution);
 			if (fileWithCounter == null) {
-				_logger.fine("cache NOT found for "+distribution);
+				_logger.debug("cache NOT found for {}", distribution);
 				fileWithCounter=new FilesWithCounter(distribution);
 				_distributionFiles.put(distribution, fileWithCounter);
 			} else {
-				_logger.fine("cache found for "+distribution);
+				_logger.debug("cache found for {}", distribution);
 			}
 		}
 		
@@ -86,7 +87,7 @@ public class CachingArtifactStore implements IArtifactStore {
 		if (fileWithCounter!=null) {
 			fileWithCounter.free(executable);
 		} else {
-			_logger.warning("Allready removed "+executable+" for "+distribution+", emergency shutdown?");
+			_logger.warn("Allready removed {} for {}, emergency shutdown?", executable, distribution);
 		}
 	}
 
@@ -120,7 +121,7 @@ public class CachingArtifactStore implements IArtifactStore {
 
 		public synchronized void free(IExtractedFileSet executable) {
 			if (executable!=_file) throw new RuntimeException("Files does not match: "+_file+" != "+executable);
-			_logger.fine("Free "+_counter+" "+_file);
+			_logger.debug("Free {} {}", _counter, _file);
 			_counter--;
 		}
 
@@ -129,18 +130,18 @@ public class CachingArtifactStore implements IArtifactStore {
 			
 			if (_file==null) {
 				_file=_delegate.extractFileSet(_distribution);
-				_logger.fine("Not Cached "+_counter+" "+_file);
+				_logger.debug("Not Cached {} {}", _counter, _file);
 			} else {
-				_logger.fine("Cached "+_counter+" "+_file);
+				_logger.debug("Cached {} {}", _counter, _file);
 			}
 			return _file;
 		}
 		
 		public synchronized void cleanup() {
 			if (_counter<=0) {
-				if (_counter<0) _logger.warning("Counter < 0 for "+_distribution+" and "+_file);
+				if (_counter<0) _logger.warn("Counter < 0 for {} and {}", _distribution, _file);
 				if (_file!=null) {
-					_logger.fine("cleanup for "+_distribution+" and "+_file);
+					_logger.debug("cleanup for {} and {}", _distribution, _file);
 					_delegate.removeFileSet(_distribution, _file);
 					_file=null;
 				}
@@ -149,7 +150,7 @@ public class CachingArtifactStore implements IArtifactStore {
 		
 		public synchronized void forceDelete() {
 			if (_file!=null) {
-				_logger.fine("force delete for "+_distribution+" and "+_file);
+				_logger.debug("force delete for {} and {}", _distribution, _file);
 				_delegate.removeFileSet(_distribution, _file);
 				_file=null;
 				_counter=0;

@@ -24,10 +24,10 @@
 package de.flapdoodle.embed.process.config.io;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.io.IStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.Slf4jLevel;
 
 
 public class ProcessOutput {
@@ -64,10 +64,15 @@ public class ProcessOutput {
 		return new ProcessOutput(Processors.silent(),Processors.silent(),Processors.silent());
 	}
 
-	public static ProcessOutput getInstance(String label, Logger logger) {
+	public static ProcessOutput getInstance(String label, java.util.logging.Logger logger) {
 		return new ProcessOutput(Processors.named("["+label+" output]", Processors.logTo(logger, Level.INFO)),
 				Processors.named("["+label+" error]", Processors.logTo(logger, Level.SEVERE)),
 				Processors.logTo(logger, Level.FINE));
 	}
 
+	public static ProcessOutput getInstance(String label, org.slf4j.Logger logger) {
+		return new ProcessOutput(Processors.named("["+label+" output]", Processors.logTo(logger, Slf4jLevel.INFO)),
+				Processors.named("["+label+" error]", Processors.logTo(logger, Slf4jLevel.ERROR)),
+				Processors.logTo(logger, Slf4jLevel.DEBUG));
+	}
 }
