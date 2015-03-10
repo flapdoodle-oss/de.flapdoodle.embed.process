@@ -34,8 +34,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
@@ -43,7 +43,7 @@ import de.flapdoodle.embed.process.io.Processors;
 
 public class ProcessControl {
 
-	private static Logger logger = Logger.getLogger(ProcessControl.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(ProcessControl.class);
 	private static final int SLEEPT_TIMEOUT = 10;
 
 	private Process process;
@@ -85,7 +85,7 @@ public class ProcessControl {
 				process.getOutputStream().close();
 
 			} catch (IOException e) {
-				logger.severe(e.getMessage());
+				logger.error(e.getMessage());
 			}
 			reader = null;
 		}
@@ -227,12 +227,12 @@ public class ProcessControl {
 			Processors.connect(process.getReader(), processConfig.getOutput());
 			Thread.sleep(SLEEPT_TIMEOUT);
 			ret = process.stop() == 0;
-			logger.info("execSuccess: " + ret + " " + commandLine);
+			logger.info("execSuccess: {} {}", ret, commandLine);
 			return ret;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "" + commandLine, e);
+			logger.error("" + commandLine, e);
 		} catch (InterruptedException e) {
-			logger.log(Level.SEVERE, "" + commandLine, e);
+			logger.error("" + commandLine, e);
 		}
 		return false;
 	}

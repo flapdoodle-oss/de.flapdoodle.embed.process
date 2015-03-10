@@ -27,15 +27,15 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class Network {
 
-	private static Logger logger = Logger.getLogger(Network.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(Network.class);
 	
 	private static final String NO_LOCALHOST_ERROR_MESSAGE = "We could not detect if localhost is IPv4 or IPv6. " +
 			"Sometimes there is no entry for localhost. " +
@@ -55,7 +55,7 @@ public class Network {
 			}
 			return false;
 		} catch (UnknownHostException ux) {
-			logger.log(Level.SEVERE, NO_LOCALHOST_ERROR_MESSAGE, ux);
+			logger.error(NO_LOCALHOST_ERROR_MESSAGE, ux);
 			throw ux;
 		}
 	}
@@ -65,7 +65,7 @@ public class Network {
 		if (!ret.isLoopbackAddress()) {
 			ret = InetAddress.getByName("localhost");
 			if (!ret.isLoopbackAddress()) {
-				logger.severe("" + ret.getHostAddress() + " is not a loopback address");
+				logger.error("{} is not a loopback address", ret.getHostAddress());
 			}
 		}
 		return ret;

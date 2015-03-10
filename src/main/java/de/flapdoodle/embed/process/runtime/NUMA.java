@@ -27,7 +27,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.collections.Collections;
 import de.flapdoodle.embed.process.config.ISupportConfig;
@@ -39,7 +40,7 @@ import de.flapdoodle.embed.process.io.Readers;
  */
 public class NUMA {
 
-	private static Logger logger = Logger.getLogger(NUMA.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(NUMA.class);
 
 	public static synchronized boolean isNUMA(ISupportConfig support, Platform platform) {
 		Boolean ret = NUMA_STATUS_MAP.get(platform);
@@ -63,7 +64,7 @@ public class NUMA {
 				process.stop();
 				boolean isNUMA = !content.isEmpty();
 				if (isNUMA) {
-					logger.warning("-----------------------------------------------\n"
+					logger.warn("-----------------------------------------------\n"
 							+ "NUMA support is still alpha. If you have any Problems with it, please contact us.\n"
 							+ "-----------------------------------------------");
 				}

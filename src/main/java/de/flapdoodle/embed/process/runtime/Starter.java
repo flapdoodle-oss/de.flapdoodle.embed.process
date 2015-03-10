@@ -24,8 +24,8 @@
 package de.flapdoodle.embed.process.runtime;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
@@ -37,7 +37,7 @@ import de.flapdoodle.embed.process.store.IArtifactStore;
 
 public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE extends Executable<CONFIG, PROCESS>,PROCESS extends IStopable> {
 	
-	private static Logger logger = Logger.getLogger(Starter.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(Starter.class);
 	
 	private final IRuntimeConfig runtime;
 	
@@ -64,7 +64,7 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 			if (messageOnException==null) {
 				messageOnException="prepare executable";
 			}
-			logger.log(Level.SEVERE, messageOnException, iox);
+			logger.error(messageOnException, iox);
 			throw new DistributionException(distribution,iox);
 		}
 	}

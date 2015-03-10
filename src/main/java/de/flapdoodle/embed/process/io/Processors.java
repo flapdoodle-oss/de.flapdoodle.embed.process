@@ -25,7 +25,6 @@ package de.flapdoodle.embed.process.io;
 
 import java.io.Reader;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -52,10 +51,14 @@ public class Processors {
 		return named(name, console());
 	}
 
-	public static IStreamProcessor logTo(Logger logger, Level level) {
+	public static IStreamProcessor logTo(java.util.logging.Logger logger, Level level) {
 		return new LoggingOutputStreamProcessor(logger, level);
 	}
-	
+
+	public static IStreamProcessor logTo(org.slf4j.Logger logger, Slf4jLevel level) {
+		return new Slf4jStreamProcessor(logger, level);
+	}
+
 	public static ReaderProcessor connect(Reader reader, IStreamProcessor processor) {
 		return new ReaderProcessor(reader, processor);
 	}

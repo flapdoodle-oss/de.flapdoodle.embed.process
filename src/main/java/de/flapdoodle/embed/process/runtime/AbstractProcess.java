@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +46,7 @@ import de.flapdoodle.embed.process.io.file.Files;
 public abstract class AbstractProcess<T extends IExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>
 		implements IStopable {
 
-	private static Logger logger = Logger.getLogger(AbstractProcess.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(AbstractProcess.class);
 
 	public static final int TIMEOUT = 20000;
 
@@ -112,8 +112,8 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 			onAfterProcessStart(process, runtimeConfig);
 
 		} catch (IOException iox) {
-			logger.log(Level.SEVERE, "failed to call "+nextCall,iox);
-			logger.logp(Level.INFO, getClass().getSimpleName(), "ctor", config.toString());
+			logger.error("failed to call {}", nextCall, iox);
+			logger.info("construct {}", config.toString());
 			stop();
 			throw iox;
 		}
@@ -168,7 +168,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 			onAfterProcessStop(this.config, this.runtimeConfig);
 			cleanupInternal();
 			if (!Files.forceDelete(pidFile)) {
-				logger.warning("Could not delete pid file: " + pidFile);
+				logger.warn("Could not delete pid file: {}", pidFile);
 			}
 		}
 	}
@@ -250,7 +250,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 			} catch (InterruptedException e1) {
 				// ignore
 			}
-			logger.warning("Didn't find pid file in try " + tries + ", waiting 100ms...");
+			logger.warn("Didn't find pid file in try {}, waiting 100ms...", tries);
 			tries++;
 		}
 		// don't check file to be there. want to throw IOException if
