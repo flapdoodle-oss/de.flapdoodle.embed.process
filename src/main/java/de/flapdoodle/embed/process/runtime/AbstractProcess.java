@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
@@ -58,9 +58,9 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	private boolean stopped = false;
 
-	private Distribution distribution;
+	private final Distribution distribution;
 
-	private File pidFile;
+	private final File pidFile;
 
 	public AbstractProcess(Distribution distribution, T config, IRuntimeConfig runtimeConfig, E executable)
 			throws IOException {
@@ -70,7 +70,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		this.distribution = distribution;
 		// pid file needs to be set before ProcessBuilder is called
 		this.pidFile = pidFile(this.executable.getFile().executable());
-		
+
 		ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
 
 		// Refactor me - to much things done in this try/catch
@@ -80,7 +80,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 			nextCall="onBeforeProcess()";
 
 			onBeforeProcess(runtimeConfig);
-			
+
 			nextCall="newProcessBuilder()";
 
 			ProcessBuilder processBuilder = ProcessControl.newProcessBuilder(
@@ -88,7 +88,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 							getCommandLine(distribution, config, this.executable.getFile())),
 					getEnvironment(distribution, config, this.executable.getFile()), true);
 
-			
+
 			nextCall="onBeforeProcessStart()";
 
 			onBeforeProcessStart(processBuilder, config, runtimeConfig);
@@ -96,11 +96,13 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 			nextCall="start()";
 
 			process = ProcessControl.start(config.supportConfig(), processBuilder);
-			
+
 			nextCall="writePidFile()";
 
-			writePidFile(pidFile, process.getPid());
-			
+			if (process.getPid() != null) {
+				writePidFile(pidFile, process.getPid());
+			}
+
 			nextCall="addShutdownHook()";
 
 			if (runtimeConfig.isDaemonProcess()) {
@@ -122,7 +124,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	protected File pidFile(File executeableFile) {
 		return new File(executeableFile.getParentFile(),executableBaseName(executeableFile.getName())+".pid");
 	}
-	
+
 	protected File pidFile() {
 		return pidFile;
 	}
@@ -161,6 +163,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		return new HashMap<String, String>();
 	}
 
+	@Override
 	public synchronized final void stop() {
 		if (!stopped) {
 			stopped = true;
@@ -225,8 +228,8 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		return false;
 	}
 
-	public int getProcessId() {
-		Integer pid = process.getPid();
+	public long getProcessId() {
+		Long pid = process.getPid();
 		return pid!=null ? pid : processId;
 	}
 
@@ -283,7 +286,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		}
 	}
 
-	protected void writePidFile(File pidFile, int pid) throws IOException {
+	protected void writePidFile(File pidFile, long pid) throws IOException {
 		Files.write(pid + "\n", pidFile);
 	}
 }

@@ -26,8 +26,12 @@ package de.flapdoodle.embed.process.runtime;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
+
+import javax.lang.model.SourceVersion;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,19 +52,27 @@ public abstract class Processes {
 
 	private static Logger logger = LoggerFactory.getLogger(ProcessControl.class);
 
+	private static final PidHelper PID_HELPER;
+
+	static {
+		// Comparing with the string value to avoid a strong dependency on JDK 9
+		if (SourceVersion.latest().toString().equals( "RELEASE_9" )) {
+			PID_HELPER = PidHelper.JDK_9;
+		}
+		else {
+			PID_HELPER = PidHelper.LEGACY;
+		}
+	}
+
 	private Processes() {
 		// no instance
 	}
-	
-	public static Integer processId(Process process) {
-		Integer pid=unixLikeProcessId(process);
-		if (pid==null) {
-			pid=windowsProcessId(process);
-		}
-		return pid;
+
+	public static Long processId(Process process) {
+		return PID_HELPER.getPid(process);
 	}
 
-	static Integer unixLikeProcessId(Process process) {
+	private static Long unixLikeProcessId(Process process) {
 		Class<?> clazz = process.getClass();
 		try {
 			if (clazz.getName().equals("java.lang.UNIXProcess")) {
@@ -69,7 +81,7 @@ public abstract class Processes {
 				Object value = pidField.get(process);
 				if (value instanceof Integer) {
 					logger.debug("Detected pid: {}", value);
-					return (Integer) value;
+					return ((Integer) value).longValue();
 				}
 			}
 		} catch (SecurityException sx) {
@@ -83,13 +95,13 @@ public abstract class Processes {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see http://www.golesny.de/p/code/javagetpid
-	 * 
+	 *
 	 * @return
 	 */
-	static Integer windowsProcessId(Process process) {
+	private static Long windowsProcessId(Process process) {
 		if (process.getClass().getName().equals("java.lang.Win32Process")
 				|| process.getClass().getName().equals("java.lang.ProcessImpl")) {
 			/* determine the pid on windows plattforms */
@@ -103,7 +115,7 @@ public abstract class Processes {
 				handle.setPointer(Pointer.createConstant(handl));
 				int ret = kernel.GetProcessId(handle);
 				logger.debug("Detected pid: {}", ret);
-				return ret;
+				return Long.valueOf(ret);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -135,8 +147,8 @@ public abstract class Processes {
 		return false;
 	}
 
-	public static boolean isProcessRunning(Platform platform, int pid) {
-	
+	public static boolean isProcessRunning(Platform platform, long pid) {
+
 		try {
 			final Process pidof;
 			if (platform.isUnixLike()) {
@@ -161,15 +173,45 @@ public abstract class Processes {
 				logger.trace("logWatch output: {}", logWatch.getOutput());
 				return logWatch.isInitWithSuccess();
 			}
-	
+
 		} catch (IOException e) {
 			logger.error("Trying to get process status", e);
 			e.printStackTrace();
-	
+
 		} catch (InterruptedException e) {
 			logger.error("Trying to get process status", e);
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	private enum PidHelper {
+
+		JDK_9 {
+			@Override
+			Long getPid(Process process) {
+				try {
+					// Invoking via reflection to avoid a strong dependency on JDK 9
+					Method getPid = Process.class.getMethod("getPid");
+					return (Long) getPid.invoke(process);
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					return null;
+				}
+			}
+		},
+		LEGACY {
+			@Override
+			Long getPid(Process process) {
+				Long pid=unixLikeProcessId(process);
+				if (pid==null) {
+					pid=windowsProcessId(process);
+				}
+				return pid;
+			}
+		};
+
+		abstract Long getPid(Process process);
 	}
 }
