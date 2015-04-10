@@ -83,10 +83,10 @@ public abstract class Processes {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see http://www.golesny.de/p/code/javagetpid
-	 * 
+	 *
 	 * @return
 	 */
 	static Integer windowsProcessId(Process process) {
@@ -161,11 +161,11 @@ public abstract class Processes {
 				logger.trace("logWatch output: {}", logWatch.getOutput());
 				return logWatch.isInitWithSuccess();
 			}
-	
+
 		} catch (IOException e) {
 			logger.error("Trying to get process status", e);
 			e.printStackTrace();
-	
+
 		} catch (InterruptedException e) {
 			logger.error("Trying to get process status", e);
 			e.printStackTrace();

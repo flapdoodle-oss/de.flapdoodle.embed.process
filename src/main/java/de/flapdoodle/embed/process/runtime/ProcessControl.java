@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,14 +47,14 @@ public class ProcessControl {
 	private static Logger logger = LoggerFactory.getLogger(ProcessControl.class);
 	private static final int SLEEPT_TIMEOUT = 10;
 
-	private Process process;
+	private final Process process;
 
 	private InputStreamReader reader;
-	private InputStreamReader error;
+	private final InputStreamReader error;
 
-	private Integer pid;
+	private final Long pid;
 
-	private ISupportConfig runtime;
+	private final ISupportConfig runtime;
 
 	public ProcessControl(ISupportConfig runtime, Process process) {
 		this.process = process;
@@ -93,13 +94,13 @@ public class ProcessControl {
 
 	private Integer stopOrDestroyProcess() {
 		Integer returnCode=null;
-		
+
 		try {
 			returnCode=process.exitValue();
 		} catch (IllegalThreadStateException itsx) {
 		    	logger.info("stopOrDestroyProcess: "+itsx.getMessage() +" "+((itsx.getCause()!=null) ? itsx.getCause() : "") );
 			Callable<Integer> callable=new Callable<Integer>() {
-				
+
 				@Override
 				public Integer call() throws Exception {
 					return process.waitFor();
@@ -116,9 +117,9 @@ public class ProcessControl {
 			} catch (ExecutionException e) {
 			} catch (TimeoutException e) {
 			}
-			
+
 			closeIOAndDestroy();
-			
+
 			try {
 				returnCode=task.get(900, TimeUnit.MILLISECONDS);
 				stopped=true;
@@ -140,7 +141,7 @@ public class ProcessControl {
 				process.destroy();
 			}
 		}
-		
+
 		return returnCode;
 	}
 
@@ -207,7 +208,7 @@ public class ProcessControl {
 	public static ProcessBuilder newProcessBuilder(List<String> commandLine, boolean redirectErrorStream) {
 		return newProcessBuilder(commandLine,new HashMap<String,String>(), redirectErrorStream);
 	}
-	
+
 	public static ProcessBuilder newProcessBuilder(List<String> commandLine, Map<String,String> environment, boolean redirectErrorStream) {
 		ProcessBuilder processBuilder = new ProcessBuilder(commandLine);
 		if (!environment.isEmpty()){
