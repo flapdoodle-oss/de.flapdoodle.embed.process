@@ -245,8 +245,8 @@ public class ProcessControl {
 	public static void addShutdownHook(Runnable runable) {
 		Runtime.getRuntime().addShutdownHook(new Thread(runable));
 	}
-	
-	public Integer getPid() {
+
+	public Long getPid() {
 		return pid;
 	}
 }

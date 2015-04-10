@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
@@ -99,8 +99,10 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 			nextCall="writePidFile()";
 
-			writePidFile(pidFile, process.getPid());
-			
+			if (process.getPid() != null) {
+				writePidFile(pidFile, process.getPid());
+			}
+
 			nextCall="addShutdownHook()";
 
 			if (runtimeConfig.isDaemonProcess()) {
@@ -226,8 +228,8 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		return false;
 	}
 
-	public int getProcessId() {
-		Integer pid = process.getPid();
+	public long getProcessId() {
+		Long pid = process.getPid();
 		return pid!=null ? pid : processId;
 	}
 
@@ -284,7 +286,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		}
 	}
 
-	protected void writePidFile(File pidFile, int pid) throws IOException {
+	protected void writePidFile(File pidFile, long pid) throws IOException {
 		Files.write(pid + "\n", pidFile);
 	}
 }
