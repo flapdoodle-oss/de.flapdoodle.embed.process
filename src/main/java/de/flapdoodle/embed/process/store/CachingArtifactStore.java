@@ -23,18 +23,19 @@
  */
 package de.flapdoodle.embed.process.store;
 
+import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.runtime.ProcessControl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
-import de.flapdoodle.embed.process.runtime.ProcessControl;
 
 public class CachingArtifactStore implements IArtifactStore {
 
@@ -42,15 +43,17 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	private final IArtifactStore _delegate;
 
-	Object _lock=new Object();
-	
+	Object _lock = new Object();
+
 	HashMap<Distribution, FilesWithCounter> _distributionFiles = new HashMap<Distribution, FilesWithCounter>();
+
+	private final ScheduledExecutorService executor;
 
 	public CachingArtifactStore(IArtifactStore delegate) {
 		_delegate = delegate;
 		ProcessControl.addShutdownHook(new CacheCleaner());
-		
-		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new CustomThreadFactory());
+
+		executor = Executors.newSingleThreadScheduledExecutor(new CustomThreadFactory());
 		executor.scheduleAtFixedRate(new RemoveUnused(), 10, 10, TimeUnit.SECONDS);
 	}
 
@@ -61,20 +64,20 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	@Override
 	public IExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
-		
+
 		FilesWithCounter fileWithCounter;
-		
+
 		synchronized (_lock) {
 			fileWithCounter = _distributionFiles.get(distribution);
 			if (fileWithCounter == null) {
 				_logger.debug("cache NOT found for {}", distribution);
-				fileWithCounter=new FilesWithCounter(distribution);
+				fileWithCounter = new FilesWithCounter(distribution);
 				_distributionFiles.put(distribution, fileWithCounter);
 			} else {
 				_logger.debug("cache found for {}", distribution);
 			}
 		}
-		
+
 		return fileWithCounter.use();
 	}
 
@@ -84,7 +87,7 @@ public class CachingArtifactStore implements IArtifactStore {
 		synchronized (_lock) {
 			fileWithCounter = _distributionFiles.get(distribution);
 		}
-		if (fileWithCounter!=null) {
+		if (fileWithCounter != null) {
 			fileWithCounter.free(executable);
 		} else {
 			_logger.warn("Allready removed {} for {}, emergency shutdown?", executable, distribution);
@@ -99,12 +102,31 @@ public class CachingArtifactStore implements IArtifactStore {
 			_distributionFiles.clear();
 		}
 	}
-	
+
 	public void removeUnused() {
 		synchronized (_lock) {
 			for (FilesWithCounter fc : _distributionFiles.values()) {
 				fc.cleanup();
 			}
+		}
+	}
+
+	protected void shutdownExecutor() {
+		executor.shutdown();
+		try	{
+			if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+				for (Runnable r : executor.shutdownNow()) {
+					_logger.warn("Terminated job of type {}", r.getClass().getName());
+				}
+				if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+					_logger.error("Executor did not terminate.");
+				}
+			}
+			if (!executor.isShutdown()) {
+				executor.shutdownNow();
+			}
+		} catch (InterruptedException ie)	{
+			executor.shutdownNow();
 		}
 	}
 
@@ -172,6 +194,7 @@ public class CachingArtifactStore implements IArtifactStore {
 		@Override
 		public void run() {
 			CachingArtifactStore.this.removeAll();
+			CachingArtifactStore.this.shutdownExecutor();
 		}
 	}
 
