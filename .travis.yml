@@ -10,7 +10,6 @@ jdk:
 env:
   matrix:
     - TARGET='mvn test'
-    - TARGET='./gradlew test -s'
 
 notifications:
   email:
