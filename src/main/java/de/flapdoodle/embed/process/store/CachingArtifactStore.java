@@ -90,7 +90,7 @@ public class CachingArtifactStore implements IArtifactStore {
 		if (fileWithCounter != null) {
 			fileWithCounter.free(executable);
 		} else {
-			_logger.warn("Allready removed {} for {}, emergency shutdown?", executable, distribution);
+			_logger.warn("Already removed {} for {}, emergency shutdown?", executable, distribution);
 		}
 	}
 

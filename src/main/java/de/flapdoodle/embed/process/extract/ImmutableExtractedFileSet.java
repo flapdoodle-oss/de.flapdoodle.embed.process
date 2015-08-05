@@ -78,7 +78,7 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 		Map<FileType,List<File>> _files=new HashMap<FileType, List<File>>();
 		
 		public Builder executable(File executable) {
-			if (_executable!=null) throw new IllegalArgumentException("executable allready set to "+_executable);
+			if (_executable!=null) throw new IllegalArgumentException("executable already set to "+_executable);
 			_executable=executable;
 			return this;
 		}

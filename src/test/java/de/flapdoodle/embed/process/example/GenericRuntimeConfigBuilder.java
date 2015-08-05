@@ -140,7 +140,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		public GenericPackageResolverBuilder files(Distribution distribution,FileSet files) {
 			Map<Distribution, FileSet> map = getAndSet(FILESET_MAP, new FileSetMap(new HashMap<Distribution, FileSet>())).value();
 			if (map.put(distribution, files)!=null) {
-				throw new RuntimeException("executable for "+distribution+" allready set");
+				throw new RuntimeException("executable for "+distribution+" already set");
 			}
 			return this;
 		}
@@ -148,7 +148,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		public GenericPackageResolverBuilder archiveType(Distribution distribution,ArchiveType arcType) {
 			Map<Distribution, ArchiveType> map = getAndSet(ARCHIVETYPE_MAP, new ArchiveTypeMap(new HashMap<Distribution, ArchiveType>())).value();
 			if (map.put(distribution, arcType)!=null) {
-				throw new RuntimeException("archiveType for "+distribution+" allready set");
+				throw new RuntimeException("archiveType for "+distribution+" already set");
 			}
 			return this;
 		}
@@ -156,7 +156,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 		public GenericPackageResolverBuilder archivePath(Distribution distribution,String archivePath) {
 			Map<Distribution, String> map = getAndSet(ARCHIVEPATH_MAP, new ArchivePathMap(new HashMap<Distribution, String>())).value();
 			if (map.put(distribution, archivePath)!=null) {
-				throw new RuntimeException("archivePath for "+distribution+" allready set");
+				throw new RuntimeException("archivePath for "+distribution+" already set");
 			}
 			return this;
 		}
