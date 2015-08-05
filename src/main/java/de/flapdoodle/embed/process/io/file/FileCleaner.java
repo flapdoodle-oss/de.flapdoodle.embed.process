@@ -126,7 +126,7 @@ public class FileCleaner {
 				synchronized (fileToClean) {
 					if (fileToClean.size() < MAX_FILES_TO_CLEAN) {
 						Integer oldValue = fileToClean.put(fileOrDir, 0);
-						if (oldValue!=null) logger.error("forceDelete {}, but allready in list with {} tries.", fileOrDir, oldValue);
+						if (oldValue!=null) logger.error("forceDelete {}, but already in list with {} tries.", fileOrDir, oldValue);
 						fileToClean.notify();
 					} else {
 						throw new RuntimeException("filesToClean exceeded " + MAX_FILES_TO_CLEAN
