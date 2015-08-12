@@ -41,6 +41,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	private static final TypedProperty<IDirectory> TEMP_DIR_FACTORY = TypedProperty.with("TempDir",IDirectory.class);
 	private static final TypedProperty<IDownloadConfig> DOWNLOAD_CONFIG = TypedProperty.with("DownloadConfig",IDownloadConfig.class);
 	private static final TypedProperty<Boolean> USE_CACHE = TypedProperty.with("UseCache",Boolean.class);
+	private static final TypedProperty<Boolean> KEEP_EXTRACTED_FILES = TypedProperty.with("KeepExtractedFiles",Boolean.class);
 	private static final TypedProperty<ILibraryStore> LIBRARIES = TypedProperty.with("Libraries", ILibraryStore.class);
 	private static final TypedProperty<IDownloader> DOWNLOADER = TypedProperty.with("Downloader",IDownloader.class);
 	
@@ -91,7 +92,16 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	public ArtifactStoreBuilder cache(boolean cache) {
 		return useCache(cache);
 	}
-	
+
+	public ArtifactStoreBuilder keepExtractedFiles(boolean keep) {
+		set(KEEP_EXTRACTED_FILES, keep);
+		return this;
+	}
+
+	protected IProperty<Boolean> keepExtractedFiles() {
+		return property(KEEP_EXTRACTED_FILES);
+	}
+
 	public ArtifactStoreBuilder libraries(ILibraryStore libraries) {
 		set(LIBRARIES, libraries);
 		return this;
@@ -113,14 +123,23 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 
 	@Override
 	public IArtifactStore build() {
-		boolean useCache = get(USE_CACHE, true);
+		boolean keepExtractedFiles = get(KEEP_EXTRACTED_FILES, false);
+		boolean useCache = keepExtractedFiles ? false : get(USE_CACHE, true);
+
+		logger.debug("Build ArtifactStore(keepExtractedFiles: {}, useCache: {})", keepExtractedFiles, useCache);
 		
-		logger.debug("Build ArtifactStore(useCache: {})", useCache);
-		
-		IArtifactStore artifactStore = new ArtifactStore(get(DOWNLOAD_CONFIG),get(TEMP_DIR_FACTORY), get(EXECUTABLE_NAMING), get(DOWNLOADER));
-		if (useCache) {
-			artifactStore=new CachingArtifactStore(artifactStore);
+		IArtifactStore artifactStore;
+
+		if (keepExtractedFiles) {
+			artifactStore = new ExtractedArtifactStore(get(DOWNLOAD_CONFIG), get(DOWNLOADER), null);
+		} else {
+			artifactStore = new ArtifactStore(get(DOWNLOAD_CONFIG), get(TEMP_DIR_FACTORY), get(EXECUTABLE_NAMING), get(DOWNLOADER));
+
+			if (useCache) {
+				artifactStore = new CachingArtifactStore(artifactStore);
+			}
 		}
+
 		return artifactStore;
 	}
 }

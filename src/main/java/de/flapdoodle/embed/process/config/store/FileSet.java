@@ -77,6 +77,30 @@ public class FileSet {
 			return _matchingPattern;
 		}
 
+		@Override
+		public boolean equals(Object other) {
+			if (this == other) {
+				return true;
+			}
+
+			if (other == null || getClass() != other.getClass()) {
+				return false;
+			}
+
+			Entry entry = (Entry) other;
+
+			return _type == entry._type
+				&& !(_destination != null ? !_destination.equals(entry._destination) : entry._destination != null)
+				&& !(_matchingPattern != null ? !_matchingPattern.equals(entry._matchingPattern) : entry._matchingPattern != null);
+		}
+
+		@Override
+		public int hashCode() {
+			int result = _type != null ? _type.hashCode() : 0;
+			result = 31 * result + (_destination != null ? _destination.hashCode() : 0);
+			result = 31 * result + (_matchingPattern != null ? _matchingPattern.hashCode() : 0);
+			return result;
+		}
 	}
 	
 	public static Builder builder() {
