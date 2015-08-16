@@ -50,7 +50,7 @@ public class FileSet {
 	
 	
 	public List<Entry> entries() {
-		return _entries;
+		return Collections.unmodifiableList(_entries);
 	}
 
 	public static class Entry {

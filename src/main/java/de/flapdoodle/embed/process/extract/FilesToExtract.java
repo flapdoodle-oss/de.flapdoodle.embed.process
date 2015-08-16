@@ -27,10 +27,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.FileSet.Entry;
+import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
 import de.flapdoodle.embed.process.io.file.Files;
@@ -60,6 +62,10 @@ public class FilesToExtract {
 	public boolean nothingLeft() {
 		return _files.isEmpty();
 	}
+	
+	public List<FileSet.Entry> files() {
+		return Collections.unmodifiableList(_files);
+	}
 
 	public IExtractionMatch find(IArchiveEntry entry) {
 		Entry found = null;
@@ -77,6 +83,14 @@ public class FilesToExtract {
 			}
 		}
 		return found!=null ? new Match(_dirFactoryResult,_executableNaming, found) : null;
+	}
+	
+	public static String fileName(Entry entry) {
+		return entry.destination();
+	}
+
+	public static String executableName(ITempNaming executableNaming, Entry entry) {
+		return executableNaming.nameFor("extract",fileName(entry));
 	}
 	
 	static class Match implements IExtractionMatch {
@@ -102,13 +116,13 @@ public class FilesToExtract {
 			switch (_entry.type()) {
 				case Executable: 
 					try {
-						destination=Files.createTempFile(_dirFactoryResult,_executableNaming.nameFor("extract",_entry.destination()));
+						destination=Files.createTempFile(_dirFactoryResult,executableName(_executableNaming, _entry));
 					} catch (FileAlreadyExistsException ex) {
 						throw new ExecutableFileAlreadyExistsException(ex);
 					}
 					break;
 				default:
-					destination=Files.createTempFile(_dirFactoryResult,_entry.destination());
+					destination=Files.createTempFile(_dirFactoryResult,fileName(_entry));
 					break;
 			}
 			
@@ -120,7 +134,7 @@ public class FilesToExtract {
 			}
 			return destination;
 		}
-		
+
 	}
 
 

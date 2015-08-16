@@ -23,11 +23,12 @@
  */
 package de.flapdoodle.embed.process.extract;
 
+import de.flapdoodle.embed.process.TempDir;
 import de.flapdoodle.embed.process.config.store.*;
 import de.flapdoodle.embed.process.example.GenericPackageResolver;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
 import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -103,25 +104,5 @@ public class ExtractorImplTest {
 
         assertTrue("extracted file exists", extracted.executable().exists());
         assertEquals(FileUtils.readFileToString(fileInArchive), FileUtils.readFileToString(extracted.executable()));
-    }
-
-
-    private static class TempDir implements IDirectory {
-
-        final File f;
-
-        public TempDir(final TemporaryFolder tempFolder) throws IOException {
-            f = tempFolder.newFolder();
-        }
-
-        @Override
-        public File asFile() {
-            return f;
-        }
-
-        @Override
-        public boolean isGenerated() {
-            return true;
-        }
     }
 }

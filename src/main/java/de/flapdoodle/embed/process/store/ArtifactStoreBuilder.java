@@ -30,20 +30,17 @@ import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.config.store.ILibraryStore;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 
 public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	private static Logger logger = LoggerFactory.getLogger(ArtifactStoreBuilder.class);
 
-	private static final TypedProperty<ITempNaming> EXECUTABLE_NAMING = TypedProperty.with("ExecutableNaming",ITempNaming.class);
-	private static final TypedProperty<IDirectory> TEMP_DIR_FACTORY = TypedProperty.with("TempDir",IDirectory.class);
-	private static final TypedProperty<IDownloadConfig> DOWNLOAD_CONFIG = TypedProperty.with("DownloadConfig",IDownloadConfig.class);
-	private static final TypedProperty<Boolean> USE_CACHE = TypedProperty.with("UseCache",Boolean.class);
-	private static final TypedProperty<Boolean> KEEP_EXTRACTED_FILES = TypedProperty.with("KeepExtractedFiles",Boolean.class);
-	private static final TypedProperty<ILibraryStore> LIBRARIES = TypedProperty.with("Libraries", ILibraryStore.class);
-	private static final TypedProperty<IDownloader> DOWNLOADER = TypedProperty.with("Downloader",IDownloader.class);
+	protected static final TypedProperty<ITempNaming> EXECUTABLE_NAMING = TypedProperty.with("ExecutableNaming",ITempNaming.class);
+	protected static final TypedProperty<IDirectory> TEMP_DIR_FACTORY = TypedProperty.with("TempDir",IDirectory.class);
+	protected static final TypedProperty<IDownloadConfig> DOWNLOAD_CONFIG = TypedProperty.with("DownloadConfig",IDownloadConfig.class);
+	protected static final TypedProperty<Boolean> USE_CACHE = TypedProperty.with("UseCache",Boolean.class);
+	protected static final TypedProperty<IDownloader> DOWNLOADER = TypedProperty.with("Downloader",IDownloader.class);
 	
 	public ArtifactStoreBuilder download(AbstractBuilder<IDownloadConfig> downloadConfigBuilder) {
 		return download(downloadConfigBuilder.build());
@@ -93,24 +90,6 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 		return useCache(cache);
 	}
 
-	public ArtifactStoreBuilder keepExtractedFiles(boolean keep) {
-		set(KEEP_EXTRACTED_FILES, keep);
-		return this;
-	}
-
-	protected IProperty<Boolean> keepExtractedFiles() {
-		return property(KEEP_EXTRACTED_FILES);
-	}
-
-	public ArtifactStoreBuilder libraries(ILibraryStore libraries) {
-		set(LIBRARIES, libraries);
-		return this;
-	}
-	
-	protected IProperty<ILibraryStore> libraries() {
-		return property(LIBRARIES);
-	}
-
 	public ArtifactStoreBuilder downloader(IDownloader downloader) {
 		set(DOWNLOADER, downloader);
 		return this;
@@ -123,21 +102,16 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 
 	@Override
 	public IArtifactStore build() {
-		boolean keepExtractedFiles = get(KEEP_EXTRACTED_FILES, false);
-		boolean useCache = keepExtractedFiles ? false : get(USE_CACHE, true);
+		boolean useCache = get(USE_CACHE, true);
 
-		logger.debug("Build ArtifactStore(keepExtractedFiles: {}, useCache: {})", keepExtractedFiles, useCache);
+		logger.debug("Build ArtifactStore(useCache: {})", useCache);
 		
 		IArtifactStore artifactStore;
 
-		if (keepExtractedFiles) {
-			artifactStore = new ExtractedArtifactStore(get(DOWNLOAD_CONFIG), get(DOWNLOADER), null);
-		} else {
-			artifactStore = new ArtifactStore(get(DOWNLOAD_CONFIG), get(TEMP_DIR_FACTORY), get(EXECUTABLE_NAMING), get(DOWNLOADER));
+		artifactStore = new ArtifactStore(get(DOWNLOAD_CONFIG), get(TEMP_DIR_FACTORY), get(EXECUTABLE_NAMING), get(DOWNLOADER));
 
-			if (useCache) {
-				artifactStore = new CachingArtifactStore(artifactStore);
-			}
+		if (useCache) {
+			artifactStore = new CachingArtifactStore(artifactStore);
 		}
 
 		return artifactStore;

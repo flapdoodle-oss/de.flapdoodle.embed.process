@@ -23,17 +23,18 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
-import org.apache.commons.compress.archivers.ArchiveEntry;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
+import de.flapdoodle.embed.process.io.progress.IProgressListener;
 
 public abstract class AbstractExtractor implements IExtractor {
 	
@@ -72,9 +73,10 @@ public abstract class AbstractExtractor implements IExtractor {
 						long size = entry.getSize();
 						builder.file(match.type(),match.write(archive.asStream(entry), size));
 						//						destination.setExecutable(true);
+						progressListener.info(progressLabel,"extract "+entry.getName());
 					}
 					if (toExtract.nothingLeft()) {
-						progressListener.done(progressLabel);
+						progressListener.info(progressLabel,"noting left");
 						break;
 					}
 				}
@@ -83,6 +85,8 @@ public abstract class AbstractExtractor implements IExtractor {
 		} finally {
 			archive.close();
 		}
+		
+		progressListener.done(progressLabel);
 
 		return builder.build();
 	}

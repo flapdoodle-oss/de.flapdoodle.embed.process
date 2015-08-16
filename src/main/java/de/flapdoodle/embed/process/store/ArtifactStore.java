@@ -26,6 +26,7 @@ package de.flapdoodle.embed.process.store;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,16 +46,20 @@ import de.flapdoodle.embed.process.io.file.Files;
 public class ArtifactStore implements IArtifactStore {
 	private static Logger logger = LoggerFactory.getLogger(ArtifactStore.class);
 
-	private IDownloadConfig _downloadConfig;
-	private IDirectory _tempDirFactory;
-	private ITempNaming _executableNaming;
-	private IDownloader _downloader;
+	private final IDownloadConfig _downloadConfig;
+	private final IDirectory _tempDirFactory;
+	private final ITempNaming _executableNaming;
+	private final IDownloader _downloader;
 	
 	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDirFactory,ITempNaming executableNaming,IDownloader downloader) {
 		_downloadConfig=downloadConfig;
 		_tempDirFactory = tempDirFactory;
 		_executableNaming = executableNaming;
 		_downloader = downloader;
+	}
+	
+	public ArtifactStore with(IDirectory tempDirFactory,ITempNaming executableNaming) {
+		return new ArtifactStore(_downloadConfig, tempDirFactory, executableNaming, _downloader);
 	}
 	
 	@Override
@@ -68,12 +73,18 @@ public class ArtifactStore implements IArtifactStore {
 	@Override
 	public IExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
 		IPackageResolver packageResolver = _downloadConfig.getPackageResolver();
-		File artifact = LocalArtifactStore.getArtifact(_downloadConfig, distribution);
+		FilesToExtract toExtract = filesToExtract(distribution);
+		
 		IExtractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));
 
-		IExtractedFileSet extracted=extractor.extract(_downloadConfig, artifact, new FilesToExtract(_tempDirFactory, _executableNaming, packageResolver.getFileSet(distribution)));
+		File artifact = LocalArtifactStore.getArtifact(_downloadConfig, distribution);
+		IExtractedFileSet extracted=extractor.extract(_downloadConfig, artifact, toExtract);
 		
 		return extracted;
+	}
+
+	FilesToExtract filesToExtract(Distribution distribution) {
+		return new FilesToExtract(_tempDirFactory, _executableNaming, _downloadConfig.getPackageResolver().getFileSet(distribution));
 	}
 
 	@Override

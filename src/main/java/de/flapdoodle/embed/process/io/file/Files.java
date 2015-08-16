@@ -23,11 +23,6 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
-import org.apache.commons.io.FileUtils;
-
-import de.flapdoodle.embed.process.io.directories.IDirectory;
-import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,8 +30,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.UUID;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 
 /**
  *
@@ -63,7 +63,8 @@ public class Files {
 	}
 
 	public static File createTempFile(File tempDir, String tempFileName) throws IOException, FileAlreadyExistsException {
-		File tempFile = new File(tempDir, tempFileName);
+		File tempFile =  fileOf(tempDir, tempFileName);
+		createOrCheckDir(tempFile.getParentFile());
 		if (!tempFile.createNewFile())
 			throw new FileAlreadyExistsException("Could not create Tempfile",tempFile);
 		return tempFile;
@@ -71,6 +72,10 @@ public class Files {
 
 	public static File createOrCheckDir(String dir) throws IOException {
 		File tempFile = new File(dir);
+		return createOrCheckDir(tempFile);
+	}
+
+	private static File createOrCheckDir(File tempFile) throws IOException {
 		if ((tempFile.exists()) && (tempFile.isDirectory()))
 			return tempFile;
 		return createDir(tempFile);
@@ -79,9 +84,7 @@ public class Files {
 	public static File createOrCheckUserDir(String prefix) throws IOException {
 		File tempDir = new File(System.getProperty("user.home"));
 		File tempFile = new File(tempDir, prefix);
-		if ((tempFile.exists()) && (tempFile.isDirectory()))
-			return tempFile;
-		return createDir(tempFile);
+		return createOrCheckDir(tempFile);
 	}
 
 	@Deprecated
@@ -209,4 +212,11 @@ public class Files {
 		}
 	}
 
+	public static File fileOf(File base, File relative) {
+		return base.toPath().resolve(relative.toPath()).toFile();
+	}
+	
+	public static File fileOf(File base, String relative) {
+		return base.toPath().resolve(relative).toFile();
+	}
 }
