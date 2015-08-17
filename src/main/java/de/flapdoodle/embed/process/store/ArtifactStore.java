@@ -25,22 +25,20 @@ package de.flapdoodle.embed.process.store;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.EnumSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.config.store.IPackageResolver;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.ExtractedFileSets;
 import de.flapdoodle.embed.process.extract.Extractors;
 import de.flapdoodle.embed.process.extract.FilesToExtract;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.IExtractor;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
-import de.flapdoodle.embed.process.io.file.Files;
 
 
 public class ArtifactStore implements IArtifactStore {
@@ -89,21 +87,6 @@ public class ArtifactStore implements IArtifactStore {
 
 	@Override
 	public void removeFileSet(Distribution distribution, IExtractedFileSet all) {
-		for (FileType type : EnumSet.complementOf(EnumSet.of(FileType.Executable))) {
-			for (File file : all.files(type)) {
-				if (file.exists() && !Files.forceDelete(file))
-					logger.warn("Could not delete {} NOW: {}", type, file);
-			}
-		}
-		File exe=all.executable();
-		if (exe.exists() && !Files.forceDelete(exe)) {
-			logger.warn("Could not delete executable NOW: {}", exe);
-		}
-		
-		if (all.generatedBaseDir()!=null) {
-			if (!Files.forceDelete(all.generatedBaseDir())) {
-				logger.warn("Could not delete generatedBaseDir: {}", all.generatedBaseDir());
-			}
-		}
+		ExtractedFileSets.delete(all);
 	}
 }

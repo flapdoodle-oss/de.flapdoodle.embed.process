@@ -36,13 +36,17 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 
 	private final File _executable;
 	private final Map<FileType,List<File>> _files;
-	private final File _generatedBaseDir;
+	private final File _baseDir;
+	private final boolean baseDirIsGenerated;
 
-	ImmutableExtractedFileSet(File generatedBaseDir, File executable, Map<FileType,List<File>> files) {
+	ImmutableExtractedFileSet(File baseDir, boolean baseDirIsGenerated, File executable, Map<FileType,List<File>> files) {
+		this.baseDirIsGenerated = baseDirIsGenerated;
+		
 		if (executable==null) throw new NullPointerException("executable is NULL");
 		if (files==null) throw new NullPointerException("files is NULL");
+		if (baseDir==null)  throw new NullPointerException("baseDir is NULL");
 		
-		_generatedBaseDir=generatedBaseDir;
+		_baseDir=baseDir;
 		_executable = executable;
 		Map<FileType,List<File>> copy=new HashMap<FileType, List<File>>();
 		for (FileType key : files.keySet()) {
@@ -52,13 +56,18 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 	}
 
 	@Override
-	public File generatedBaseDir() {
-		return _generatedBaseDir;
+	public File baseDir() {
+		return _baseDir;
 	}
 	
 	@Override
 	public File executable() {
 		return _executable;
+	}
+	
+	@Override
+	public boolean baseDirIsGenerated() {
+		return baseDirIsGenerated;
 	}
 	
 	@Override
@@ -68,14 +77,16 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 		return ret;
 	}
 	
-	public static Builder builder(File generatedBaseDir) {
-		return new Builder().setGeneratedBaseDir(generatedBaseDir);
+	public static Builder builder(File baseDir) {
+		if (baseDir==null) throw new NullPointerException("generatedBaseDir is null");
+		return new Builder().baseDir(baseDir);
 	}
 
 	public static class Builder {
 		File _executable=null;
-		File _generatedBaseDir=null;
+		File _baseDir=null;
 		Map<FileType,List<File>> _files=new HashMap<FileType, List<File>>();
+		boolean _baseDirIsGenerated;
 		
 		public Builder executable(File executable) {
 			if (_executable!=null) throw new IllegalArgumentException("executable already set to "+_executable);
@@ -83,11 +94,16 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 			return this;
 		}
 		
-		public Builder setGeneratedBaseDir(File generatedBaseDir) {
-			_generatedBaseDir=generatedBaseDir;
+		public Builder baseDir(File baseDir) {
+			_baseDir=baseDir;
 			return this;
 		}
-
+		
+		public Builder baseDirIsGenerated(boolean baseDirIsGenerated) {
+			_baseDirIsGenerated=baseDirIsGenerated;
+			return this;
+		}
+		
 		public Builder file(FileType type, File file) {
 			if (type==FileType.Executable) {
 				return executable(file);
@@ -103,7 +119,7 @@ public class ImmutableExtractedFileSet implements IExtractedFileSet {
 		}
 		
 		public IExtractedFileSet build() {
-			return new ImmutableExtractedFileSet(_generatedBaseDir, _executable,_files);
+			return new ImmutableExtractedFileSet(_baseDir, _baseDirIsGenerated, _executable,_files);
 		}
 	}
 }

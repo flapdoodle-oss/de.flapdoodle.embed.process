@@ -56,7 +56,8 @@ public abstract class AbstractExtractor implements IExtractor {
 
 	@Override
 	public IExtractedFileSet extract(IDownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
-		Builder builder = ImmutableExtractedFileSet.builder(toExtract.generatedBaseDir());
+		Builder builder = ImmutableExtractedFileSet.builder(toExtract.baseDir())
+				.baseDirIsGenerated(toExtract.baseDirIsGenerated());
 
 		IProgressListener progressListener = runtime.getProgressListener();
 		String progressLabel = "Extract " + source;

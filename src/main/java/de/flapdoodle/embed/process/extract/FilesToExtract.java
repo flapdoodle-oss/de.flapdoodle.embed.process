@@ -55,8 +55,12 @@ public class FilesToExtract {
 		_executableNaming = executableNaming;
 	}
 
-	public File generatedBaseDir() {
-		return _dirFactoryResultIsGenerated ? _dirFactoryResult : null;
+	public File baseDir() {
+		return _dirFactoryResult;
+	}
+	
+	public boolean baseDirIsGenerated() {
+		return _dirFactoryResultIsGenerated;
 	}
 	
 	public boolean nothingLeft() {

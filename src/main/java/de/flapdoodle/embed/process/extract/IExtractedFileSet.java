@@ -35,5 +35,7 @@ public interface IExtractedFileSet {
 	
 	List<File> files(FileType type);
 
-	File generatedBaseDir();
+	File baseDir();
+	
+	boolean baseDirIsGenerated();
 }

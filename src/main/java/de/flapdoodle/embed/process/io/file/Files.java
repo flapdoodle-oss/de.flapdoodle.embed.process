@@ -66,7 +66,7 @@ public class Files {
 		File tempFile =  fileOf(tempDir, tempFileName);
 		createOrCheckDir(tempFile.getParentFile());
 		if (!tempFile.createNewFile())
-			throw new FileAlreadyExistsException("Could not create Tempfile",tempFile);
+			throw new FileAlreadyExistsException("could not create",tempFile);
 		return tempFile;
 	}
 
@@ -75,10 +75,10 @@ public class Files {
 		return createOrCheckDir(tempFile);
 	}
 
-	private static File createOrCheckDir(File tempFile) throws IOException {
-		if ((tempFile.exists()) && (tempFile.isDirectory()))
-			return tempFile;
-		return createDir(tempFile);
+	public static File createOrCheckDir(File dir) throws IOException {
+		if ((dir.exists()) && (dir.isDirectory()))
+			return dir;
+		return createDir(dir);
 	}
 
 	public static File createOrCheckUserDir(String prefix) throws IOException {
@@ -107,7 +107,7 @@ public class Files {
 
 	public static File createDir(File tempFile) throws IOException {
 		if (!tempFile.mkdirs())
-			throw new IOException("Could not create Tempdir: " + tempFile);
+			throw new IOException("could not create dirs: " + tempFile);
 		return tempFile;
 	}
 
@@ -117,11 +117,11 @@ public class Files {
 		try {
 			if ((fileOrDir != null) && (fileOrDir.exists())) {
 				FileUtils.forceDelete(fileOrDir);
-				logger.debug("Could delete {}", fileOrDir);
+				logger.debug("could delete {}", fileOrDir);
 				ret = true;
 			}
 		} catch (IOException e) {
-			logger.warn("Could not delete {}. Will try to delete it again when program exits.", fileOrDir);
+			logger.warn("could not delete {}. Will try to delete it again when program exits.", fileOrDir);
 			FileCleaner.forceDeleteOnExit(fileOrDir);
 			ret = true;
 		}

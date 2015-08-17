@@ -26,6 +26,7 @@ package de.flapdoodle.embed.process.store;
 import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.extract.DirectoryAndExecutableNaming;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 
@@ -33,11 +34,12 @@ import de.flapdoodle.embed.process.io.directories.IDirectory;
 public class ExtractedArtifactStoreBuilder extends ArtifactStoreBuilder {
 	
 	protected static final TypedProperty<IDirectory> EXTRACT_DIR_FACTORY = TypedProperty.with("ExtractDir",IDirectory.class);
-	
+	protected static final TypedProperty<ITempNaming> EXTRACT_EXECUTABLE_NAMING = TypedProperty.with("ExtractExecutableNaming",ITempNaming.class);
+
 	@Override
-	@Deprecated
-	public ArtifactStoreBuilder tempDir(IDirectory tempDirFactory) {
-		throw new RuntimeException("tempDir not used, use extractDir");
+	public ExtractedArtifactStoreBuilder tempDir(IDirectory tempDirFactory) {
+		super.tempDir(tempDirFactory);
+		return this;
 	}
 	
 	@Override
@@ -64,7 +66,12 @@ public class ExtractedArtifactStoreBuilder extends ArtifactStoreBuilder {
 		return this;
 	}
 	
-	public ArtifactStoreBuilder extractDir(IDirectory tempDirFactory) {
+	public ExtractedArtifactStoreBuilder extractExecutableNaming(ITempNaming execNaming) {
+		set(EXTRACT_EXECUTABLE_NAMING, execNaming);
+		return this;
+	}
+	
+	public ExtractedArtifactStoreBuilder extractDir(IDirectory tempDirFactory) {
 		set(EXTRACT_DIR_FACTORY, tempDirFactory);
 		return this;
 	}
@@ -72,9 +79,16 @@ public class ExtractedArtifactStoreBuilder extends ArtifactStoreBuilder {
 	protected IProperty<IDirectory> extractDir() {
 		return property(EXTRACT_DIR_FACTORY);
 	}
+	
+	protected IProperty<ITempNaming> extractExecutableNaming() {
+		return property(EXTRACT_EXECUTABLE_NAMING);
+	}
+	
 
 	@Override
 	public IArtifactStore build() {
-		return new ExtractedArtifactStore(get(DOWNLOAD_CONFIG), get(DOWNLOADER),get(EXTRACT_DIR_FACTORY),get(EXECUTABLE_NAMING));
+		DirectoryAndExecutableNaming extract = new DirectoryAndExecutableNaming(get(EXTRACT_DIR_FACTORY),get(EXTRACT_EXECUTABLE_NAMING));
+		DirectoryAndExecutableNaming temp = new DirectoryAndExecutableNaming(tempDir().get(),executableNaming().get());
+		return new ExtractedArtifactStore(get(DOWNLOAD_CONFIG), get(DOWNLOADER),extract,temp);
 	}
 }

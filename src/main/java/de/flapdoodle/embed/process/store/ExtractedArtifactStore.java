@@ -30,25 +30,28 @@ import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.DirectoryAndExecutableNaming;
+import de.flapdoodle.embed.process.extract.ExtractedFileSets;
 import de.flapdoodle.embed.process.extract.FilesToExtract;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
 
 public class ExtractedArtifactStore implements IArtifactStore {
 
 	private final IDownloadConfig downloadConfig;
 	private final IDownloader downloader;
-	private final IDirectory tempDir;
-	private final ITempNaming executableNaming;
+	private final DirectoryAndExecutableNaming extraction;
+	private final DirectoryAndExecutableNaming temp;
 
-	public ExtractedArtifactStore(IDownloadConfig downloadConfig, IDownloader downloader, IDirectory tempDir, ITempNaming executableNaming) {
+	public ExtractedArtifactStore(IDownloadConfig downloadConfig, IDownloader downloader, DirectoryAndExecutableNaming extraction, DirectoryAndExecutableNaming temp) {
 		this.downloadConfig = downloadConfig;
 		this.downloader = downloader;
-		this.tempDir = tempDir;
-		this.executableNaming = executableNaming;
+		this.extraction = extraction;
+		this.temp = temp;
 	}
 	
 	@Override
@@ -58,11 +61,11 @@ public class ExtractedArtifactStore implements IArtifactStore {
 	}
 
 	private ArtifactStore store() {
-		return new ArtifactStore(downloadConfig, tempDir, executableNaming, downloader);
+		return new ArtifactStore(downloadConfig, extraction.getDirectory(), extraction.getExecutableNaming(), downloader);
 	}
 
-	private ArtifactStore store(IDirectory withDistribution, ITempNaming executableNaming2) {
-		return new ArtifactStore(downloadConfig, withDistribution, executableNaming2, downloader);
+	private ArtifactStore store(IDirectory withDistribution, ITempNaming naming) {
+		return new ArtifactStore(downloadConfig, withDistribution, naming, downloader);
 	}
 
 
@@ -70,18 +73,19 @@ public class ExtractedArtifactStore implements IArtifactStore {
 	public IExtractedFileSet extractFileSet(Distribution distribution)
 			throws IOException {
 		
-		IDirectory withDistribution = withDistribution(tempDir, distribution);
-		ArtifactStore baseStore = store(withDistribution, executableNaming);
+		IDirectory withDistribution = withDistribution(extraction.getDirectory(), distribution);
+		ArtifactStore baseStore = store(withDistribution, extraction.getExecutableNaming());
 		
 		boolean foundExecutable=false;
 		File destinationDir = withDistribution.asFile();
 		
-		Builder fileSetBuilder = ImmutableExtractedFileSet.builder(destinationDir);
+		Builder fileSetBuilder = ImmutableExtractedFileSet.builder(destinationDir)
+				.baseDirIsGenerated(withDistribution.isGenerated());
 		
 		FilesToExtract filesToExtract = baseStore.filesToExtract(distribution);
 		for (FileSet.Entry file : filesToExtract.files()) {
 			if (file.type()==FileType.Executable) {
-				String executableName = FilesToExtract.executableName(executableNaming, file);
+				String executableName = FilesToExtract.executableName(extraction.getExecutableNaming(), file);
 				File executableFile = new File(executableName);
 				File resolvedExecutableFile = new File(destinationDir, executableName);
 				if (resolvedExecutableFile.isFile()) {
@@ -95,10 +99,15 @@ public class ExtractedArtifactStore implements IArtifactStore {
 		
 		if (!foundExecutable) {
 			// we found no executable, so we trigger extraction and hope for the best
-			baseStore.extractFileSet(distribution);
+			try {
+				baseStore.extractFileSet(distribution);
+			} catch (FileAlreadyExistsException fx) {
+				throw new RuntimeException("extraction to "+destinationDir+" has failed", fx);
+			}
 		}
 		
-		return fileSetBuilder.build();
+		IExtractedFileSet extractedFileSet = fileSetBuilder.build();
+		return ExtractedFileSets.copy(extractedFileSet, temp.getDirectory(), temp.getExecutableNaming());
 	}
 
 	private static IDirectory withDistribution(final IDirectory dir, final Distribution distribution) {
@@ -106,14 +115,14 @@ public class ExtractedArtifactStore implements IArtifactStore {
 			
 			@Override
 			public boolean isGenerated() {
-				return false;
+				return dir.isGenerated();
 			}
 			
 			@Override
 			public File asFile() {
 				File file = new File(dir.asFile(), asPath(distribution));
 				if (!file.exists()) {
-					if (!file.mkdir()) {
+					if (!file.mkdirs()) {
 						throw new RuntimeException("could not create dir "+file);
 					}
 				}
@@ -135,7 +144,7 @@ public class ExtractedArtifactStore implements IArtifactStore {
 	
 	@Override
 	public void removeFileSet(Distribution distribution, IExtractedFileSet files) {
-		// we do not remove files
+		ExtractedFileSets.delete(files);
 	}
 
 }

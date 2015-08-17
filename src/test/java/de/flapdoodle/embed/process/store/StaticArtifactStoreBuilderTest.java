@@ -35,7 +35,6 @@ import org.junit.Test;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.GenericVersion;
-import de.flapdoodle.embed.process.distribution.IVersion;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
@@ -51,6 +50,7 @@ public class StaticArtifactStoreBuilderTest {
 		File generatedBaseDir=Files.createTempDir(PropertyOrPlatformTempDir.defaultInstance(),	"static");
 		
 		IExtractedFileSet fileSet=ImmutableExtractedFileSet.builder(generatedBaseDir)
+				.baseDirIsGenerated(true)
 				.executable(new File("bla.exe"))
 				.file(FileType.Library, new File("foo.lib"))
 				.build();

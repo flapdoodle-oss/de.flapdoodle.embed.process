@@ -24,27 +24,21 @@
 package de.flapdoodle.embed.process.io.directories;
 
 import java.io.File;
-import java.nio.file.Paths;
-
-
+import java.util.UUID;
 
 /**
  *
  */
-public class UserHome implements IDirectory {
-	private final String postFix;
+public class UUIDDir implements IDirectory {
 
-	public UserHome(String postFix) {
-		this.postFix=postFix;
-	}
-	
 	@Override
 	public File asFile() {
-		return Paths.get(System.getProperty("user.home")).resolve(postFix).toFile();
+		return new File(UUID.randomUUID().toString());
 	}
 	
 	@Override
 	public boolean isGenerated() {
-		return false;
+		return true;
 	}
+
 }

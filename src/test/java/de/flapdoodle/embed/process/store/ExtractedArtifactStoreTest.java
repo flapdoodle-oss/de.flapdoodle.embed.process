@@ -51,6 +51,7 @@ import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.NoopTempNaming;
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.TempDirInPlatformTempDir;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 
 
@@ -72,9 +73,11 @@ public class ExtractedArtifactStoreTest {
 		
 		IArtifactStore store = new ExtractedArtifactStoreBuilder()
 			.download(downloadConfig(artifactDir))
-			.executableNaming(new NoopTempNaming())
+			.executableNaming(new UUIDTempNaming())
+			.tempDir(new TempDirInPlatformTempDir())
 			.downloader(failingDownloader())
 			.extractDir(extractedArtifactDir)
+			.extractExecutableNaming(new NoopTempNaming())
 			.build();
 		
 		assertTrue("checkDistribution ("+distribution+")", store.checkDistribution(distribution));
@@ -84,18 +87,19 @@ public class ExtractedArtifactStoreTest {
 		assertNotNull(extractFileSet);
 		assertEquals(1, extractFileSet.files(FileType.Library).size());
 		
-		File extractedExeFile = fileOf(extractFileSet.generatedBaseDir(),extractFileSet.executable());
+		File extractedExeFile = fileOf(extractFileSet.baseDir(),extractFileSet.executable());
 		assertTrue(extractedExeFile.exists());
 		
 		assertTrue("Remove extracted exe", extractedExeFile.delete());
 		for (File f : extractFileSet.files(FileType.Library)) {
-			assertTrue("Remove extracted file "+f, fileOf(extractFileSet.generatedBaseDir(), f).delete());
+			assertTrue("Remove extracted file "+f, fileOf(extractFileSet.baseDir(), f).delete());
 		}
 		assertFalse(extractedExeFile.exists());
 
 		// 
 		extractFileSet = store.extractFileSet(distribution);
-		assertTrue(extractedExeFile.exists());
+		extractedExeFile = fileOf(extractFileSet.baseDir(),extractFileSet.executable());
+		assertTrue(""+extractedExeFile+".exists()",extractedExeFile.exists());
 		assertTrue("Remove extracted exe", extractedExeFile.delete());
 		assertFalse(extractedExeFile.exists());
 	}

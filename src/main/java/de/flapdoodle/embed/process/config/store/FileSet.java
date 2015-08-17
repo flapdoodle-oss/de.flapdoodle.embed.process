@@ -128,4 +128,5 @@ public class FileSet {
 			return new FileSet(_entries);
 		}
 	}
+
 }
