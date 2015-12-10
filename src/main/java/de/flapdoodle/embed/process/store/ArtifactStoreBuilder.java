@@ -42,6 +42,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	protected static final TypedProperty<Boolean> USE_CACHE = TypedProperty.with("UseCache",Boolean.class);
 	protected static final TypedProperty<IDownloader> DOWNLOADER = TypedProperty.with("Downloader",IDownloader.class);
 	
+	@Deprecated
 	public ArtifactStoreBuilder download(AbstractBuilder<IDownloadConfig> downloadConfigBuilder) {
 		return download(downloadConfigBuilder.build());
 	}

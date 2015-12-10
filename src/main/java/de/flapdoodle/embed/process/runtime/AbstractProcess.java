@@ -54,7 +54,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	private final IRuntimeConfig runtimeConfig;
 	private final E executable;
 	private ProcessControl process;
-	private int processId;
+	private long processId;
 
 	private boolean stopped = false;
 
@@ -193,7 +193,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		return process.waitFor();
 	}
 
-	protected void setProcessId(int processId) {
+	protected void setProcessId(long processId) {
 		this.processId = processId;
 	}
 

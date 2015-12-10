@@ -123,7 +123,7 @@ public abstract class Processes {
 		return null;
 	}
 
-	public static boolean killProcess(ISupportConfig support,Platform platform, IStreamProcessor output, int pid) {
+	public static boolean killProcess(ISupportConfig support,Platform platform, IStreamProcessor output, long pid) {
 		if (platform.isUnixLike()) {
 			return ProcessControl.executeCommandLine(support, "[kill process]",
 					new ProcessConfig(Collections.newArrayList("kill", "-2", "" + pid), output));
@@ -131,7 +131,7 @@ public abstract class Processes {
 		return false;
 	}
 
-	public static boolean termProcess(ISupportConfig support,Platform platform, IStreamProcessor output, int pid) {
+	public static boolean termProcess(ISupportConfig support,Platform platform, IStreamProcessor output, long pid) {
 	    if (platform.isUnixLike()) {
 		return ProcessControl.executeCommandLine(support, "[term process]",
 			new ProcessConfig(Collections.newArrayList("kill", "" + pid), output));
@@ -139,7 +139,7 @@ public abstract class Processes {
 	    return false;
 	}
 
-	public static boolean tryKillProcess(ISupportConfig support,Platform platform, IStreamProcessor output, int pid) {
+	public static boolean tryKillProcess(ISupportConfig support,Platform platform, IStreamProcessor output, long pid) {
 		if (platform == Platform.Windows) {
 			return ProcessControl.executeCommandLine(support, "[taskkill process]",
 					new ProcessConfig(Collections.newArrayList("taskkill", "/F", "/pid", "" + pid), output));
