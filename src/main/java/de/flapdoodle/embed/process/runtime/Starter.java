@@ -46,9 +46,15 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 	}
 
 	public EXECUTABLE prepare(CONFIG config) {
-		
-		Distribution distribution = Distribution.detectFor(config.version());
-		
+		return prepare(config, null);
+	}
+
+	public EXECUTABLE prepare(CONFIG config, Distribution distribution) {
+
+		if (distribution == null) {
+			distribution = Distribution.detectFor(config.version());
+		}
+
 		try {
 			IArtifactStore artifactStore = runtime.getArtifactStore();
 			
