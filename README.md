@@ -40,6 +40,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 - Embedded Memcached [de.flapdoodle.embed.memcached](https://github.com/flapdoodle-oss/de.flapdoodle.embed.memcached)
 - Embedded node.js [nodejs.embed.flapdoodle.de](https://github.com/flapdoodle-oss/de.flapdoodle.embed.nodejs)
 - Embedded PostgreSQL [ru.yandex.qatools.embed](https://github.com/yandex-qatools/postgresql-embedded)
+- Embedded MySQL [com.wix.mysql](https://github.com/wix/wix-embedded-mysql)
 
 ### Changelog
 
