@@ -17,12 +17,12 @@ Embedded Process Util will provide a platform neutral way for running processes 
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 10.12.2015 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
+Stable (Maven Central Repository, Released: 15.04.2016 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.50.1</version>
+		<version>1.50.2</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -30,7 +30,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>1.50.2-SNAPSHOT</version>
+		<version>1.50.3-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -44,8 +44,11 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 ### Changelog
 
-#### 1.50.2 (SNAPSHOT)
+#### 1.50.3 (SNAPSHOT)
 
+#### 1.50.2
+
+- starter accepts custom distribution
 
 #### 1.50.1
 
