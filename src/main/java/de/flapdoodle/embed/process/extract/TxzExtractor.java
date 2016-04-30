@@ -23,18 +23,22 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import de.flapdoodle.embed.process.distribution.ArchiveType;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
+
+import java.io.*;
 
 /**
- * Extractor Helper
+ *
  */
-public class Extractors {
+public class TxzExtractor extends AbstractTarExtractor {
 
-	private Extractors() {
+	protected ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException {
+		FileInputStream fin = new FileInputStream(source);
+		BufferedInputStream in = new BufferedInputStream(fin);
+		XZCompressorInputStream gzIn = new XZCompressorInputStream(in);
 
-	}
-
-	public static IExtractor getExtractor(ArchiveType archiveType) {
-		return archiveType.getExtractor();
+		TarArchiveInputStream tarIn = new TarArchiveInputStream(gzIn);
+		return new TarArchiveWrapper(tarIn);
 	}
 }
