@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,11 +79,44 @@ public class Network {
 	}
 
 	public static int getFreeServerPort(InetAddress hostAdress) throws IOException {
-		int ret;
-		ServerSocket socket = new ServerSocket(0, 0, hostAdress);
-		ret = socket.getLocalPort();
-		socket.close();
-		return ret;
+		int ports[] = getFreeServerPorts(hostAdress, 10);
+		return randomEntryOf(ports);
+	}
+
+	public static int randomEntryOf(int[] ports) {
+		return ports[ThreadLocalRandom.current().nextInt(ports.length)];
+	}
+	
+	public static int[] getFreeServerPorts(InetAddress hostAdress, int poolSize) throws IOException {
+		if (poolSize<1) {
+			throw new IllegalArgumentException("poolSize < 1: "+poolSize);
+		}
+		
+		IOException latestIOException=null;
+		ServerSocket[] sockets=new ServerSocket[poolSize];
+		int ports[];
+		
+		int idx=0;
+		try {
+			do {
+				sockets[idx]=new ServerSocket(0, 0, hostAdress);
+				idx++;
+			} while (idx<poolSize);
+		} catch (IOException iox) {
+			latestIOException=iox;
+		} finally {
+			ports = new int[idx];
+			for (int i=0;i<idx;i++) {
+				ports[i]=sockets[i].getLocalPort();
+				sockets[i].close();
+			}
+		}
+		
+		if (ports.length>0) {
+			return ports;
+		} else {
+			throw latestIOException;
+		}
 	}
 
 }
