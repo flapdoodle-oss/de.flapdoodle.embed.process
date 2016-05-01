@@ -92,30 +92,21 @@ public class Network {
 			throw new IllegalArgumentException("poolSize < 1: "+poolSize);
 		}
 		
-		IOException latestIOException=null;
-		ServerSocket[] sockets=new ServerSocket[poolSize];
-		int ports[];
+		final ServerSocket[] sockets=new ServerSocket[poolSize];
+		final int ports[]=new int[poolSize];
 		
 		int idx=0;
 		try {
 			do {
 				sockets[idx]=new ServerSocket(0, 0, hostAdress);
+				ports[idx]=sockets[idx].getLocalPort();
 				idx++;
 			} while (idx<poolSize);
-		} catch (IOException iox) {
-			latestIOException=iox;
+			return ports;
 		} finally {
-			ports = new int[idx];
 			for (int i=0;i<idx;i++) {
-				ports[i]=sockets[i].getLocalPort();
 				sockets[i].close();
 			}
-		}
-		
-		if (ports.length>0) {
-			return ports;
-		} else {
-			throw latestIOException;
 		}
 	}
 
