@@ -263,6 +263,7 @@
 			org.apache.commons.compress.archivers.zip,
 			org.apache.commons.compress.archivers.tar,
 			org.apache.commons.compress.compressors.bzip2,
+            org.apache.commons.compress.compressors.xz,
 			org.apache.commons.compress.compressors.gzip,
 			org.apache.commons.lang3,
 			org.apache.commons.io,

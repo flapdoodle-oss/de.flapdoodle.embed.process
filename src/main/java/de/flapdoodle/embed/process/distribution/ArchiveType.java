@@ -23,9 +23,25 @@
  */
 package de.flapdoodle.embed.process.distribution;
 
+import de.flapdoodle.embed.process.extract.*;
+
 /**
  *
  */
 public enum ArchiveType {
-	TGZ, TBZ2, ZIP, EXE;
+	TGZ(new TgzExtractor()),
+	TBZ2(new Tbz2Extractor()),
+	ZIP(new ZipExtractor()),
+	EXE(new ArchiveIsFileExtractor()),
+	TXZ(new TxzExtractor());
+
+	private final IExtractor extractor;
+
+	ArchiveType(IExtractor extractor) {
+		this.extractor = extractor;
+	}
+
+	public IExtractor getExtractor() {
+		return extractor;
+	}
 }
