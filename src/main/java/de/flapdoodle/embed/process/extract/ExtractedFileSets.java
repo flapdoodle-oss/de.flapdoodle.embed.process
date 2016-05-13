@@ -50,7 +50,8 @@ public abstract class ExtractedFileSets {
 		File oldExe = src.executable();
 		Builder builder = ImmutableExtractedFileSet.builder(destination)
 				.baseDirIsGenerated(directory.isGenerated());
-		
+
+		Files.createOrCheckDir(Files.fileOf(destination, oldExe).getParentFile());
 		Path newExeFile = java.nio.file.Files.copy(Files.fileOf(baseDir, oldExe).toPath(), Files.fileOf(destination, executableNaming.nameFor("extract", oldExe.getName())).toPath());
 		builder.executable(newExeFile.toFile());
 		
