@@ -13,6 +13,10 @@ Embedded Process Util will provide a platform neutral way for running processes 
 - its easy, much easier as installing right version by hand
 - you can change version per test
 
+## License
+
+We use http://www.apache.org/licenses/LICENSE-2.0
+
 ## Howto
 
 ### Maven
