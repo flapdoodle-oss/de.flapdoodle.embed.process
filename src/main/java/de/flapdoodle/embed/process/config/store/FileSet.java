@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other;
+
 public class FileSet {
 
 	private final List<Entry> _entries;
@@ -47,8 +49,8 @@ public class FileSet {
 			throw new IllegalArgumentException("there is no executable in this file set");
 		}
 	}
-	
-	
+
+
 	public List<Entry> entries() {
 		return Collections.unmodifiableList(_entries);
 	}
@@ -83,47 +85,54 @@ public class FileSet {
 				return true;
 			}
 
-			if (other == null || getClass() != other.getClass()) {
+			if (other == null) { // || getClass() != other.getClass()) {
+				return false;
+			}
+
+			/* Preferable to checking class instance equality guard. See #43. */
+			if (!(other instanceof FileSet.Entry)) {
 				return false;
 			}
 
 			Entry entry = (Entry) other;
 
+			/* Because Pattern doesn't implement equals, use its underlying expression (String) for equality. See #43. */
 			return _type == entry._type
 				&& !(_destination != null ? !_destination.equals(entry._destination) : entry._destination != null)
-				&& !(_matchingPattern != null ? !_matchingPattern.equals(entry._matchingPattern) : entry._matchingPattern != null);
+				&& !(_matchingPattern != null ? !_matchingPattern.pattern().equals(null == entry._matchingPattern ? null : entry._matchingPattern.pattern()) : entry._matchingPattern != null);
 		}
 
 		@Override
 		public int hashCode() {
 			int result = _type != null ? _type.hashCode() : 0;
 			result = 31 * result + (_destination != null ? _destination.hashCode() : 0);
-			result = 31 * result + (_matchingPattern != null ? _matchingPattern.hashCode() : 0);
+			/* Because Pattern doesn't implement hashCode, use its underlying expression (String) for equality. See #43. */
+			result = 31 * result + (_matchingPattern != null ? _matchingPattern.pattern().hashCode() : 0);
 			return result;
 		}
 	}
-	
+
 	public static Builder builder() {
 		return new Builder();
 	}
-	
+
 	public static class Builder {
 
 		private final List<Entry> _entries=new ArrayList<FileSet.Entry>();
-		
+
 		public Builder addEntry(FileType type, String filename) {
 			return addEntry(type,filename,".*"+filename);
 		}
-		
+
 		public Builder addEntry(FileType type, String filename, String pattern) {
 			return addEntry(type,filename,Pattern.compile(pattern,Pattern.CASE_INSENSITIVE));
 		}
-		
+
 		public Builder addEntry(FileType type, String filename, Pattern pattern) {
 			_entries.add(new Entry(type,filename,pattern));
 			return this;
 		}
-		
+
 		public FileSet build() {
 			return new FileSet(_entries);
 		}
