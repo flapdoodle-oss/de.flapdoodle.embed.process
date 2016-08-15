@@ -168,7 +168,7 @@
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>2.3</version>
             </plugin>
-            
+
            	<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
@@ -182,9 +182,9 @@
 						<Export-Package>${osgi.export}</Export-Package>
 						<Import-Package>${osgi.import}</Import-Package>
 					</instructions>
-				</configuration>				
+				</configuration>
 			</plugin>
-            
+
 						<plugin>
 								<groupId>org.apache.maven.plugins</groupId>
 								<artifactId>maven-javadoc-plugin</artifactId>
@@ -270,7 +270,7 @@
 			org.slf4j
 		</osgi.import>
 	</properties>
-	
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -293,7 +293,7 @@
            <artifactId>commons-lang3</artifactId>
            <version>3.1</version>
         </dependency>
-        
+
         <!--
         Sigar is not in central repository.
          <dependency>
@@ -302,7 +302,7 @@
             <version>1.6.5.132-5</version>
         </dependency>
         -->
-        
+
 				<dependency>
 					<groupId>net.java.dev.jna</groupId>
 					<artifactId>jna</artifactId>
@@ -313,7 +313,7 @@
 					<artifactId>jna-platform</artifactId>
 					<version>${jna.version}</version>
 				</dependency>
-         
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
@@ -344,6 +344,13 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.10</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>nl.jqno.equalsverifier</groupId>
+          <artifactId>equalsverifier</artifactId>
+          <version>2.1.5</version>
+          <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

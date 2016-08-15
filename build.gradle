@@ -1,3 +1,5 @@
+import org.apache.commons.lang3.JavaVersion
+
 group = 'de.flapdoodle.embedmongo'
 version = '1.11x-SNAPSHOT'
 project.ext.gradleVersion = "1.0-milestone-9"
@@ -22,6 +24,7 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.9.0'
     testCompile 'org.mortbay.jetty:jetty:6.1.25'
     testCompile 'org.slf4j:slf4j-simple:1.7.10'
+    testCompile 'nl.jqno.equalsverifier:equalsverifier:2.1.5'
     compile 'commons-io:commons-io:2.1'
     compile 'org.apache.commons:commons-compress:1.10'
     compile 'org.slf4j:slf4j-api:1.7.10'
