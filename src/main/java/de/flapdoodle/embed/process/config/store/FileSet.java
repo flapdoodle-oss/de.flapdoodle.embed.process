@@ -138,4 +138,30 @@ public class FileSet {
 		}
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+
+		if (other == null) {
+			return false;
+		}
+
+		if (!(other instanceof FileSet)) {
+			return false;
+		}
+
+		FileSet files = (FileSet) other;
+
+		return !(_entries != null ? !_entries.equals(files._entries) : files._entries != null);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 0;
+		result = 31 * result + (_entries != null ? _entries.hashCode() : 0);
+		return result;
+	}
+
 }
