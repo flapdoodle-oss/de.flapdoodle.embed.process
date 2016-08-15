@@ -29,8 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other;
-
 public class FileSet {
 
 	private final List<Entry> _entries;
