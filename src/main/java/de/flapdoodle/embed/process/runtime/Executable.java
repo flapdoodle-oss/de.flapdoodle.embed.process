@@ -42,7 +42,8 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 	private final IRuntimeConfig runtimeConfig;
 	private final IExtractedFileSet executable;
 	private boolean stopped;
-
+	private boolean registeredJobKiller;
+	
 	List<IStopable> stopables = new ArrayList<IStopable>();
 
 	private final Distribution distribution;
@@ -56,10 +57,16 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 		// clis being invoked will usually die by themselves
 		if (runtimeConfig.isDaemonProcess()) {
 			ProcessControl.addShutdownHook(new JobKiller());
+			registeredJobKiller = true;
 		}
 	}
+	
+	@Override
+    public boolean isRegisteredJobKiller() {
+        return registeredJobKiller;
+    }
 
-	/**
+    /**
 	 * use stop (this calls stop anyway)
 	 */
 	@Deprecated

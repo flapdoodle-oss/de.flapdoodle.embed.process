@@ -57,7 +57,8 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	private long processId;
 
 	private boolean stopped = false;
-
+	private boolean registeredJobKiller;
+	
 	private final Distribution distribution;
 
 	private final File pidFile;
@@ -105,8 +106,9 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 			nextCall="addShutdownHook()";
 
-			if (runtimeConfig.isDaemonProcess()) {
+			if (runtimeConfig.isDaemonProcess() && !executable.isRegisteredJobKiller()) {
 				ProcessControl.addShutdownHook(new JobKiller());
+				registeredJobKiller = true;
 			}
 
 			nextCall="onAfterProcessStart()";
@@ -121,7 +123,12 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		}
 	}
 
-	protected File pidFile(File executeableFile) {
+	@Override
+    public boolean isRegisteredJobKiller() {
+        return registeredJobKiller;
+    }
+
+    protected File pidFile(File executeableFile) {
 		return new File(executeableFile.getParentFile(),executableBaseName(executeableFile.getName())+".pid");
 	}
 
