@@ -77,7 +77,7 @@ public abstract class AbstractExtractor implements IExtractor {
 						progressListener.info(progressLabel,"extract "+entry.getName());
 					}
 					if (toExtract.nothingLeft()) {
-						progressListener.info(progressLabel,"noting left");
+						progressListener.info(progressLabel,"nothing left");
 						break;
 					}
 				}
