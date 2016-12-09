@@ -17,12 +17,15 @@ eclipse {
     }
 }
 dependencies {
-    testCompile 'junit:junit:4.8.2'
+    testCompile 'junit:junit:4.11'
     testCompile 'org.mongodb:mongo-java-driver:2.6.3'
     testCompile 'org.mockito:mockito-core:1.9.0'
     testCompile 'org.mortbay.jetty:jetty:6.1.25'
     testCompile 'org.slf4j:slf4j-simple:1.7.10'
-    compile 'commons-io:commons-io:2.1'
+    compile 'commons-io:commons-io:2.4'
+    compile 'net.java.dev.jna:jna:4.0.0'
+    compile 'net.java.dev.jna:jna-platform:4.0.0'
+    compile 'org.apache.commons:commons-lang3:3.1'
     compile 'org.apache.commons:commons-compress:1.10'
     compile 'org.slf4j:slf4j-api:1.7.10'
 }
