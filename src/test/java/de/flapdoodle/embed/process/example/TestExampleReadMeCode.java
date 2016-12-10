@@ -45,7 +45,7 @@ public class TestExampleReadMeCode {
 	@Test
 	public void genericProcessStarter() throws IOException {
 
-		IVersion version=new GenericVersion("1.8.2");
+		IVersion version=new GenericVersion("2.1.1");
 		
 		IRuntimeConfig config = new GenericRuntimeConfigBuilder()
 			.name("phantomjs")
