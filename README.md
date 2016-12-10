@@ -27,7 +27,7 @@ Stable (Maven Central Repository, Released: 15.04.2016 - wait 24hrs for [maven c
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>2.0.0</version>
+		<version>2.0.1</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -35,7 +35,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>2.0.1-SNAPSHOT</version>
+		<version>2.0.2-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -49,7 +49,16 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 ### Changelog
 
-#### 1.50.3 (SNAPSHOT)
+
+#### 2.0.2 (SNAPSHOT)
+
+#### 2.0.1
+
+- bugfix for wrong path of executable
+
+#### 2.0.0 
+
+- java 8
 
 #### 1.50.2
 
