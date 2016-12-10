@@ -54,8 +54,7 @@ public abstract class ExtractedFileSets {
 		Files.createOrCheckDir(Files.fileOf(destination, oldExe).getParentFile());
 		Path newExeFile = java.nio.file.Files.copy(Files.fileOf(baseDir, oldExe).toPath(), Files.fileOf(destination, executableNaming.nameFor("extract", oldExe.getName())).toPath());
 		builder.executable(new File(destination.toURI().relativize(newExeFile.toUri()).toString()));
-		//builder.executable(newExeFile.toFile());
-		
+
 		for (FileType type : EnumSet.complementOf(EnumSet.of(FileType.Executable))) {
 			for (File srcFile : src.files(type)) {
 				File destinationFile = Files.fileOf(destination, srcFile);

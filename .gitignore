@@ -8,3 +8,5 @@ velocity.log
 .externalToolBuilders
 .idea
 *.iml
+.gradle/
+build
