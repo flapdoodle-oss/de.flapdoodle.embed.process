@@ -49,7 +49,7 @@ public class TestExampleReadMeCode {
 		
 		IRuntimeConfig config = new GenericRuntimeConfigBuilder()
 			.name("phantomjs")
-			.downloadPath("http://phantomjs.googlecode.com/files/")
+			.downloadPath("https://bitbucket.org/ariya/phantomjs/")
 			.packageResolver()
 				.files(Distribution.detectFor(version), FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
 				.archivePath(Distribution.detectFor(version), "phantomjs-"+version.asInDownloadPath()+"-linux-x86_64.tar.bz2")
