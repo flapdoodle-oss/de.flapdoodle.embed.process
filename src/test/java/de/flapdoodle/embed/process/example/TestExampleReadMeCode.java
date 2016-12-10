@@ -46,26 +46,27 @@ public class TestExampleReadMeCode {
 	public void genericProcessStarter() throws IOException {
 
 		IVersion version=new GenericVersion("2.1.1");
-		
+
 		IRuntimeConfig config = new GenericRuntimeConfigBuilder()
 			.name("phantomjs")
-			.downloadPath("https://bitbucket.org/ariya/phantomjs/")
+			//https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
+			.downloadPath("https://bitbucket.org/ariya/phantomjs/downloads/")
 			.packageResolver()
 				.files(Distribution.detectFor(version), FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
 				.archivePath(Distribution.detectFor(version), "phantomjs-"+version.asInDownloadPath()+"-linux-x86_64.tar.bz2")
 				.archiveType(Distribution.detectFor(version), ArchiveType.TBZ2)
 				.build()
 			.build();
-		
-		
+
+
 		GenericStarter starter = new GenericStarter(config);
-		
+
 		GenericExecuteable executable = starter.prepare(new GenericProcessConfig(version));
-		
+
 		GenericProcess process = executable.start();
-		
+
 		process.stop();
-		
+
 		executable.stop();
 	}
 }
