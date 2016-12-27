@@ -34,7 +34,7 @@ public class Extractors {
 
 	}
 
-	public static IExtractor getExtractor(ArchiveType archiveType) {
+	public static Extractor getExtractor(ArchiveType archiveType) {
 		return archiveType.getExtractor();
 	}
 }

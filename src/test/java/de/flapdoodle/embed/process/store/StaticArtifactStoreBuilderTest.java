@@ -32,11 +32,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
-import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 import de.flapdoodle.embed.process.io.file.Files;
 
@@ -49,10 +47,10 @@ public class StaticArtifactStoreBuilderTest {
 		
 		File generatedBaseDir=Files.createTempDir(PropertyOrPlatformTempDir.defaultInstance(),	"static");
 		
-		IExtractedFileSet fileSet=ImmutableExtractedFileSet.builder(generatedBaseDir)
+		ExtractedFileSet fileSet=ExtractedFileSet.builder(generatedBaseDir)
 				.baseDirIsGenerated(true)
 				.executable(new File("bla.exe"))
-				.file(FileType.Library, new File("foo.lib"))
+				.addLibraryFiles(new File("foo.lib"))
 				.build();
 		
 		IArtifactStore store = new StaticArtifactStoreBuilder()
@@ -61,7 +59,7 @@ public class StaticArtifactStoreBuilderTest {
 		
 		assertTrue(store.checkDistribution(distribution));
 		
-		IExtractedFileSet extractFileSet = store.extractFileSet(distribution);
+		ExtractedFileSet extractFileSet = store.extractFileSet(distribution);
 		assertNotNull(extractFileSet);
 		
 		assertEquals("bla.exe", extractFileSet.executable().getName());

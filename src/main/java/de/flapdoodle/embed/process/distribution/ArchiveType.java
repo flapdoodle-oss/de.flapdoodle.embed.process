@@ -35,13 +35,13 @@ public enum ArchiveType {
 	EXE(new ArchiveIsFileExtractor()),
 	TXZ(new TxzExtractor());
 
-	private final IExtractor extractor;
+	private final Extractor extractor;
 
-	ArchiveType(IExtractor extractor) {
+	ArchiveType(Extractor extractor) {
 		this.extractor = extractor;
 	}
 
-	public IExtractor getExtractor() {
+	public Extractor getExtractor() {
 		return extractor;
 	}
 }

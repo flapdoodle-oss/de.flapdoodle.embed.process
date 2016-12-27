@@ -28,14 +28,14 @@ import java.util.Map;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
 public class StaticArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 
-	Map<Distribution, IExtractedFileSet> distributionFileSet=new LinkedHashMap<Distribution, IExtractedFileSet>();
+	Map<Distribution, ExtractedFileSet> distributionFileSet=new LinkedHashMap<Distribution, ExtractedFileSet>();
 	
-	public StaticArtifactStoreBuilder fileSet(Distribution distribution, IExtractedFileSet fileSet) {
-		IExtractedFileSet old = distributionFileSet.put(distribution, fileSet);
+	public StaticArtifactStoreBuilder fileSet(Distribution distribution, ExtractedFileSet fileSet) {
+		ExtractedFileSet old = distributionFileSet.put(distribution, fileSet);
 		if (old != null) {
 			throw new RuntimeException("" + distribution + " already set to " + old);
 		}

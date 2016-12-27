@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
 public abstract class Executable<T extends IExecutableProcessConfig, P extends IStopable> implements IStopable {
 
@@ -40,7 +40,7 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 
 	private final T config;
 	private final RuntimeConfig runtimeConfig;
-	private final IExtractedFileSet executable;
+	private final ExtractedFileSet executable;
 	private boolean stopped;
 	private boolean registeredJobKiller;
 	
@@ -48,7 +48,7 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 
 	private final Distribution distribution;
 
-	public Executable(Distribution distribution, T config, RuntimeConfig runtimeConfig, IExtractedFileSet executable) {
+	public Executable(Distribution distribution, T config, RuntimeConfig runtimeConfig, ExtractedFileSet executable) {
 		this.distribution = distribution;
 		this.config = config;
 		this.runtimeConfig = runtimeConfig;
@@ -98,7 +98,7 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 		}
 	}
 
-	public IExtractedFileSet getFile() {
+	public ExtractedFileSet getFile() {
 		return executable;
 	}
 

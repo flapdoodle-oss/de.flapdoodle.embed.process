@@ -33,10 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
-public abstract class AbstractExtractor implements IExtractor {
+public abstract class AbstractExtractor implements Extractor {
 	
 	private static Logger _logger=LoggerFactory.getLogger(AbstractExtractor.class);
 	
@@ -55,8 +56,8 @@ public abstract class AbstractExtractor implements IExtractor {
 	}
 
 	@Override
-	public IExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
-		Builder builder = ImmutableExtractedFileSet.builder(toExtract.baseDir())
+	public ExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
+		Builder builder = ExtractedFileSet.builder(toExtract.baseDir())
 				.baseDirIsGenerated(toExtract.baseDirIsGenerated());
 
 		ProgressListener progressListener = runtime.getProgressListener();
@@ -72,7 +73,13 @@ public abstract class AbstractExtractor implements IExtractor {
 				if (match != null) {
 					if (archive.canReadEntryData(entry)) {
 						long size = entry.getSize();
-						builder.file(match.type(),match.write(archive.asStream(entry), size));
+						FileType type = match.type();
+						File file = match.write(archive.asStream(entry), size);
+						if (type==FileType.Executable) {
+							builder.executable(file);
+						} else {
+							builder.addLibraryFiles(file);
+						}
 						//						destination.setExecutable(true);
 						progressListener.info(progressLabel,"extract "+entry.getName());
 					}

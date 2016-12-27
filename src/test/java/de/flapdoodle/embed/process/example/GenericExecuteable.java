@@ -28,13 +28,13 @@ import java.io.IOException;
 
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.Executable;
 
 public class GenericExecuteable extends Executable<GenericProcessConfig, GenericProcess> {
 
 	public GenericExecuteable(Distribution distribution, GenericProcessConfig config, RuntimeConfig runtimeConfig,
-			IExtractedFileSet executable) {
+			ExtractedFileSet executable) {
 		super(distribution, config, runtimeConfig, executable);
 	}
 

@@ -78,7 +78,7 @@ public class ExtractorImplTest {
     public void testZipFormat() throws IOException {
         File source = new File(this.getClass().getResource("/archives/sample.zip").getPath());
         ZipExtractor extractor = new ZipExtractor();
-        IExtractedFileSet extracted = extractor.extract(runtime, source, fte);
+        ExtractedFileSet extracted = extractor.extract(runtime, source, fte);
 
         assertTrue("extracted file exists", extracted.executable().exists());
         assertEquals(FileUtils.readFileToString(fileInArchive), FileUtils.readFileToString(extracted.executable()));
@@ -89,7 +89,7 @@ public class ExtractorImplTest {
         File source = new File(this.getClass().getResource("/archives/sample.tgz").getPath());
         TgzExtractor extractor = new TgzExtractor();
 
-        IExtractedFileSet extracted = extractor.extract(runtime, source, fte);
+        ExtractedFileSet extracted = extractor.extract(runtime, source, fte);
 
         assertTrue("extracted file exists", extracted.executable().exists());
         assertEquals(FileUtils.readFileToString(fileInArchive), FileUtils.readFileToString(extracted.executable()));
@@ -100,7 +100,7 @@ public class ExtractorImplTest {
         File source = new File(this.getClass().getResource("/archives/sample.tbz2").getPath());
         Tbz2Extractor extractor = new Tbz2Extractor();
 
-        IExtractedFileSet extracted = extractor.extract(runtime, source, fte);
+        ExtractedFileSet extracted = extractor.extract(runtime, source, fte);
 
         assertTrue("extracted file exists", extracted.executable().exists());
         assertEquals(FileUtils.readFileToString(fileInArchive), FileUtils.readFileToString(extracted.executable()));

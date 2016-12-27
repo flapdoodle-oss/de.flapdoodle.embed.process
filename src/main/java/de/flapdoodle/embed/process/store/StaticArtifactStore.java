@@ -28,14 +28,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
 public class StaticArtifactStore implements IArtifactStore {
 
-	private Map<Distribution, IExtractedFileSet> distributionFileSet;
+	private Map<Distribution, ExtractedFileSet> distributionFileSet;
 
-	public StaticArtifactStore(Map<Distribution, IExtractedFileSet> distributionFileSet) {
-		this.distributionFileSet = new HashMap<Distribution, IExtractedFileSet>(distributionFileSet);
+	public StaticArtifactStore(Map<Distribution, ExtractedFileSet> distributionFileSet) {
+		this.distributionFileSet = new HashMap<Distribution, ExtractedFileSet>(distributionFileSet);
 	}
 	
 	@Override
@@ -45,13 +45,13 @@ public class StaticArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public IExtractedFileSet extractFileSet(Distribution distribution)
+	public ExtractedFileSet extractFileSet(Distribution distribution)
 			throws IOException {
 		return distributionFileSet.get(distribution);
 	}
 
 	@Override
-	public void removeFileSet(Distribution distribution, IExtractedFileSet files) {
+	public void removeFileSet(Distribution distribution, ExtractedFileSet files) {
 		// dont remove any files
 	}
 

@@ -31,7 +31,7 @@ import java.util.List;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.AbstractProcess;
 
 public class GenericProcess extends AbstractProcess<GenericProcessConfig, GenericExecuteable, GenericProcess> {
@@ -51,7 +51,7 @@ public class GenericProcess extends AbstractProcess<GenericProcessConfig, Generi
 	}
 
 	@Override
-	protected List<String> getCommandLine(Distribution distribution, GenericProcessConfig config, IExtractedFileSet files)
+	protected List<String> getCommandLine(Distribution distribution, GenericProcessConfig config, ExtractedFileSet files)
 			throws IOException {
 		// TODO how to config this?
 		ArrayList<String> ret = new ArrayList<String>();

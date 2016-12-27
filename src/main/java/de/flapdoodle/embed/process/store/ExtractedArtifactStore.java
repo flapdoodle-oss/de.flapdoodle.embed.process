@@ -26,16 +26,15 @@ package de.flapdoodle.embed.process.store;
 import java.io.File;
 import java.io.IOException;
 
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.DirectoryAndExecutableNaming;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ExtractedFileSets;
 import de.flapdoodle.embed.process.extract.FilesToExtract;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ITempNaming;
-import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
@@ -70,7 +69,7 @@ public class ExtractedArtifactStore implements IArtifactStore {
 
 
 	@Override
-	public IExtractedFileSet extractFileSet(Distribution distribution)
+	public ExtractedFileSet extractFileSet(Distribution distribution)
 			throws IOException {
 		
 		Directory withDistribution = withDistribution(extraction.getDirectory(), distribution);
@@ -79,7 +78,7 @@ public class ExtractedArtifactStore implements IArtifactStore {
 		boolean foundExecutable=false;
 		File destinationDir = withDistribution.asFile();
 		
-		Builder fileSetBuilder = ImmutableExtractedFileSet.builder(destinationDir)
+		Builder fileSetBuilder = ExtractedFileSet.builder(destinationDir)
 				.baseDirIsGenerated(withDistribution.isGenerated());
 		
 		FilesToExtract filesToExtract = baseStore.filesToExtract(distribution);
@@ -91,9 +90,9 @@ public class ExtractedArtifactStore implements IArtifactStore {
 				if (resolvedExecutableFile.isFile()) {
 					foundExecutable=true;
 				}
-				fileSetBuilder.file(file.type(), executableFile);
+				fileSetBuilder.executable(executableFile);
 			} else {
-				fileSetBuilder.file(file.type(), new File(FilesToExtract.fileName(file)));
+				fileSetBuilder.addLibraryFiles(new File(FilesToExtract.fileName(file)));
 			}
 		}
 		
@@ -106,7 +105,7 @@ public class ExtractedArtifactStore implements IArtifactStore {
 			}
 		}
 		
-		IExtractedFileSet extractedFileSet = fileSetBuilder.build();
+		ExtractedFileSet extractedFileSet = fileSetBuilder.build();
 		return ExtractedFileSets.copy(extractedFileSet, temp.getDirectory(), temp.getExecutableNaming());
 	}
 
@@ -143,7 +142,7 @@ public class ExtractedArtifactStore implements IArtifactStore {
 	}
 	
 	@Override
-	public void removeFileSet(Distribution distribution, IExtractedFileSet files) {
+	public void removeFileSet(Distribution distribution, ExtractedFileSet files) {
 		ExtractedFileSets.delete(files);
 	}
 

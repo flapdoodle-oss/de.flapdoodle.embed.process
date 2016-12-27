@@ -24,7 +24,7 @@
 package de.flapdoodle.embed.process.store;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
 
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public class CachingArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public IExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
+	public ExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
 
 		FilesWithCounter fileWithCounter;
 
@@ -82,7 +82,7 @@ public class CachingArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public void removeFileSet(Distribution distribution, IExtractedFileSet executable) {
+	public void removeFileSet(Distribution distribution, ExtractedFileSet executable) {
 		FilesWithCounter fileWithCounter;
 		synchronized (_lock) {
 			fileWithCounter = _distributionFiles.get(distribution);
@@ -133,7 +133,7 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	class FilesWithCounter {
 
-		private IExtractedFileSet _file;
+		private ExtractedFileSet _file;
 		int _counter=0;
 		private final Distribution _distribution;
 
@@ -141,13 +141,13 @@ public class CachingArtifactStore implements IArtifactStore {
 			_distribution = distribution;
 		}
 
-		public synchronized void free(IExtractedFileSet executable) {
+		public synchronized void free(ExtractedFileSet executable) {
 			if (executable!=_file) throw new RuntimeException("Files does not match: "+_file+" != "+executable);
 			_logger.debug("Free {} {}", _counter, _file);
 			_counter--;
 		}
 
-		public synchronized IExtractedFileSet use() throws IOException {
+		public synchronized ExtractedFileSet use() throws IOException {
 			_counter++;
 			
 			if (_file==null) {

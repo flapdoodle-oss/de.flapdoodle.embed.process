@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.example;
 
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.Starter;
 
 public class GenericStarter extends Starter<GenericProcessConfig, GenericExecuteable, GenericProcess> {
@@ -36,7 +36,7 @@ public class GenericStarter extends Starter<GenericProcessConfig, GenericExecute
 
 	@Override
 	protected GenericExecuteable newExecutable(GenericProcessConfig config, Distribution distribution,
-			RuntimeConfig runtimeConfig, IExtractedFileSet executable) {
+			RuntimeConfig runtimeConfig, ExtractedFileSet executable) {
 		return new GenericExecuteable(distribution, config, runtimeConfig, executable);
 	}
 }

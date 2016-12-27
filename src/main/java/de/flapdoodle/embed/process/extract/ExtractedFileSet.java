@@ -24,15 +24,26 @@
 package de.flapdoodle.embed.process.extract;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Set;
 
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import org.immutables.builder.Builder.Parameter;
+import org.immutables.value.Value;
+import org.immutables.value.Value.Style;
 
-/**
- * Extractor interface
- */
-public interface IExtractor {
+@Value.Immutable
+@Style(strictBuilder=true)
+public abstract class ExtractedFileSet {
 
-	IExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException;
+	@Parameter
+	public abstract File baseDir();
+	
+	public abstract File executable();
+	
+	public abstract Set<File> libraryFiles();
 
+	public abstract boolean baseDirIsGenerated();
+
+	public static ImmutableExtractedFileSet.Builder builder(File baseDir) {
+		return ImmutableExtractedFileSet.builder(baseDir);
+	}
 }

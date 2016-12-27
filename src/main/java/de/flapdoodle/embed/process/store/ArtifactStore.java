@@ -35,8 +35,8 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSets;
 import de.flapdoodle.embed.process.extract.Extractors;
 import de.flapdoodle.embed.process.extract.FilesToExtract;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
-import de.flapdoodle.embed.process.extract.IExtractor;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
+import de.flapdoodle.embed.process.extract.Extractor;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.Directory;
 
@@ -69,14 +69,14 @@ public class ArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public IExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
+	public ExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
 		PackageResolver packageResolver = _downloadConfig.getPackageResolver();
 		FilesToExtract toExtract = filesToExtract(distribution);
 		
-		IExtractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));
+		Extractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));
 
 		File artifact = LocalArtifactStore.getArtifact(_downloadConfig, distribution);
-		IExtractedFileSet extracted=extractor.extract(_downloadConfig, artifact, toExtract);
+		ExtractedFileSet extracted=extractor.extract(_downloadConfig, artifact, toExtract);
 		
 		return extracted;
 	}
@@ -86,7 +86,7 @@ public class ArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public void removeFileSet(Distribution distribution, IExtractedFileSet all) {
+	public void removeFileSet(Distribution distribution, ExtractedFileSet all) {
 		ExtractedFileSets.delete(all);
 	}
 }

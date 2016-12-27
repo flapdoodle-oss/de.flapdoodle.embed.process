@@ -47,7 +47,7 @@ import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.extract.NoopTempNaming;
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
 import de.flapdoodle.embed.process.io.directories.Directory;
@@ -83,15 +83,15 @@ public class ExtractedArtifactStoreTest {
 		assertTrue("checkDistribution ("+distribution+")", store.checkDistribution(distribution));
 		
 		// extract files if not exists
-		IExtractedFileSet extractFileSet = store.extractFileSet(distribution);
+		ExtractedFileSet extractFileSet = store.extractFileSet(distribution);
 		assertNotNull(extractFileSet);
-		assertEquals(1, extractFileSet.files(FileType.Library).size());
+		assertEquals(1, extractFileSet.libraryFiles().size());
 		
 		File extractedExeFile = fileOf(extractFileSet.baseDir(),extractFileSet.executable());
 		assertTrue(extractedExeFile.exists());
 		
 		assertTrue("Remove extracted exe", extractedExeFile.delete());
-		for (File f : extractFileSet.files(FileType.Library)) {
+		for (File f : extractFileSet.libraryFiles()) {
 			assertTrue("Remove extracted file "+f, fileOf(extractFileSet.baseDir(), f).delete());
 		}
 		assertFalse(extractedExeFile.exists());

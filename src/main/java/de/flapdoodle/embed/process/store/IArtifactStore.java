@@ -26,13 +26,13 @@ package de.flapdoodle.embed.process.store;
 import java.io.IOException;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.IExtractedFileSet;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
 public interface IArtifactStore {
 
 	boolean checkDistribution(Distribution distribution) throws IOException;
 
-	IExtractedFileSet extractFileSet(Distribution distribution) throws IOException;
+	ExtractedFileSet extractFileSet(Distribution distribution) throws IOException;
 
-	void removeFileSet(Distribution distribution, IExtractedFileSet files);
+	void removeFileSet(Distribution distribution, ExtractedFileSet files);
 }

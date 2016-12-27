@@ -24,18 +24,16 @@
 package de.flapdoodle.embed.process.extract;
 
 import java.io.File;
-import java.util.List;
+import java.io.IOException;
 
-import de.flapdoodle.embed.process.config.store.FileType;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
 
+/**
+ * Extractor interface
+ */
+@FunctionalInterface
+public interface Extractor {
 
-public interface IExtractedFileSet {
+	ExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException;
 
-	File executable();
-	
-	List<File> files(FileType type);
-
-	File baseDir();
-	
-	boolean baseDirIsGenerated();
 }

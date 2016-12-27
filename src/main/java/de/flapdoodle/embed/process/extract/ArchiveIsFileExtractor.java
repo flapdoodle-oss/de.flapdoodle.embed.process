@@ -29,14 +29,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
-public class ArchiveIsFileExtractor implements IExtractor {
+public class ArchiveIsFileExtractor implements Extractor {
 
 	@Override
-	public IExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
-		Builder builder = ImmutableExtractedFileSet.builder(toExtract.baseDir())
+	public ExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
+		Builder builder = ExtractedFileSet.builder(toExtract.baseDir())
 				.baseDirIsGenerated(toExtract.baseDirIsGenerated());
 
 		ProgressListener progressListener = runtime.getProgressListener();
@@ -48,7 +49,13 @@ public class ArchiveIsFileExtractor implements IExtractor {
 			FileInputStream fin = new FileInputStream(source);
 			try {
 				BufferedInputStream in = new BufferedInputStream(fin);
-				builder.file(match.type(), match.write(in, source.length()));
+				File file = match.write(in, source.length());
+				FileType type = match.type();
+				if (type ==FileType.Executable) {
+					builder.executable(file);
+				} else {
+					builder.addLibraryFiles(file);
+				}
 
 				if (!toExtract.nothingLeft()) {
 					progressListener.info(progressLabel,
