@@ -47,8 +47,8 @@ public class FileSet {
 			throw new IllegalArgumentException("there is no executable in this file set");
 		}
 	}
-	
-	
+
+
 	public List<Entry> entries() {
 		return Collections.unmodifiableList(_entries);
 	}
@@ -83,50 +83,83 @@ public class FileSet {
 				return true;
 			}
 
-			if (other == null || getClass() != other.getClass()) {
+			if (other == null) { // || getClass() != other.getClass()) {
+				return false;
+			}
+
+			/* Preferable to checking class instance equality guard. See #43. */
+			if (!(other instanceof FileSet.Entry)) {
 				return false;
 			}
 
 			Entry entry = (Entry) other;
 
+			/* Because Pattern doesn't implement equals, use its underlying expression (String) for equality. See #43. */
 			return _type == entry._type
 				&& !(_destination != null ? !_destination.equals(entry._destination) : entry._destination != null)
-				&& !(_matchingPattern != null ? !_matchingPattern.equals(entry._matchingPattern) : entry._matchingPattern != null);
+				&& !(_matchingPattern != null ? !_matchingPattern.pattern().equals(null == entry._matchingPattern ? null : entry._matchingPattern.pattern()) : entry._matchingPattern != null);
 		}
 
 		@Override
 		public int hashCode() {
 			int result = _type != null ? _type.hashCode() : 0;
 			result = 31 * result + (_destination != null ? _destination.hashCode() : 0);
-			result = 31 * result + (_matchingPattern != null ? _matchingPattern.hashCode() : 0);
+			/* Because Pattern doesn't implement hashCode, use its underlying expression (String) for equality. See #43. */
+			result = 31 * result + (_matchingPattern != null ? _matchingPattern.pattern().hashCode() : 0);
 			return result;
 		}
 	}
-	
+
 	public static Builder builder() {
 		return new Builder();
 	}
-	
+
 	public static class Builder {
 
 		private final List<Entry> _entries=new ArrayList<FileSet.Entry>();
-		
+
 		public Builder addEntry(FileType type, String filename) {
 			return addEntry(type,filename,".*"+filename);
 		}
-		
+
 		public Builder addEntry(FileType type, String filename, String pattern) {
 			return addEntry(type,filename,Pattern.compile(pattern,Pattern.CASE_INSENSITIVE));
 		}
-		
+
 		public Builder addEntry(FileType type, String filename, Pattern pattern) {
 			_entries.add(new Entry(type,filename,pattern));
 			return this;
 		}
-		
+
 		public FileSet build() {
 			return new FileSet(_entries);
 		}
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+
+		if (other == null) {
+			return false;
+		}
+
+		if (!(other instanceof FileSet)) {
+			return false;
+		}
+
+		FileSet files = (FileSet) other;
+
+		return !(_entries != null ? !_entries.equals(files._entries) : files._entries != null);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 0;
+		result = 31 * result + (_entries != null ? _entries.hashCode() : 0);
+		return result;
 	}
 
 }
