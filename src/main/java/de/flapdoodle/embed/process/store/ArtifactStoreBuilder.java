@@ -30,6 +30,7 @@ import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.ILibraryStore;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
 
@@ -41,6 +42,7 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	protected static final TypedProperty<IDownloadConfig> DOWNLOAD_CONFIG = TypedProperty.with("DownloadConfig",IDownloadConfig.class);
 	protected static final TypedProperty<Boolean> USE_CACHE = TypedProperty.with("UseCache",Boolean.class);
 	protected static final TypedProperty<IDownloader> DOWNLOADER = TypedProperty.with("Downloader",IDownloader.class);
+	private static final TypedProperty<ILibraryStore> LIBRARIES = TypedProperty.with("Libraries", ILibraryStore.class);
 	
 	@Deprecated
 	public ArtifactStoreBuilder download(AbstractBuilder<IDownloadConfig> downloadConfigBuilder) {
@@ -50,6 +52,15 @@ public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	public ArtifactStoreBuilder download(IDownloadConfig downloadConfig) {
 		set(DOWNLOAD_CONFIG, downloadConfig);
 		return this;
+	}
+	
+	public ArtifactStoreBuilder libraries(ILibraryStore libraries) {
+		set(LIBRARIES, libraries);
+		return this;
+	}
+
+	protected IProperty<ILibraryStore> libraries() {
+		return property(LIBRARIES);
 	}
 
 	protected IProperty<IDownloadConfig> download() {
