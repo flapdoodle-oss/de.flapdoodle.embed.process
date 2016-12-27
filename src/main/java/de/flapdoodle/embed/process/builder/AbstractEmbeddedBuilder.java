@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
+@Deprecated
 public class AbstractEmbeddedBuilder<B> {
 
 	Map<TypedProperty<?>, Object> propertyMap = new HashMap<TypedProperty<?>, Object>();

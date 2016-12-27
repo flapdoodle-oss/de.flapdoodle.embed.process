@@ -28,6 +28,7 @@ import java.util.ArrayList;
 /**
  *
  */
+@Deprecated
 public class Collections {
 	private Collections() {
 		throw new IllegalAccessError("singleton");

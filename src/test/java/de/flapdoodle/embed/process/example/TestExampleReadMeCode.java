@@ -27,7 +27,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
@@ -47,7 +47,7 @@ public class TestExampleReadMeCode {
 
 		IVersion version=new GenericVersion("2.1.1");
 
-		IRuntimeConfig config = new GenericRuntimeConfigBuilder()
+		RuntimeConfig config = new GenericRuntimeConfigBuilder()
 			.name("phantomjs")
 			//https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
 			.downloadPath("https://bitbucket.org/ariya/phantomjs/downloads/")

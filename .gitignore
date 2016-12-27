@@ -10,3 +10,4 @@ velocity.log
 *.iml
 .gradle/
 build
+.factorypath

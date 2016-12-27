@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.builder;
 
+@Deprecated
 public abstract class ImmutableContainer<T> {
 
 	private final T _value;

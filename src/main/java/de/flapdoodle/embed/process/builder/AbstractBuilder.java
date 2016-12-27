@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process.builder;
 
-
+@Deprecated
 public abstract class AbstractBuilder<B> extends AbstractEmbeddedBuilder<B> {
 
 	public abstract B build();

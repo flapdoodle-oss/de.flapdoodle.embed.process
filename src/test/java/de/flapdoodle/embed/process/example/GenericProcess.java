@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
@@ -36,7 +36,7 @@ import de.flapdoodle.embed.process.runtime.AbstractProcess;
 
 public class GenericProcess extends AbstractProcess<GenericProcessConfig, GenericExecuteable, GenericProcess> {
 
-	public GenericProcess(Distribution distribution, GenericProcessConfig config, IRuntimeConfig runtime, GenericExecuteable genericExecuteable) throws IOException {
+	public GenericProcess(Distribution distribution, GenericProcessConfig config, RuntimeConfig runtime, GenericExecuteable genericExecuteable) throws IOException {
 		super(distribution,config,runtime,genericExecuteable);
 	}
 

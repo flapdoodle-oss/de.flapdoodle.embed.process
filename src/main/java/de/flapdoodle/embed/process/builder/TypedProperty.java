@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.builder;
 
+@Deprecated
 public final class TypedProperty<T> {
 
 	private final String _name;

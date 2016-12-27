@@ -23,20 +23,14 @@
  */
 package de.flapdoodle.embed.process.example;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.omg.CORBA._PolicyStub;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.AbstractEmbeddedBuilder;
 import de.flapdoodle.embed.process.builder.ImmutableContainer;
 import de.flapdoodle.embed.process.builder.TypedProperty;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
-import de.flapdoodle.embed.process.config.RuntimeConfigBuilder;
+import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.config.store.DownloadConfigBuilder;
 import de.flapdoodle.embed.process.config.store.FileSet;
@@ -47,12 +41,12 @@ import de.flapdoodle.embed.process.extract.UUIDTempNaming;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 import de.flapdoodle.embed.process.io.directories.UserHome;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
-import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
+import de.flapdoodle.embed.process.runtime.CommandLinePostProcessor;
 import de.flapdoodle.embed.process.store.ArtifactStoreBuilder;
 import de.flapdoodle.embed.process.store.Downloader;
 
 
-public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig> {
+public class GenericRuntimeConfigBuilder extends AbstractBuilder<RuntimeConfig> {
 
 	private static final TypedProperty<IPackageResolver> PACKAGE_RESOLVER = TypedProperty.with("PackageResolver",IPackageResolver.class);
 	private static final TypedProperty<DownloadPath> DOWNLOAD_PATH = TypedProperty.with(DownloadPath.class);
@@ -92,14 +86,14 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 	}
 	
 	@Override
-	public IRuntimeConfig build() {
+	public RuntimeConfig build() {
 		String downloadPath = get(DOWNLOAD_PATH).value();
 		String name = get(NAME).value();
 		
 		IPackageResolver packageResolver=get(PACKAGE_RESOLVER);
 		String prefix = "."+name;
 		
-		return new RuntimeConfigBuilder()
+		return RuntimeConfig.builder()
 			.artifactStore(new ArtifactStoreBuilder()
 				.download(new DownloadConfigBuilder()
 					.downloadPath(downloadPath)
@@ -111,9 +105,10 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<IRuntimeConfig>
 					.userAgent("Mozilla/5.0 (compatible; embedded "+name+"; +https://github.com/flapdoodle-oss/de.flapdoodle.embed.process)"))
 				.downloader(new Downloader())
 				.tempDir(new PropertyOrPlatformTempDir())
-				.executableNaming(new UUIDTempNaming()))
+				.executableNaming(new UUIDTempNaming())
+				.build())
 			.processOutput(ProcessOutput.getDefaultInstance(name))
-			.commandLinePostProcessor(new ICommandLinePostProcessor.Noop()).build();
+			.commandLinePostProcessor(new CommandLinePostProcessor.Noop()).build();
 	}
 	
 	public static class GenericPackageResolverBuilder extends AbstractEmbeddedBuilder<IPackageResolver> {

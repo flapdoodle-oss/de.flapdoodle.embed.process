@@ -23,18 +23,28 @@
  */
 package de.flapdoodle.embed.process.config;
 
+import org.immutables.value.Value;
+import org.immutables.value.Value.Default;
+
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
-import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
+import de.flapdoodle.embed.process.runtime.CommandLinePostProcessor;
 import de.flapdoodle.embed.process.store.IArtifactStore;
 
-
-public interface IRuntimeConfig {
+@Value.Immutable
+public interface RuntimeConfig {
 
 	ProcessOutput getProcessOutput();
 
-	ICommandLinePostProcessor getCommandLinePostProcessor();
+	CommandLinePostProcessor getCommandLinePostProcessor();
 	
 	IArtifactStore getArtifactStore();
 
-	boolean isDaemonProcess();
+	@Default
+	default boolean isDaemonProcess() {
+		return false;
+	}
+	
+	public static ImmutableRuntimeConfig.Builder builder() {
+		return ImmutableRuntimeConfig.builder();
+	}
 }

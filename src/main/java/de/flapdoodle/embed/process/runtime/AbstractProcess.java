@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
@@ -51,7 +51,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	public static final int TIMEOUT = 20000;
 
 	private final T config;
-	private final IRuntimeConfig runtimeConfig;
+	private final RuntimeConfig runtimeConfig;
 	private final E executable;
 	private ProcessControl process;
 	private long processId;
@@ -63,7 +63,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	private final File pidFile;
 
-	public AbstractProcess(Distribution distribution, T config, IRuntimeConfig runtimeConfig, E executable)
+	public AbstractProcess(Distribution distribution, T config, RuntimeConfig runtimeConfig, E executable)
 			throws IOException {
 		this.config = config;
 		this.runtimeConfig = runtimeConfig;
@@ -148,15 +148,15 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		return config;
 	}
 
-	protected void onBeforeProcess(IRuntimeConfig runtimeConfig) throws IOException {
+	protected void onBeforeProcess(RuntimeConfig runtimeConfig) throws IOException {
 
 	}
 
-	protected void onBeforeProcessStart(ProcessBuilder processBuilder, T config, IRuntimeConfig runtimeConfig) {
+	protected void onBeforeProcessStart(ProcessBuilder processBuilder, T config, RuntimeConfig runtimeConfig) {
 
 	}
 
-	protected void onAfterProcessStart(ProcessControl process, IRuntimeConfig runtimeConfig) throws IOException {
+	protected void onAfterProcessStart(ProcessControl process, RuntimeConfig runtimeConfig) throws IOException {
 		ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
 		Processors.connect(process.getReader(), outputConfig.getOutput());
 		Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.getError()));
@@ -187,7 +187,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected abstract void cleanupInternal();
 
-	protected void onAfterProcessStop(T config, IRuntimeConfig runtimeConfig) {
+	protected void onAfterProcessStop(T config, RuntimeConfig runtimeConfig) {
 
 	}
 

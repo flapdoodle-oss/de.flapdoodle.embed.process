@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.exceptions.DistributionException;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
@@ -39,9 +39,9 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 	
 	private static Logger logger = LoggerFactory.getLogger(Starter.class);
 	
-	private final IRuntimeConfig runtime;
+	private final RuntimeConfig runtime;
 	
-	protected Starter(IRuntimeConfig config) {
+	protected Starter(RuntimeConfig config) {
 		runtime = config;
 	}
 
@@ -70,5 +70,5 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 		}
 	}
 
-	protected abstract EXECUTABLE newExecutable(CONFIG config, Distribution distribution, IRuntimeConfig runtime, IExtractedFileSet exe);
+	protected abstract EXECUTABLE newExecutable(CONFIG config, Distribution distribution, RuntimeConfig runtime, IExtractedFileSet exe);
 }

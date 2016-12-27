@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.builder;
 
+@Deprecated
 public interface IProperty<T> {
 
 	T set(T value);

@@ -27,11 +27,11 @@ import java.util.List;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
 
-
-public interface ICommandLinePostProcessor {
+@FunctionalInterface
+public interface CommandLinePostProcessor {
 	List<String> process(Distribution distribution, List<String> args);
 	
-	public static class Noop implements ICommandLinePostProcessor {
+	public static class Noop implements CommandLinePostProcessor {
 
 		@Override
 		public List<String> process(Distribution distribution, List<String> args) {
