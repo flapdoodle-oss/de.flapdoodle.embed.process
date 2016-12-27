@@ -38,10 +38,10 @@ import org.junit.Test;
 
 import de.flapdoodle.embed.process.config.store.DownloadConfigBuilder;
 import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.FileSet.Entry;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.config.store.IPackageResolver;
+import de.flapdoodle.embed.process.config.store.FileSet.Entry;
 import de.flapdoodle.embed.process.example.GenericPackageResolver;
 import de.flapdoodle.embed.process.extract.AbstractExtractor.ArchiveWrapper;
 import de.flapdoodle.embed.process.io.directories.IDirectory;
@@ -69,9 +69,11 @@ public class AbstractExtractorTest {
 		
 		IDirectory factory=new PlatformTempDir();
 		ITempNaming exeutableNaming=new UUIDTempNaming();
-		List<Entry> entries=new ArrayList<Entry>();
-		entries.add(new Entry(FileType.Executable, "foo-bar.exe", Pattern.compile(".")));
-		FileSet fileSet=new FileSet(entries);
+		
+		FileSet fileSet = FileSet.builder()
+			.addEntry(FileType.Executable, "foo-bar.exe", Pattern.compile("."))
+			.build();
+		
 		FilesToExtract filesToExtract=new FilesToExtract(factory, exeutableNaming, fileSet);
 		
 		new AbstractExtractor() {

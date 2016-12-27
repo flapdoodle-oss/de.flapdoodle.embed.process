@@ -35,31 +35,31 @@ public class Processors {
 		throw new IllegalAccessError("singleton");
 	}
 
-	public static IStreamProcessor console() {
+	public static StreamProcessor console() {
 		return new ConsoleOutputStreamProcessor();
 	}
 	
-	public static IStreamProcessor silent() {
+	public static StreamProcessor silent() {
 		return new NullProcessor();
 	}
 
-	public static IStreamProcessor named(String name, IStreamProcessor destination) {
+	public static StreamProcessor named(String name, StreamProcessor destination) {
 		return new NamedOutputStreamProcessor(name, destination);
 	}
 
-	public static IStreamProcessor namedConsole(String name) {
+	public static StreamProcessor namedConsole(String name) {
 		return named(name, console());
 	}
 
-	public static IStreamProcessor logTo(java.util.logging.Logger logger, Level level) {
+	public static StreamProcessor logTo(java.util.logging.Logger logger, Level level) {
 		return new LoggingOutputStreamProcessor(logger, level);
 	}
 
-	public static IStreamProcessor logTo(org.slf4j.Logger logger, Slf4jLevel level) {
+	public static StreamProcessor logTo(org.slf4j.Logger logger, Slf4jLevel level) {
 		return new Slf4jStreamProcessor(logger, level);
 	}
 
-	public static ReaderProcessor connect(Reader reader, IStreamProcessor processor) {
+	public static ReaderProcessor connect(Reader reader, StreamProcessor processor) {
 		return new ReaderProcessor(reader, processor);
 	}
 }

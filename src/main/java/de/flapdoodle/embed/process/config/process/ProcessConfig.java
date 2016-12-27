@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.flapdoodle.embed.process.io.IStreamProcessor;
+import de.flapdoodle.embed.process.io.StreamProcessor;
 
 /**
  *
@@ -35,16 +35,16 @@ import de.flapdoodle.embed.process.io.IStreamProcessor;
 public class ProcessConfig {
 
 	private final List<String> commandLine;
-	private final IStreamProcessor output;
-	private final IStreamProcessor error;
+	private final StreamProcessor output;
+	private final StreamProcessor error;
 
-	public ProcessConfig(List<String> commandLine, IStreamProcessor output, IStreamProcessor error) {
+	public ProcessConfig(List<String> commandLine, StreamProcessor output, StreamProcessor error) {
 		this.commandLine = new ArrayList<String>(commandLine);
 		this.output = output;
 		this.error = error;
 	}
 
-	public ProcessConfig(List<String> commandLine, IStreamProcessor output) {
+	public ProcessConfig(List<String> commandLine, StreamProcessor output) {
 		this(commandLine, output, null);
 	}
 
@@ -52,11 +52,11 @@ public class ProcessConfig {
 		return Collections.unmodifiableList(commandLine);
 	}
 
-	public IStreamProcessor getOutput() {
+	public StreamProcessor getOutput() {
 		return output;
 	}
 
-	public IStreamProcessor getError() {
+	public StreamProcessor getError() {
 		return error;
 	}
 }

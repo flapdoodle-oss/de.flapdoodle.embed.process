@@ -21,14 +21,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.io;
+package de.flapdoodle.embed.process.config.store;
 
+import java.util.regex.Pattern;
+
+import org.immutables.value.Value;
+import org.immutables.value.Value.Auxiliary;
 
 /**
- * Stream Processor interface
+ * @author michael mosmann with help of ->
+ * @author [[mailto:michael@ahlers.consulting Michael Ahlers]]
  */
-public interface IStreamProcessor {
-	void process(String block);
-
-	void onProcessed();
+@Value.Immutable
+public interface UncompiledPattern {
+	@Value.Parameter
+	String regex();
+	
+	@Value.Parameter
+	int flags();
+	
+	@Auxiliary
+	default Pattern compile() {
+		return Pattern.compile(regex(), flags());
+	}
+	
+	public static UncompiledPattern of(Pattern pattern) {
+		return ImmutableUncompiledPattern.of(pattern.pattern(), pattern.flags());
+	}
 }

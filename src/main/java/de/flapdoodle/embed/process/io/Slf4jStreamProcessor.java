@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.io;
 
 import org.slf4j.Logger;
 
-public class Slf4jStreamProcessor implements IStreamProcessor {
+public class Slf4jStreamProcessor implements StreamProcessor {
 
     private final Logger logger;
     private final Slf4jLevel level;

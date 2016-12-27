@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.io;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LogWatchStreamProcessor implements IStreamProcessor {
+public class LogWatchStreamProcessor implements StreamProcessor {
 
 	//private final Reader _reader;
 	private final StringBuilder output = new StringBuilder();
@@ -36,9 +36,9 @@ public class LogWatchStreamProcessor implements IStreamProcessor {
 	private boolean initWithSuccess = false;
 	private String failureFound = null;
 
-	private final IStreamProcessor destination;
+	private final StreamProcessor destination;
 
-	public LogWatchStreamProcessor(String success, Set<String> failures, IStreamProcessor destination) {
+	public LogWatchStreamProcessor(String success, Set<String> failures, StreamProcessor destination) {
 		this.success = success;
 		this.failures = new HashSet<String>(failures);
 		this.destination = destination;

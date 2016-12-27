@@ -26,14 +26,14 @@ package de.flapdoodle.embed.process.io;
 /**
  *
  */
-public class NamedOutputStreamProcessor implements IStreamProcessor {
+public class NamedOutputStreamProcessor implements StreamProcessor {
 
 
-	private final IStreamProcessor destination;
+	private final StreamProcessor destination;
 	private final String name;
 	boolean firstBlock=true;
 
-	public NamedOutputStreamProcessor(String name, IStreamProcessor destination) {
+	public NamedOutputStreamProcessor(String name, StreamProcessor destination) {
 		this.name = name;
 		this.destination = destination;
 	}

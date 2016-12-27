@@ -26,12 +26,12 @@ package de.flapdoodle.embed.process.io;
 /**
  *
  */
-public class StreamToLineProcessor implements IStreamProcessor {
+public class StreamToLineProcessor implements StreamProcessor {
 
-	private final IStreamProcessor destination;
+	private final StreamProcessor destination;
 	private StringBuilder buffer = new StringBuilder();
 
-	public StreamToLineProcessor(IStreamProcessor destination) {
+	public StreamToLineProcessor(StreamProcessor destination) {
 		this.destination = destination;
 	}
 
@@ -69,7 +69,7 @@ public class StreamToLineProcessor implements IStreamProcessor {
 		destination.onProcessed();
 	}
 
-	public static IStreamProcessor wrap(IStreamProcessor destination) {
+	public static StreamProcessor wrap(StreamProcessor destination) {
 		return new StreamToLineProcessor(destination);
 	}
 }

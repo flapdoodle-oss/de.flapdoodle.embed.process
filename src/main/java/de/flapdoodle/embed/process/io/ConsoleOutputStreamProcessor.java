@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.io;
 /**
  *
  */
-public class ConsoleOutputStreamProcessor implements IStreamProcessor {
+public class ConsoleOutputStreamProcessor implements StreamProcessor {
 
 	@Override
 	public void process(String block) {

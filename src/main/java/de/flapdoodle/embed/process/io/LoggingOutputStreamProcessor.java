@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.io;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LoggingOutputStreamProcessor implements IStreamProcessor {
+public class LoggingOutputStreamProcessor implements StreamProcessor {
 
 	private final Logger _logger;
 	private final Level _level;

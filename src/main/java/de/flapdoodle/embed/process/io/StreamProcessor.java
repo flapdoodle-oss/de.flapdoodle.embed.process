@@ -21,25 +21,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.store;
-
-import de.flapdoodle.embed.process.config.store.FileSet;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.junit.Test;
+package de.flapdoodle.embed.process.io;
 
 
 /**
- * @author [[mailto:michael@ahlers.consulting Michael Ahlers]]
+ * Stream Processor interface
  */
-public class FileSetTest {
+public interface StreamProcessor {
+	void process(String block);
 
-    @Test
-    public void equalsContract() {
-        EqualsVerifier
-                .forClass(FileSet.class)
-                .suppress(Warning.STRICT_INHERITANCE)
-                .verify();
-    }
-
+	void onProcessed();
 }

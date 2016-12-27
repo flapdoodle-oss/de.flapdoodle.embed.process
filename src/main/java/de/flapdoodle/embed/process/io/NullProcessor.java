@@ -31,7 +31,7 @@ package de.flapdoodle.embed.process.io;
  * @date 19.7.2012
  *
  */
-public class NullProcessor implements IStreamProcessor{
+public class NullProcessor implements StreamProcessor{
 	
 	@Override
 	public void process(String block) {

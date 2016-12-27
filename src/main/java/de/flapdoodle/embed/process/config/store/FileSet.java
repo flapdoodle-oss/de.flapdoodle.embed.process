@@ -23,101 +23,50 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class FileSet {
+import org.immutables.value.Value;
+import org.immutables.value.Value.Auxiliary;
+import org.immutables.value.Value.Check;
+import org.immutables.value.Value.Parameter;
 
-	private final List<Entry> _entries;
+@Value.Immutable
+public interface FileSet {
 
-	public FileSet(Collection<Entry> entries) {
-		if (entries==null) throw new NullPointerException("entries is NULL");
-		_entries = Collections.unmodifiableList(new ArrayList<Entry>(entries));
-		boolean oneOrMoreExecutableFound=false;
-		for (Entry e : _entries) {
-			if (e.type()==FileType.Executable) {
-				oneOrMoreExecutableFound=true;
-				break;
-			}
-		}
+	List<Entry> entries();
+	
+	@Check
+	default void shouldContainOneMoreExecutable() {
+		boolean oneOrMoreExecutableFound = entries().stream().anyMatch(e -> e.type()==FileType.Executable);
 		if (!oneOrMoreExecutableFound) {
 			throw new IllegalArgumentException("there is no executable in this file set");
 		}
 	}
+	
+	@Value.Immutable
+	public abstract class Entry {
+		@Parameter
+		public abstract FileType type();
 
+		@Parameter
+		public abstract String destination();
 
-	public List<Entry> entries() {
-		return Collections.unmodifiableList(_entries);
-	}
-
-	public static class Entry {
-
-		private final FileType _type;
-		private final String _destination;
-		private final Pattern _matchingPattern;
-
-		public Entry(FileType type, String destination, Pattern matchingPattern) {
-			_type = type;
-			_destination = destination;
-			_matchingPattern = matchingPattern;
-		}
-
-		public FileType type() {
-			return _type;
-		}
-
-		public String destination() {
-			return _destination;
-		}
-
+		@Parameter
+		protected abstract UncompiledPattern uncompiledMatchingPattern();
+		
+		@Auxiliary
 		public Pattern matchingPattern() {
-			return _matchingPattern;
-		}
+			return uncompiledMatchingPattern().compile();
+		};
 
-		@Override
-		public boolean equals(Object other) {
-			if (this == other) {
-				return true;
-			}
-
-			if (other == null) { // || getClass() != other.getClass()) {
-				return false;
-			}
-
-			/* Preferable to checking class instance equality guard. See #43. */
-			if (!(other instanceof FileSet.Entry)) {
-				return false;
-			}
-
-			Entry entry = (Entry) other;
-
-			/* Because Pattern doesn't implement equals, use its underlying expression (String) for equality. See #43. */
-			return _type == entry._type
-				&& !(_destination != null ? !_destination.equals(entry._destination) : entry._destination != null)
-				&& !(_matchingPattern != null ? !_matchingPattern.pattern().equals(null == entry._matchingPattern ? null : entry._matchingPattern.pattern()) : entry._matchingPattern != null);
-		}
-
-		@Override
-		public int hashCode() {
-			int result = _type != null ? _type.hashCode() : 0;
-			result = 31 * result + (_destination != null ? _destination.hashCode() : 0);
-			/* Because Pattern doesn't implement hashCode, use its underlying expression (String) for equality. See #43. */
-			result = 31 * result + (_matchingPattern != null ? _matchingPattern.pattern().hashCode() : 0);
-			return result;
+		static Entry of(FileType type, String filename, Pattern pattern) {
+			return ImmutableEntry.of(type,filename, UncompiledPattern.of(pattern));
 		}
 	}
-
-	public static Builder builder() {
-		return new Builder();
-	}
-
-	public static class Builder {
-
-		private final List<Entry> _entries=new ArrayList<FileSet.Entry>();
-
+	
+	class Builder extends ImmutableFileSet.Builder {
+		
 		public Builder addEntry(FileType type, String filename) {
 			return addEntry(type,filename,".*"+filename);
 		}
@@ -127,39 +76,12 @@ public class FileSet {
 		}
 
 		public Builder addEntry(FileType type, String filename, Pattern pattern) {
-			_entries.add(new Entry(type,filename,pattern));
-			return this;
+			return addEntries(Entry.of(type,filename, pattern));
 		}
 
-		public FileSet build() {
-			return new FileSet(_entries);
-		}
 	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-
-		if (other == null) {
-			return false;
-		}
-
-		if (!(other instanceof FileSet)) {
-			return false;
-		}
-
-		FileSet files = (FileSet) other;
-
-		return !(_entries != null ? !_entries.equals(files._entries) : files._entries != null);
+	
+	static Builder builder() {
+		return new Builder();
 	}
-
-	@Override
-	public int hashCode() {
-		int result = 0;
-		result = 31 * result + (_entries != null ? _entries.hashCode() : 0);
-		return result;
-	}
-
 }

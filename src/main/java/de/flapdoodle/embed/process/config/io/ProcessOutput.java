@@ -25,33 +25,33 @@ package de.flapdoodle.embed.process.config.io;
 
 import java.util.logging.Level;
 
-import de.flapdoodle.embed.process.io.IStreamProcessor;
+import de.flapdoodle.embed.process.io.StreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.Slf4jLevel;
 
 
 public class ProcessOutput {
 
-	protected final IStreamProcessor output;
-	protected final IStreamProcessor error;
-	protected final IStreamProcessor commands;
+	protected final StreamProcessor output;
+	protected final StreamProcessor error;
+	protected final StreamProcessor commands;
 
-	public ProcessOutput(IStreamProcessor output, IStreamProcessor error,
-			IStreamProcessor commands) {
+	public ProcessOutput(StreamProcessor output, StreamProcessor error,
+			StreamProcessor commands) {
 		this.output = output;
 		this.error = error;
 		this.commands = commands;
 	}
 	
-	public IStreamProcessor getOutput() {
+	public StreamProcessor getOutput() {
 		return output;
 	}
 
-	public IStreamProcessor getError() {
+	public StreamProcessor getError() {
 		return error;
 	}
 
-	public IStreamProcessor getCommands() {
+	public StreamProcessor getCommands() {
 		return commands;
 	}
 

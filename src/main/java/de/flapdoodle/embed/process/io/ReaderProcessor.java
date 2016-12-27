@@ -33,9 +33,9 @@ public class ReaderProcessor extends Thread {
 
 	public static final int CHAR_BUFFER_LENGTH = 512;
 	private final Reader reader;
-	private final IStreamProcessor streamProcessor;
+	private final StreamProcessor streamProcessor;
 
-	protected ReaderProcessor(Reader reader, IStreamProcessor streamProcessor) {
+	protected ReaderProcessor(Reader reader, StreamProcessor streamProcessor) {
 		this.reader = reader;
 		this.streamProcessor = streamProcessor;
 
