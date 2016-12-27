@@ -23,25 +23,25 @@
  */
 package de.flapdoodle.embed.process.config;
 
-import de.flapdoodle.embed.process.distribution.IVersion;
+import de.flapdoodle.embed.process.distribution.Version;
 
 public class ExecutableProcessConfig implements IExecutableProcessConfig {
 
-	protected final IVersion version;
-	private final ISupportConfig _supportConfig;
+	protected final Version version;
+	private final SupportConfig _supportConfig;
 
-	public ExecutableProcessConfig(IVersion version, ISupportConfig supportConfig) {
+	public ExecutableProcessConfig(Version version, SupportConfig supportConfig) {
 		this.version = version;
 		_supportConfig = supportConfig;
 	}
 
 	@Override
-	public IVersion version() {
+	public Version version() {
 		return version;
 	}
 
 	@Override
-	public ISupportConfig supportConfig() {
+	public SupportConfig supportConfig() {
 		return _supportConfig;
 	}
 }

@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.io.progress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LoggingProgressListener implements IProgressListener {
+public class LoggingProgressListener implements ProgressListener {
 
 	private final Logger _logger;
 	private final Level _level;

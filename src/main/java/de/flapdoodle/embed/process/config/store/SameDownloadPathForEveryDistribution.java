@@ -21,18 +21,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.io.progress;
+package de.flapdoodle.embed.process.config.store;
 
-/**
- * Progress listener interface
- */
-public interface IProgressListener {
+import de.flapdoodle.embed.process.distribution.Distribution;
 
-	void progress(String label, int percent);
+public class SameDownloadPathForEveryDistribution implements DistributionDownloadPath {
 
-	void done(String label);
+	private final String _path;
 
-	void start(String label);
+	public SameDownloadPathForEveryDistribution(String path) {
+		_path = path;
+	}
 
-	void info(String label, String message);
+	@Override
+	public String getPath(Distribution distribution) {
+		return _path;
+	}
+
 }

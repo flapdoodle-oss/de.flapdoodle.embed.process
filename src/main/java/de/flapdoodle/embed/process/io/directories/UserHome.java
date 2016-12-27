@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 /**
  *
  */
-public class UserHome implements IDirectory {
+public class UserHome implements Directory {
 	private final String postFix;
 
 	public UserHome(String postFix) {

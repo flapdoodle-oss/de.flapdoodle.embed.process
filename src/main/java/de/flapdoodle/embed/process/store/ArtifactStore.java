@@ -29,8 +29,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.config.store.IPackageResolver;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSets;
 import de.flapdoodle.embed.process.extract.Extractors;
@@ -38,25 +38,25 @@ import de.flapdoodle.embed.process.extract.FilesToExtract;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.IExtractor;
 import de.flapdoodle.embed.process.extract.ITempNaming;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 
 
 public class ArtifactStore implements IArtifactStore {
 	private static Logger logger = LoggerFactory.getLogger(ArtifactStore.class);
 
-	private final IDownloadConfig _downloadConfig;
-	private final IDirectory _tempDirFactory;
+	private final DownloadConfig _downloadConfig;
+	private final Directory _tempDirFactory;
 	private final ITempNaming _executableNaming;
 	private final IDownloader _downloader;
 	
-	public ArtifactStore(IDownloadConfig downloadConfig,IDirectory tempDirFactory,ITempNaming executableNaming,IDownloader downloader) {
+	public ArtifactStore(DownloadConfig downloadConfig,Directory tempDirFactory,ITempNaming executableNaming,IDownloader downloader) {
 		_downloadConfig=downloadConfig;
 		_tempDirFactory = tempDirFactory;
 		_executableNaming = executableNaming;
 		_downloader = downloader;
 	}
 	
-	public ArtifactStore with(IDirectory tempDirFactory,ITempNaming executableNaming) {
+	public ArtifactStore with(Directory tempDirFactory,ITempNaming executableNaming) {
 		return new ArtifactStore(_downloadConfig, tempDirFactory, executableNaming, _downloader);
 	}
 	
@@ -70,7 +70,7 @@ public class ArtifactStore implements IArtifactStore {
 
 	@Override
 	public IExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
-		IPackageResolver packageResolver = _downloadConfig.getPackageResolver();
+		PackageResolver packageResolver = _downloadConfig.getPackageResolver();
 		FilesToExtract toExtract = filesToExtract(distribution);
 		
 		IExtractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));

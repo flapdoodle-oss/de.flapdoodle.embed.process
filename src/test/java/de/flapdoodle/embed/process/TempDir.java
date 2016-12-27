@@ -28,9 +28,9 @@ import java.io.IOException;
 
 import org.junit.rules.TemporaryFolder;
 
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 
-public class TempDir implements IDirectory {
+public class TempDir implements Directory {
 
     final File f;
 

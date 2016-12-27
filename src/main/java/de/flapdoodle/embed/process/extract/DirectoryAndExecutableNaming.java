@@ -23,19 +23,19 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 
 public class DirectoryAndExecutableNaming {
 
-	private final IDirectory directory;
+	private final Directory directory;
 	private final ITempNaming executableNaming;
 
-	public DirectoryAndExecutableNaming(IDirectory directory, ITempNaming executableNaming) {
+	public DirectoryAndExecutableNaming(Directory directory, ITempNaming executableNaming) {
 		this.directory = directory;
 		this.executableNaming = executableNaming;
 	}
 	
-	public IDirectory getDirectory() {
+	public Directory getDirectory() {
 		return directory;
 	}
 	

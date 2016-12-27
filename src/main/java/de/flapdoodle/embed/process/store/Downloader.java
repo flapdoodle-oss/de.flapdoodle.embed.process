@@ -33,13 +33,14 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Optional;
 
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.config.store.ITimeoutConfig;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.store.TimeoutConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 import de.flapdoodle.embed.process.io.file.Files;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
 /**
  * Class for downloading runtime
@@ -50,14 +51,14 @@ public class Downloader implements IDownloader {
 	static final int BUFFER_LENGTH = 1024 * 8 * 8;
 	static final int READ_COUNT_MULTIPLIER = 100;
 
-	public String getDownloadUrl(IDownloadConfig runtime, Distribution distribution) {
+	public String getDownloadUrl(DownloadConfig runtime, Distribution distribution) {
 		return runtime.getDownloadPath().getPath(distribution) + runtime.getPackageResolver().getPath(distribution);
 	}
 
-	public File download(IDownloadConfig downloadConfig, Distribution distribution) throws IOException {
+	public File download(DownloadConfig downloadConfig, Distribution distribution) throws IOException {
 
 		String progressLabel = "Download " + distribution;
-		IProgressListener progress = downloadConfig.getProgressListener();
+		ProgressListener progress = downloadConfig.getProgressListener();
 		progress.start(progressLabel);
 
 		File ret = Files.createTempFile(PropertyOrPlatformTempDir.defaultInstance(), downloadConfig.getFileNaming()
@@ -104,22 +105,22 @@ public class Downloader implements IDownloader {
 		return ret;
 	}
 
-	private InputStreamAndLength downloadInputStream(IDownloadConfig downloadConfig, Distribution distribution)
+	private InputStreamAndLength downloadInputStream(DownloadConfig downloadConfig, Distribution distribution)
 			throws MalformedURLException, IOException {
 		URL url = new URL(getDownloadUrl(downloadConfig, distribution));
 		
-		Proxy proxy = downloadConfig.proxyFactory().createProxy();
+		Optional<Proxy> proxy = downloadConfig.proxyFactory().map(f -> f.createProxy());
 		
 		try {
 			URLConnection openConnection;
-			if (proxy!=null) {
-				openConnection = url.openConnection(proxy);
+			if (proxy.isPresent()) {
+				openConnection = url.openConnection(proxy.get());
 			} else {
 				openConnection = url.openConnection();
 			}
 			openConnection.setRequestProperty("User-Agent",downloadConfig.getUserAgent());
 			
-			ITimeoutConfig timeoutConfig = downloadConfig.getTimeoutConfig();
+			TimeoutConfig timeoutConfig = downloadConfig.getTimeoutConfig();
 			
 			openConnection.setConnectTimeout(timeoutConfig.getConnectionTimeout());
 			openConnection.setReadTimeout(downloadConfig.getTimeoutConfig().getReadTimeout());

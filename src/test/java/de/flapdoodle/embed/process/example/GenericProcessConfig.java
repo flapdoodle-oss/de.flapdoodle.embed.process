@@ -24,11 +24,12 @@
 package de.flapdoodle.embed.process.example;
 
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
-import de.flapdoodle.embed.process.distribution.IVersion;
+import de.flapdoodle.embed.process.config.SupportConfig;
+import de.flapdoodle.embed.process.distribution.Version;
 
 public class GenericProcessConfig extends ExecutableProcessConfig {
 
-	public GenericProcessConfig(IVersion version) {
-		super(version,new GenericSupportConfig());
+	public GenericProcessConfig(Version version) {
+		super(version,SupportConfig.generic());
 	}
 }

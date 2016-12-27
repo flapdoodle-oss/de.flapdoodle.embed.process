@@ -32,9 +32,9 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
 public abstract class AbstractExtractor implements IExtractor {
 	
@@ -55,11 +55,11 @@ public abstract class AbstractExtractor implements IExtractor {
 	}
 
 	@Override
-	public IExtractedFileSet extract(IDownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
+	public IExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
 		Builder builder = ImmutableExtractedFileSet.builder(toExtract.baseDir())
 				.baseDirIsGenerated(toExtract.baseDirIsGenerated());
 
-		IProgressListener progressListener = runtime.getProgressListener();
+		ProgressListener progressListener = runtime.getProgressListener();
 		String progressLabel = "Extract " + source;
 		progressListener.start(progressLabel);
 

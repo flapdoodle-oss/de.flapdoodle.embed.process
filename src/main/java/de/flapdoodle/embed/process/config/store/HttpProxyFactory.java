@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.config.store;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
-public class HttpProxyFactory implements IProxyFactory {
+public class HttpProxyFactory implements ProxyFactory {
 
 	private final String _hostName;
 	private final int _port;

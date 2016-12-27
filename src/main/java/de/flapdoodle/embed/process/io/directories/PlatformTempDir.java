@@ -27,7 +27,7 @@ import java.io.File;
 
 
 
-public class PlatformTempDir implements IDirectory {
+public class PlatformTempDir implements Directory {
 
 	@Override
 	public File asFile() {

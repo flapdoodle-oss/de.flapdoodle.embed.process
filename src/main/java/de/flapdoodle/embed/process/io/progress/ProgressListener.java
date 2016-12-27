@@ -21,12 +21,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.distribution;
+package de.flapdoodle.embed.process.io.progress;
 
 /**
- * Interface for versions
+ * Progress listener interface
  */
-public interface IVersion {
+public interface ProgressListener {
 
-	String asInDownloadPath();
+	void progress(String label, int percent);
+
+	void done(String label);
+
+	void start(String label);
+
+	void info(String label, String message);
 }

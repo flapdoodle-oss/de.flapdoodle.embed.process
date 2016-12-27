@@ -21,13 +21,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config;
+package de.flapdoodle.embed.process.config.store;
 
-public interface ISupportConfig {
+import java.util.List;
 
-	String getName();
+import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.distribution.Platform;
 
-	String getSupportUrl();
+@FunctionalInterface
+public interface LibraryStore {
 
-	String messageOnException(Class<?> context, Exception exception);
+	List<String> getLibrary(Distribution distribution);
 }

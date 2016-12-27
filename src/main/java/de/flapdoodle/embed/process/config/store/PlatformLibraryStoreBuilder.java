@@ -34,7 +34,7 @@ import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Platform;
 
-public class PlatformLibraryStoreBuilder extends AbstractBuilder<ILibraryStore> {
+public class PlatformLibraryStoreBuilder extends AbstractBuilder<LibraryStore> {
 
 	private static final TypedProperty<LibraryContainer> LIBRARIES = TypedProperty
 			.with("Libraries", LibraryContainer.class);
@@ -69,7 +69,7 @@ public class PlatformLibraryStoreBuilder extends AbstractBuilder<ILibraryStore> 
 	}
 
 	@Override
-	public ILibraryStore build() {
+	public LibraryStore build() {
 		Map<Platform, List<String>> value = get(LIBRARIES).value();
 		return new ImmutableLibraryStore(value);
 	}
@@ -82,7 +82,7 @@ public class PlatformLibraryStoreBuilder extends AbstractBuilder<ILibraryStore> 
 		}
 	}
 
-	static class ImmutableLibraryStore implements ILibraryStore {
+	static class ImmutableLibraryStore implements LibraryStore {
 
 		private final Map<Platform, List<String>> _libraries;
 
@@ -92,7 +92,7 @@ public class PlatformLibraryStoreBuilder extends AbstractBuilder<ILibraryStore> 
 
 		@Override
 		public List<String> getLibrary(Distribution distribution) {
-			return _libraries.get(distribution.getPlatform());
+			return _libraries.get(distribution.platform());
 		}
 
 	}

@@ -23,11 +23,10 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
+import de.flapdoodle.embed.process.distribution.Distribution;
 
-public interface ITimeoutConfig {
-	
-	int getConnectionTimeout();
-	
-	int getReadTimeout();
 
+@FunctionalInterface
+public interface DistributionDownloadPath {
+	String getPath(Distribution distribution);
 }

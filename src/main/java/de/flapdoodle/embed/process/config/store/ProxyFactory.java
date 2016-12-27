@@ -21,13 +21,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.io.directories;
+package de.flapdoodle.embed.process.config.store;
 
-import java.io.File;
+import java.net.Proxy;
 
-public interface IDirectory {
 
-	File asFile();
+public interface ProxyFactory {
 
-	boolean isGenerated();
+	Proxy createProxy();
 }

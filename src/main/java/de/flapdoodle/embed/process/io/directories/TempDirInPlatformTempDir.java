@@ -30,7 +30,7 @@ import de.flapdoodle.embed.process.io.file.Files;
 
 
 
-public class TempDirInPlatformTempDir implements IDirectory {
+public class TempDirInPlatformTempDir implements Directory {
 
 	@Override
 	public File asFile() {

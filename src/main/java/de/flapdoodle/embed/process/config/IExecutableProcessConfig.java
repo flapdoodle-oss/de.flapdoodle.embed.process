@@ -23,13 +23,13 @@
  */
 package de.flapdoodle.embed.process.config;
 
-import de.flapdoodle.embed.process.distribution.IVersion;
+import de.flapdoodle.embed.process.distribution.Version;
 
 
 public interface IExecutableProcessConfig {
 
-	IVersion version();
+	Version version();
 
-	ISupportConfig supportConfig();
+	SupportConfig supportConfig();
 
 }

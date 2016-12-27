@@ -21,31 +21,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.io.directories;
 
-import de.flapdoodle.embed.process.extract.ITempNaming;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
+import java.io.File;
 
+public interface Directory {
 
-public interface IDownloadConfig {
-	
-	IDownloadPath getDownloadPath();
-	
-	IProgressListener getProgressListener();
+	File asFile();
 
-	IDirectory getArtifactStorePath();
-	
-	ITempNaming getFileNaming();
-
-	String getDownloadPrefix();
-
-	String getUserAgent();
-
-	IPackageResolver getPackageResolver();
-
-	ITimeoutConfig getTimeoutConfig();
-	
-	IProxyFactory proxyFactory();
-
+	boolean isGenerated();
 }

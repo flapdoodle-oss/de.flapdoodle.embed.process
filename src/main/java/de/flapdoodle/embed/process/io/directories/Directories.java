@@ -33,8 +33,8 @@ public abstract class Directories {
 		// no instance
 	}
 	
-	public static IDirectory join(final IDirectory left, final IDirectory right) {
-		return new IDirectory() {
+	public static Directory join(final Directory left, final Directory right) {
+		return new Directory() {
 			
 			@Override
 			public boolean isGenerated() {

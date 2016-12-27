@@ -23,12 +23,34 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
-import java.util.List;
+import java.util.Optional;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.distribution.Platform;
+import org.immutables.value.Value;
 
-public interface ILibraryStore {
+import de.flapdoodle.embed.process.extract.ITempNaming;
+import de.flapdoodle.embed.process.io.directories.Directory;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
-	List<String> getLibrary(Distribution distribution);
+
+@Value.Immutable
+public interface DownloadConfig {
+	
+	DistributionDownloadPath getDownloadPath();
+	
+	ProgressListener getProgressListener();
+
+	Directory getArtifactStorePath();
+	
+	ITempNaming getFileNaming();
+
+	String getDownloadPrefix();
+
+	String getUserAgent();
+
+	PackageResolver getPackageResolver();
+
+	TimeoutConfig getTimeoutConfig();
+	
+	Optional<ProxyFactory> proxyFactory();
+
 }

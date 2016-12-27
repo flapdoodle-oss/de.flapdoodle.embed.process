@@ -35,7 +35,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 
 /**
@@ -56,7 +56,7 @@ public class Files {
 				tempFileName);
 	}
 
-	public static File createTempFile(IDirectory directory, String tempFileName)
+	public static File createTempFile(Directory directory, String tempFileName)
 			throws IOException {
 		File tempDir = directory.asFile();
 		return createTempFile(tempDir, tempFileName);
@@ -93,7 +93,7 @@ public class Files {
 				prefix);
 	}
 
-	public static File createTempDir(IDirectory directory, String prefix)
+	public static File createTempDir(Directory directory, String prefix)
 			throws IOException {
 		File tempDir = directory.asFile();
 		return createTempDir(tempDir, prefix);

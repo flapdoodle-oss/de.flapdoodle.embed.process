@@ -38,7 +38,7 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.config.ISupportConfig;
+import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.io.Processors;
 
@@ -54,9 +54,9 @@ public class ProcessControl {
 
 	private final Long pid;
 
-	private final ISupportConfig runtime;
+	private final SupportConfig runtime;
 
-	public ProcessControl(ISupportConfig runtime, Process process) {
+	public ProcessControl(SupportConfig runtime, Process process) {
 		this.process = process;
 		this.runtime = runtime;
 		reader = new InputStreamReader(this.process.getInputStream());
@@ -184,24 +184,24 @@ public class ProcessControl {
 		if (retCode==null) {
 //			timer.cancel();
 			String message = "\n\n" + "----------------------------------------------------\n"
-					+ "Something bad happend. We couldn't kill "+runtime.getName()+" process, and tried a lot.\n"
+					+ "Something bad happend. We couldn't kill "+runtime.name()+" process, and tried a lot.\n"
 					+ "If you want this problem solved you can help us if you open a new issue.\n" + "\n"
-					+ "Follow this link:\n" + runtime.getSupportUrl() +
+					+ "Follow this link:\n" + runtime.supportUrl() +
 					"\n"
 					+ "Thank you:)\n" + "----------------------------------------------------\n\n";
-			throw new IllegalStateException("Couldn't kill "+runtime.getName()+" process!" + message);
+			throw new IllegalStateException("Couldn't kill "+runtime.name()+" process!" + message);
 		}
 		return retCode;
 	}
 
 	//CHECKSTYLE:ON
-	public static ProcessControl fromCommandLine(ISupportConfig runtime, List<String> commandLine, boolean redirectErrorStream)
+	public static ProcessControl fromCommandLine(SupportConfig runtime, List<String> commandLine, boolean redirectErrorStream)
 			throws IOException {
 		ProcessBuilder processBuilder = newProcessBuilder(commandLine, redirectErrorStream);
 		return start(runtime, processBuilder);
 	}
 
-	public static ProcessControl start(ISupportConfig runtime, ProcessBuilder processBuilder) throws IOException {
+	public static ProcessControl start(SupportConfig runtime, ProcessBuilder processBuilder) throws IOException {
 		return new ProcessControl(runtime, processBuilder.start());
 	}
 
@@ -219,7 +219,7 @@ public class ProcessControl {
 		return processBuilder;
 	}
 
-	public static boolean executeCommandLine(ISupportConfig support, String label, ProcessConfig processConfig) {
+	public static boolean executeCommandLine(SupportConfig support, String label, ProcessConfig processConfig) {
 		boolean ret = false;
 
 		List<String> commandLine = processConfig.getCommandLine();

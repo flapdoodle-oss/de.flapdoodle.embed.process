@@ -39,18 +39,18 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import de.flapdoodle.embed.process.TempDir;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.DownloadConfigBuilder;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
-import de.flapdoodle.embed.process.config.store.IPackageResolver;
+import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.distribution.GenericVersion;
+import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.NoopTempNaming;
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.directories.TempDirInPlatformTempDir;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 
@@ -62,10 +62,10 @@ public class ExtractedArtifactStoreTest {
     
 	@Test
 	public void askingForArtifactShouldExtractAndKeepFiles() throws IOException {
-		Distribution distribution = Distribution.detectFor(new GenericVersion("1.0.37"));
+		Distribution distribution = Distribution.detectFor(Version.of("1.0.37"));
 		
-		IDirectory artifactDir=new TempDir(tempFolder);
-		IDirectory extractedArtifactDir=new TempDir(tempFolder);
+		Directory artifactDir=new TempDir(tempFolder);
+		Directory extractedArtifactDir=new TempDir(tempFolder);
 		
 		File source = new File(this.getClass().getResource("/mocks/mocked-artifact.zip").getPath());
 		Path copiedFile = Files.copy(source.toPath(), artifactDir.asFile().toPath().resolve(artefactName(distribution)), StandardCopyOption.REPLACE_EXISTING);
@@ -116,20 +116,20 @@ public class ExtractedArtifactStoreTest {
 		return new IDownloader() {
 			
 			@Override
-			public String getDownloadUrl(IDownloadConfig runtime,
+			public String getDownloadUrl(DownloadConfig runtime,
 					Distribution distribution) {
 				throw new RuntimeException("should not be called ("+distribution+")");
 			}
 			
 			@Override
-			public File download(IDownloadConfig runtime, Distribution distribution)
+			public File download(DownloadConfig runtime, Distribution distribution)
 					throws IOException {
 				throw new RuntimeException("should not be called ("+distribution+")");
 			}
 		};
 	}
 
-	private IDownloadConfig downloadConfig(IDirectory artifactDir) {
+	private DownloadConfig downloadConfig(Directory artifactDir) {
 		return new DownloadConfigBuilder()
 			.downloadPrefix("prefix")
 			.downloadPath("foo")
@@ -141,8 +141,8 @@ public class ExtractedArtifactStoreTest {
 			.build();
 	}
 
-	private IPackageResolver packageResolver() {
-		return new IPackageResolver() {
+	private PackageResolver packageResolver() {
+		return new PackageResolver() {
 			
 			@Override
 			public String getPath(Distribution distribution) {

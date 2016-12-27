@@ -28,18 +28,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.io.progress.IProgressListener;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
 public class ArchiveIsFileExtractor implements IExtractor {
 
 	@Override
-	public IExtractedFileSet extract(IDownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
+	public IExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
 		Builder builder = ImmutableExtractedFileSet.builder(toExtract.baseDir())
 				.baseDirIsGenerated(toExtract.baseDirIsGenerated());
 
-		IProgressListener progressListener = runtime.getProgressListener();
+		ProgressListener progressListener = runtime.getProgressListener();
 		String progressLabel = "Extract (not really) " + source;
 		progressListener.start(progressLabel);
 

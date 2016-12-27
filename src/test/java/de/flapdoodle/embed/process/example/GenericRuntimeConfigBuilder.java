@@ -34,7 +34,7 @@ import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.config.store.DownloadConfigBuilder;
 import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.IPackageResolver;
+import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
@@ -48,7 +48,7 @@ import de.flapdoodle.embed.process.store.Downloader;
 
 public class GenericRuntimeConfigBuilder extends AbstractBuilder<RuntimeConfig> {
 
-	private static final TypedProperty<IPackageResolver> PACKAGE_RESOLVER = TypedProperty.with("PackageResolver",IPackageResolver.class);
+	private static final TypedProperty<PackageResolver> PACKAGE_RESOLVER = TypedProperty.with("PackageResolver",PackageResolver.class);
 	private static final TypedProperty<DownloadPath> DOWNLOAD_PATH = TypedProperty.with(DownloadPath.class);
 	private static final TypedProperty<Name> NAME = TypedProperty.with(Name.class);
 
@@ -90,7 +90,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<RuntimeConfig> 
 		String downloadPath = get(DOWNLOAD_PATH).value();
 		String name = get(NAME).value();
 		
-		IPackageResolver packageResolver=get(PACKAGE_RESOLVER);
+		PackageResolver packageResolver=get(PACKAGE_RESOLVER);
 		String prefix = "."+name;
 		
 		return RuntimeConfig.builder()
@@ -111,7 +111,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<RuntimeConfig> 
 			.commandLinePostProcessor(new CommandLinePostProcessor.Noop()).build();
 	}
 	
-	public static class GenericPackageResolverBuilder extends AbstractEmbeddedBuilder<IPackageResolver> {
+	public static class GenericPackageResolverBuilder extends AbstractEmbeddedBuilder<PackageResolver> {
 		
 		private static final TypedProperty<ArchivePathMap> ARCHIVEPATH_MAP = TypedProperty.with("ArchivePath",ArchivePathMap.class);
 		private static final TypedProperty<ArchiveTypeMap> ARCHIVETYPE_MAP = TypedProperty.with("ArchiveType",ArchiveTypeMap.class);
@@ -185,7 +185,7 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<RuntimeConfig> 
 		}
 	}
 	
-	static class MapGenericPackageResolver implements IPackageResolver {
+	static class MapGenericPackageResolver implements PackageResolver {
 
 		private final Map<Distribution, FileSet> _fileSets;
 		

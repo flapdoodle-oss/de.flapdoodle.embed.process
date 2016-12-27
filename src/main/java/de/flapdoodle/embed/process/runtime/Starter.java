@@ -24,6 +24,7 @@
 package de.flapdoodle.embed.process.runtime;
 
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 				throw new DistributionException("could not find Distribution",distribution);
 			}
 		} catch (IOException iox) {
-			String messageOnException = config.supportConfig().messageOnException(getClass(), iox);
+			String messageOnException = config.supportConfig().messageOnException().apply(getClass(), iox);
 			if (messageOnException==null) {
 				messageOnException="prepare executable";
 			}

@@ -40,7 +40,7 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
 
 import de.flapdoodle.embed.process.collections.Collections;
-import de.flapdoodle.embed.process.config.ISupportConfig;
+import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.StreamProcessor;
@@ -123,7 +123,7 @@ public abstract class Processes {
 		return null;
 	}
 
-	public static boolean killProcess(ISupportConfig support,Platform platform, StreamProcessor output, long pid) {
+	public static boolean killProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
 		if (platform.isUnixLike()) {
 			return ProcessControl.executeCommandLine(support, "[kill process]",
 					new ProcessConfig(Collections.newArrayList("kill", "-2", "" + pid), output));
@@ -131,7 +131,7 @@ public abstract class Processes {
 		return false;
 	}
 
-	public static boolean termProcess(ISupportConfig support,Platform platform, StreamProcessor output, long pid) {
+	public static boolean termProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
 	    if (platform.isUnixLike()) {
 		return ProcessControl.executeCommandLine(support, "[term process]",
 			new ProcessConfig(Collections.newArrayList("kill", "" + pid), output));
@@ -139,7 +139,7 @@ public abstract class Processes {
 	    return false;
 	}
 
-	public static boolean tryKillProcess(ISupportConfig support,Platform platform, StreamProcessor output, long pid) {
+	public static boolean tryKillProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
 		if (platform == Platform.Windows) {
 			return ProcessControl.executeCommandLine(support, "[taskkill process]",
 					new ProcessConfig(Collections.newArrayList("taskkill", "/F", "/pid", "" + pid), output));

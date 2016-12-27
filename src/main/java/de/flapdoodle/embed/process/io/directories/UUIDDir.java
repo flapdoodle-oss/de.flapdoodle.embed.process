@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  *
  */
-public class UUIDDir implements IDirectory {
+public class UUIDDir implements Directory {
 
 	@Override
 	public File asFile() {

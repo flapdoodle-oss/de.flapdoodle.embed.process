@@ -25,19 +25,19 @@ package de.flapdoodle.embed.process.store;
 
 import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.TypedProperty;
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.extract.DirectoryAndExecutableNaming;
 import de.flapdoodle.embed.process.extract.ITempNaming;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 
 
 public class ExtractedArtifactStoreBuilder extends ArtifactStoreBuilder {
 	
-	protected static final TypedProperty<IDirectory> EXTRACT_DIR_FACTORY = TypedProperty.with("ExtractDir",IDirectory.class);
+	protected static final TypedProperty<Directory> EXTRACT_DIR_FACTORY = TypedProperty.with("ExtractDir",Directory.class);
 	protected static final TypedProperty<ITempNaming> EXTRACT_EXECUTABLE_NAMING = TypedProperty.with("ExtractExecutableNaming",ITempNaming.class);
 
 	@Override
-	public ExtractedArtifactStoreBuilder tempDir(IDirectory tempDirFactory) {
+	public ExtractedArtifactStoreBuilder tempDir(Directory tempDirFactory) {
 		super.tempDir(tempDirFactory);
 		return this;
 	}
@@ -49,7 +49,7 @@ public class ExtractedArtifactStoreBuilder extends ArtifactStoreBuilder {
 	}
 	
 	@Override
-	public ExtractedArtifactStoreBuilder download(IDownloadConfig downloadConfig) {
+	public ExtractedArtifactStoreBuilder download(DownloadConfig downloadConfig) {
 		super.download(downloadConfig);
 		return this;
 	}
@@ -71,12 +71,12 @@ public class ExtractedArtifactStoreBuilder extends ArtifactStoreBuilder {
 		return this;
 	}
 	
-	public ExtractedArtifactStoreBuilder extractDir(IDirectory tempDirFactory) {
+	public ExtractedArtifactStoreBuilder extractDir(Directory tempDirFactory) {
 		set(EXTRACT_DIR_FACTORY, tempDirFactory);
 		return this;
 	}
 	
-	protected IProperty<IDirectory> extractDir() {
+	protected IProperty<Directory> extractDir() {
 		return property(EXTRACT_DIR_FACTORY);
 	}
 	

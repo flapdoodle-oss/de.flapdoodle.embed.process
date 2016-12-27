@@ -33,7 +33,7 @@ import java.util.List;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.FileSet.Entry;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
 import de.flapdoodle.embed.process.io.file.Files;
 
@@ -44,7 +44,7 @@ public class FilesToExtract {
 	private final File _dirFactoryResult;
 	private final boolean _dirFactoryResultIsGenerated;
 
-	public FilesToExtract(IDirectory dirFactory, ITempNaming executableNaming, FileSet fileSet) {
+	public FilesToExtract(Directory dirFactory, ITempNaming executableNaming, FileSet fileSet) {
 		if (dirFactory==null) throw new NullPointerException("dirFactory is NULL");
 		if (executableNaming==null) throw new NullPointerException("executableNaming is NULL");
 		if (fileSet==null) throw new NullPointerException("fileSet is NULL");

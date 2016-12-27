@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.IPackageResolver;
+import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 
@@ -39,14 +39,14 @@ import de.flapdoodle.embed.process.distribution.Distribution;
  *
  */
 @Deprecated
-public class GenericPackageResolver implements IPackageResolver {
+public class GenericPackageResolver implements PackageResolver {
 
 	public Pattern executeablePattern(Distribution distribution) {
 		return Pattern.compile(".*"+executableFilename(distribution));
 	}
 
 	public String executableFilename(Distribution distribution) {
-		switch (distribution.getPlatform()) {
+		switch (distribution.platform()) {
 			case Windows:
 				return "phantomjs.exe";
 		}
@@ -56,7 +56,7 @@ public class GenericPackageResolver implements IPackageResolver {
 	@Override
 	public FileSet getFileSet(Distribution distribution) {
 		String execName="phantomjs";
-		switch (distribution.getPlatform()) {
+		switch (distribution.platform()) {
 			case Windows:
 				execName="phantomjs.exe";
 				break;
@@ -68,7 +68,7 @@ public class GenericPackageResolver implements IPackageResolver {
 
 	@Override
 	public ArchiveType getArchiveType(Distribution distribution) {
-		switch (distribution.getPlatform()) {
+		switch (distribution.platform()) {
 			case OS_X:
 			case Windows:
 				return ArchiveType.ZIP;
@@ -80,7 +80,7 @@ public class GenericPackageResolver implements IPackageResolver {
 	public String getPath(Distribution distribution) {
 		final String packagePrefix;
 		String bitVersion="";
-		switch (distribution.getPlatform()) {
+		switch (distribution.platform()) {
 			case OS_X:
 				packagePrefix="macosx";
 				break;
@@ -89,7 +89,7 @@ public class GenericPackageResolver implements IPackageResolver {
 				break;
 			default:
 				packagePrefix="linux";
-				switch (distribution.getBitsize()) {
+				switch (distribution.bitsize()) {
 					case B64:
 						bitVersion="-x86_64";
 						break;
@@ -102,6 +102,6 @@ public class GenericPackageResolver implements IPackageResolver {
 		if (getArchiveType(distribution)==ArchiveType.TBZ2) {
 			packageExtension=".tar.bz2";
 		}
-		return "phantomjs-"+distribution.getVersion().asInDownloadPath()+"-"+packagePrefix+bitVersion+packageExtension;
+		return "phantomjs-"+distribution.version().asInDownloadPath()+"-"+packagePrefix+bitVersion+packageExtension;
 	}
 }

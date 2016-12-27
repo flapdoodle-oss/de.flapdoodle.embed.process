@@ -28,7 +28,7 @@ import java.io.IOException;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.DirectoryAndExecutableNaming;
 import de.flapdoodle.embed.process.extract.ExtractedFileSets;
@@ -37,17 +37,17 @@ import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
 
 public class ExtractedArtifactStore implements IArtifactStore {
 
-	private final IDownloadConfig downloadConfig;
+	private final DownloadConfig downloadConfig;
 	private final IDownloader downloader;
 	private final DirectoryAndExecutableNaming extraction;
 	private final DirectoryAndExecutableNaming temp;
 
-	public ExtractedArtifactStore(IDownloadConfig downloadConfig, IDownloader downloader, DirectoryAndExecutableNaming extraction, DirectoryAndExecutableNaming temp) {
+	public ExtractedArtifactStore(DownloadConfig downloadConfig, IDownloader downloader, DirectoryAndExecutableNaming extraction, DirectoryAndExecutableNaming temp) {
 		this.downloadConfig = downloadConfig;
 		this.downloader = downloader;
 		this.extraction = extraction;
@@ -64,7 +64,7 @@ public class ExtractedArtifactStore implements IArtifactStore {
 		return new ArtifactStore(downloadConfig, extraction.getDirectory(), extraction.getExecutableNaming(), downloader);
 	}
 
-	private ArtifactStore store(IDirectory withDistribution, ITempNaming naming) {
+	private ArtifactStore store(Directory withDistribution, ITempNaming naming) {
 		return new ArtifactStore(downloadConfig, withDistribution, naming, downloader);
 	}
 
@@ -73,7 +73,7 @@ public class ExtractedArtifactStore implements IArtifactStore {
 	public IExtractedFileSet extractFileSet(Distribution distribution)
 			throws IOException {
 		
-		IDirectory withDistribution = withDistribution(extraction.getDirectory(), distribution);
+		Directory withDistribution = withDistribution(extraction.getDirectory(), distribution);
 		ArtifactStore baseStore = store(withDistribution, extraction.getExecutableNaming());
 		
 		boolean foundExecutable=false;
@@ -110,8 +110,8 @@ public class ExtractedArtifactStore implements IArtifactStore {
 		return ExtractedFileSets.copy(extractedFileSet, temp.getDirectory(), temp.getExecutableNaming());
 	}
 
-	private static IDirectory withDistribution(final IDirectory dir, final Distribution distribution) {
-		return new IDirectory() {
+	private static Directory withDistribution(final Directory dir, final Distribution distribution) {
+		return new Directory() {
 			
 			@Override
 			public boolean isGenerated() {
@@ -134,11 +134,11 @@ public class ExtractedArtifactStore implements IArtifactStore {
 
 	static String asPath(Distribution distribution) {
 		return new StringBuilder()
-			.append(distribution.getPlatform().name())
+			.append(distribution.platform().name())
 			.append("-")
-			.append(distribution.getBitsize().name())
+			.append(distribution.bitsize().name())
 			.append("--")
-			.append(distribution.getVersion().asInDownloadPath())
+			.append(distribution.version().asInDownloadPath())
 			.toString();
 	}
 	

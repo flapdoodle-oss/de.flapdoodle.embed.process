@@ -39,7 +39,7 @@ public class PropertyOrPlatformTempDir extends PlatformTempDir {
 		return super.asFile();
 	}
 
-	public static IDirectory defaultInstance() {
+	public static Directory defaultInstance() {
 		return _instance;
 	}
 }

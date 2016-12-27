@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.io.progress;
 
 import org.slf4j.Logger;
 
-public class Slf4jProgressListener implements IProgressListener {
+public class Slf4jProgressListener implements ProgressListener {
 
     private final Logger logger;
     private int lastPercent = -1;

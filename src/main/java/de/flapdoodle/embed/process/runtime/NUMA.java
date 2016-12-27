@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.collections.Collections;
-import de.flapdoodle.embed.process.config.ISupportConfig;
+import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.Readers;
 
@@ -42,7 +42,7 @@ public class NUMA {
 
 	private static Logger logger = LoggerFactory.getLogger(NUMA.class);
 
-	public static synchronized boolean isNUMA(ISupportConfig support, Platform platform) {
+	public static synchronized boolean isNUMA(SupportConfig support, Platform platform) {
 		Boolean ret = NUMA_STATUS_MAP.get(platform);
 		if (ret == null) {
 			ret = isNUMAOnce(support, platform);
@@ -54,7 +54,7 @@ public class NUMA {
 	static final Map<Platform, Boolean> NUMA_STATUS_MAP = new HashMap<Platform, Boolean>();
 
 
-	public static boolean isNUMAOnce(ISupportConfig support, Platform platform) {
+	public static boolean isNUMAOnce(SupportConfig support, Platform platform) {
 		if (platform == Platform.Linux) {
 			try {
 				ProcessControl process = ProcessControl

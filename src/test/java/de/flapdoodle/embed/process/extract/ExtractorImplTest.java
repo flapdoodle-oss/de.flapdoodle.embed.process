@@ -47,7 +47,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ExtractorImplTest {
 
-    private IDownloadConfig runtime;
+    private DownloadConfig runtime;
     private FilesToExtract fte;
     private File fileInArchive;
 
@@ -56,7 +56,7 @@ public class ExtractorImplTest {
 
     @Before
     public void setUp() throws IOException {
-        IPackageResolver packageResolver=new GenericPackageResolver();
+        PackageResolver packageResolver=new GenericPackageResolver();
         runtime=new DownloadConfigBuilder()
                 .downloadPath("http://192.168.0.1")
                 .downloadPrefix("prefix")

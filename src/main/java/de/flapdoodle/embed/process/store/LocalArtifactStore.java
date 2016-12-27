@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.store;
 
 import java.io.File;
 
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.file.Files;
 
@@ -34,12 +34,12 @@ import de.flapdoodle.embed.process.io.file.Files;
  */
 class LocalArtifactStore {
 
-	public static boolean checkArtifact(IDownloadConfig runtime, Distribution distribution) {
+	public static boolean checkArtifact(DownloadConfig runtime, Distribution distribution) {
 		return getArtifact(runtime, distribution) != null;
 	}
 
 
-	public static boolean store(IDownloadConfig runtime, Distribution distribution, File download) {
+	public static boolean store(DownloadConfig runtime, Distribution distribution, File download) {
 		File dir = createOrGetBaseDir(runtime);
 		String artifactFileName = runtime.getPackageResolver().getPath(distribution);
 		File artifactFile = new File(dir, artifactFileName);
@@ -50,7 +50,7 @@ class LocalArtifactStore {
 		return checkFile.exists() & checkFile.isFile() & checkFile.canRead();
 	}
 
-	private static File createOrGetBaseDir(IDownloadConfig runtime) {
+	private static File createOrGetBaseDir(DownloadConfig runtime) {
 		File dir = runtime.getArtifactStorePath().asFile();
 		createOrCheckDir(dir);
 		return dir;
@@ -66,7 +66,7 @@ class LocalArtifactStore {
 	}
 
 
-	public static File getArtifact(IDownloadConfig runtime, Distribution distribution) {
+	public static File getArtifact(DownloadConfig runtime, Distribution distribution) {
 		File dir = createOrGetBaseDir(runtime);
 		File artifactFile = new File(dir, runtime.getPackageResolver().getPath(distribution));
 		if ((artifactFile.exists()) && (artifactFile.isFile()))

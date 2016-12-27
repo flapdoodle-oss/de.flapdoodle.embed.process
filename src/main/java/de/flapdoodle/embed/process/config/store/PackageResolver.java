@@ -23,10 +23,15 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
-import java.net.Proxy;
+import de.flapdoodle.embed.process.distribution.ArchiveType;
+import de.flapdoodle.embed.process.distribution.Distribution;
 
+public interface PackageResolver {
 
-public interface IProxyFactory {
+	FileSet getFileSet(Distribution distribution);
 
-	Proxy createProxy();
+	ArchiveType getArchiveType(Distribution distribution);
+
+	String getPath(Distribution distribution);
+
 }

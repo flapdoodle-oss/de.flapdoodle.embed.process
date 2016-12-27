@@ -32,8 +32,7 @@ import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.distribution.GenericVersion;
-import de.flapdoodle.embed.process.distribution.IVersion;
+import de.flapdoodle.embed.process.distribution.Version;
 
 public class TestExampleReadMeCode {
 
@@ -45,7 +44,7 @@ public class TestExampleReadMeCode {
 	@Test
 	public void genericProcessStarter() throws IOException {
 
-		IVersion version=new GenericVersion("2.1.1");
+		Version version=Version.of("2.1.1");
 
 		RuntimeConfig config = new GenericRuntimeConfigBuilder()
 			.name("phantomjs")

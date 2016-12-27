@@ -21,17 +21,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.config;
 
-import de.flapdoodle.embed.process.distribution.ArchiveType;
-import de.flapdoodle.embed.process.distribution.Distribution;
+import java.util.function.BiFunction;
 
-public interface IPackageResolver {
+import org.immutables.value.Value;
 
-	FileSet getFileSet(Distribution distribution);
+@Value.Immutable
+public interface SupportConfig {
 
-	ArchiveType getArchiveType(Distribution distribution);
+	String name();
 
-	String getPath(Distribution distribution);
+	String supportUrl();
 
+	BiFunction<Class<?>, Exception, String> messageOnException();
+	
+	static SupportConfig generic() {
+		return builder()
+				.name("generic")
+				.supportUrl("https://github.com/flapdoodle-oss/de.flapdoodle.embed.process")
+				.messageOnException((clazz,ex) -> null)
+				.build();
+	}
+
+	public static ImmutableSupportConfig.Builder builder() {
+		return ImmutableSupportConfig.builder();
+	}
 }

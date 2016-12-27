@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.flapdoodle.embed.process.config.RuntimeConfig;
-import de.flapdoodle.embed.process.config.ISupportConfig;
+import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.AbstractProcess;

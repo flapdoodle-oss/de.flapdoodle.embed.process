@@ -21,21 +21,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.distribution;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
+import org.immutables.value.Value;
+import org.immutables.value.Value.Parameter;
 
-public class DownloadPath implements IDownloadPath {
+/**
+ * Interface for versions
+ */
+@FunctionalInterface
+public interface Version {
 
-	private final String _path;
-
-	public DownloadPath(String path) {
-		_path = path;
+	String asInDownloadPath();
+	
+	@Value.Immutable
+	interface GenericVersion extends Version {
+		
+		@Override
+		@Parameter
+		String asInDownloadPath();
 	}
-
-	@Override
-	public String getPath(Distribution distribution) {
-		return _path;
+	
+	public static GenericVersion of(String asInDownloadPath) {
+		return ImmutableGenericVersion.of(asInDownloadPath);
 	}
-
 }

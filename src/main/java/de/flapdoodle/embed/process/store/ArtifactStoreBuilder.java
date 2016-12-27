@@ -29,39 +29,39 @@ import org.slf4j.LoggerFactory;
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.TypedProperty;
-import de.flapdoodle.embed.process.config.store.IDownloadConfig;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.extract.ITempNaming;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 
 public class ArtifactStoreBuilder extends AbstractBuilder<IArtifactStore> {
 	private static Logger logger = LoggerFactory.getLogger(ArtifactStoreBuilder.class);
 
 	protected static final TypedProperty<ITempNaming> EXECUTABLE_NAMING = TypedProperty.with("ExecutableNaming",ITempNaming.class);
-	protected static final TypedProperty<IDirectory> TEMP_DIR_FACTORY = TypedProperty.with("TempDir",IDirectory.class);
-	protected static final TypedProperty<IDownloadConfig> DOWNLOAD_CONFIG = TypedProperty.with("DownloadConfig",IDownloadConfig.class);
+	protected static final TypedProperty<Directory> TEMP_DIR_FACTORY = TypedProperty.with("TempDir",Directory.class);
+	protected static final TypedProperty<DownloadConfig> DOWNLOAD_CONFIG = TypedProperty.with("DownloadConfig",DownloadConfig.class);
 	protected static final TypedProperty<Boolean> USE_CACHE = TypedProperty.with("UseCache",Boolean.class);
 	protected static final TypedProperty<IDownloader> DOWNLOADER = TypedProperty.with("Downloader",IDownloader.class);
 	
 	@Deprecated
-	public ArtifactStoreBuilder download(AbstractBuilder<IDownloadConfig> downloadConfigBuilder) {
+	public ArtifactStoreBuilder download(AbstractBuilder<DownloadConfig> downloadConfigBuilder) {
 		return download(downloadConfigBuilder.build());
 	}
 	
-	public ArtifactStoreBuilder download(IDownloadConfig downloadConfig) {
+	public ArtifactStoreBuilder download(DownloadConfig downloadConfig) {
 		set(DOWNLOAD_CONFIG, downloadConfig);
 		return this;
 	}
 
-	protected IProperty<IDownloadConfig> download() {
+	protected IProperty<DownloadConfig> download() {
 		return property(DOWNLOAD_CONFIG);
 	}
 
-	public ArtifactStoreBuilder tempDir(IDirectory tempDirFactory) {
+	public ArtifactStoreBuilder tempDir(Directory tempDirFactory) {
 		set(TEMP_DIR_FACTORY, tempDirFactory);
 		return this;
 	}
 	
-	protected IProperty<IDirectory> tempDir() {
+	protected IProperty<Directory> tempDir() {
 		return property(TEMP_DIR_FACTORY);
 	}
 

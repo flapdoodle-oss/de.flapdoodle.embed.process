@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.io.progress;
 /**
  *
  */
-public class StandardConsoleProgressListener implements IProgressListener {
+public class StandardConsoleProgressListener implements ProgressListener {
 
 	private String lastLabel = null;
 	private int lastPercent = -1;

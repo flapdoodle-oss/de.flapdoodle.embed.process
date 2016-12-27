@@ -21,24 +21,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.example;
+package de.flapdoodle.embed.process.config.store;
 
-import de.flapdoodle.embed.process.config.ISupportConfig;
+import org.immutables.value.Value;
 
-public class GenericSupportConfig implements ISupportConfig {
+@Value.Immutable
+public interface TimeoutConfig {
+	
+	int getConnectionTimeout();
+	
+	int getReadTimeout();
 
-	@Override
-	public String getName() {
-		return "generic";
-	}
-
-	@Override
-	public String getSupportUrl() {
-		return "https://github.com/flapdoodle-oss/de.flapdoodle.embed.process";
+	public static ImmutableTimeoutConfig defaults() {
+		return ImmutableTimeoutConfig.builder()
+				.connectionTimeout(10000)
+				.readTimeout(10000)
+				.build();
 	}
 	
-	@Override
-	public String messageOnException(Class<?> context, Exception exception) {
-		return null;
+	public static ImmutableTimeoutConfig.Builder builder() {
+		return ImmutableTimeoutConfig.builder();
 	}
 }

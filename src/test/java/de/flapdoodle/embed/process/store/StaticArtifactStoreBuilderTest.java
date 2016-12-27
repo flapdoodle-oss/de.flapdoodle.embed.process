@@ -34,7 +34,7 @@ import org.junit.Test;
 
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.distribution.GenericVersion;
+import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
@@ -45,7 +45,7 @@ public class StaticArtifactStoreBuilderTest {
 
 	@Test
 	public void returnStaticFileSetForDistribution() throws IOException {
-		Distribution distribution=Distribution.detectFor(new GenericVersion("13.7.121"));
+		Distribution distribution=Distribution.detectFor(Version.of("13.7.121"));
 		
 		File generatedBaseDir=Files.createTempDir(PropertyOrPlatformTempDir.defaultInstance(),	"static");
 		

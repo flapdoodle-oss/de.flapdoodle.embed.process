@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.file.Files;
 
 public abstract class ExtractedFileSets {
@@ -44,7 +44,7 @@ public abstract class ExtractedFileSets {
 		// no instance
 	}
 	
-	public static IExtractedFileSet copy(IExtractedFileSet src, IDirectory directory, ITempNaming executableNaming) throws IOException {
+	public static IExtractedFileSet copy(IExtractedFileSet src, Directory directory, ITempNaming executableNaming) throws IOException {
 		File destination = directory.asFile();
 		File baseDir = src.baseDir();
 		File oldExe = src.executable();

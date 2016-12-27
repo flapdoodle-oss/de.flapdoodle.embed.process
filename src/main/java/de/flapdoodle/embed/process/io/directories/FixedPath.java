@@ -29,9 +29,9 @@ import java.io.File;
 /**
  *
  */
-public class FixedPath implements IDirectory {
+public class FixedPath implements Directory {
 
-	private String path;
+	private final String path;
 
 	public FixedPath(String path) {
 		this.path = path;

@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.io.progress;
 /**
  *
  */
-public class ConsoleOneLineProgressListener implements IProgressListener {
+public class ConsoleOneLineProgressListener implements ProgressListener {
 
 	private static final char BAR_DONE = '=';
 	private static final char BAR_TODO = '-';
