@@ -33,10 +33,10 @@
     </scm>
 
     <!--
-         https://docs.sonatype.org/display/Repository/Central+Sync+Requirements
-         https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
-         https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven
-     -->
+        https://docs.sonatype.org/display/Repository/Central+Sync+Requirements
+        https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
+        https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven
+    -->
     <build>
         <plugins>
 
@@ -97,11 +97,11 @@
                     -->
                     <header>${basedir}/src/etc/header.txt</header>
                     <!--
-                             <validHeaders>
-                             <validHeader>/otherSupportedHeader.txt</validHeader>
-                             <validHeader>http://www.company.com/yetAnotherSupportedHeader.txt</validHeader>
-                             </validHeaders>
-                         -->
+                        <validHeaders>
+                        <validHeader>/otherSupportedHeader.txt</validHeader>
+                        <validHeader>http://www.company.com/yetAnotherSupportedHeader.txt</validHeader>
+                        </validHeaders>
+                    -->
                     <quiet>false</quiet>
                     <failIfMissing>true</failIfMissing>
                     <strictCheck>true</strictCheck>
@@ -117,16 +117,16 @@
                         <exclude>**/*.tbz2</exclude>
                     </excludes>
                     <!--
-                             <excludes> <exclude>target/**</exclude>
-                             <exclude>.clover/**</exclude> </excludes>
-                             <useDefaultExcludes>true</useDefaultExcludes>
-                         -->
+                        <excludes> <exclude>target/**</exclude>
+                        <exclude>.clover/**</exclude> </excludes>
+                        <useDefaultExcludes>true</useDefaultExcludes>
+                    -->
                     <!--
-                             <mapping> <jwc>XML_STYLE</jwc>
-                             <application>XML_STYLE</application>
-                             <myFileExtension>JAVADOC_STYLE</myFileExtension> </mapping>
-                             <useDefaultMapping>true</useDefaultMapping>
-                         -->
+                        <mapping> <jwc>XML_STYLE</jwc>
+                        <application>XML_STYLE</application>
+                        <myFileExtension>JAVADOC_STYLE</myFileExtension> </mapping>
+                        <useDefaultMapping>true</useDefaultMapping>
+                    -->
                     <properties>
                         <lic.year>2011</lic.year>
                         <lic.email>michael@mosmann.de</lic.email>
@@ -141,9 +141,9 @@
                     </properties>
                     <encoding>UTF-8</encoding>
                     <!--
-                             <headerDefinitions> <headerDefinition>def1.xml</headerDefinition>
-                             <headerDefinition>def2.xml</headerDefinition> </headerDefinitions>
-                         -->
+                        <headerDefinitions> <headerDefinition>def1.xml</headerDefinition>
+                        <headerDefinition>def2.xml</headerDefinition> </headerDefinitions>
+                    -->
                 </configuration>
                 <executions>
                     <execution>
@@ -159,9 +159,9 @@
                 <version>2.9.1</version>
                 <configuration>
                     <configLocation>config/checkstyle.xml</configLocation>
-                <excludes>
-                    ${basedir}/src/test/**/*
-                </excludes>
+                    <excludes>
+                        ${basedir}/src/test/**/*
+                    </excludes>
                 </configuration>
             </plugin>
 
@@ -171,38 +171,38 @@
                 <version>2.3</version>
             </plugin>
 
-           	<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-Category>Utilities</Bundle-Category>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Description>${project.description}</Bundle-Description>
-						<Export-Package>${osgi.export}</Export-Package>
-						<Import-Package>${osgi.import}</Import-Package>
-					</instructions>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Category>Utilities</Bundle-Category>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Description>${project.description}</Bundle-Description>
+                        <Export-Package>${osgi.export}</Export-Package>
+                        <Import-Package>${osgi.import}</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
 
-						<plugin>
-								<groupId>org.apache.maven.plugins</groupId>
-								<artifactId>maven-javadoc-plugin</artifactId>
-								<version>2.9</version>
-								<executions>
-										<execution>
-												<id>attach-javadocs</id>
-												<goals>
-												    <goal>jar</goal>
-												</goals>
-												<configuration>
-												    <additionalparam>-Xdoclint:none</additionalparam>
-												</configuration>
-										</execution>
-								</executions>
-						</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -236,42 +236,42 @@
         </profile>
     </profiles>
 
-	<properties>
-		<jna.version>4.0.0</jna.version>
-		<osgi.category>Bundles</osgi.category>
-		<osgi.export>
-			de.flapdoodle.embed.process;version=${project.version},
-			de.flapdoodle.embed.process.builder;version=${project.version},
-			de.flapdoodle.embed.process.collections;version=${project.version},
-			de.flapdoodle.embed.process.config;version=${project.version},
-			de.flapdoodle.embed.process.config.io;version=${project.version},
-			de.flapdoodle.embed.process.config.process;version=${project.version},
-			de.flapdoodle.embed.process.config.store;version=${project.version},
-			de.flapdoodle.embed.process.distribution;version=${project.version},
-			de.flapdoodle.embed.process.exceptions;version=${project.version},
-			de.flapdoodle.embed.process.extract;version=${project.version},
-			de.flapdoodle.embed.process.io;version=${project.version},
-			de.flapdoodle.embed.process.io.directories;version=${project.version},
-			de.flapdoodle.embed.process.io.file;version=${project.version},
-			de.flapdoodle.embed.process.io.progress;version=${project.version},
-			de.flapdoodle.embed.process.runtime;version=${project.version},
-			de.flapdoodle.embed.process.store;version=${project.version}
-		</osgi.export>
-		<osgi.import>
-			javax.lang.model,
-			com.sun.jna,
-			com.sun.jna.platform.win32,
-			org.apache.commons.compress.archivers,
-			org.apache.commons.compress.archivers.zip,
-			org.apache.commons.compress.archivers.tar,
-			org.apache.commons.compress.compressors.bzip2,
+    <properties>
+        <jna.version>4.0.0</jna.version>
+        <osgi.category>Bundles</osgi.category>
+        <osgi.export>
+            de.flapdoodle.embed.process;version=${project.version},
+            de.flapdoodle.embed.process.builder;version=${project.version},
+            de.flapdoodle.embed.process.collections;version=${project.version},
+            de.flapdoodle.embed.process.config;version=${project.version},
+            de.flapdoodle.embed.process.config.io;version=${project.version},
+            de.flapdoodle.embed.process.config.process;version=${project.version},
+            de.flapdoodle.embed.process.config.store;version=${project.version},
+            de.flapdoodle.embed.process.distribution;version=${project.version},
+            de.flapdoodle.embed.process.exceptions;version=${project.version},
+            de.flapdoodle.embed.process.extract;version=${project.version},
+            de.flapdoodle.embed.process.io;version=${project.version},
+            de.flapdoodle.embed.process.io.directories;version=${project.version},
+            de.flapdoodle.embed.process.io.file;version=${project.version},
+            de.flapdoodle.embed.process.io.progress;version=${project.version},
+            de.flapdoodle.embed.process.runtime;version=${project.version},
+            de.flapdoodle.embed.process.store;version=${project.version}
+        </osgi.export>
+        <osgi.import>
+            javax.lang.model,
+            com.sun.jna,
+            com.sun.jna.platform.win32,
+            org.apache.commons.compress.archivers,
+            org.apache.commons.compress.archivers.zip,
+            org.apache.commons.compress.archivers.tar,
+            org.apache.commons.compress.compressors.bzip2,
             org.apache.commons.compress.compressors.xz,
-			org.apache.commons.compress.compressors.gzip,
-			org.apache.commons.lang3,
-			org.apache.commons.io,
-			org.slf4j
-		</osgi.import>
-	</properties>
+            org.apache.commons.compress.compressors.gzip,
+            org.apache.commons.lang3,
+            org.apache.commons.io,
+            org.slf4j
+        </osgi.import>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -283,17 +283,17 @@
 
         <dependency>
             <!--
-               <groupId>org.apache.commons</groupId> - deprecated?
-           -->
+                <groupId>org.apache.commons</groupId> - deprecated?
+            -->
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
 
         <dependency>
-           <groupId>org.apache.commons</groupId>
-           <artifactId>commons-lang3</artifactId>
-           <version>3.1</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
         </dependency>
 
         <!--
@@ -305,16 +305,16 @@
         </dependency>
         -->
 
-				<dependency>
-					<groupId>net.java.dev.jna</groupId>
-					<artifactId>jna</artifactId>
-					<version>${jna.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>net.java.dev.jna</groupId>
-					<artifactId>jna-platform</artifactId>
-					<version>${jna.version}</version>
-				</dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${jna.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>${jna.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -349,10 +349,10 @@
         </dependency>
 
         <dependency>
-          <groupId>nl.jqno.equalsverifier</groupId>
-          <artifactId>equalsverifier</artifactId>
-          <version>2.1.5</version>
-          <scope>test</scope>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>2.1.5</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
