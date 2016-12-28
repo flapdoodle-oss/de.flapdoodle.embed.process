@@ -32,11 +32,11 @@ import org.slf4j.LoggerFactory;
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.extract.ExtractedFileSets;
+import de.flapdoodle.embed.process.extract.Extractor;
 import de.flapdoodle.embed.process.extract.Extractors;
 import de.flapdoodle.embed.process.extract.FilesToExtract;
-import de.flapdoodle.embed.process.extract.ExtractedFileSet;
-import de.flapdoodle.embed.process.extract.Extractor;
 import de.flapdoodle.embed.process.extract.ITempNaming;
 import de.flapdoodle.embed.process.io.directories.Directory;
 
@@ -73,7 +73,7 @@ public class ArtifactStore implements IArtifactStore {
 		PackageResolver packageResolver = _downloadConfig.getPackageResolver();
 		FilesToExtract toExtract = filesToExtract(distribution);
 		
-		Extractor extractor = Extractors.getExtractor(packageResolver.getArchiveType(distribution));
+		Extractor extractor = Extractors.getExtractor(packageResolver.packageFor(distribution).archiveType());
 
 		File artifact = LocalArtifactStore.getArtifact(_downloadConfig, distribution);
 		ExtractedFileSet extracted=extractor.extract(_downloadConfig, artifact, toExtract);
@@ -82,7 +82,7 @@ public class ArtifactStore implements IArtifactStore {
 	}
 
 	FilesToExtract filesToExtract(Distribution distribution) {
-		return new FilesToExtract(_tempDirFactory, _executableNaming, _downloadConfig.getPackageResolver().getFileSet(distribution));
+		return new FilesToExtract(_tempDirFactory, _executableNaming, _downloadConfig.getPackageResolver().packageFor(distribution).fileSet());
 	}
 
 	@Override

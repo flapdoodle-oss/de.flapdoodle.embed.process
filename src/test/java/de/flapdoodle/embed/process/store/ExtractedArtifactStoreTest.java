@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import de.flapdoodle.embed.process.TempDir;
+import de.flapdoodle.embed.process.config.store.DistributionPackage;
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.DownloadConfigBuilder;
 import de.flapdoodle.embed.process.config.store.FileSet;
@@ -145,11 +146,14 @@ public class ExtractedArtifactStoreTest {
 		return new PackageResolver() {
 			
 			@Override
+			public DistributionPackage packageFor(Distribution distribution) {
+				return DistributionPackage.of(getArchiveType(distribution), getFileSet(distribution), getPath(distribution));
+			}
+			
 			public String getPath(Distribution distribution) {
 				return artefactName(distribution);
 			}
 			
-			@Override
 			public FileSet getFileSet(Distribution distribution) {
 				return new FileSet.Builder()
 					.addEntry(FileType.Executable, "my-prog.bat")
@@ -157,7 +161,6 @@ public class ExtractedArtifactStoreTest {
 					.build();
 			}
 			
-			@Override
 			public ArchiveType getArchiveType(Distribution distribution) {
 				return ArchiveType.ZIP;
 			}

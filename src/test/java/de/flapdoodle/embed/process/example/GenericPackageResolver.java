@@ -23,10 +23,7 @@
  */
 package de.flapdoodle.embed.process.example;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.regex.Pattern;
-
+import de.flapdoodle.embed.process.config.store.DistributionPackage;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.PackageResolver;
@@ -41,20 +38,12 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 @Deprecated
 public class GenericPackageResolver implements PackageResolver {
 
-	public Pattern executeablePattern(Distribution distribution) {
-		return Pattern.compile(".*"+executableFilename(distribution));
-	}
-
-	public String executableFilename(Distribution distribution) {
-		switch (distribution.platform()) {
-			case Windows:
-				return "phantomjs.exe";
-		}
-		return "phantomjs";
-	}
-
 	@Override
-	public FileSet getFileSet(Distribution distribution) {
+	public DistributionPackage packageFor(Distribution distribution) {
+		return DistributionPackage.of(getArchiveType(distribution), getFileSet(distribution), getPath(distribution));
+	}
+	
+	private FileSet getFileSet(Distribution distribution) {
 		String execName="phantomjs";
 		switch (distribution.platform()) {
 			case Windows:
@@ -66,8 +55,7 @@ public class GenericPackageResolver implements PackageResolver {
 	}
 	
 
-	@Override
-	public ArchiveType getArchiveType(Distribution distribution) {
+	private ArchiveType getArchiveType(Distribution distribution) {
 		switch (distribution.platform()) {
 			case OS_X:
 			case Windows:
@@ -76,8 +64,7 @@ public class GenericPackageResolver implements PackageResolver {
 		return ArchiveType.TBZ2;
 	}
 
-	@Override
-	public String getPath(Distribution distribution) {
+	private String getPath(Distribution distribution) {
 		final String packagePrefix;
 		String bitVersion="";
 		switch (distribution.platform()) {

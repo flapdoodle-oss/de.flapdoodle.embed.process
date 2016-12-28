@@ -23,15 +23,8 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
-import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 
 public interface PackageResolver {
-
-	FileSet getFileSet(Distribution distribution);
-
-	ArchiveType getArchiveType(Distribution distribution);
-
-	String getPath(Distribution distribution);
-
+	DistributionPackage packageFor(Distribution distribution);
 }

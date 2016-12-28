@@ -24,7 +24,10 @@
 package de.flapdoodle.embed.process.example;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.AbstractEmbeddedBuilder;
@@ -32,6 +35,7 @@ import de.flapdoodle.embed.process.builder.ImmutableContainer;
 import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
+import de.flapdoodle.embed.process.config.store.DistributionPackage;
 import de.flapdoodle.embed.process.config.store.DownloadConfigBuilder;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.PackageResolver;
@@ -45,7 +49,7 @@ import de.flapdoodle.embed.process.runtime.CommandLinePostProcessor;
 import de.flapdoodle.embed.process.store.ArtifactStoreBuilder;
 import de.flapdoodle.embed.process.store.Downloader;
 
-
+@Deprecated
 public class GenericRuntimeConfigBuilder extends AbstractBuilder<RuntimeConfig> {
 
 	private static final TypedProperty<PackageResolver> PACKAGE_RESOLVER = TypedProperty.with("PackageResolver",PackageResolver.class);
@@ -187,35 +191,33 @@ public class GenericRuntimeConfigBuilder extends AbstractBuilder<RuntimeConfig> 
 	
 	static class MapGenericPackageResolver implements PackageResolver {
 
-		private final Map<Distribution, FileSet> _fileSets;
-		
-		private final Map<Distribution, ArchiveType> _arcTypeMap;
-		private final Map<Distribution, String> _archivePathMap;
+		private final Map<Distribution, DistributionPackage> packages;
 		
 		public MapGenericPackageResolver(Map<Distribution, FileSet> fileSets, Map<Distribution, ArchiveType> arcTypeMap, Map<Distribution, String> archivePathMap) {
-			_fileSets=fileSets;
-			_arcTypeMap = arcTypeMap;
-			_archivePathMap = archivePathMap;
-		}
-		
-//		@Deprecated
-//		public Pattern executeablePattern(Distribution distribution) {
-//			return Pattern.compile(".*"+executableFilename(distribution));
-//		}
-		
-		@Override
-		public FileSet getFileSet(Distribution distribution) {
-			return _fileSets.get(distribution);
-		}
-		
-		@Override
-		public ArchiveType getArchiveType(Distribution distribution) {
-			return _arcTypeMap.get(distribution);
+			this(aggregate(fileSets, arcTypeMap, archivePathMap));
 		}
 
+		private static Map<Distribution, DistributionPackage> aggregate(Map<Distribution, FileSet> fileSets,
+				Map<Distribution, ArchiveType> arcTypeMap, Map<Distribution, String> archivePathMap) {
+			Set<Distribution> allDists=new LinkedHashSet<>();
+			allDists.addAll(fileSets.keySet());
+			allDists.addAll(arcTypeMap.keySet());
+			allDists.addAll(archivePathMap.keySet());
+			
+			Map<Distribution, DistributionPackage> packages=new LinkedHashMap<>();
+			for (Distribution d : allDists) {
+				packages.put(d, DistributionPackage.of(arcTypeMap.get(d), fileSets.get(d), archivePathMap.get(d)));
+			}
+			return packages;
+		}
+		
+		public MapGenericPackageResolver(Map<Distribution, DistributionPackage> packages) {
+			this.packages=new LinkedHashMap<>(packages);
+		}
+		
 		@Override
-		public String getPath(Distribution distribution) {
-			return _archivePathMap.get(distribution);
+		public DistributionPackage packageFor(Distribution distribution) {
+			return packages.get(distribution);
 		}
 
 	}

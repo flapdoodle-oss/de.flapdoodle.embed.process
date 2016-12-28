@@ -41,7 +41,7 @@ class LocalArtifactStore {
 
 	public static boolean store(DownloadConfig runtime, Distribution distribution, File download) {
 		File dir = createOrGetBaseDir(runtime);
-		String artifactFileName = runtime.getPackageResolver().getPath(distribution);
+		String artifactFileName = runtime.getPackageResolver().packageFor(distribution).archivePath();
 		File artifactFile = new File(dir, artifactFileName);
 		createOrCheckDir(artifactFile.getParentFile());
 		if (!Files.moveFile(download, artifactFile))
@@ -68,7 +68,7 @@ class LocalArtifactStore {
 
 	public static File getArtifact(DownloadConfig runtime, Distribution distribution) {
 		File dir = createOrGetBaseDir(runtime);
-		File artifactFile = new File(dir, runtime.getPackageResolver().getPath(distribution));
+		File artifactFile = new File(dir, runtime.getPackageResolver().packageFor(distribution).archivePath());
 		if ((artifactFile.exists()) && (artifactFile.isFile()))
 			return artifactFile;
 		return null;

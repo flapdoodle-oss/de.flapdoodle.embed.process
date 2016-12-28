@@ -51,10 +51,12 @@ public class Downloader implements IDownloader {
 	static final int BUFFER_LENGTH = 1024 * 8 * 8;
 	static final int READ_COUNT_MULTIPLIER = 100;
 
+	@Override
 	public String getDownloadUrl(DownloadConfig runtime, Distribution distribution) {
-		return runtime.getDownloadPath().getPath(distribution) + runtime.getPackageResolver().getPath(distribution);
+		return runtime.getDownloadPath().getPath(distribution) + runtime.getPackageResolver().packageFor(distribution).archivePath();
 	}
 
+	@Override
 	public File download(DownloadConfig downloadConfig, Distribution distribution) throws IOException {
 
 		String progressLabel = "Download " + distribution;
@@ -62,7 +64,7 @@ public class Downloader implements IDownloader {
 		progress.start(progressLabel);
 
 		File ret = Files.createTempFile(PropertyOrPlatformTempDir.defaultInstance(), downloadConfig.getFileNaming()
-				.nameFor(downloadConfig.getDownloadPrefix(), "." + downloadConfig.getPackageResolver().getArchiveType(distribution)));
+				.nameFor(downloadConfig.getDownloadPrefix(), "." + downloadConfig.getPackageResolver().packageFor(distribution).archiveType()));
 		if (ret.canWrite()) {
 
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(ret));
