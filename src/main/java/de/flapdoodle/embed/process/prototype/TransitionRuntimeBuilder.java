@@ -27,12 +27,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class SystemBuilder {
+public class TransitionRuntimeBuilder {
 	
 	private final String name;
 	private final Map<NamedType<?>, SupplierFactory<?>> transitionMap = new LinkedHashMap<>();
 
-	private SystemBuilder(String name) {
+	private TransitionRuntimeBuilder(String name) {
 		this.name = name;
 	}
 	
@@ -44,7 +44,7 @@ public class SystemBuilder {
 		return new TransitionBuilder<D>(this, NamedType.of(name, stateType));
 	}
 
-	private <D> SystemBuilder put(NamedType<D> stateType,SupplierFactory<D> context) {
+	private <D> TransitionRuntimeBuilder put(NamedType<D> stateType,SupplierFactory<D> context) {
 		SupplierFactory<?> old = transitionMap.put(stateType, context);
 		if (old!=null) {
 			throw new IllegalArgumentException("transition for "+stateType+" already set");
@@ -52,53 +52,67 @@ public class SystemBuilder {
 		return this;
 	}
 	
-	public static SystemBuilder builderOf(String name) {
-		return new SystemBuilder(name);
+	public static TransitionRuntimeBuilder builderOf(String name) {
+		return new TransitionRuntimeBuilder(name);
 	}
 	
-	public System build() {
-		return new MapBasedSystem(transitionMap);
+	public TransitionRuntime build() {
+		return new MapBasedTransitionRuntime(transitionMap);
 	}
 	
 	public static class TransitionBuilder<D> {
 
-		private final SystemBuilder systemBuilder;
+		private final TransitionRuntimeBuilder systemBuilder;
 		private final NamedType<D> stateType;
 
-		public TransitionBuilder(SystemBuilder systemBuilder, NamedType<D> stateType) {
+		public TransitionBuilder(TransitionRuntimeBuilder systemBuilder, NamedType<D> stateType) {
 			this.systemBuilder = systemBuilder;
 			this.stateType = stateType;
 		}
 		
-		public SystemBuilder with(Transitions.StartingTransition<D> transition) {
+		public TransitionRuntimeBuilder with(Transitions.StartingTransition<D> transition) {
 			return systemBuilder.put(stateType, system -> () -> transition.transitInto());
 		}
 		
-		public <S> SystemBuilder with(Class<S> type, Transitions.DependingTransition<S,D> transition) {
+		public <S> TransitionRuntimeBuilder with(Class<S> type, Transitions.DependingTransition<S,D> transition) {
 			return with(NamedType.of(type), transition);
 		}
 		
-		public <S> SystemBuilder with(String name, Class<S> type, Transitions.DependingTransition<S,D> transition) {
+		public <S> TransitionRuntimeBuilder with(String name, Class<S> type, Transitions.DependingTransition<S,D> transition) {
 			return with(NamedType.of(name, type), transition);
 		}
 		
-		private <S> SystemBuilder with(NamedType<S> namedType, Transitions.DependingTransition<S,D> transition) {
+		private <S> TransitionRuntimeBuilder with(NamedType<S> namedType, Transitions.DependingTransition<S,D> transition) {
 			return systemBuilder.put(stateType, system -> {
 				return () -> transition.transitFrom(system.transitionInto(namedType).get());
+			});
+		}
+		
+		public <A,B> TransitionRuntimeBuilder with(Class<A> aType, Class<B> bType, Transitions.JoiningTransition<A,B,D> transition) {
+			return with(NamedType.of(aType), NamedType.of(bType), transition);
+		}
+		
+		public <A,B> TransitionRuntimeBuilder with(String aName, Class<A> aType, String bName, Class<B> bType, Transitions.JoiningTransition<A,B,D> transition) {
+			return with(NamedType.of(aName, aType), NamedType.of(bName, bType), transition);
+		}
+		
+		private <A,B> TransitionRuntimeBuilder with(NamedType<A> aNamedType, NamedType<B> bNamedType, Transitions.JoiningTransition<A,B,D> transition) {
+			return systemBuilder.put(stateType, system -> {
+				return () -> transition.transitFrom(system.transitionInto(aNamedType).get(), system.transitionInto(bNamedType).get());
 			});
 		}
 	}
 
 	@FunctionalInterface
 	interface SupplierFactory<D> {
-		Supplier<State<D>> supplierOf(System system);
+		Supplier<State<D>> supplierOf(TransitionRuntime system);
 	}
 
-	private static class MapBasedSystem implements System {
+	private static class MapBasedTransitionRuntime implements TransitionRuntime {
 
 		private final LinkedHashMap<NamedType<?>, SupplierFactory<?>> transitionMap;
 
-		public MapBasedSystem(Map<NamedType<?>, SupplierFactory<?>> transitionMap) {
+		public MapBasedTransitionRuntime(Map<NamedType<?>, SupplierFactory<?>> transitionMap) {
 			this.transitionMap = new LinkedHashMap<>(transitionMap);
 		}
 		

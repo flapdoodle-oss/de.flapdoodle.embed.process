@@ -31,19 +31,32 @@ public class TransitionsTest {
 
 	@Test
 	public void sample() {
-		System system = SystemBuilder.builderOf("test")
+		TransitionRuntime system = TransitionRuntimeBuilder.builderOf("test")
 			.transitionInto(String.class)
-				.with(() -> State.of("foo"))
+				.with(() -> State.of("simple",TransitionsTest::tearDown))
 			.transitionInto("dep",String.class)
-				.with(String.class, s -> s.map(t -> "-> "+t))
+				.with(String.class, s -> s.map(t -> "depends on "+t, TransitionsTest::tearDown))
+			.transitionInto("join", String.class)
+				.with("", String.class, "dep", String.class, (a,b) -> State.merge(a, b, (l, r)  -> "["+l+"]:["+r+"]", TransitionsTest::tearDown))
 			.build();
 		
+		System.out.println("sample: simple");
 		system.withStateOf(NamedType.of(String.class), s -> {
-			assertEquals("foo", s);
+			assertEquals("simple", s);
 		});
 		
+		System.out.println("sample: with dependency");
 		system.withStateOf(NamedType.of("dep", String.class), s -> {
-			assertEquals("-> foo", s);
+			assertEquals("depends on simple", s);
 		});
+		
+		System.out.println("sample: joining");
+		system.withStateOf(NamedType.of("join", String.class), s -> {
+			assertEquals("[simple]:[depends on simple]", s);
+		});
+	}
+	
+	public static <T> void tearDown(T value) {
+		System.out.println("tear down '"+value+"'");
 	}
 }

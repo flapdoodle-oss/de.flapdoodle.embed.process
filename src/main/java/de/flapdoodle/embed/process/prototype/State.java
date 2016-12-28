@@ -24,6 +24,7 @@
 package de.flapdoodle.embed.process.prototype;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.immutables.builder.Builder.Parameter;
@@ -44,14 +45,27 @@ public interface State<T> extends AutoCloseable {
 	
 	@Auxiliary
 	default <D> State<D> map(Function<T, D> map, TearDown<D> ... tearDowns) {
-		return builder(map.apply(current())).addOnTearDown(tearDowns).build();
+		return builder(map.apply(current()))
+				.addOnTearDown(tearDowns)
+				.addOnTearDown(d -> this.close())
+				.build();
 	}
 	
 	public static <T> ImmutableState.Builder<T> builder(T current) {
 		return ImmutableState.builder(current);
 	}
 	
-	public static <T> State<T> of(T current) {
-		return builder(current).build();
+	public static <T> State<T> of(T current, TearDown<T> ... tearDowns) {
+		return builder(current)
+				.addOnTearDown(tearDowns)
+				.build();
+	}
+	
+	public static <A,B,D> State<D> merge(State<A> a, State<B> b, BiFunction<A, B, D> merge, TearDown<D> ... tearDowns) {
+		return builder(merge.apply(a.current(), b.current()))
+				.addOnTearDown(tearDowns)
+				.addOnTearDown(d -> a.close())
+				.addOnTearDown(d -> b.close())
+				.build();
 	}
 }
