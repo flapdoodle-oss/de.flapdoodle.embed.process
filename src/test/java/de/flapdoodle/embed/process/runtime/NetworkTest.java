@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.util.HashSet;
 
 import org.junit.Test;
@@ -38,13 +37,13 @@ import org.junit.Test;
 public class NetworkTest {
 
 	@Test(expected=IllegalArgumentException.class)
-	public void freeNetworkPortFailOnPoolSizeSmallerThanOne() throws UnknownHostException, IOException {
+	public void freeNetworkPortFailOnPoolSizeSmallerThanOne() throws IOException {
 		InetAddress address = Network.getLocalHost();
 		Network.getFreeServerPorts(address, 0);
 	}
 	
 	@Test
-	public void freeNetworkPortMustReturnDifferentAviablePorts() throws UnknownHostException, IOException {
+	public void freeNetworkPortMustReturnDifferentAvailablePorts() throws IOException {
 		InetAddress address = Network.getLocalHost();
 		int[] ports = Network.getFreeServerPorts(address, 5);
 		assertTrue(ports.length>0);
@@ -53,7 +52,7 @@ public class NetworkTest {
 			assertNotNull(serverSocket);
 			serverSocket.close();
 		}
-		HashSet<Integer> set=new HashSet<Integer>();
+		HashSet<Integer> set= new HashSet<>();
 		for (int port : ports) {
 			set.add(port);
 		}
@@ -61,7 +60,7 @@ public class NetworkTest {
 	}
 	
 	@Test(expected=IOException.class)
-	public void freeNetworkPortMustFailIfPoolIsTooLarge() throws UnknownHostException, IOException {
+	public void freeNetworkPortMustFailIfPoolIsTooLarge() throws IOException {
 		InetAddress address = Network.getLocalHost();
 		Network.getFreeServerPorts(address, 50000);
 	}
