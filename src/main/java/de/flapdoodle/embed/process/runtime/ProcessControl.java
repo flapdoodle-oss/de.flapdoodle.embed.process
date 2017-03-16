@@ -45,7 +45,7 @@ import de.flapdoodle.embed.process.io.Processors;
 public class ProcessControl {
 
 	private static Logger logger = LoggerFactory.getLogger(ProcessControl.class);
-	private static final int SLEEPT_TIMEOUT = 10;
+	private static final int SLEEP_TIMEOUT = 10;
 
 	private final Process process;
 
@@ -99,23 +99,16 @@ public class ProcessControl {
 			returnCode=process.exitValue();
 		} catch (IllegalThreadStateException itsx) {
 		    	logger.info("stopOrDestroyProcess: "+itsx.getMessage() +" "+((itsx.getCause()!=null) ? itsx.getCause() : "") );
-			Callable<Integer> callable=new Callable<Integer>() {
+			Callable<Integer> callable= process::waitFor;
 
-				@Override
-				public Integer call() throws Exception {
-					return process.waitFor();
-				}
-			};
-			FutureTask<Integer> task = new FutureTask<Integer>(callable);
+			FutureTask<Integer> task = new FutureTask<>(callable);
 			new Thread(task).start();
 
 			boolean stopped=false;
 			try {
 				returnCode=task.get(100, TimeUnit.MILLISECONDS);
 				stopped=true;
-			} catch (InterruptedException e) {
-			} catch (ExecutionException e) {
-			} catch (TimeoutException e) {
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			}
 
 			closeIOAndDestroy();
@@ -123,17 +116,13 @@ public class ProcessControl {
 			try {
 				returnCode=task.get(900, TimeUnit.MILLISECONDS);
 				stopped=true;
-			} catch (InterruptedException e) {
-			} catch (ExecutionException e) {
-			} catch (TimeoutException e) {
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			}
 
 			try {
 				returnCode=task.get(2000, TimeUnit.MILLISECONDS);
 				stopped=true;
-			} catch (InterruptedException e) {
-			} catch (ExecutionException e) {
-			} catch (TimeoutException e) {
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			}
 
 			if (!stopped)	{
@@ -206,7 +195,7 @@ public class ProcessControl {
 	}
 
 	public static ProcessBuilder newProcessBuilder(List<String> commandLine, boolean redirectErrorStream) {
-		return newProcessBuilder(commandLine,new HashMap<String,String>(), redirectErrorStream);
+		return newProcessBuilder(commandLine, new HashMap<>(), redirectErrorStream);
 	}
 
 	public static ProcessBuilder newProcessBuilder(List<String> commandLine, Map<String,String> environment, boolean redirectErrorStream) {
@@ -220,19 +209,17 @@ public class ProcessControl {
 	}
 
 	public static boolean executeCommandLine(SupportConfig support, String label, ProcessConfig processConfig) {
-		boolean ret = false;
+		boolean ret;
 
 		List<String> commandLine = processConfig.getCommandLine();
 		try {
 			ProcessControl process = fromCommandLine(support, processConfig.getCommandLine(), processConfig.getError() == null);
 			Processors.connect(process.getReader(), processConfig.getOutput());
-			Thread.sleep(SLEEPT_TIMEOUT);
+			Thread.sleep(SLEEP_TIMEOUT);
 			ret = process.stop() == 0;
 			logger.info("execSuccess: {} {}", ret, commandLine);
 			return ret;
-		} catch (IOException e) {
-			logger.error("" + commandLine, e);
-		} catch (InterruptedException e) {
+		} catch (IOException | InterruptedException e) {
 			logger.error("" + commandLine, e);
 		}
 		return false;
@@ -242,8 +229,8 @@ public class ProcessControl {
 		return process.waitFor();
 	}
 
-	public static void addShutdownHook(Runnable runable) {
-		Runtime.getRuntime().addShutdownHook(new Thread(runable));
+	public static void addShutdownHook(Runnable runnable) {
+		Runtime.getRuntime().addShutdownHook(new Thread(runnable));
 	}
 
 	public Long getPid() {
