@@ -46,7 +46,7 @@ import de.flapdoodle.embed.process.io.file.Files;
 public abstract class AbstractProcess<T extends IExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>
 		implements IStopable {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractProcess.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractProcess.class);
 
 	public static final int TIMEOUT = 20000;
 
@@ -128,8 +128,8 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
         return registeredJobKiller;
     }
 
-    protected File pidFile(File executeableFile) {
-		return new File(executeableFile.getParentFile(),executableBaseName(executeableFile.getName())+".pid");
+    protected File pidFile(File executableFile) {
+		return new File(executableFile.getParentFile(),executableBaseName(executableFile.getName())+".pid");
 	}
 
 	protected File pidFile() {
@@ -167,7 +167,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected Map<String, String> getEnvironment(Distribution distribution, T config, ExtractedFileSet exe) {
 		// default implementation, override to provide your own environment
-		return new HashMap<String, String>();
+		return new HashMap<>();
 	}
 
 	@Override

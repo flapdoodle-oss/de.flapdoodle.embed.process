@@ -39,18 +39,18 @@ import java.util.concurrent.TimeUnit;
 
 public class CachingArtifactStore implements IArtifactStore {
 
-	private static Logger _logger = LoggerFactory.getLogger(CachingArtifactStore.class);
+	private static final Logger logger = LoggerFactory.getLogger(CachingArtifactStore.class);
 
-	private final IArtifactStore _delegate;
+	private final IArtifactStore delegate;
 
-	Object _lock = new Object();
+	final Object lock = new Object();
 
-	HashMap<Distribution, FilesWithCounter> _distributionFiles = new HashMap<Distribution, FilesWithCounter>();
+	HashMap<Distribution, FilesWithCounter> distributionFiles = new HashMap<>();
 
 	private final ScheduledExecutorService executor;
 
 	public CachingArtifactStore(IArtifactStore delegate) {
-		_delegate = delegate;
+		this.delegate = delegate;
 		ProcessControl.addShutdownHook(new CacheCleaner());
 
 		executor = Executors.newSingleThreadScheduledExecutor(new CustomThreadFactory());
@@ -59,7 +59,7 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	@Override
 	public boolean checkDistribution(Distribution distribution) throws IOException {
-		return _delegate.checkDistribution(distribution);
+		return delegate.checkDistribution(distribution);
 	}
 
 	@Override
@@ -67,14 +67,14 @@ public class CachingArtifactStore implements IArtifactStore {
 
 		FilesWithCounter fileWithCounter;
 
-		synchronized (_lock) {
-			fileWithCounter = _distributionFiles.get(distribution);
+		synchronized (lock) {
+			fileWithCounter = distributionFiles.get(distribution);
 			if (fileWithCounter == null) {
-				_logger.debug("cache NOT found for {}", distribution);
+				logger.debug("cache NOT found for {}", distribution);
 				fileWithCounter = new FilesWithCounter(distribution);
-				_distributionFiles.put(distribution, fileWithCounter);
+				distributionFiles.put(distribution, fileWithCounter);
 			} else {
-				_logger.debug("cache found for {}", distribution);
+				logger.debug("cache found for {}", distribution);
 			}
 		}
 
@@ -84,28 +84,28 @@ public class CachingArtifactStore implements IArtifactStore {
 	@Override
 	public void removeFileSet(Distribution distribution, ExtractedFileSet executable) {
 		FilesWithCounter fileWithCounter;
-		synchronized (_lock) {
-			fileWithCounter = _distributionFiles.get(distribution);
+		synchronized (lock) {
+			fileWithCounter = distributionFiles.get(distribution);
 		}
 		if (fileWithCounter != null) {
 			fileWithCounter.free(executable);
 		} else {
-			_logger.warn("Already removed {} for {}, emergency shutdown?", executable, distribution);
+			logger.warn("Already removed {} for {}, emergency shutdown?", executable, distribution);
 		}
 	}
 
 	protected void removeAll() {
-		synchronized (_lock) {
-			for (FilesWithCounter fc : _distributionFiles.values()) {
+		synchronized (lock) {
+			for (FilesWithCounter fc : distributionFiles.values()) {
 				fc.forceDelete();
 			}
-			_distributionFiles.clear();
+			distributionFiles.clear();
 		}
 	}
 
 	public void removeUnused() {
-		synchronized (_lock) {
-			for (FilesWithCounter fc : _distributionFiles.values()) {
+		synchronized (lock) {
+			for (FilesWithCounter fc : distributionFiles.values()) {
 				fc.cleanup();
 			}
 		}
@@ -116,10 +116,10 @@ public class CachingArtifactStore implements IArtifactStore {
 		try	{
 			if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
 				for (Runnable r : executor.shutdownNow()) {
-					_logger.warn("Terminated job of type {}", r.getClass().getName());
+					logger.warn("Terminated job of type {}", r.getClass().getName());
 				}
 				if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
-					_logger.error("Executor did not terminate.");
+					logger.error("Executor did not terminate.");
 				}
 			}
 			if (!executor.isShutdown()) {
@@ -133,49 +133,49 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	class FilesWithCounter {
 
-		private ExtractedFileSet _file;
-		int _counter=0;
-		private final Distribution _distribution;
+		private ExtractedFileSet file;
+		int counter =0;
+		private final Distribution distribution;
 
 		public FilesWithCounter(Distribution distribution) {
-			_distribution = distribution;
+			this.distribution = distribution;
 		}
 
 		public synchronized void free(ExtractedFileSet executable) {
-			if (executable!=_file) throw new RuntimeException("Files does not match: "+_file+" != "+executable);
-			_logger.debug("Free {} {}", _counter, _file);
-			_counter--;
+			if (executable!= file) throw new RuntimeException("Files does not match: "+ file +" != "+executable);
+			logger.debug("Free {} {}", counter, file);
+			counter--;
 		}
 
 		public synchronized ExtractedFileSet use() throws IOException {
-			_counter++;
+			counter++;
 			
-			if (_file==null) {
-				_file=_delegate.extractFileSet(_distribution);
-				_logger.debug("Not Cached {} {}", _counter, _file);
+			if (file ==null) {
+				file = delegate.extractFileSet(distribution);
+				logger.debug("Not Cached {} {}", counter, file);
 			} else {
-				_logger.debug("Cached {} {}", _counter, _file);
+				logger.debug("Cached {} {}", counter, file);
 			}
-			return _file;
+			return file;
 		}
 		
 		public synchronized void cleanup() {
-			if (_counter<=0) {
-				if (_counter<0) _logger.warn("Counter < 0 for {} and {}", _distribution, _file);
-				if (_file!=null) {
-					_logger.debug("cleanup for {} and {}", _distribution, _file);
-					_delegate.removeFileSet(_distribution, _file);
-					_file=null;
+			if (counter <=0) {
+				if (counter <0) logger.warn("Counter < 0 for {} and {}", distribution, file);
+				if (file !=null) {
+					logger.debug("cleanup for {} and {}", distribution, file);
+					delegate.removeFileSet(distribution, file);
+					file =null;
 				}
 			}
 		}
 		
 		public synchronized void forceDelete() {
-			if (_file!=null) {
-				_logger.debug("force delete for {} and {}", _distribution, _file);
-				_delegate.removeFileSet(_distribution, _file);
-				_file=null;
-				_counter=0;
+			if (file !=null) {
+				logger.debug("force delete for {} and {}", distribution, file);
+				delegate.removeFileSet(distribution, file);
+				file =null;
+				counter =0;
 			}
 		}
 	}
