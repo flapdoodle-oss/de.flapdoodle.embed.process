@@ -34,6 +34,7 @@ import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Platform;
 
+@Deprecated
 public class PlatformLibraryStoreBuilder extends AbstractBuilder<LibraryStore> {
 
 	private static final TypedProperty<LibraryContainer> LIBRARIES = TypedProperty

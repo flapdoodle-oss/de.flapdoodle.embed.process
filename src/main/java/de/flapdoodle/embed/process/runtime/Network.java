@@ -82,16 +82,10 @@ public class Network {
 	}
 
 	public static int getPreferredFreeServerPort(InetAddress hostAddress, int preferredPort) throws IOException {
-		ServerSocket serverSocket = null;
-		try {
-			serverSocket = new ServerSocket(preferredPort, 0, hostAddress);
+		try (ServerSocket serverSocket = new ServerSocket(preferredPort, 0, hostAddress)) {
 			return preferredPort;
 		} catch (IOException e) {
 			return getFreeServerPort(hostAddress);
-		} finally {
-			if (serverSocket != null) {
-				serverSocket.close();
-			}
 		}
 	}
 

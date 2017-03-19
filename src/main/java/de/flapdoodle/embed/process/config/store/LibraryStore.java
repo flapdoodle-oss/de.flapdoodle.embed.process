@@ -26,9 +26,9 @@ package de.flapdoodle.embed.process.config.store;
 import java.util.List;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.distribution.Platform;
 
 @FunctionalInterface
+@Deprecated
 public interface LibraryStore {
 
 	List<String> getLibrary(Distribution distribution);
