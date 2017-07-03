@@ -47,6 +47,8 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 - Embedded node.js [nodejs.embed.flapdoodle.de](https://github.com/flapdoodle-oss/de.flapdoodle.embed.nodejs)
 - Embedded PostgreSQL [ru.yandex.qatools.embed](https://github.com/yandex-qatools/postgresql-embedded)
 - Embedded MySQL [com.wix.mysql](https://github.com/wix/wix-embedded-mysql)
+- Embedded Consul [com.github.golovnin.embedded.consul](https://github.com/golovnin/embedded-consul)
+- Embedded Vault [com.github.golovnin.embedded.vault](https://github.com/golovnin/embedded-vault)
 
 ### Changelog
 
