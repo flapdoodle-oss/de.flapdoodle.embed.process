@@ -205,25 +205,25 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	}
 
 	protected boolean sendKillToProcess() {
-		if (processId > 0) {
+		if (getProcessId() > 0) {
 			return Processes.killProcess(config.supportConfig(), distribution.platform(),
-					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
+					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
 		}
 		return false;
 	}
 
 	protected boolean sendTermToProcess() {
-		if (processId > 0) {
+		if (getProcessId() > 0) {
 			return Processes.termProcess(config.supportConfig(), distribution.platform(),
-					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
+					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
 		}
 		return false;
 	}
 
 	protected boolean tryKillToProcess() {
-		if (processId > 0) {
+		if (getProcessId() > 0) {
 			return Processes.tryKillProcess(config.supportConfig(), distribution.platform(),
-					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), processId);
+					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
 		}
 		return false;
 	}
