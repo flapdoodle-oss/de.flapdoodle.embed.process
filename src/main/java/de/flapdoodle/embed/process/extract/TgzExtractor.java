@@ -37,7 +37,7 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
  */
 public class TgzExtractor extends AbstractTarExtractor {
 
-	protected ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException {
+	protected ArchiveWrapper archiveStream(File source) throws IOException {
 		FileInputStream fin = new FileInputStream(source);
 		BufferedInputStream in = new BufferedInputStream(fin);
 		GzipCompressorInputStream gzIn = new GzipCompressorInputStream(in);

@@ -62,7 +62,7 @@ public class Files {
 		return createTempFile(tempDir, tempFileName);
 	}
 
-	public static File createTempFile(File tempDir, String tempFileName) throws IOException, FileAlreadyExistsException {
+	public static File createTempFile(File tempDir, String tempFileName) throws IOException {
 		File tempFile =  fileOf(tempDir, tempFileName);
 		createOrCheckDir(tempFile.getParentFile());
 		if (!tempFile.createNewFile())

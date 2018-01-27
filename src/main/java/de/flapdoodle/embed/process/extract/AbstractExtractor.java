@@ -41,9 +41,9 @@ public abstract class AbstractExtractor implements Extractor {
 	
 	private static Logger _logger=LoggerFactory.getLogger(AbstractExtractor.class);
 	
-	protected abstract ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException;
+	protected abstract ArchiveWrapper archiveStream(File source) throws IOException;
 
-	private ArchiveWrapper archiveStreamWithExceptionHint(File source) throws FileNotFoundException, IOException {
+	private ArchiveWrapper archiveStreamWithExceptionHint(File source) throws IOException {
 		try {
 			return archiveStream(source);
 		} catch (IOException iox) {

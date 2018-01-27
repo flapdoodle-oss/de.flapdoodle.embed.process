@@ -108,7 +108,7 @@ public class Downloader implements IDownloader {
 	}
 
 	private InputStreamAndLength downloadInputStream(DownloadConfig downloadConfig, Distribution distribution)
-			throws MalformedURLException, IOException {
+			throws IOException {
 		URL url = new URL(getDownloadUrl(downloadConfig, distribution));
 		
 		Optional<Proxy> proxy = downloadConfig.proxyFactory().map(f -> f.createProxy());
