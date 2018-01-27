@@ -24,7 +24,6 @@
 package de.flapdoodle.embed.process.extract;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 

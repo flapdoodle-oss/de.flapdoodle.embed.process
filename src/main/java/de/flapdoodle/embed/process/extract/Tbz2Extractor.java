@@ -26,7 +26,6 @@ package de.flapdoodle.embed.process.extract;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;

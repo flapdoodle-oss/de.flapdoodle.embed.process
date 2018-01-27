@@ -23,7 +23,6 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
