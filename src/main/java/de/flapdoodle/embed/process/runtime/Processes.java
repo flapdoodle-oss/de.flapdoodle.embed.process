@@ -115,7 +115,7 @@ public abstract class Processes {
 				handle.setPointer(Pointer.createConstant(handl));
 				int ret = kernel.GetProcessId(handle);
 				logger.debug("Detected pid: {}", ret);
-				return Long.valueOf(ret);
+				return (long) ret;
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
