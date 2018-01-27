@@ -58,7 +58,7 @@ public interface FileSet {
 		@Auxiliary
 		public Pattern matchingPattern() {
 			return uncompiledMatchingPattern().compile();
-		};
+		}
 
 		static Entry of(FileType type, String filename, Pattern pattern) {
 			return ImmutableEntry.of(type,filename, UncompiledPattern.of(pattern));
