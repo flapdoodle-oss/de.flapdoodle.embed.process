@@ -84,14 +84,8 @@ public abstract class Processes {
 					return ((Integer) value).longValue();
 				}
 			}
-		} catch (SecurityException sx) {
+		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException sx) {
 			sx.printStackTrace();
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
 		}
 		return null;
 	}
@@ -165,13 +159,10 @@ public abstract class Processes {
 				return logWatch.isInitWithSuccess();
 			}
 
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			logger.error("Trying to get process status", e);
 			e.printStackTrace();
 
-		} catch (InterruptedException e) {
-			logger.error("Trying to get process status", e);
-			e.printStackTrace();
 		}
 		return false;
 	}
