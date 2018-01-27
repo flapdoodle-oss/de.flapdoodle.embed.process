@@ -36,6 +36,7 @@ import java.net.URLConnection;
 import java.util.Optional;
 
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.store.ProxyFactory;
 import de.flapdoodle.embed.process.config.store.TimeoutConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
@@ -111,7 +112,7 @@ public class Downloader implements IDownloader {
 			throws IOException {
 		URL url = new URL(getDownloadUrl(downloadConfig, distribution));
 		
-		Optional<Proxy> proxy = downloadConfig.proxyFactory().map(f -> f.createProxy());
+		Optional<Proxy> proxy = downloadConfig.proxyFactory().map(ProxyFactory::createProxy);
 		
 		try {
 			URLConnection openConnection;
