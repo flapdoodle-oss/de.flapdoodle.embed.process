@@ -44,16 +44,10 @@ public class NUMA {
 	private static Logger logger = LoggerFactory.getLogger(NUMA.class);
 
 	public static synchronized boolean isNUMA(SupportConfig support, Platform platform) {
-		Boolean ret = NUMA_STATUS_MAP.get(platform);
-		if (ret == null) {
-			ret = isNUMAOnce(support, platform);
-			NUMA_STATUS_MAP.put(platform, ret);
-		}
-		return ret;
+		return NUMA_STATUS_MAP.computeIfAbsent(platform, p -> isNUMAOnce(support, p));
 	}
 
 	static final Map<Platform, Boolean> NUMA_STATUS_MAP = new HashMap<>();
-
 
 	public static boolean isNUMAOnce(SupportConfig support, Platform platform) {
 		if (platform == Platform.Linux) {
