@@ -54,7 +54,7 @@ public class ZipExtractor extends AbstractExtractor {
         }
 
         @Override
-        public ArchiveEntry getNextEntry() throws IOException {
+        public ArchiveEntry getNextEntry() {
             return entries.hasMoreElements() ? entries.nextElement() : null;
         }
 

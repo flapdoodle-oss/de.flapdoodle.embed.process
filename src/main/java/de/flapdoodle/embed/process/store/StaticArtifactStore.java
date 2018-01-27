@@ -39,14 +39,12 @@ public class StaticArtifactStore implements IArtifactStore {
 	}
 	
 	@Override
-	public boolean checkDistribution(Distribution distribution)
-			throws IOException {
+	public boolean checkDistribution(Distribution distribution) {
 		return distributionFileSet.containsKey(distribution);
 	}
 
 	@Override
-	public ExtractedFileSet extractFileSet(Distribution distribution)
-			throws IOException {
+	public ExtractedFileSet extractFileSet(Distribution distribution) {
 		return distributionFileSet.get(distribution);
 	}
 

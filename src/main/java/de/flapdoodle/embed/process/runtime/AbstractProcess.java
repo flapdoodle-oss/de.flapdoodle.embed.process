@@ -148,7 +148,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		return config;
 	}
 
-	protected void onBeforeProcess(RuntimeConfig runtimeConfig) throws IOException {
+	protected void onBeforeProcess(RuntimeConfig runtimeConfig) {
 
 	}
 
@@ -156,7 +156,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	}
 
-	protected void onAfterProcessStart(ProcessControl process, RuntimeConfig runtimeConfig) throws IOException {
+	protected void onAfterProcessStart(ProcessControl process, RuntimeConfig runtimeConfig) {
 		ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
 		Processors.connect(process.getReader(), outputConfig.getOutput());
 		Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.getError()));
