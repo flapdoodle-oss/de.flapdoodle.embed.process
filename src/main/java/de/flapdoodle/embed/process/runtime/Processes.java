@@ -124,27 +124,18 @@ public abstract class Processes {
 	}
 
 	public static boolean killProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
-		if (platform.isUnixLike()) {
-			return ProcessControl.executeCommandLine(support, "[kill process]",
-					new ProcessConfig(asList("kill", "-2", "" + pid), output));
-		}
-		return false;
+		return platform.isUnixLike() && ProcessControl.executeCommandLine(support, "[kill process]",
+				new ProcessConfig(asList("kill", "-2", "" + pid), output));
 	}
 
 	public static boolean termProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
-	    if (platform.isUnixLike()) {
-		return ProcessControl.executeCommandLine(support, "[term process]",
-			new ProcessConfig(asList("kill", "" + pid), output));
-	    }
-	    return false;
+		return platform.isUnixLike() && ProcessControl.executeCommandLine(support, "[term process]",
+				new ProcessConfig(asList("kill", "" + pid), output));
 	}
 
 	public static boolean tryKillProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
-		if (platform == Platform.Windows) {
-			return ProcessControl.executeCommandLine(support, "[taskkill process]",
-					new ProcessConfig(asList("taskkill", "/F", "/pid", "" + pid), output));
-		}
-		return false;
+		return platform == Platform.Windows && ProcessControl.executeCommandLine(support, "[taskkill process]",
+				new ProcessConfig(asList("taskkill", "/F", "/pid", "" + pid), output));
 	}
 
 	public static boolean isProcessRunning(Platform platform, long pid) {
