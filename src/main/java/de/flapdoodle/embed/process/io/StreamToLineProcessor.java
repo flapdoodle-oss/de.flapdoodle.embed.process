@@ -29,7 +29,7 @@ package de.flapdoodle.embed.process.io;
 public class StreamToLineProcessor implements StreamProcessor {
 
 	private final StreamProcessor destination;
-	private StringBuilder buffer = new StringBuilder();
+	private final StringBuilder buffer = new StringBuilder();
 
 	public StreamToLineProcessor(StreamProcessor destination) {
 		this.destination = destination;

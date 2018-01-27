@@ -32,7 +32,7 @@ import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
 public class StaticArtifactStore implements IArtifactStore {
 
-	private Map<Distribution, ExtractedFileSet> distributionFileSet;
+	private final Map<Distribution, ExtractedFileSet> distributionFileSet;
 
 	public StaticArtifactStore(Map<Distribution, ExtractedFileSet> distributionFileSet) {
 		this.distributionFileSet = new HashMap<>(distributionFileSet);

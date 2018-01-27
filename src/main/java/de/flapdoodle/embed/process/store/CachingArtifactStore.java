@@ -45,7 +45,7 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	final Object lock = new Object();
 
-	HashMap<Distribution, FilesWithCounter> distributionFiles = new HashMap<>();
+	final HashMap<Distribution, FilesWithCounter> distributionFiles = new HashMap<>();
 
 	private final ScheduledExecutorService executor;
 
@@ -200,7 +200,7 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	class CustomThreadFactory implements ThreadFactory {
 
-		ThreadFactory factory=Executors.defaultThreadFactory();
+		final ThreadFactory factory=Executors.defaultThreadFactory();
 		
 		@Override
 		public Thread newThread(Runnable runnable) {
