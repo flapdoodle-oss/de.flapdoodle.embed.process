@@ -30,10 +30,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.collections.Collections;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.Readers;
+
+import static java.util.Arrays.asList;
 
 /**
  *
@@ -58,7 +59,7 @@ public class NUMA {
 		if (platform == Platform.Linux) {
 			try {
 				ProcessControl process = ProcessControl
-						.fromCommandLine(support, Collections.newArrayList("grep", "NUMA=y", "/boot/config-`uname -r`"), true);
+						.fromCommandLine(support, asList("grep", "NUMA=y", "/boot/config-`uname -r`"), true);
 				Reader reader = process.getReader();
 				String content = Readers.readAll(reader);
 				process.stop();

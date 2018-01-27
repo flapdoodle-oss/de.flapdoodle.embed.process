@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashSet;
 
 import javax.lang.model.SourceVersion;
@@ -39,7 +38,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
 
-import de.flapdoodle.embed.process.collections.Collections;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
@@ -47,6 +45,8 @@ import de.flapdoodle.embed.process.io.StreamProcessor;
 import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
+
+import static java.util.Arrays.asList;
 
 public abstract class Processes {
 
@@ -126,7 +126,7 @@ public abstract class Processes {
 	public static boolean killProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
 		if (platform.isUnixLike()) {
 			return ProcessControl.executeCommandLine(support, "[kill process]",
-					new ProcessConfig(Collections.newArrayList("kill", "-2", "" + pid), output));
+					new ProcessConfig(asList("kill", "-2", "" + pid), output));
 		}
 		return false;
 	}
@@ -134,7 +134,7 @@ public abstract class Processes {
 	public static boolean termProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
 	    if (platform.isUnixLike()) {
 		return ProcessControl.executeCommandLine(support, "[term process]",
-			new ProcessConfig(Collections.newArrayList("kill", "" + pid), output));
+			new ProcessConfig(asList("kill", "" + pid), output));
 	    }
 	    return false;
 	}
@@ -142,7 +142,7 @@ public abstract class Processes {
 	public static boolean tryKillProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
 		if (platform == Platform.Windows) {
 			return ProcessControl.executeCommandLine(support, "[taskkill process]",
-					new ProcessConfig(Collections.newArrayList("taskkill", "/F", "/pid", "" + pid), output));
+					new ProcessConfig(asList("taskkill", "/F", "/pid", "" + pid), output));
 		}
 		return false;
 	}
@@ -161,9 +161,9 @@ public abstract class Processes {
 				// firewall blocking, or could be RUNNING
 				final String[] cmd = { "tasklist.exe",
 						"/FI", "PID eq " + pid ,"/FO", "CSV" };
-				logger.trace("Command: {}", Arrays.asList(cmd));
+				logger.trace("Command: {}", asList(cmd));
 				ProcessBuilder processBuilder = ProcessControl
-						.newProcessBuilder(Arrays.asList(cmd), true);
+						.newProcessBuilder(asList(cmd), true);
 				Process process = processBuilder.start();
 				// look for the PID in the output, pass it in for 'success' state
 				LogWatchStreamProcessor logWatch = new LogWatchStreamProcessor(""+pid,
