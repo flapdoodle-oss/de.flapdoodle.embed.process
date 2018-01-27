@@ -52,10 +52,7 @@ public class Network {
 		try {
 			InetAddress addr = getLocalHost();
 			byte[] ipAddr = addr.getAddress();
-			if (ipAddr.length > IPV4_LENGTH) {
-				return true;
-			}
-			return false;
+			return ipAddr.length > IPV4_LENGTH;
 		} catch (UnknownHostException ux) {
 			logger.error(NO_LOCALHOST_ERROR_MESSAGE, ux);
 			throw ux;
