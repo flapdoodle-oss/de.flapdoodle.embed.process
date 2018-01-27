@@ -294,7 +294,7 @@
 	</profiles>
 
 	<properties>
-		<jna.version>4.2.2</jna.version>
+		<jna.version>4.5.1</jna.version>
 		<osgi.category>Bundles</osgi.category>
 		<osgi.export>
 			de.flapdoodle.embed.process;version=${project.version},
@@ -347,31 +347,31 @@
 		<dependency>
 			<groupId>de.flapdoodle.testdoc</groupId>
 			<artifactId>de.flapdoodle.testdoc</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>2.7.12</version>
+			<version>2.13.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>nl.jqno.equalsverifier</groupId>
 			<artifactId>equalsverifier</artifactId>
-			<version>2.1.7</version>
+			<version>2.4.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.immutables</groupId>
 			<artifactId>value</artifactId>
-			<version>2.3.10</version>
+			<version>2.5.6</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.immutables</groupId>
 			<artifactId>builder</artifactId>
-			<version>2.3.10</version>
+			<version>2.5.6</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -379,19 +379,19 @@
 			<!-- <groupId>org.apache.commons</groupId> - deprecated? -->
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.5</version>
+			<version>2.6</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.5</version>
+			<version>3.7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>1.14</version>
+			<version>1.15</version>
 		</dependency>
 
 		<dependency>
@@ -408,14 +408,14 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.24</version>
+			<version>1.7.25</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.24</version>
+			<version>1.7.25</version>
 			<scope>test</scope>
 		</dependency>
 
