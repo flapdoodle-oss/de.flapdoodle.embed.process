@@ -49,7 +49,7 @@ public class FilesToExtract {
 		if (executableNaming==null) throw new NullPointerException("executableNaming is NULL");
 		if (fileSet==null) throw new NullPointerException("fileSet is NULL");
 		
-		_files = new ArrayList<FileSet.Entry>(fileSet.entries());
+		_files = new ArrayList<>(fileSet.entries());
 		_dirFactoryResult = dirFactory.asFile();
 		_dirFactoryResultIsGenerated=dirFactory.isGenerated();
 		_executableNaming = executableNaming;

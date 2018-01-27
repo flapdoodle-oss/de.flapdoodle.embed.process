@@ -50,7 +50,7 @@ public class PlatformLibraryStoreBuilder extends AbstractBuilder<LibraryStore> {
 		LibraryContainer libraryContainer = get(LIBRARIES, null);
 		Map<Platform, List<String>> _libraries;
 		if (libraryContainer == null) {
-			_libraries = new HashMap<Platform, List<String>>();
+			_libraries = new HashMap<>();
 			set(LIBRARIES, new LibraryContainer(_libraries));
 		} else {
 			_libraries = libraryContainer.value();
@@ -62,7 +62,7 @@ public class PlatformLibraryStoreBuilder extends AbstractBuilder<LibraryStore> {
 	public PlatformLibraryStoreBuilder setLibrary(Platform platform, String library) {
 		Map<Platform, List<String>> _libraries = get(LIBRARIES).value();
 		if (_libraries == null) {
-			_libraries = new HashMap<Platform, List<String>>();
+			_libraries = new HashMap<>();
 			_libraries.put(platform, Arrays.asList(library));
 		}
 		set(LIBRARIES, new LibraryContainer(_libraries));

@@ -158,7 +158,7 @@ public abstract class Processes {
 				Process process = processBuilder.start();
 				// look for the PID in the output, pass it in for 'success' state
 				LogWatchStreamProcessor logWatch = new LogWatchStreamProcessor(""+pid,
-					new HashSet<String>(), StreamToLineProcessor.wrap(Processors.silent()));
+						new HashSet<>(), StreamToLineProcessor.wrap(Processors.silent()));
 				Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
 				logWatch.waitForResult(2000);
 				logger.trace("logWatch output: {}", logWatch.getOutput());

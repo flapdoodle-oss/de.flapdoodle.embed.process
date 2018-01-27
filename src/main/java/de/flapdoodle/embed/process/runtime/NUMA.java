@@ -52,7 +52,7 @@ public class NUMA {
 		return ret;
 	}
 
-	static final Map<Platform, Boolean> NUMA_STATUS_MAP = new HashMap<Platform, Boolean>();
+	static final Map<Platform, Boolean> NUMA_STATUS_MAP = new HashMap<>();
 
 
 	public static boolean isNUMAOnce(SupportConfig support, Platform platform) {

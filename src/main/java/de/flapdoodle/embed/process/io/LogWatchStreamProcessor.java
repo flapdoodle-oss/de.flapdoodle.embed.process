@@ -40,7 +40,7 @@ public class LogWatchStreamProcessor implements StreamProcessor {
 
 	public LogWatchStreamProcessor(String success, Set<String> failures, StreamProcessor destination) {
 		this.success = success;
-		this.failures = new HashSet<String>(failures);
+		this.failures = new HashSet<>(failures);
 		this.destination = destination;
 	}
 

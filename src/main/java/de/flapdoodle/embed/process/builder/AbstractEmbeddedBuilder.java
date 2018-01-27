@@ -31,11 +31,11 @@ import java.util.Set;
 @Deprecated
 public class AbstractEmbeddedBuilder<B> {
 
-	Map<TypedProperty<?>, Object> propertyMap = new HashMap<TypedProperty<?>, Object>();
-	Set<TypedProperty<?>> propertyHadDefaultValueMap = new HashSet<TypedProperty<?>>();
+	Map<TypedProperty<?>, Object> propertyMap = new HashMap<>();
+	Set<TypedProperty<?>> propertyHadDefaultValueMap = new HashSet<>();
 
 	protected <T> IProperty<T> property(TypedProperty<T> typedProperty) {
-		return new Property<T>(typedProperty);
+		return new Property<>(typedProperty);
 	}
 	
 	protected <T> T setDefault(TypedProperty<T> property, T value) {

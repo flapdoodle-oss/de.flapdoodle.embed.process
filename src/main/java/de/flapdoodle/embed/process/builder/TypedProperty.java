@@ -50,11 +50,11 @@ public final class TypedProperty<T> {
 	}
 
 	public static <T> TypedProperty<T> with(String name, Class<T> type) {
-		return new TypedProperty<T>(name, type);
+		return new TypedProperty<>(name, type);
 	}
 
 	public static <T> TypedProperty<T> with(Class<T> type) {
-		return new TypedProperty<T>(type.getSimpleName(), type);
+		return new TypedProperty<>(type.getSimpleName(), type);
 	}
 	
 	@Override

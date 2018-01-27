@@ -86,7 +86,7 @@ public class FileCleaner {
 
 	static class Cleaner {
 
-		private final Map<File, Integer> fileToClean = new HashMap<File, Integer>();
+		private final Map<File, Integer> fileToClean = new HashMap<>();
 
 		public void clean() {
 			while (true)
@@ -102,7 +102,7 @@ public class FileCleaner {
 
 		private void deleteFiles() {
 			synchronized (fileToClean) {
-				Map<File, Integer> copy = new HashMap<File, Integer>(fileToClean);
+				Map<File, Integer> copy = new HashMap<>(fileToClean);
 				for (File f : copy.keySet()) {
 					try {
 						FileUtils.forceDelete(f);
