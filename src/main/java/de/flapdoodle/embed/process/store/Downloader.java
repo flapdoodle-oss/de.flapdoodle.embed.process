@@ -132,7 +132,7 @@ public class Downloader implements IDownloader {
 	
 			return new InputStreamAndLength(downloadStream,openConnection.getContentLength());
 		} catch (IOException iox) {
-			throw new IOException("Could not open inputStream for "+url+(proxy!=null ? " with proxy "+proxy : ""), iox);
+			throw new IOException("Could not open inputStream for " + url + " with proxy " + proxy, iox);
 		}
 	}
 
