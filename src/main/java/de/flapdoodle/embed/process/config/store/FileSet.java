@@ -45,7 +45,7 @@ public interface FileSet {
 	}
 	
 	@Value.Immutable
-	public abstract class Entry {
+    abstract class Entry {
 		@Parameter
 		public abstract FileType type();
 

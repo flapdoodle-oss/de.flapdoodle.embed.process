@@ -44,7 +44,7 @@ public interface RuntimeConfig {
 		return false;
 	}
 	
-	public static ImmutableRuntimeConfig.Builder builder() {
+	static ImmutableRuntimeConfig.Builder builder() {
 		return ImmutableRuntimeConfig.builder();
 	}
 }

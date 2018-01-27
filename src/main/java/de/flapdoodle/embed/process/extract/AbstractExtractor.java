@@ -99,7 +99,7 @@ public abstract class AbstractExtractor implements Extractor {
 		return builder.build();
 	}
 
-	protected static interface ArchiveWrapper {
+	protected interface ArchiveWrapper {
 
 		ArchiveEntry getNextEntry() throws IOException;
 
