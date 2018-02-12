@@ -192,7 +192,7 @@ public abstract class Processes {
 			Long getPid(Process process) {
 				try {
 					// Invoking via reflection to avoid a strong dependency on JDK 9
-					Method getPid = Process.class.getMethod("getPid");
+					Method getPid = Process.class.getMethod("pid");
 					return (Long) getPid.invoke(process);
 				}
 				catch (Exception e) {
