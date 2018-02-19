@@ -49,6 +49,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 - Embedded MySQL [com.wix.mysql](https://github.com/wix/wix-embedded-mysql)
 - Embedded Consul [com.github.golovnin.embedded.consul](https://github.com/golovnin/embedded-consul)
 - Embedded Vault [com.github.golovnin.embedded.vault](https://github.com/golovnin/embedded-vault)
+- Embedded InfluxDB [io.apisense.embed.influx](https://github.com/APISENSE/embed-influxDB)
 
 ### Changelog
 
