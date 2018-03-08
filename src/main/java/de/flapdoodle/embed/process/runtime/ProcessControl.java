@@ -173,7 +173,7 @@ public class ProcessControl {
 		if (retCode==null) {
 //			timer.cancel();
 			String message = "\n\n" + "----------------------------------------------------\n"
-					+ "Something bad happend. We couldn't kill "+runtime.name()+" process, and tried a lot.\n"
+					+ "Something bad happened. We couldn't kill "+runtime.name()+" process, and tried a lot.\n"
 					+ "If you want this problem solved you can help us if you open a new issue.\n" + "\n"
 					+ "Follow this link:\n" + runtime.supportUrl() +
 					"\n"
