@@ -23,22 +23,9 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-
-import javax.lang.model.SourceVersion;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
-
 import de.flapdoodle.embed.process.collections.Collections;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
@@ -47,6 +34,16 @@ import de.flapdoodle.embed.process.io.IStreamProcessor;
 import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public abstract class Processes {
 
@@ -55,12 +52,19 @@ public abstract class Processes {
 	private static final PidHelper PID_HELPER;
 
 	static {
-		// Comparing with the string value to avoid a strong dependency on JDK 9
-		if (SourceVersion.latest().toString().equals( "RELEASE_9" )) {
-			PID_HELPER = PidHelper.JDK_9;
-		}
-		else {
+		if (processHasPidMethod()) {
+			PID_HELPER = PidHelper.PID_METHOD;
+		} else {
 			PID_HELPER = PidHelper.LEGACY;
+		}
+	}
+
+	private static boolean processHasPidMethod() {
+		try {
+			Process.class.getMethod("pid");
+			return true;
+		} catch (NoSuchMethodException e) {
+			return false;
 		}
 	}
 
@@ -75,7 +79,7 @@ public abstract class Processes {
 	private static Long unixLikeProcessId(Process process) {
 		Class<?> clazz = process.getClass();
 		try {
-			if (clazz.getName().equals("java.lang.UNIXProcess")) {
+			if (SystemUtils.IS_OS_UNIX) {
 				Field pidField = clazz.getDeclaredField("pid");
 				pidField.setAccessible(true);
 				Object value = pidField.get(process);
@@ -187,15 +191,13 @@ public abstract class Processes {
 
 	private enum PidHelper {
 
-		JDK_9 {
+		PID_METHOD {
 			@Override
 			Long getPid(Process process) {
 				try {
-					// Invoking via reflection to avoid a strong dependency on JDK 9
-					Method getPid = Process.class.getMethod("pid");
-					return (Long) getPid.invoke(process);
-				}
-				catch (Exception e) {
+					Method pid = Process.class.getMethod("pid");
+					return (Long) pid.invoke(process);
+				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
 				}
@@ -204,9 +206,9 @@ public abstract class Processes {
 		LEGACY {
 			@Override
 			Long getPid(Process process) {
-				Long pid=unixLikeProcessId(process);
-				if (pid==null) {
-					pid=windowsProcessId(process);
+				Long pid = unixLikeProcessId(process);
+				if (pid == null) {
+					pid = windowsProcessId(process);
 				}
 				return pid;
 			}
