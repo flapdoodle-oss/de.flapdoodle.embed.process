@@ -7,8 +7,18 @@ before_install:
   - sudo hostname "$(hostname | cut -c1-63)"
   - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
   - cat /etc/hosts # optionally check the content *after*
-jdk:
-- oraclejdk8
+
+sudo: required
+matrix:
+  include:
+  - jdk: oraclejdk8
+  - jdk: oraclejdk9
+    dist: trusty
+    group: edge
+    addons:
+      apt:
+        packages:
+        - oracle-java9-installer
 
 env:
   matrix:
