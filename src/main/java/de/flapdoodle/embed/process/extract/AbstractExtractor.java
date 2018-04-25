@@ -32,6 +32,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import de.flapdoodle.embed.process.io.progress.IProgressListener;
@@ -72,8 +73,16 @@ public abstract class AbstractExtractor implements IExtractor {
 				if (match != null) {
 					if (archive.canReadEntryData(entry)) {
 						long size = entry.getSize();
-						builder.file(match.type(),match.write(archive.asStream(entry), size));
-						//						destination.setExecutable(true);
+						File destination = match.write(archive.asStream(entry), size);
+						builder.file(match.type(),destination);
+						try {
+							if (match.type() == FileType.Executable && !destination.canExecute()) {
+								destination.setExecutable(true);
+							}
+						} catch (Exception e) {
+							_logger.warn("while trying to set executable on {}: {}", destination, e.toString());
+							_logger.trace("full exception trace", e);
+						}
 						progressListener.info(progressLabel,"extract "+entry.getName());
 					}
 					if (toExtract.nothingLeft()) {
