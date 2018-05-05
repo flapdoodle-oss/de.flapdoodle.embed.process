@@ -25,7 +25,11 @@ package de.flapdoodle.embed.process.io.file;
 
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
-import org.apache.commons.io.FileUtils;
+
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +109,7 @@ public class Files {
 
 		try {
 			if ((fileOrDir != null) && (fileOrDir.exists())) {
-				FileUtils.forceDelete(fileOrDir);
+				forceDelete(fileOrDir.toPath());
 				logger.debug("could delete {}", fileOrDir);
 				ret = true;
 			}
@@ -118,7 +122,53 @@ public class Files {
 		return ret;
 	}
 
-	public static void write(InputStream in, long size, File output) throws IOException {
+	/**
+	 * Deletes a path from the filesystem
+	 *
+	 * If the path is a directory its contents
+	 * will be recursively deleted before it itself
+	 * is deleted.
+	 *
+	 * Note that removal of a directory is not an atomic-operation
+	 * and so if an error occurs during removal, some of the directories
+	 * descendants may have already been removed
+	 *
+	 * @throws IOException if an error occurs whilst removing a file or directory
+	 */
+	public static void forceDelete(final Path path) throws IOException {
+		if (!java.nio.file.Files.isDirectory(path)) {
+			java.nio.file.Files.delete(path);
+		} else {
+			java.nio.file.Files.walkFileTree(path, DeleteDirVisitor.getInstance());
+		}
+	}
+
+	private static class DeleteDirVisitor extends SimpleFileVisitor<Path> {
+		private static final SimpleFileVisitor<Path> instance = new DeleteDirVisitor();
+
+		public static SimpleFileVisitor<Path> getInstance() {
+			return instance;
+		}
+
+		@Override
+		public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+			java.nio.file.Files.deleteIfExists(file);
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+			if (exc != null) {
+				throw exc;
+			}
+
+			java.nio.file.Files.deleteIfExists(dir);
+			return FileVisitResult.CONTINUE;
+		}
+	}
+
+	public static void write(InputStream in, long size, File output)
+            throws IOException {
 		try (FileOutputStream out = new FileOutputStream(output)) {
 			byte[] buf = new byte[BYTE_BUFFER_LENGTH];
 			int read;
