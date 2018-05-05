@@ -104,7 +104,7 @@ public class Files {
 		return tempFile;
 	}
 
-	public static boolean forceDelete(File fileOrDir) {
+	public static boolean forceDelete(final File fileOrDir) {
 		boolean ret = false;
 
 		try {
@@ -167,14 +167,15 @@ public class Files {
 		}
 	}
 
-	public static void write(InputStream in, long size, File output)
-            throws IOException {
-		try (FileOutputStream out = new FileOutputStream(output)) {
-			byte[] buf = new byte[BYTE_BUFFER_LENGTH];
+	public static void write(final InputStream in, long size, final File output)
+			throws IOException {
+		try (final OutputStream out = java.nio.file.Files.newOutputStream(output.toPath())) {
+			final byte[] buf = new byte[BYTE_BUFFER_LENGTH];
 			int read;
 			int left = buf.length;
-			if (left > size)
+			if (left > size) {
 				left = (int) size;
+			}
 			while ((read = in.read(buf, 0, left)) > 0) {
 
 				out.write(buf, 0, read);
@@ -186,35 +187,21 @@ public class Files {
 		}
 	}
 
-	public static void write(InputStream in, File output) throws IOException {
-		try (FileOutputStream out = new FileOutputStream(output)) {
-			byte[] buf = new byte[BYTE_BUFFER_LENGTH];
-			int read;
-			while ((read = in.read(buf, 0, buf.length)) != -1) {
-				out.write(buf, 0, read);
-			}
-		}
+	public static void write(final InputStream in, final File output) throws IOException {
+		java.nio.file.Files.copy(in, output.toPath());
 	}
 
-	public static void write(String content, File output) throws IOException {
-		try (final FileOutputStream out = new FileOutputStream(output);
-			 final OutputStreamWriter w = new OutputStreamWriter(out)) {
-			w.write(content);
-			w.flush();
-		}
+	public static void write(final String content, final File output) throws IOException {
+		java.nio.file.Files.write(output.toPath(), content.getBytes());
 	}
 
-	public static boolean moveFile(File source, File destination) {
-		if (!source.renameTo(destination)) {
-			// move konnte evtl. nicht durchgeführt werden
-			try {
-				java.nio.file.Files.copy(source.toPath(), destination.toPath());
-				return source.delete();
-			} catch (IOException iox) {
-				return false;
-			}
+	public static boolean moveFile(final File source, final File destination) {
+		try {
+			java.nio.file.Files.move(source.toPath(), destination.toPath());
+			return true;
+		} catch (IOException iox) {
+			return false;
 		}
-		return true;
 	}
 
 	public static File fileOf(File base, File relative) {
