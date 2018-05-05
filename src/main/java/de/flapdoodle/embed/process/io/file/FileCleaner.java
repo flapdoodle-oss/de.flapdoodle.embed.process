@@ -23,14 +23,13 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.commons.io.FileUtils;
 
 public class FileCleaner {
 
@@ -105,7 +104,7 @@ public class FileCleaner {
 				Map<File, Integer> copy = new HashMap<File, Integer>(fileToClean);
 				for (File f : copy.keySet()) {
 					try {
-						FileUtils.forceDelete(f);
+						Files.forceDelete(f.toPath());
 						fileToClean.remove(f);
 						logger.info("Could delete " + f);
 					} catch (IOException iox) {
