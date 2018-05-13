@@ -29,7 +29,6 @@ import de.flapdoodle.embed.process.example.GenericPackageResolver;
 import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,6 +36,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -81,7 +81,7 @@ public class ExtractorImplTest {
         IExtractedFileSet extracted = extractor.extract(runtime, source, fte);
 
         assertTrue("extracted file exists", extracted.executable().exists());
-        assertEquals(FileUtils.readFileToString(fileInArchive), FileUtils.readFileToString(extracted.executable()));
+        assertEquals(new String(Files.readAllBytes(fileInArchive.toPath())), new String(Files.readAllBytes(extracted.executable().toPath())));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class ExtractorImplTest {
         IExtractedFileSet extracted = extractor.extract(runtime, source, fte);
 
         assertTrue("extracted file exists", extracted.executable().exists());
-        assertEquals(FileUtils.readFileToString(fileInArchive), FileUtils.readFileToString(extracted.executable()));
+        assertEquals(new String(Files.readAllBytes(fileInArchive.toPath())), new String(Files.readAllBytes(extracted.executable().toPath())));
     }
 
     @Test
@@ -103,6 +103,6 @@ public class ExtractorImplTest {
         IExtractedFileSet extracted = extractor.extract(runtime, source, fte);
 
         assertTrue("extracted file exists", extracted.executable().exists());
-        assertEquals(FileUtils.readFileToString(fileInArchive), FileUtils.readFileToString(extracted.executable()));
+        assertEquals(new String(Files.readAllBytes(fileInArchive.toPath())), new String(Files.readAllBytes(extracted.executable().toPath())));
     }
 }

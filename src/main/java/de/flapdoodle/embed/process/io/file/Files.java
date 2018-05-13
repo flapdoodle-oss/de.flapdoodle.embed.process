@@ -23,20 +23,18 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.util.UUID;
+import de.flapdoodle.embed.process.io.directories.IDirectory;
+import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.io.directories.IDirectory;
-import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
+import java.io.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.UUID;
 
 /**
  *
@@ -111,12 +109,12 @@ public class Files {
 		return tempFile;
 	}
 
-	public static boolean forceDelete(File fileOrDir) {
+	public static boolean forceDelete(final File fileOrDir) {
 		boolean ret = false;
 
 		try {
 			if ((fileOrDir != null) && (fileOrDir.exists())) {
-				FileUtils.forceDelete(fileOrDir);
+				forceDelete(fileOrDir.toPath());
 				logger.debug("could delete {}", fileOrDir);
 				ret = true;
 			}
@@ -129,15 +127,60 @@ public class Files {
 		return ret;
 	}
 
-	public static void write(InputStream in, long size, File output)
+	/**
+	 * Deletes a path from the filesystem
+	 *
+	 * If the path is a directory its contents
+	 * will be recursively deleted before it itself
+	 * is deleted.
+	 *
+	 * Note that removal of a directory is not an atomic-operation
+	 * and so if an error occurs during removal, some of the directories
+	 * descendants may have already been removed
+	 *
+	 * @throws IOException if an error occurs whilst removing a file or directory
+	 */
+	public static void forceDelete(final Path path) throws IOException {
+		if (!java.nio.file.Files.isDirectory(path)) {
+			java.nio.file.Files.delete(path);
+		} else {
+			java.nio.file.Files.walkFileTree(path, DeleteDirVisitor.getInstance());
+		}
+	}
+
+	private static class DeleteDirVisitor extends SimpleFileVisitor<Path> {
+		private static final SimpleFileVisitor<Path> instance = new DeleteDirVisitor();
+
+		public static SimpleFileVisitor<Path> getInstance() {
+			return instance;
+		}
+
+		@Override
+		public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+			java.nio.file.Files.deleteIfExists(file);
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+			if (exc != null) {
+				throw exc;
+			}
+
+			java.nio.file.Files.deleteIfExists(dir);
+			return FileVisitResult.CONTINUE;
+		}
+	}
+
+	public static void write(final InputStream in, long size, final File output)
 			throws IOException {
-		FileOutputStream out = new FileOutputStream(output);
-		try {
-			byte[] buf = new byte[BYTE_BUFFER_LENGTH];
+		try (final OutputStream out = java.nio.file.Files.newOutputStream(output.toPath())) {
+			final byte[] buf = new byte[BYTE_BUFFER_LENGTH];
 			int read;
 			int left = buf.length;
-			if (left > size)
+			if (left > size) {
 				left = (int) size;
+			}
 			while ((read = in.read(buf, 0, left)) > 0) {
 
 				out.write(buf, 0, read);
@@ -146,48 +189,24 @@ public class Files {
 				if (left > size)
 					left = (int) size;
 			}
-		} finally {
-			out.close();
 		}
 	}
 
-	public static void write(InputStream in, File output) throws IOException {
-		FileOutputStream out = new FileOutputStream(output);
+	public static void write(final InputStream in, final File output) throws IOException {
+		java.nio.file.Files.copy(in, output.toPath());
+	}
 
+	public static void write(final String content, final File output) throws IOException {
+		java.nio.file.Files.write(output.toPath(), content.getBytes());
+	}
+
+	public static boolean moveFile(final File source, final File destination) {
 		try {
-			byte[] buf = new byte[BYTE_BUFFER_LENGTH];
-			int read;
-			while ((read = in.read(buf, 0, buf.length)) != -1) {
-				out.write(buf, 0, read);
-			}
-		} finally {
-			out.close();
+			java.nio.file.Files.move(source.toPath(), destination.toPath());
+			return true;
+		} catch (IOException iox) {
+			return false;
 		}
-	}
-
-	public static void write(String content, File output) throws IOException {
-		FileOutputStream out = new FileOutputStream(output);
-		OutputStreamWriter w = new OutputStreamWriter(out);
-
-		try {
-			w.write(content);
-			w.flush();
-		} finally {
-			out.close();
-		}
-	}
-
-	public static boolean moveFile(File source, File destination) {
-		if (!source.renameTo(destination)) {
-			// move konnte evtl. nicht durchgeführt werden
-			try {
-				copyFile(source, destination);
-				return source.delete();
-			} catch (IOException iox) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private static void copyFile(File source, File destination)

@@ -23,17 +23,6 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -42,6 +31,17 @@ import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.io.file.Files;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public abstract class AbstractProcess<T extends IExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>
 		implements IStopable {
@@ -270,10 +270,10 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		}
 
 		// read the file, wait for the pid string to appear
-		String fileContent = StringUtils.chomp(StringUtils.strip(FileUtils.readFileToString(pidFile)));
+		String fileContent = StringUtils.chomp(StringUtils.strip(new String(java.nio.file.Files.readAllBytes(pidFile.toPath()))));
 		tries = 0;
 		while (StringUtils.isBlank(fileContent) && tries < 5) {
-			fileContent = StringUtils.chomp(StringUtils.strip(FileUtils.readFileToString(pidFile)));
+			fileContent = StringUtils.chomp(StringUtils.strip(new String(java.nio.file.Files.readAllBytes(pidFile.toPath()))));
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
