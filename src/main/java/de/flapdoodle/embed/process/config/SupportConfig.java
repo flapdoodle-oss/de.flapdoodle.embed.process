@@ -44,7 +44,7 @@ public interface SupportConfig {
 				.build();
 	}
 
-	public static ImmutableSupportConfig.Builder builder() {
+	static ImmutableSupportConfig.Builder builder() {
 		return ImmutableSupportConfig.builder();
 	}
 }

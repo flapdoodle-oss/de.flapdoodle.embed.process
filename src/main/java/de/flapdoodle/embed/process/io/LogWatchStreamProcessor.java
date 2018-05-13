@@ -40,7 +40,7 @@ public class LogWatchStreamProcessor implements StreamProcessor {
 
 	public LogWatchStreamProcessor(String success, Set<String> failures, StreamProcessor destination) {
 		this.success = success;
-		this.failures = new HashSet<String>(failures);
+		this.failures = new HashSet<>(failures);
 		this.destination = destination;
 	}
 
@@ -48,8 +48,7 @@ public class LogWatchStreamProcessor implements StreamProcessor {
 	public void process(String block) {
 		destination.process(block);
 
-		CharSequence line = block;
-		output.append(line);
+		output.append((CharSequence) block);
 
 		if (output.indexOf(success) != -1) {
 			gotResult(true,null);

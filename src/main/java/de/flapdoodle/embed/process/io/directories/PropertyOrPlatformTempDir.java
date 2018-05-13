@@ -28,7 +28,7 @@ import java.io.File;
 
 public class PropertyOrPlatformTempDir extends PlatformTempDir {
 
-	private static PropertyOrPlatformTempDir _instance=new PropertyOrPlatformTempDir();
+	private static final PropertyOrPlatformTempDir _instance=new PropertyOrPlatformTempDir();
 
 	@Override
 	public File asFile() {

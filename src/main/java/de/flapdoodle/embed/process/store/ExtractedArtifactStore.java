@@ -23,21 +23,17 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.io.File;
-import java.io.IOException;
-
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.DirectoryAndExecutableNaming;
-import de.flapdoodle.embed.process.extract.ExtractedFileSet;
-import de.flapdoodle.embed.process.extract.ExtractedFileSets;
-import de.flapdoodle.embed.process.extract.FilesToExtract;
-import de.flapdoodle.embed.process.extract.ITempNaming;
+import de.flapdoodle.embed.process.extract.*;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ExtractedArtifactStore implements IArtifactStore {
 
@@ -132,13 +128,9 @@ public class ExtractedArtifactStore implements IArtifactStore {
 	}
 
 	static String asPath(Distribution distribution) {
-		return new StringBuilder()
-			.append(distribution.platform().name())
-			.append("-")
-			.append(distribution.bitsize().name())
-			.append("--")
-			.append(distribution.version().asInDownloadPath())
-			.toString();
+		return distribution.platform().name() + "-" +
+				distribution.bitsize().name() + "--" +
+				distribution.version().asInDownloadPath();
 	}
 	
 	@Override

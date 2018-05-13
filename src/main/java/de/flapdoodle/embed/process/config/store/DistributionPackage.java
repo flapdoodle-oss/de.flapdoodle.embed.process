@@ -40,7 +40,7 @@ public interface DistributionPackage {
 	@Parameter
 	String archivePath();
 	
-	public static DistributionPackage of(ArchiveType archiveType, FileSet fileSet, String path) {
+	static DistributionPackage of(ArchiveType archiveType, FileSet fileSet, String path) {
 		return ImmutableDistributionPackage.of(archiveType, fileSet, path);
 	}
 }

@@ -42,7 +42,7 @@ public interface Version {
 		String asInDownloadPath();
 	}
 	
-	public static GenericVersion of(String asInDownloadPath) {
+	static GenericVersion of(String asInDownloadPath) {
 		return ImmutableGenericVersion.of(asInDownloadPath);
 	}
 }

@@ -50,23 +50,19 @@ public final class TypedProperty<T> {
 	}
 
 	public static <T> TypedProperty<T> with(String name, Class<T> type) {
-		return new TypedProperty<T>(name, type);
+		return new TypedProperty<>(name, type);
 	}
 
 	public static <T> TypedProperty<T> with(Class<T> type) {
-		return new TypedProperty<T>(type.getSimpleName(), type);
+		return new TypedProperty<>(type.getSimpleName(), type);
 	}
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((_name == null)
-				? 0
-				: _name.hashCode());
-		result = prime * result + ((_type == null)
-				? 0
-				: _type.hashCode());
+		result = prime * result + _name.hashCode();
+		result = prime * result + _type.hashCode();
 		return result;
 	}
 
@@ -79,17 +75,7 @@ public final class TypedProperty<T> {
 		if (getClass() != obj.getClass())
 			return false;
 		TypedProperty other = (TypedProperty) obj;
-		if (_name == null) {
-			if (other._name != null)
-				return false;
-		} else if (!_name.equals(other._name))
-			return false;
-		if (_type == null) {
-			if (other._type != null)
-				return false;
-		} else if (!_type.equals(other._type))
-			return false;
-		return true;
+		return _name.equals(other._name) && _type.equals(other._type);
 	}
 
 }

@@ -31,7 +31,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 public interface CommandLinePostProcessor {
 	List<String> process(Distribution distribution, List<String> args);
 	
-	public static class Noop implements CommandLinePostProcessor {
+	class Noop implements CommandLinePostProcessor {
 
 		@Override
 		public List<String> process(Distribution distribution, List<String> args) {

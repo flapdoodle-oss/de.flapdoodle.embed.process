@@ -30,10 +30,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.collections.Collections;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.Readers;
+
+import static java.util.Arrays.asList;
 
 /**
  *
@@ -43,22 +44,16 @@ public class NUMA {
 	private static Logger logger = LoggerFactory.getLogger(NUMA.class);
 
 	public static synchronized boolean isNUMA(SupportConfig support, Platform platform) {
-		Boolean ret = NUMA_STATUS_MAP.get(platform);
-		if (ret == null) {
-			ret = isNUMAOnce(support, platform);
-			NUMA_STATUS_MAP.put(platform, ret);
-		}
-		return ret;
+		return NUMA_STATUS_MAP.computeIfAbsent(platform, p -> isNUMAOnce(support, p));
 	}
 
-	static final Map<Platform, Boolean> NUMA_STATUS_MAP = new HashMap<Platform, Boolean>();
-
+	static final Map<Platform, Boolean> NUMA_STATUS_MAP = new HashMap<>();
 
 	public static boolean isNUMAOnce(SupportConfig support, Platform platform) {
 		if (platform == Platform.Linux) {
 			try {
 				ProcessControl process = ProcessControl
-						.fromCommandLine(support, Collections.newArrayList("grep", "NUMA=y", "/boot/config-`uname -r`"), true);
+						.fromCommandLine(support, asList("grep", "NUMA=y", "/boot/config-`uname -r`"), true);
 				Reader reader = process.getReader();
 				String content = Readers.readAll(reader);
 				process.stop();

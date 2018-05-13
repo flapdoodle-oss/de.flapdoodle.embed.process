@@ -24,7 +24,6 @@
 package de.flapdoodle.embed.process.extract;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -41,9 +40,9 @@ public abstract class AbstractExtractor implements Extractor {
 	
 	private static Logger _logger=LoggerFactory.getLogger(AbstractExtractor.class);
 	
-	protected abstract ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException;
+	protected abstract ArchiveWrapper archiveStream(File source) throws IOException;
 
-	private ArchiveWrapper archiveStreamWithExceptionHint(File source) throws FileNotFoundException, IOException {
+	private ArchiveWrapper archiveStreamWithExceptionHint(File source) throws IOException {
 		try {
 			return archiveStream(source);
 		} catch (IOException iox) {
@@ -99,7 +98,7 @@ public abstract class AbstractExtractor implements Extractor {
 		return builder.build();
 	}
 
-	protected static interface ArchiveWrapper {
+	protected interface ArchiveWrapper {
 
 		ArchiveEntry getNextEntry() throws IOException;
 

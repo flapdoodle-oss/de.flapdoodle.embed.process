@@ -23,17 +23,6 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -42,6 +31,16 @@ import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.io.file.Files;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractProcess<T extends IExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>
 		implements IStopable {
@@ -148,7 +147,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		return config;
 	}
 
-	protected void onBeforeProcess(RuntimeConfig runtimeConfig) throws IOException {
+	protected void onBeforeProcess(RuntimeConfig runtimeConfig) {
 
 	}
 
@@ -156,7 +155,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	}
 
-	protected void onAfterProcessStart(ProcessControl process, RuntimeConfig runtimeConfig) throws IOException {
+	protected void onAfterProcessStart(ProcessControl process, RuntimeConfig runtimeConfig) {
 		ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
 		Processors.connect(process.getReader(), outputConfig.getOutput());
 		Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.getError()));
@@ -205,34 +204,22 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	}
 
 	protected boolean sendKillToProcess() {
-		if (getProcessId() > 0) {
-			return Processes.killProcess(config.supportConfig(), distribution.platform(),
-					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
-		}
-		return false;
+		return getProcessId() > 0 && Processes.killProcess(config.supportConfig(), distribution.platform(),
+				StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
 	}
 
 	protected boolean sendTermToProcess() {
-		if (getProcessId() > 0) {
-			return Processes.termProcess(config.supportConfig(), distribution.platform(),
-					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
-		}
-		return false;
+		return getProcessId() > 0 && Processes.termProcess(config.supportConfig(), distribution.platform(),
+				StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
 	}
 
 	protected boolean tryKillToProcess() {
-		if (getProcessId() > 0) {
-			return Processes.tryKillProcess(config.supportConfig(), distribution.platform(),
-					StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
-		}
-		return false;
+		return getProcessId() > 0 && Processes.tryKillProcess(config.supportConfig(), distribution.platform(),
+				StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
 	}
 
 	public boolean isProcessRunning() {
-		if (getProcessId() > 0) {
-			return Processes.isProcessRunning(distribution.platform(), getProcessId());
-		}
-		return false;
+		return getProcessId() > 0 && Processes.isProcessRunning(distribution.platform(), getProcessId());
 	}
 
 	public long getProcessId() {

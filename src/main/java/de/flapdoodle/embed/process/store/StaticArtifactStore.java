@@ -23,7 +23,6 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,21 +31,19 @@ import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
 public class StaticArtifactStore implements IArtifactStore {
 
-	private Map<Distribution, ExtractedFileSet> distributionFileSet;
+	private final Map<Distribution, ExtractedFileSet> distributionFileSet;
 
 	public StaticArtifactStore(Map<Distribution, ExtractedFileSet> distributionFileSet) {
-		this.distributionFileSet = new HashMap<Distribution, ExtractedFileSet>(distributionFileSet);
+		this.distributionFileSet = new HashMap<>(distributionFileSet);
 	}
 	
 	@Override
-	public boolean checkDistribution(Distribution distribution)
-			throws IOException {
+	public boolean checkDistribution(Distribution distribution) {
 		return distributionFileSet.containsKey(distribution);
 	}
 
 	@Override
-	public ExtractedFileSet extractFileSet(Distribution distribution)
-			throws IOException {
+	public ExtractedFileSet extractFileSet(Distribution distribution) {
 		return distributionFileSet.get(distribution);
 	}
 

@@ -39,7 +39,7 @@ public class ProcessConfig {
 	private final StreamProcessor error;
 
 	public ProcessConfig(List<String> commandLine, StreamProcessor output, StreamProcessor error) {
-		this.commandLine = new ArrayList<String>(commandLine);
+		this.commandLine = new ArrayList<>(commandLine);
 		this.output = output;
 		this.error = error;
 	}

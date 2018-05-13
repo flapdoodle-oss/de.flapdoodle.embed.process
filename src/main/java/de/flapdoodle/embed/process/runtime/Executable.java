@@ -44,7 +44,7 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 	private boolean stopped;
 	private boolean registeredJobKiller;
 	
-	List<IStopable> stopables = new ArrayList<IStopable>();
+	List<IStopable> stopables = new ArrayList<>();
 
 	private final Distribution distribution;
 

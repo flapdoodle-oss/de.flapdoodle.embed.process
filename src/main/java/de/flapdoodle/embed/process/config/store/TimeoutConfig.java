@@ -32,14 +32,14 @@ public interface TimeoutConfig {
 	
 	int getReadTimeout();
 
-	public static ImmutableTimeoutConfig defaults() {
+	static ImmutableTimeoutConfig defaults() {
 		return ImmutableTimeoutConfig.builder()
 				.connectionTimeout(10000)
 				.readTimeout(10000)
 				.build();
 	}
 	
-	public static ImmutableTimeoutConfig.Builder builder() {
+	static ImmutableTimeoutConfig.Builder builder() {
 		return ImmutableTimeoutConfig.builder();
 	}
 }

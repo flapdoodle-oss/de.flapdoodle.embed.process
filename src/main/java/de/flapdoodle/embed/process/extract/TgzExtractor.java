@@ -26,7 +26,6 @@ package de.flapdoodle.embed.process.extract;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -37,7 +36,7 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
  */
 public class TgzExtractor extends AbstractTarExtractor {
 
-	protected ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException {
+	protected ArchiveWrapper archiveStream(File source) throws IOException {
 		FileInputStream fin = new FileInputStream(source);
 		BufferedInputStream in = new BufferedInputStream(fin);
 		GzipCompressorInputStream gzIn = new GzipCompressorInputStream(in);

@@ -45,7 +45,7 @@ public interface UncompiledPattern {
 		return Pattern.compile(regex(), flags());
 	}
 	
-	public static UncompiledPattern of(Pattern pattern) {
+	static UncompiledPattern of(Pattern pattern) {
 		return ImmutableUncompiledPattern.of(pattern.pattern(), pattern.flags());
 	}
 }
