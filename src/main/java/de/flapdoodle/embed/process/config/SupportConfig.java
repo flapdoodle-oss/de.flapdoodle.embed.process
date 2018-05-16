@@ -35,12 +35,15 @@ public interface SupportConfig {
 	String supportUrl();
 
 	BiFunction<Class<?>, Exception, String> messageOnException();
-	
+
+	long maxStopTimeoutMillis();
+
 	static SupportConfig generic() {
 		return builder()
 				.name("generic")
 				.supportUrl("https://github.com/flapdoodle-oss/de.flapdoodle.embed.process")
 				.messageOnException((clazz,ex) -> null)
+				.maxStopTimeoutMillis(15000)
 				.build();
 	}
 
