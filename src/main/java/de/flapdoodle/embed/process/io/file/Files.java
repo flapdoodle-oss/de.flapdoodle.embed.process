@@ -43,6 +43,11 @@ public class Files {
 
 	private static Logger logger = LoggerFactory.getLogger(Files.class);
 	public static final int BYTE_BUFFER_LENGTH = 1024 * 16;
+	/**
+	 * Instance to force loading {@link DeleteDirVisitor} class to avoid
+	 * {@link NoClassDefFoundError} in shutdown hook.
+	 */
+	private static final SimpleFileVisitor<Path> DELETE_DIR_VISITOR = new DeleteDirVisitor();
 
 	private Files() {
 
@@ -149,10 +154,8 @@ public class Files {
 	}
 
 	private static class DeleteDirVisitor extends SimpleFileVisitor<Path> {
-		private static final SimpleFileVisitor<Path> instance = new DeleteDirVisitor();
-
 		public static SimpleFileVisitor<Path> getInstance() {
-			return instance;
+			return DELETE_DIR_VISITOR;
 		}
 
 		@Override
