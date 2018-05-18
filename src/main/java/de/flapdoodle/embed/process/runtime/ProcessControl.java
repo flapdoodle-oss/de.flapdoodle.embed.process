@@ -4,10 +4,10 @@
  *   Martin Jöhren <m.joehren@googlemail.com>
  *
  * with contributions from
- * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ *   konstantin-ba@github,
+ *   Archimedes Trajano (trajano@github),
+ *   Kevin D. Keck (kdkeck@github),
+ *   Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,11 +76,12 @@ public class ProcessControl {
 		return waitForProcessGotKilled();
 	}
 
-	private void closeIOAndDestroy() {
+	private void closeIO() {
 		if (process != null) {
 			try {
 				// streams need to be closed, otherwise process may block
-				// see http://kylecartmell.com/?p=9
+				// see http://www.cnblogs.com/abnercai/archive/2012/12/27/2836008.html
+				// archive of http://kylecartmell.com/?p=9 which is no longer available
 				process.getErrorStream().close();
 				process.getInputStream().close();
 				process.getOutputStream().close();
@@ -111,7 +112,7 @@ public class ProcessControl {
 			} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			}
 
-			closeIOAndDestroy();
+			closeIO();
 
 			try {
 				returnCode=task.get(900, TimeUnit.MILLISECONDS);
@@ -120,7 +121,7 @@ public class ProcessControl {
 			}
 
 			try {
-				returnCode=task.get(2000, TimeUnit.MILLISECONDS);
+				returnCode=task.get(runtime.maxStopTimeoutMillis(), TimeUnit.MILLISECONDS);
 				stopped=true;
 			} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			}
