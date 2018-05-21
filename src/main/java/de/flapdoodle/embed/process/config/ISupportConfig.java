@@ -29,5 +29,7 @@ public interface ISupportConfig {
 
 	String getSupportUrl();
 
+	long maxStopTimeoutMillis();
+
 	String messageOnException(Class<?> context, Exception exception);
 }

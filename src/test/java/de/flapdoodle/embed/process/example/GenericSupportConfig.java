@@ -36,7 +36,12 @@ public class GenericSupportConfig implements ISupportConfig {
 	public String getSupportUrl() {
 		return "https://github.com/flapdoodle-oss/de.flapdoodle.embed.process";
 	}
-	
+
+	@Override
+	public long maxStopTimeoutMillis() {
+		return 1500;
+	}
+
 	@Override
 	public String messageOnException(Class<?> context, Exception exception) {
 		return null;
