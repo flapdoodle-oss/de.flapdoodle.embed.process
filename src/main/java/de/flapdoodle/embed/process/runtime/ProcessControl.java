@@ -106,26 +106,37 @@ public class ProcessControl {
 
 			boolean stopped=false;
 			try {
-				returnCode=task.get(100, TimeUnit.MILLISECONDS);
-				stopped=true;
-			} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			}
 
-			closeIOAndDestroy();
+              try {
+                returnCode = task.get(100, TimeUnit.MILLISECONDS);
+                stopped = true;
+              } catch (ExecutionException | TimeoutException e) {
+              }
 
-			try {
-				returnCode=task.get(900, TimeUnit.MILLISECONDS);
-				stopped=true;
-			} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			}
+              closeIOAndDestroy();
 
-			try {
-				returnCode=task.get(2000, TimeUnit.MILLISECONDS);
-				stopped=true;
-			} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			}
+              try {
+                returnCode = task.get(900, TimeUnit.MILLISECONDS);
+                stopped = true;
+              } catch (ExecutionException | TimeoutException e) {
+              }
 
-			if (!stopped)	{
+              try {
+                returnCode = task.get(2000, TimeUnit.MILLISECONDS);
+                stopped = true;
+              } catch (ExecutionException | TimeoutException e) {
+              }
+
+              try {
+                returnCode = task.get(runtime.maxStopTimeoutMillis(), TimeUnit.MILLISECONDS);
+                stopped = true;
+              } catch (ExecutionException | TimeoutException e) {
+              }
+            } catch (InterruptedException e) {
+			  Thread.currentThread().interrupt();
+            }
+
+          if (!stopped)	{
 //				logger.severe(""+runtime.getName()+" NOT exited, thats why we destroy");
 				process.destroy();
 			}

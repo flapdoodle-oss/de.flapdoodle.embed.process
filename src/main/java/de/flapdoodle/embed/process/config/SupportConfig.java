@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.config;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
 import org.immutables.value.Value;
@@ -35,16 +36,20 @@ public interface SupportConfig {
 	String supportUrl();
 
 	BiFunction<Class<?>, Exception, String> messageOnException();
-	
+
 	static SupportConfig generic() {
 		return builder()
 				.name("generic")
 				.supportUrl("https://github.com/flapdoodle-oss/de.flapdoodle.embed.process")
 				.messageOnException((clazz,ex) -> null)
+                .maxStopTimeoutMillis(TimeUnit.SECONDS.toMillis(5))
 				.build();
 	}
 
 	static ImmutableSupportConfig.Builder builder() {
 		return ImmutableSupportConfig.builder();
 	}
+
+	long maxStopTimeoutMillis();
+
 }
