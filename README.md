@@ -28,7 +28,7 @@ Stable (Maven Central Repository, Released: 15.04.2016 - wait 24hrs for [maven c
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>2.0.1</version>
+		<version>2.0.5</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -36,7 +36,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>2.0.2-SNAPSHOT</version>
+		<version>2.0.6-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -54,7 +54,26 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 ### Changelog
 
 
-#### 2.0.2 (SNAPSHOT)
+#### 2.0.6 (SNAPSHOT)
+
+#### 2.0.5 / 2.0.4
+
+- initialise logger with getClass
+- added stop timeout config
+- Force Files.DeleteDirVisitor instantiation to avoid NCDFE (#85)
+- Moved DeleteDirVisitor instance to Files, so it's loaded before shutdown hook starts and avoids NoClassDefFoundError.
+
+#### 2.0.3
+
+- Make pid method detection more resilient
+- Remove dependency on Apache Commons IO in favour of Java NIO.2 file
+- Refactor to use NIO.2 file
+
+#### 2.0.2
+
+- Don't add several shutdown hooks for process/executable combination
+- dep version update, lic header in tests
+- [jdk9] java.lang.Process#getPid renamed to pid
 
 #### 2.0.1
 
