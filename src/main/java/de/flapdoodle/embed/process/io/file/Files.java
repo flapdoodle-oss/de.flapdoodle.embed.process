@@ -198,19 +198,14 @@ public class Files {
 		java.nio.file.Files.write(output.toPath(), content.getBytes());
 	}
 
-	public static boolean moveFile(final File source, final File destination) {
-		try {
-			java.nio.file.Files.move(source.toPath(), destination.toPath());
-			return true;
-		} catch (IOException iox) {
-			return false;
-		}
+	public static void moveFile(final File source, final File destination) throws IOException {
+    java.nio.file.Files.move(source.toPath(), destination.toPath());
 	}
 
 	public static File fileOf(File base, File relative) {
 		return base.toPath().resolve(relative.toPath()).toFile();
 	}
-	
+
 	public static File fileOf(File base, String relative) {
 		return base.toPath().resolve(relative).toFile();
 	}
