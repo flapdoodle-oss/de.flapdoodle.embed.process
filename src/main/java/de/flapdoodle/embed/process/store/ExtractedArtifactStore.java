@@ -96,17 +96,19 @@ public class ExtractedArtifactStore implements IArtifactStore {
 				fileSetBuilder.file(file.type(), new File(FilesToExtract.fileName(file)));
 			}
 		}
-		
+
+		IExtractedFileSet extractedFileSet;
 		if (!foundExecutable) {
 			// we found no executable, so we trigger extraction and hope for the best
 			try {
-				baseStore.extractFileSet(distribution);
+				extractedFileSet = baseStore.extractFileSet(distribution);
 			} catch (FileAlreadyExistsException fx) {
 				throw new RuntimeException("extraction to "+destinationDir+" has failed", fx);
 			}
+		} else {
+			extractedFileSet = fileSetBuilder.build();
 		}
-		
-		IExtractedFileSet extractedFileSet = fileSetBuilder.build();
+
 		return ExtractedFileSets.copy(extractedFileSet, temp.getDirectory(), temp.getExecutableNaming());
 	}
 

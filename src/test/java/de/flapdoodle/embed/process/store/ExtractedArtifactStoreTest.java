@@ -77,7 +77,7 @@ public class ExtractedArtifactStoreTest {
 			.tempDir(new TempDirInPlatformTempDir())
 			.downloader(failingDownloader())
 			.extractDir(extractedArtifactDir)
-			.extractExecutableNaming(new NoopTempNaming())
+			.extractExecutableNaming(new UUIDTempNaming())
 			.build();
 		
 		assertTrue("checkDistribution ("+distribution+")", store.checkDistribution(distribution));
