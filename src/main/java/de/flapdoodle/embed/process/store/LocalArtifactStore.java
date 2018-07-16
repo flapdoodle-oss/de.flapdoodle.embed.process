@@ -24,6 +24,8 @@
 package de.flapdoodle.embed.process.store;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
@@ -38,16 +40,20 @@ class LocalArtifactStore {
 		return getArtifact(runtime, distribution) != null;
 	}
 
-
 	public static boolean store(IDownloadConfig runtime, Distribution distribution, File download) {
 		File dir = createOrGetBaseDir(runtime);
 		String artifactFileName = runtime.getPackageResolver().getPath(distribution);
 		File artifactFile = new File(dir, artifactFileName);
 		createOrCheckDir(artifactFile.getParentFile());
-		if (!Files.moveFile(download, artifactFile))
-			throw new IllegalArgumentException("Could not move " + download + " to " + artifactFile);
+		try {
+			Files.moveFile(download, artifactFile);
+		} catch (FileAlreadyExistsException faex) {
+			// Do nothing, supporting potential concurrence issues
+		} catch (IOException iox) {
+			throw new IllegalArgumentException("Could not move " + download + " to " + artifactFile, iox);
+		}
 		File checkFile = new File(dir, artifactFileName);
-		return checkFile.exists() & checkFile.isFile() & checkFile.canRead();
+		return checkFile.exists() && checkFile.isFile() && checkFile.canRead();
 	}
 
 	private static File createOrGetBaseDir(IDownloadConfig runtime) {
