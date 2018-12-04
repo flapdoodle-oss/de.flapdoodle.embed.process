@@ -70,7 +70,7 @@ public class NUMA {
 				}
 				return isNUMA;
 			} catch (IOException ix) {
-				ix.printStackTrace();
+				logger.debug("Could not determine presence of NUMA", ix);
 			}
 		}
 		return false;

@@ -89,13 +89,13 @@ public abstract class Processes {
 				}
 			}
 		} catch (SecurityException sx) {
-			sx.printStackTrace();
+			logger.debug("Could not determine pid", sx);
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			logger.debug("Could not determine pid", e);
 		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
+			logger.debug("Could not determine pid", e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			logger.debug("Could not determine pid", e);
 		}
 		return null;
 	}
@@ -121,7 +121,7 @@ public abstract class Processes {
 				logger.debug("Detected pid: {}", ret);
 				return Long.valueOf(ret);
 			} catch (Throwable e) {
-				e.printStackTrace();
+				logger.debug("Could not determine pid", e);
 			}
 		}
 		return null;
@@ -178,13 +178,8 @@ public abstract class Processes {
 				return logWatch.isInitWithSuccess();
 			}
 
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			logger.error("Trying to get process status", e);
-			e.printStackTrace();
-
-		} catch (InterruptedException e) {
-			logger.error("Trying to get process status", e);
-			e.printStackTrace();
 		}
 		return false;
 	}
