@@ -55,8 +55,8 @@ public abstract class Processes {
 	private static final PidHelper PID_HELPER;
 
 	static {
-		// Comparing with the string value to avoid a strong dependency on JDK 9
-		if (SourceVersion.latest().toString().equals( "RELEASE_9" )) {
+		// Releases start at 0, so 9 variants for Java 8
+		if (SourceVersion.values().length > 9) {
 			PID_HELPER = PidHelper.JDK_9;
 		}
 		else {
@@ -174,7 +174,7 @@ public abstract class Processes {
 			Long getPid(Process process) {
 				try {
 					// Invoking via reflection to avoid a strong dependency on JDK 9
-					Method getPid = Process.class.getMethod("getPid");
+					Method getPid = Process.class.getMethod("pid");
 					return (Long) getPid.invoke(process);
 				}
 				catch (Exception e) {
