@@ -2,7 +2,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/de.flapdoodle.embed/de.flapdoodle.embed.process.svg)](https://maven-badges.herokuapp.com/maven-central/de.flapdoodle.embed/de.flapdoodle.embed.process)
 # Organisation Flapdoodle OSS
 
-We are now a github organisation. You are invited to participate. Staring with version 2 we are going to support only java 8 or higher. If you are looking for the older version you can find it in the 1.7 branch.
+We are now a github organisation. You are invited to participate. Starting with version 2 we are going to support only java 8 or higher. If you are looking for the older version you can find it in the 1.7 branch.
 
 
 # Embedded Process Util
