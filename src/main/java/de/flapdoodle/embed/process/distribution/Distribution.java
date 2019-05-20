@@ -31,11 +31,17 @@ public class Distribution {
 	private final IVersion version;
 	private final Platform platform;
 	private final BitSize bitsize;
+	private final Architecture architecture;
 
-	public Distribution(IVersion version, Platform platform, BitSize bitsize) {
+	public Distribution(IVersion version, Platform platform, BitSize bitsize, Architecture architecture) {
 		this.version = version;
 		this.platform = platform;
 		this.bitsize = bitsize;
+		this.architecture = architecture;
+	}
+
+	public Distribution(IVersion version, Platform platform, BitSize bitsize) {
+		this(version, platform, bitsize, Architecture.AMD64);
 	}
 
 	public IVersion getVersion() {
@@ -50,13 +56,17 @@ public class Distribution {
 		return bitsize;
 	}
 
+	public Architecture getArchitecture() {
+		return architecture;
+	}
+
 	@Override
 	public String toString() {
-		return "" + version + ":" + platform + ":" + bitsize;
+		return "" + version + ":" + platform + ":" + bitsize + ":" + architecture;
 	}
 
 	public static Distribution detectFor(IVersion version) {
-		return new Distribution(version, Platform.detect(), BitSize.detect());
+		return new Distribution(version, Platform.detect(), BitSize.detect(), Architecture.detect());
 	}
 
 	@Override
@@ -72,6 +82,9 @@ public class Distribution {
 		result = prime * result + ((version == null)
 				? 0
 				: version.hashCode());
+		result = prime * result + ((architecture == null)
+				? 0
+				: architecture.hashCode());
 		return result;
 	}
 
@@ -92,6 +105,8 @@ public class Distribution {
 			if (other.version != null)
 				return false;
 		} else if (!version.equals(other.version))
+			return false;
+		if (architecture != other.architecture)
 			return false;
 		return true;
 	}
