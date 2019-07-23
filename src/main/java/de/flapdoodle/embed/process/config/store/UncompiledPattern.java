@@ -23,13 +23,13 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
-import java.util.regex.Pattern;
-
 import org.immutables.value.Value;
 import org.immutables.value.Value.Auxiliary;
 
+import java.util.regex.Pattern;
+
 /**
- * @author michael mosmann with help of ->
+ * @author michael mosmann with help of -&gt;
  * @author [[mailto:michael@ahlers.consulting Michael Ahlers]]
  */
 @Value.Immutable

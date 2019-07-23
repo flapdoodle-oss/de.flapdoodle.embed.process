@@ -28,7 +28,7 @@ package de.flapdoodle.embed.process.io;
  * Don't output anything. 
  * 
  * @author Konstantin Petrukhnov
- * @date 19.7.2012
+ * Date: 19.7.2012
  *
  */
 public class NullProcessor implements StreamProcessor{

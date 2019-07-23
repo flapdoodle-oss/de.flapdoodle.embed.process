@@ -23,6 +23,12 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
+import de.flapdoodle.embed.process.distribution.Platform;
+import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
+import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -31,13 +37,6 @@ import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import junit.framework.TestCase;
-
-import de.flapdoodle.embed.process.distribution.Platform;
-import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
 
 public class TestFileCleaner extends TestCase {
 
@@ -96,7 +95,7 @@ public class TestFileCleaner extends TestCase {
 
 		logger.info("after release lock (wait a little)");
 
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 
 		logger.info("check if temp files there (should NOT be)");
 
