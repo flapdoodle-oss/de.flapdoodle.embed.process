@@ -23,28 +23,25 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinNT;
+import de.flapdoodle.embed.process.config.SupportConfig;
+import de.flapdoodle.embed.process.config.process.ProcessConfig;
+import de.flapdoodle.embed.process.distribution.Platform;
+import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
+import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.StreamProcessor;
+import de.flapdoodle.embed.process.io.StreamToLineProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.lang.model.SourceVersion;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
-
-import javax.lang.model.SourceVersion;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinNT;
-
-import de.flapdoodle.embed.process.config.SupportConfig;
-import de.flapdoodle.embed.process.config.process.ProcessConfig;
-import de.flapdoodle.embed.process.distribution.Platform;
-import de.flapdoodle.embed.process.io.StreamProcessor;
-import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
-import de.flapdoodle.embed.process.io.Processors;
-import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 
 import static java.util.Arrays.asList;
 
@@ -153,10 +150,14 @@ public abstract class Processes {
 				// look for the PID in the output, pass it in for 'success' state
 				LogWatchStreamProcessor logWatch = new LogWatchStreamProcessor(""+pid,
 						new HashSet<>(), StreamToLineProcessor.wrap(Processors.silent()));
-				Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
-				logWatch.waitForResult(2000);
-				logger.trace("logWatch output: {}", logWatch.getOutput());
-				return logWatch.isInitWithSuccess();
+				try  {
+					Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
+					logWatch.waitForResult(2000);
+					logger.trace("logWatch output: {}", logWatch.getOutput());
+					return logWatch.isInitWithSuccess();
+				} finally {
+					logWatch.markResultAsRetrieved();
+				}
 			}
 
 		} catch (IOException | InterruptedException e) {

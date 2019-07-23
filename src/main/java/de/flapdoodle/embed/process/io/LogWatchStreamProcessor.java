@@ -37,6 +37,7 @@ public class LogWatchStreamProcessor implements StreamProcessor {
 	private String failureFound = null;
 
 	private final StreamProcessor destination;
+	private volatile boolean hasResultBeenRetrieved;
 
 	public LogWatchStreamProcessor(String success, Set<String> failures, StreamProcessor destination) {
 		this.success = success;
@@ -48,15 +49,17 @@ public class LogWatchStreamProcessor implements StreamProcessor {
 	public void process(String block) {
 		destination.process(block);
 
-		output.append((CharSequence) block);
+		if (!hasResultBeenRetrieved){
+			output.append((CharSequence) block);
 
-		if (output.indexOf(success) != -1) {
-			gotResult(true,null);
-		} else {
-			for (String failure : failures) {
-				int failureIndex = output.indexOf(failure);
-				if (failureIndex != -1) {
-					gotResult(false,output.substring(failureIndex));
+			if (output.indexOf(success) != -1) {
+				gotResult(true,null);
+			} else {
+				for (String failure : failures) {
+					int failureIndex = output.indexOf(failure);
+					if (failureIndex != -1) {
+						gotResult(false,output.substring(failureIndex));
+					}
 				}
 			}
 		}
@@ -93,5 +96,7 @@ public class LogWatchStreamProcessor implements StreamProcessor {
 		return output.toString();
 	}
 
-
+	public void markResultAsRetrieved() {
+		hasResultBeenRetrieved = true;
+	}
 }
