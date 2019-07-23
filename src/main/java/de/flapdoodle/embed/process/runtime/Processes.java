@@ -172,10 +172,14 @@ public abstract class Processes {
 				// look for the PID in the output, pass it in for 'success' state
 				LogWatchStreamProcessor logWatch = new LogWatchStreamProcessor(""+pid,
 					new HashSet<String>(), StreamToLineProcessor.wrap(Processors.silent()));
-				Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
-				logWatch.waitForResult(2000);
-				logger.trace("logWatch output: {}", logWatch.getOutput());
-				return logWatch.isInitWithSuccess();
+				try {
+					Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
+					logWatch.waitForResult(2000);
+					logger.trace("logWatch output: {}", logWatch.getOutput());
+					return logWatch.isInitWithSuccess();
+				} finally {
+					logWatch.markResultAsRetrieved();
+				}
 			}
 
 		} catch (IOException | InterruptedException e) {
