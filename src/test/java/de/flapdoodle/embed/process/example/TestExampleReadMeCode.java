@@ -33,6 +33,7 @@ import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.GenericVersion;
+import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.distribution.IVersion;
 
 public class TestExampleReadMeCode {
@@ -47,14 +48,49 @@ public class TestExampleReadMeCode {
 
 		IVersion version=new GenericVersion("2.1.1");
 
+		String phantomjsOsIdentifier;
+		ArchiveType phantomjsArchiveType;
+		String phantomjsArchiveTypeExtension;
+		String phantomjsExecutableName;
+
+		Platform platform = Platform.detect();
+		switch (platform) {
+			case Linux:
+				String osArchitecture = System.getProperty("os.arch");
+				if ("x86_64".equals(osArchitecture) || "amd64".equals(osArchitecture)) {
+					phantomjsOsIdentifier = "linux-x86_64";
+				} else {
+					phantomjsOsIdentifier = "linux-i686";
+				}
+				phantomjsArchiveType = ArchiveType.TBZ2;
+				phantomjsArchiveTypeExtension = "tar.bz2";
+				phantomjsExecutableName = "phantomjs";
+				break;
+			case OS_X:
+				phantomjsOsIdentifier = "macosx";
+				phantomjsArchiveType = ArchiveType.ZIP;
+				phantomjsArchiveTypeExtension = "zip";
+				phantomjsExecutableName = "phantomjs";
+				break;
+			case Windows:
+				phantomjsOsIdentifier = "windows";
+				phantomjsArchiveType = ArchiveType.ZIP;
+				phantomjsArchiveTypeExtension = "zip";
+				phantomjsExecutableName = "phantomjs.exe";
+				break;
+			default:
+				throw new IllegalStateException("Unsupported operating system: " + platform);
+		}
+
+
 		IRuntimeConfig config = new GenericRuntimeConfigBuilder()
 			.name("phantomjs")
-			//https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
+			//https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-<OS identifier>.<archive extension>
 			.downloadPath("https://bitbucket.org/ariya/phantomjs/downloads/")
 			.packageResolver()
-				.files(Distribution.detectFor(version), FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
-				.archivePath(Distribution.detectFor(version), "phantomjs-"+version.asInDownloadPath()+"-linux-x86_64.tar.bz2")
-				.archiveType(Distribution.detectFor(version), ArchiveType.TBZ2)
+				.files(Distribution.detectFor(version), FileSet.builder().addEntry(FileType.Executable, phantomjsExecutableName).build())
+				.archivePath(Distribution.detectFor(version), "phantomjs-"+version.asInDownloadPath()+ "-"+phantomjsOsIdentifier+"."+phantomjsArchiveTypeExtension)
+				.archiveType(Distribution.detectFor(version), phantomjsArchiveType)
 				.build()
 			.build();
 

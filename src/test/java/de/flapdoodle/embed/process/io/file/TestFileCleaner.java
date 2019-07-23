@@ -96,7 +96,7 @@ public class TestFileCleaner extends TestCase {
 
 		logger.info("after release lock (wait a little)");
 
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 
 		logger.info("check if temp files there (should NOT be)");
 
