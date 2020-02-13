@@ -33,7 +33,7 @@ public enum BitSize {
 	public static BitSize detect() {
 		BitSize bitSize = BitSize.B32;
 		String osArch = System.getProperty("os.arch");
-		if (osArch.equals("i686_64") || osArch.equals("x86_64") || osArch.equals("amd64"))
+		if (osArch.equals("i686_64") || osArch.equals("x86_64") || osArch.equals("amd64") || osArch.equals("ppc64le") || osArch.equals("aarch64"))
 			bitSize = BitSize.B64;
 		return bitSize;
 	}
