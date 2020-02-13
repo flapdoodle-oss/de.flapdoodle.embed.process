@@ -29,7 +29,7 @@ import org.immutables.value.Value;
 import org.immutables.value.Value.Auxiliary;
 
 /**
- * @author michael mosmann with help of ->
+ * @author michael mosmann with help of 
  * @author [[mailto:michael@ahlers.consulting Michael Ahlers]]
  */
 @Value.Immutable
