@@ -56,7 +56,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	private boolean stopped = false;
 	private boolean registeredJobKiller;
-	
+
 	private final Distribution distribution;
 
 	private final File pidFile;
@@ -116,7 +116,9 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		} catch (IOException iox) {
 			logger.error("failed to call {}", nextCall, iox);
 			logger.info("construct {}", config.toString());
-			stop();
+			if (process != null) {
+			  stop();
+      }
 			throw iox;
 		}
 	}
