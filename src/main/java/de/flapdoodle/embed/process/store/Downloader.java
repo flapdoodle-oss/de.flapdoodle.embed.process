@@ -41,6 +41,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 import de.flapdoodle.embed.process.io.file.Files;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Class for downloading runtime
@@ -70,18 +71,18 @@ public class Downloader implements IDownloader {
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(ret));
 
 			InputStreamAndLength downloadStreamAndLength = downloadInputStream(downloadConfig, distribution);
-			
+
 			long length = downloadStreamAndLength.contentLength();
 			InputStream downloadStream = downloadStreamAndLength.downloadStream();
-			
+
 			progress.info(progressLabel, "DownloadSize: " + length);
-			
+
 			if (length == -1) length = DEFAULT_CONTENT_LENGTH;
 
 
 
 			long downloadStartedAt = System.currentTimeMillis();
-			
+
 			try {
 				BufferedInputStream bis = new BufferedInputStream(downloadStream);
 				byte[] buf = new byte[BUFFER_LENGTH];
@@ -110,9 +111,9 @@ public class Downloader implements IDownloader {
 	private InputStreamAndLength downloadInputStream(DownloadConfig downloadConfig, Distribution distribution)
 			throws IOException {
 		URL url = new URL(getDownloadUrl(downloadConfig, distribution));
-		
+
 		Optional<Proxy> proxy = downloadConfig.proxyFactory().map(ProxyFactory::createProxy);
-		
+
 		try {
 			URLConnection openConnection;
 			if (proxy.isPresent()) {
@@ -121,14 +122,18 @@ public class Downloader implements IDownloader {
 				openConnection = url.openConnection();
 			}
 			openConnection.setRequestProperty("User-Agent",downloadConfig.getUserAgent());
-			
+
+            if (StringUtils.isNotEmpty(downloadConfig.getAuthorization())) {
+                openConnection.setRequestProperty("Authorization", downloadConfig.getAuthorization());
+            }
+
 			TimeoutConfig timeoutConfig = downloadConfig.getTimeoutConfig();
-			
+
 			openConnection.setConnectTimeout(timeoutConfig.getConnectionTimeout());
 			openConnection.setReadTimeout(downloadConfig.getTimeoutConfig().getReadTimeout());
-	
+
 			InputStream downloadStream = openConnection.getInputStream();
-	
+
 			return new InputStreamAndLength(downloadStream,openConnection.getContentLength());
 		} catch (IOException iox) {
 			throw new IOException("Could not open inputStream for " + url + " with proxy " + proxy, iox);
@@ -154,15 +159,15 @@ public class Downloader implements IDownloader {
 			_downloadStream = downloadStream;
 			_contentLength = contentLength;
 		}
-		
-		
+
+
 		public int contentLength() {
 			return _contentLength;
 		}
-		
+
 		public InputStream downloadStream() {
 			return _downloadStream;
 		}
-		
+
 	}
 }

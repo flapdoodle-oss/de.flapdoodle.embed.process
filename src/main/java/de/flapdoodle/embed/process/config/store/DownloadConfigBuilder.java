@@ -36,6 +36,7 @@ import de.flapdoodle.embed.process.io.progress.ProgressListener;
 public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 
 	private static final TypedProperty<UserAgent> USER_AGENT = TypedProperty.with("UserAgent", UserAgent.class);
+    private static final TypedProperty<Authorization> AUTHORIZATION = TypedProperty.with("Authorization", Authorization.class);
 	private static final TypedProperty<ProgressListener> PROGRESS_LISTENER = TypedProperty.with("ProgressListener", ProgressListener.class);
 	private static final TypedProperty<ITempNaming> FILE_NAMING = TypedProperty.with("FileNaming", ITempNaming.class);
 	private static final TypedProperty<Directory> ARTIFACT_STORE_PATH = TypedProperty.with("ArtifactStorePath",	Directory.class);
@@ -54,7 +55,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		set(DOWNLOAD_PATH, new SameDownloadPathForEveryDistribution(path));
 		return this;
 	}
-	
+
 	protected IProperty<DistributionDownloadPath> downloadPath() {
 		return property(DOWNLOAD_PATH);
 	}
@@ -72,7 +73,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		set(PACKAGE_RESOLVER, packageResolver);
 		return this;
 	}
-	
+
 	protected IProperty<PackageResolver> packageResolver() {
 		return property(PACKAGE_RESOLVER);
 	}
@@ -109,6 +110,11 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		return this;
 	}
 
+	public DownloadConfigBuilder authorization(String authorization) {
+		set(AUTHORIZATION, new Authorization(authorization));
+		return this;
+	}
+
 	protected IProperty<UserAgent> userAgent() {
 		return property(USER_AGENT);
 	}
@@ -130,7 +136,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 	protected IProperty<ProxyFactory> proxyFactory() {
 		return property(PROXY_FACTORY);
 	}
-	
+
 	@Override
 	public DownloadConfig build() {
 		final DistributionDownloadPath downloadPath = get(DOWNLOAD_PATH);
@@ -140,11 +146,12 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		final ITempNaming fileNaming = get(FILE_NAMING);
 		final ProgressListener progressListener = get(PROGRESS_LISTENER);
 		final String userAgent = get(USER_AGENT).value();
+		final String authorization = get(AUTHORIZATION, new Authorization("")).value();
 		final TimeoutConfig timeoutConfig = get(TIMEOUT_CONFIG);
 		final ProxyFactory proxyFactory = get(PROXY_FACTORY, null);
 
 		return new ImmutableDownloadConfig(downloadPath, downloadPrefix, packageResolver, artifactStorePath, fileNaming,
-				progressListener, userAgent, timeoutConfig, Optional.ofNullable(proxyFactory));
+				progressListener, userAgent, authorization, timeoutConfig, Optional.ofNullable(proxyFactory));
 	}
 
 	protected static class DownloadPrefix extends ImmutableContainer<String> {
@@ -163,6 +170,12 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 
 	}
 
+	protected static class Authorization extends ImmutableContainer<String> {
+
+		public Authorization(String value) { super(value); }
+
+	}
+
 	protected static class ImmutableDownloadConfig implements DownloadConfig {
 
 		private final DistributionDownloadPath _downloadPath;
@@ -171,13 +184,14 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		private final ITempNaming _fileNaming;
 		private final String _downloadPrefix;
 		private final String _userAgent;
+		private final String _authorization;
 		private final PackageResolver _packageResolver;
 		private final TimeoutConfig _timeoutConfig;
 		private final Optional<ProxyFactory> _proxyFactory;
 
 		public ImmutableDownloadConfig(DistributionDownloadPath downloadPath, String downloadPrefix, PackageResolver packageResolver,
 				Directory artifactStorePath, ITempNaming fileNaming, ProgressListener progressListener, String userAgent,
-				TimeoutConfig timeoutConfig, Optional<ProxyFactory> proxyFactory) {
+				String authorization, TimeoutConfig timeoutConfig, Optional<ProxyFactory> proxyFactory) {
 			super();
 			_downloadPath = downloadPath;
 			_downloadPrefix = downloadPrefix;
@@ -186,6 +200,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 			_fileNaming = fileNaming;
 			_progressListener = progressListener;
 			_userAgent = userAgent;
+			_authorization = authorization;
 			_timeoutConfig = timeoutConfig;
 			_proxyFactory = proxyFactory;
 		}
@@ -218,6 +233,11 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		@Override
 		public String getUserAgent() {
 			return _userAgent;
+		}
+
+		@Override
+		public String getAuthorization() {
+			return _authorization;
 		}
 
 		@Override

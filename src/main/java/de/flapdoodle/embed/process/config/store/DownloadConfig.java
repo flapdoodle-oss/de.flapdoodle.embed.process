@@ -47,6 +47,8 @@ public interface DownloadConfig {
 
 	String getUserAgent();
 
+	String getAuthorization();
+
 	PackageResolver getPackageResolver();
 
 	TimeoutConfig getTimeoutConfig();
