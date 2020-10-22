@@ -24,15 +24,14 @@
 package de.flapdoodle.embed.process.store;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
 public interface IArtifactStore {
 
-	boolean checkDistribution(Distribution distribution) throws IOException;
-
-	ExtractedFileSet extractFileSet(Distribution distribution) throws IOException;
+	Optional<ExtractedFileSet> extractFileSet(Distribution distribution) throws IOException;
 
 	void removeFileSet(Distribution distribution, ExtractedFileSet files);
 }

@@ -27,11 +27,13 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
 
+import org.immutables.value.Value.Immutable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -58,12 +60,7 @@ public class CachingArtifactStore implements IArtifactStore {
 	}
 
 	@Override
-	public boolean checkDistribution(Distribution distribution) throws IOException {
-		return delegate.checkDistribution(distribution);
-	}
-
-	@Override
-	public ExtractedFileSet extractFileSet(Distribution distribution) throws IOException {
+	public Optional<ExtractedFileSet> extractFileSet(Distribution distribution) throws IOException {
 
 		FilesWithCounter fileWithCounter;
 
@@ -133,7 +130,7 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	class FilesWithCounter {
 
-		private ExtractedFileSet file;
+		private Optional<ExtractedFileSet> file;
 		int counter =0;
 		private final Distribution distribution;
 
@@ -142,12 +139,13 @@ public class CachingArtifactStore implements IArtifactStore {
 		}
 
 		public synchronized void free(ExtractedFileSet executable) {
-			if (executable!= file) throw new RuntimeException("Files does not match: "+ file +" != "+executable);
+			if (file==null) throw new RuntimeException("nothing to free");
+			if (executable!= file.orElse(null)) throw new RuntimeException("Files does not match: "+ file +" != "+executable);
 			logger.debug("Free {} {}", counter, file);
 			counter--;
 		}
 
-		public synchronized ExtractedFileSet use() throws IOException {
+		public synchronized Optional<ExtractedFileSet> use() throws IOException {
 			counter++;
 			
 			if (file ==null) {
@@ -164,7 +162,7 @@ public class CachingArtifactStore implements IArtifactStore {
 				if (counter <0) logger.warn("Counter < 0 for {} and {}", distribution, file);
 				if (file !=null) {
 					logger.debug("cleanup for {} and {}", distribution, file);
-					delegate.removeFileSet(distribution, file);
+					if (file.isPresent()) delegate.removeFileSet(distribution, file.get());
 					file =null;
 				}
 			}
@@ -173,7 +171,7 @@ public class CachingArtifactStore implements IArtifactStore {
 		public synchronized void forceDelete() {
 			if (file !=null) {
 				logger.debug("force delete for {} and {}", distribution, file);
-				delegate.removeFileSet(distribution, file);
+				if (file.isPresent()) delegate.removeFileSet(distribution, file.get());
 				file =null;
 				counter =0;
 			}

@@ -42,7 +42,7 @@ public abstract class ExtractedFileSets {
 		// no instance
 	}
 	
-	public static ExtractedFileSet copy(ExtractedFileSet src, Directory directory, ITempNaming executableNaming) throws IOException {
+	public static ExtractedFileSet copy(ExtractedFileSet src, Directory directory, TempNaming executableNaming) throws IOException {
 		File destination = directory.asFile();
 		File baseDir = src.baseDir();
 		File oldExe = src.executable();

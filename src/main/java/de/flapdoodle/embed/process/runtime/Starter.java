@@ -24,6 +24,7 @@
 package de.flapdoodle.embed.process.runtime;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,10 +55,9 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 		try {
 			IArtifactStore artifactStore = runtime.getArtifactStore();
 			
-			if (artifactStore.checkDistribution(distribution)) {
-				ExtractedFileSet files = runtime.getArtifactStore().extractFileSet(distribution);
-
-				return newExecutable(config, distribution, runtime, files);
+			Optional<ExtractedFileSet> files = artifactStore.extractFileSet(distribution);
+			if (files.isPresent()) {
+				return newExecutable(config, distribution, runtime, files.get());
 			} else {
 				throw new DistributionException("could not find Distribution",distribution);
 			}

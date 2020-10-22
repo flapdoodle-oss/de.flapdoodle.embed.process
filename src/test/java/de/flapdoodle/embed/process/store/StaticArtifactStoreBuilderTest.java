@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -57,10 +58,9 @@ public class StaticArtifactStoreBuilderTest {
 			.fileSet(distribution, fileSet)
 			.build();
 		
-		assertTrue(store.checkDistribution(distribution));
-		
-		ExtractedFileSet extractFileSet = store.extractFileSet(distribution);
-		assertNotNull(extractFileSet);
+		Optional<ExtractedFileSet> optExtractFileSet = store.extractFileSet(distribution);
+		assertTrue(optExtractFileSet.isPresent());
+		ExtractedFileSet extractFileSet = optExtractFileSet.get();
 		
 		assertEquals("bla.exe", extractFileSet.executable().getName());
 		

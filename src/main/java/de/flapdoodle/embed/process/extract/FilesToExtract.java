@@ -40,11 +40,11 @@ import de.flapdoodle.embed.process.io.file.Files;
 public class FilesToExtract {
 
 	private final ArrayList<FileSet.Entry> _files;
-	private final ITempNaming _executableNaming;
+	private final TempNaming _executableNaming;
 	private final File _dirFactoryResult;
 	private final boolean _dirFactoryResultIsGenerated;
 
-	public FilesToExtract(Directory dirFactory, ITempNaming executableNaming, FileSet fileSet) {
+	public FilesToExtract(Directory dirFactory, TempNaming executableNaming, FileSet fileSet) {
 		if (dirFactory==null) throw new NullPointerException("dirFactory is NULL");
 		if (executableNaming==null) throw new NullPointerException("executableNaming is NULL");
 		if (fileSet==null) throw new NullPointerException("fileSet is NULL");
@@ -93,7 +93,7 @@ public class FilesToExtract {
 		return entry.destination();
 	}
 
-	public static String executableName(ITempNaming executableNaming, Entry entry) {
+	public static String executableName(TempNaming executableNaming, Entry entry) {
 		return executableNaming.nameFor("extract",fileName(entry));
 	}
 	
@@ -101,9 +101,9 @@ public class FilesToExtract {
 
 		private final Entry _entry;
 		private final File _dirFactoryResult;
-		private final ITempNaming _executableNaming;
+		private final TempNaming _executableNaming;
 
-		public Match(File dirFactoryResult,ITempNaming executableNaming, Entry entry) {
+		public Match(File dirFactoryResult,TempNaming executableNaming, Entry entry) {
 			_dirFactoryResult = dirFactoryResult;
 			_executableNaming = executableNaming;
 			_entry = entry;

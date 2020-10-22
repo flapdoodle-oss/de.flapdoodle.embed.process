@@ -27,14 +27,15 @@ import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.TypedProperty;
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.extract.DirectoryAndExecutableNaming;
-import de.flapdoodle.embed.process.extract.ITempNaming;
+import de.flapdoodle.embed.process.extract.TempNaming;
 import de.flapdoodle.embed.process.io.directories.Directory;
 
 
+@Deprecated
 public class ExtractedArtifactStoreBuilder extends ArtifactStoreBuilder {
 	
 	protected static final TypedProperty<Directory> EXTRACT_DIR_FACTORY = TypedProperty.with("ExtractDir",Directory.class);
-	protected static final TypedProperty<ITempNaming> EXTRACT_EXECUTABLE_NAMING = TypedProperty.with("ExtractExecutableNaming",ITempNaming.class);
+	protected static final TypedProperty<TempNaming> EXTRACT_EXECUTABLE_NAMING = TypedProperty.with("ExtractExecutableNaming",TempNaming.class);
 
 	@Override
 	public ExtractedArtifactStoreBuilder tempDir(Directory tempDirFactory) {
@@ -55,18 +56,18 @@ public class ExtractedArtifactStoreBuilder extends ArtifactStoreBuilder {
 	}
 	
 	@Override
-	public ExtractedArtifactStoreBuilder downloader(IDownloader downloader) {
+	public ExtractedArtifactStoreBuilder downloader(Downloader downloader) {
 		super.downloader(downloader);
 		return this;
 	}
 	
 	@Override
-	public ExtractedArtifactStoreBuilder executableNaming(ITempNaming execNaming) {
+	public ExtractedArtifactStoreBuilder executableNaming(TempNaming execNaming) {
 		super.executableNaming(execNaming);
 		return this;
 	}
 	
-	public ExtractedArtifactStoreBuilder extractExecutableNaming(ITempNaming execNaming) {
+	public ExtractedArtifactStoreBuilder extractExecutableNaming(TempNaming execNaming) {
 		set(EXTRACT_EXECUTABLE_NAMING, execNaming);
 		return this;
 	}
@@ -80,15 +81,15 @@ public class ExtractedArtifactStoreBuilder extends ArtifactStoreBuilder {
 		return property(EXTRACT_DIR_FACTORY);
 	}
 	
-	protected IProperty<ITempNaming> extractExecutableNaming() {
+	protected IProperty<TempNaming> extractExecutableNaming() {
 		return property(EXTRACT_EXECUTABLE_NAMING);
 	}
 	
 
 	@Override
 	public IArtifactStore build() {
-		DirectoryAndExecutableNaming extract = new DirectoryAndExecutableNaming(get(EXTRACT_DIR_FACTORY),get(EXTRACT_EXECUTABLE_NAMING));
-		DirectoryAndExecutableNaming temp = new DirectoryAndExecutableNaming(tempDir().get(),executableNaming().get());
-		return new ExtractedArtifactStore(get(DOWNLOAD_CONFIG), get(DOWNLOADER),extract,temp);
+		DirectoryAndExecutableNaming extract = DirectoryAndExecutableNaming.of(get(EXTRACT_DIR_FACTORY),get(EXTRACT_EXECUTABLE_NAMING));
+		DirectoryAndExecutableNaming temp = DirectoryAndExecutableNaming.of(tempDir().get(),executableNaming().get());
+		return ExtractedArtifactStore.of(get(DOWNLOAD_CONFIG), get(DOWNLOADER),extract,temp);
 	}
 }

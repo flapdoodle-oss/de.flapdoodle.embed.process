@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.store;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
@@ -38,13 +39,8 @@ public class StaticArtifactStore implements IArtifactStore {
 	}
 	
 	@Override
-	public boolean checkDistribution(Distribution distribution) {
-		return distributionFileSet.containsKey(distribution);
-	}
-
-	@Override
-	public ExtractedFileSet extractFileSet(Distribution distribution) {
-		return distributionFileSet.get(distribution);
+	public Optional<ExtractedFileSet> extractFileSet(Distribution distribution) {
+		return Optional.ofNullable(distributionFileSet.get(distribution));
 	}
 
 	@Override

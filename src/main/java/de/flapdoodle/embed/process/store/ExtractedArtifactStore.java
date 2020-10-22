@@ -26,6 +26,7 @@ package de.flapdoodle.embed.process.store;
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
+import de.flapdoodle.embed.process.config.store.ImmutableDownloadConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.*;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
@@ -34,42 +35,44 @@ import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
-public class ExtractedArtifactStore implements IArtifactStore {
+import org.immutables.value.Value.Immutable;
 
-	private final DownloadConfig downloadConfig;
-	private final IDownloader downloader;
-	private final DirectoryAndExecutableNaming extraction;
-	private final DirectoryAndExecutableNaming temp;
+@Immutable
+public abstract class ExtractedArtifactStore implements IArtifactStore {
 
-	public ExtractedArtifactStore(DownloadConfig downloadConfig, IDownloader downloader, DirectoryAndExecutableNaming extraction, DirectoryAndExecutableNaming temp) {
-		this.downloadConfig = downloadConfig;
-		this.downloader = downloader;
-		this.extraction = extraction;
-		this.temp = temp;
+	abstract DownloadConfig downloadConfig();
+	abstract Downloader downloader();
+	abstract DirectoryAndExecutableNaming extraction();
+	abstract DirectoryAndExecutableNaming temp();
+
+	private ArtifactStore store(Directory withDistribution, TempNaming naming) {
+		return ArtifactStore.builder()
+				.downloadConfig(downloadConfig())
+				.tempDirFactory(withDistribution)
+				.executableNaming(naming)
+				.downloader(downloader())
+				.build();
 	}
 	
-	@Override
-	public boolean checkDistribution(Distribution distribution)
-			throws IOException {
-		return store().checkDistribution(distribution);
+	@Deprecated
+	public ExtractedArtifactStore executableNaming(TempNaming tempNaming) {
+		return ImmutableExtractedArtifactStore.copyOf(this)
+				.withExtraction(ImmutableDirectoryAndExecutableNaming.copyOf(extraction()).withExecutableNaming(tempNaming));
 	}
-
-	private ArtifactStore store() {
-		return new ArtifactStore(downloadConfig, extraction.getDirectory(), extraction.getExecutableNaming(), downloader);
+	
+	@Deprecated
+	public ExtractedArtifactStore download(ImmutableDownloadConfig.Builder downloadConfigBuilder) {
+		return ImmutableExtractedArtifactStore.copyOf(this).withDownloadConfig(downloadConfigBuilder.build());
 	}
-
-	private ArtifactStore store(Directory withDistribution, ITempNaming naming) {
-		return new ArtifactStore(downloadConfig, withDistribution, naming, downloader);
-	}
-
 
 	@Override
-	public ExtractedFileSet extractFileSet(Distribution distribution)
+	public Optional<ExtractedFileSet> extractFileSet(Distribution distribution)
 			throws IOException {
 		
-		Directory withDistribution = withDistribution(extraction.getDirectory(), distribution);
-		ArtifactStore baseStore = store(withDistribution, extraction.getExecutableNaming());
+		Directory withDistribution = withDistribution(extraction().getDirectory(), distribution);
+		ArtifactStore baseStore = store(withDistribution, extraction().getExecutableNaming());
 		
 		boolean foundExecutable=false;
 		File destinationDir = withDistribution.asFile();
@@ -80,7 +83,7 @@ public class ExtractedArtifactStore implements IArtifactStore {
 		FilesToExtract filesToExtract = baseStore.filesToExtract(distribution);
 		for (FileSet.Entry file : filesToExtract.files()) {
 			if (file.type()==FileType.Executable) {
-				String executableName = FilesToExtract.executableName(extraction.getExecutableNaming(), file);
+				String executableName = FilesToExtract.executableName(extraction().getExecutableNaming(), file);
 				File executableFile = new File(executableName);
 				File resolvedExecutableFile = new File(destinationDir, executableName);
 				if (resolvedExecutableFile.isFile()) {
@@ -96,14 +99,14 @@ public class ExtractedArtifactStore implements IArtifactStore {
 		if (!foundExecutable) {
 			// we found no executable, so we trigger extraction and hope for the best
 			try {
-				extractedFileSet = baseStore.extractFileSet(distribution);
+				extractedFileSet = baseStore.extractFileSet(distribution).get();
 			} catch (FileAlreadyExistsException fx) {
 				throw new RuntimeException("extraction to "+destinationDir+" has failed", fx);
 			}
 		} else {
 			extractedFileSet = fileSetBuilder.build();
 		}
-		return ExtractedFileSets.copy(extractedFileSet, temp.getDirectory(), temp.getExecutableNaming());
+		return Optional.ofNullable(ExtractedFileSets.copy(extractedFileSet, temp().getDirectory(), temp().getExecutableNaming()));
 	}
 
 	private static Directory withDistribution(final Directory dir, final Distribution distribution) {
@@ -138,5 +141,17 @@ public class ExtractedArtifactStore implements IArtifactStore {
 	public void removeFileSet(Distribution distribution, ExtractedFileSet files) {
 		ExtractedFileSets.delete(files);
 	}
+	
+	public static ImmutableExtractedArtifactStore.Builder builder() {
+		return ImmutableExtractedArtifactStore.builder();
+	}
 
+	public static ExtractedArtifactStore of(DownloadConfig downloadConfig, Downloader downloader, DirectoryAndExecutableNaming extract, DirectoryAndExecutableNaming temp) {
+		return builder()
+				.downloadConfig(downloadConfig)
+				.downloader(downloader)
+				.extraction(extract)
+				.temp(temp)
+				.build();
+	}
 }

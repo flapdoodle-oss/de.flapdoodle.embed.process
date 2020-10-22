@@ -68,7 +68,7 @@ public class AbstractExtractorTest {
 			.build();
 		
 		Directory factory=new PlatformTempDir();
-		ITempNaming exeutableNaming=new UUIDTempNaming();
+		TempNaming exeutableNaming=new UUIDTempNaming();
 		
 		FileSet fileSet = FileSet.builder()
 			.addEntry(FileType.Executable, "foo-bar.exe", Pattern.compile("."))

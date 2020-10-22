@@ -56,10 +56,20 @@ public abstract class Processes {
 
 	static {
 		// Comparing with the string value to avoid a strong dependency on JDK 9
-		if (SourceVersion.latest().toString().equals( "RELEASE_9" )) {
+		String sourceVersion = SourceVersion.latest().toString();
+		switch (sourceVersion) {
+		case "RELEASE_9":
 			PID_HELPER = PidHelper.JDK_9;
-		}
-		else {
+			break;
+		case "RELEASE_10":
+		case "RELEASE_11":
+		case "RELEASE_12":
+		case "RELEASE_13":
+		case "RELEASE_14":
+		case "RELEASE_15":
+			PID_HELPER = PidHelper.JDK_11;
+			break;
+		default:
 			PID_HELPER = PidHelper.LEGACY;
 		}
 	}
@@ -175,6 +185,20 @@ public abstract class Processes {
 				try {
 					// Invoking via reflection to avoid a strong dependency on JDK 9
 					Method getPid = Process.class.getMethod("getPid");
+					return (Long) getPid.invoke(process);
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					return null;
+				}
+			}
+		},
+		JDK_11 {
+			@Override
+			Long getPid(Process process) {
+				try {
+					// Invoking via reflection to avoid a strong dependency on JDK 11
+					Method getPid = Process.class.getMethod("pid");
 					return (Long) getPid.invoke(process);
 				}
 				catch (Exception e) {

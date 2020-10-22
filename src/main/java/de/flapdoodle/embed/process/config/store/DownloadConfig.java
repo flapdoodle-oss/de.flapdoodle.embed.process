@@ -26,8 +26,9 @@ package de.flapdoodle.embed.process.config.store;
 import java.util.Optional;
 
 import org.immutables.value.Value;
+import org.immutables.value.Value.Default;
 
-import de.flapdoodle.embed.process.extract.ITempNaming;
+import de.flapdoodle.embed.process.extract.TempNaming;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
@@ -41,7 +42,7 @@ public interface DownloadConfig {
 
 	Directory getArtifactStorePath();
 	
-	ITempNaming getFileNaming();
+	TempNaming getFileNaming();
 
 	String getDownloadPrefix();
 
@@ -49,8 +50,14 @@ public interface DownloadConfig {
 
 	PackageResolver getPackageResolver();
 
-	TimeoutConfig getTimeoutConfig();
+	@Default
+	default TimeoutConfig getTimeoutConfig() {
+		return TimeoutConfig.defaults();
+	}
 	
 	Optional<ProxyFactory> proxyFactory();
 
+	public static ImmutableDownloadConfig.Builder builder() {
+		return ImmutableDownloadConfig.builder();
+	}
 }

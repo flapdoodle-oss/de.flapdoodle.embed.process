@@ -29,15 +29,16 @@ import de.flapdoodle.embed.process.builder.AbstractBuilder;
 import de.flapdoodle.embed.process.builder.IProperty;
 import de.flapdoodle.embed.process.builder.ImmutableContainer;
 import de.flapdoodle.embed.process.builder.TypedProperty;
-import de.flapdoodle.embed.process.extract.ITempNaming;
+import de.flapdoodle.embed.process.extract.TempNaming;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
+@Deprecated
 public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 
 	private static final TypedProperty<UserAgent> USER_AGENT = TypedProperty.with("UserAgent", UserAgent.class);
 	private static final TypedProperty<ProgressListener> PROGRESS_LISTENER = TypedProperty.with("ProgressListener", ProgressListener.class);
-	private static final TypedProperty<ITempNaming> FILE_NAMING = TypedProperty.with("FileNaming", ITempNaming.class);
+	private static final TypedProperty<TempNaming> FILE_NAMING = TypedProperty.with("FileNaming", TempNaming.class);
 	private static final TypedProperty<Directory> ARTIFACT_STORE_PATH = TypedProperty.with("ArtifactStorePath",	Directory.class);
 	private static final TypedProperty<PackageResolver> PACKAGE_RESOLVER = TypedProperty.with("PackageResolver",	PackageResolver.class);
 	private static final TypedProperty<DownloadPrefix> DOWNLOAD_PREFIX = TypedProperty.with("DownloadPrefix",	DownloadPrefix.class);
@@ -86,12 +87,12 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		return property(ARTIFACT_STORE_PATH);
 	}
 
-	public DownloadConfigBuilder fileNaming(ITempNaming fileNaming) {
+	public DownloadConfigBuilder fileNaming(TempNaming fileNaming) {
 		set(FILE_NAMING, fileNaming);
 		return this;
 	}
 
-	protected IProperty<ITempNaming> fileNaming() {
+	protected IProperty<TempNaming> fileNaming() {
 		return property(FILE_NAMING);
 	}
 
@@ -137,7 +138,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		final String downloadPrefix = get(DOWNLOAD_PREFIX).value();
 		final PackageResolver packageResolver = get(PACKAGE_RESOLVER);
 		final Directory artifactStorePath = get(ARTIFACT_STORE_PATH);
-		final ITempNaming fileNaming = get(FILE_NAMING);
+		final TempNaming fileNaming = get(FILE_NAMING);
 		final ProgressListener progressListener = get(PROGRESS_LISTENER);
 		final String userAgent = get(USER_AGENT).value();
 		final TimeoutConfig timeoutConfig = get(TIMEOUT_CONFIG);
@@ -168,7 +169,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		private final DistributionDownloadPath _downloadPath;
 		private final ProgressListener _progressListener;
 		private final Directory _artifactStorePath;
-		private final ITempNaming _fileNaming;
+		private final TempNaming _fileNaming;
 		private final String _downloadPrefix;
 		private final String _userAgent;
 		private final PackageResolver _packageResolver;
@@ -176,7 +177,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		private final Optional<ProxyFactory> _proxyFactory;
 
 		public ImmutableDownloadConfig(DistributionDownloadPath downloadPath, String downloadPrefix, PackageResolver packageResolver,
-				Directory artifactStorePath, ITempNaming fileNaming, ProgressListener progressListener, String userAgent,
+				Directory artifactStorePath, TempNaming fileNaming, ProgressListener progressListener, String userAgent,
 				TimeoutConfig timeoutConfig, Optional<ProxyFactory> proxyFactory) {
 			super();
 			_downloadPath = downloadPath;
@@ -206,7 +207,7 @@ public class DownloadConfigBuilder extends AbstractBuilder<DownloadConfig> {
 		}
 
 		@Override
-		public ITempNaming getFileNaming() {
+		public TempNaming getFileNaming() {
 			return _fileNaming;
 		}
 

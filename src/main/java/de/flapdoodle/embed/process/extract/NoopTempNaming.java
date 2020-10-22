@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.extract;
 /**
  *
  */
-public class NoopTempNaming implements ITempNaming {
+public class NoopTempNaming implements TempNaming {
 
 	@Override
 	public String nameFor(String prefix, String postfix) {

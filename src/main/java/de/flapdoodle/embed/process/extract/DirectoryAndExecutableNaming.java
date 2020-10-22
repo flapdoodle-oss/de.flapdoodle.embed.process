@@ -23,23 +23,25 @@
  */
 package de.flapdoodle.embed.process.extract;
 
+import org.immutables.value.Value.Immutable;
+
 import de.flapdoodle.embed.process.io.directories.Directory;
 
-public class DirectoryAndExecutableNaming {
+@Immutable
+public abstract class DirectoryAndExecutableNaming {
 
-	private final Directory directory;
-	private final ITempNaming executableNaming;
+	public abstract Directory getDirectory();
 
-	public DirectoryAndExecutableNaming(Directory directory, ITempNaming executableNaming) {
-		this.directory = directory;
-		this.executableNaming = executableNaming;
+	public abstract TempNaming getExecutableNaming();
+
+	public static ImmutableDirectoryAndExecutableNaming.Builder builder() {
+		return ImmutableDirectoryAndExecutableNaming.builder();
 	}
-	
-	public Directory getDirectory() {
-		return directory;
-	}
-	
-	public ITempNaming getExecutableNaming() {
-		return executableNaming;
+
+	public static DirectoryAndExecutableNaming of(Directory directory, TempNaming executableNaming) {
+		return builder()
+				.directory(directory)
+				.executableNaming(executableNaming)
+				.build();
 	}
 }

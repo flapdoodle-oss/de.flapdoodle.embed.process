@@ -28,7 +28,7 @@ import java.util.UUID;
 /**
  *
  */
-public class UUIDTempNaming implements ITempNaming {
+public class UUIDTempNaming implements TempNaming {
 
 	@Override
 	public String nameFor(String prefix, String postfix) {

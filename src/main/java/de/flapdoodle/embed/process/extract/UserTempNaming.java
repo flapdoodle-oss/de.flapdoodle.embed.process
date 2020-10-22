@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.extract;
 /**
  *
  */
-public class UserTempNaming implements ITempNaming {
+public class UserTempNaming implements TempNaming {
 
 	@Override
 	public String nameFor(String prefix, String postfix) {

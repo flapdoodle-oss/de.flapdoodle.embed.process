@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -81,11 +82,11 @@ public class ExtractedArtifactStoreTest {
 			.extractExecutableNaming(new UUIDTempNaming())
 			.build();
 		
-		assertTrue("checkDistribution ("+distribution+")", store.checkDistribution(distribution));
-		
 		// extract files if not exists
-		ExtractedFileSet extractFileSet = store.extractFileSet(distribution);
-		assertNotNull(extractFileSet);
+		Optional<ExtractedFileSet> optExtractFileSet = store.extractFileSet(distribution);
+		assertTrue(optExtractFileSet.isPresent());
+		ExtractedFileSet extractFileSet=optExtractFileSet.get();
+		
 		assertEquals(1, extractFileSet.libraryFiles().size());
 		
 		File extractedExeFile = fileOf(extractFileSet.baseDir(),extractFileSet.executable());
@@ -98,7 +99,8 @@ public class ExtractedArtifactStoreTest {
 		assertFalse(extractedExeFile.exists());
 
 		// 
-		extractFileSet = store.extractFileSet(distribution);
+		optExtractFileSet = store.extractFileSet(distribution);
+		extractFileSet=optExtractFileSet.get();
 		extractedExeFile = fileOf(extractFileSet.baseDir(),extractFileSet.executable());
 		assertTrue(""+extractedExeFile+".exists()",extractedExeFile.exists());
 		assertTrue("Remove extracted exe", extractedExeFile.delete());
@@ -113,8 +115,8 @@ public class ExtractedArtifactStoreTest {
 		return ExtractedArtifactStore.asPath(distribution)+".zip";
 	}
 	
-	private static IDownloader failingDownloader() {
-		return new IDownloader() {
+	private static Downloader failingDownloader() {
+		return new Downloader() {
 			
 			@Override
 			public String getDownloadUrl(DownloadConfig runtime,
