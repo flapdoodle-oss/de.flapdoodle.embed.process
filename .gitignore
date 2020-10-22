@@ -11,3 +11,4 @@ velocity.log
 .gradle/
 build
 .factorypath
+nb-configuration.xml
