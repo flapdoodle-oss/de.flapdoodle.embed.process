@@ -23,23 +23,27 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 
 public class NetworkTest {
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void freeNetworkPortFailOnPoolSizeSmallerThanOne() throws IOException {
 		InetAddress address = Network.getLocalHost();
-		Network.getFreeServerPorts(address, 0);
+		assertThrows(IllegalArgumentException.class, () -> Network.getFreeServerPorts(address, 0));
 	}
 	
 	@Test
@@ -59,9 +63,15 @@ public class NetworkTest {
 		assertEquals(5,set.size());
 	}
 	
-	@Test(expected=IOException.class)
+	@Test
 	public void freeNetworkPortMustFailIfPoolIsTooLarge() throws IOException {
 		InetAddress address = Network.getLocalHost();
-		Network.getFreeServerPorts(address, 50000);
+		assertThrows(IOException.class, () -> Network.getFreeServerPorts(address, 50000));
+	}
+	
+	@Test
+	public void localHostMustNotBe127_0_1_1() throws UnknownHostException {
+		InetAddress address = Network.getLocalHost();
+		assertThat(address.getHostAddress()).isNotEqualTo("127.0.1.1");
 	}
 }
