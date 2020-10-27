@@ -1,5 +1,5 @@
 #!/bin/sh
-mvn release:clean
-mvn release:prepare
-mvn release:perform
+./mvnw release:clean
+./mvnw release:prepare
+./mvnw release:perform
 
