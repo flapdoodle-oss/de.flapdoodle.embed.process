@@ -23,12 +23,12 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 15.04.2016 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
+Stable (Maven Central Repository, Released: 27.10.2020 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>2.0.5</version>
+		<version>3.0.0</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -36,7 +36,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>3.0.1-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -55,7 +55,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 ### Changelog
 
 
-#### 3.0.0 (SNAPSHOT)
+#### 3.0.0
 
 - big refactoring, using immutables.org instead of hand made builder pattern
 
