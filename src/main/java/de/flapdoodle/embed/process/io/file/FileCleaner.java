@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +35,9 @@ public class FileCleaner {
 
 	private static Logger logger = LoggerFactory.getLogger(FileCleaner.class);
 
-	static final int MAX_FILES_TO_CLEAN = 10000;
-	static final int MAX_RETRIES = 100;
-	static Cleaner cleaner;
+	private static final int MAX_FILES_TO_CLEAN = 10000;
+	private static final int MAX_RETRIES = 100;
+	private static Cleaner cleaner;
 
 	public synchronized static void forceDeleteOnExit(File fileOrDir) {
 		//		FileUtils.forceDeleteOnExit(file);

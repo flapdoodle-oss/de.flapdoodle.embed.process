@@ -25,37 +25,45 @@ package de.flapdoodle.embed.process.io.progress;
 
 import org.slf4j.Logger;
 
+import de.flapdoodle.embed.process.io.Slf4jLevel;
+
 public class Slf4jProgressListener implements ProgressListener {
 
     private final Logger logger;
+    private final Slf4jLevel level;
+    
     private int lastPercent = -1;
 
-
     public Slf4jProgressListener(Logger logger) {
+        this(logger, Slf4jLevel.INFO);
+    }
+
+    public Slf4jProgressListener(Logger logger, Slf4jLevel level) {
         this.logger = logger;
+        this.level =level;
     }
 
 
     @Override
     public void progress(String label, int percent) {
         if (percent != lastPercent && percent % 10 == 0) {
-            logger.info("{} : {} %", label, percent);
+            level.log(logger,"{} : {} %", label, percent);
         }
         lastPercent = percent;
     }
 
     @Override
     public void done(String label) {
-        logger.info("{} : finished", label);
+    	level.log(logger,"{} : finished", label);
     }
 
     @Override
     public void start(String label) {
-        logger.info("{} : starting...", label);
+    	level.log(logger,"{} : starting...", label);
     }
 
     @Override
     public void info(String label, String message) {
-        logger.info("{} : {}", label, message);
+    	level.log(logger,"{} : {}", label, message);
     }
 }

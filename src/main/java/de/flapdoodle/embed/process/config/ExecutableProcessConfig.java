@@ -23,25 +23,16 @@
  */
 package de.flapdoodle.embed.process.config;
 
+import java.util.OptionalLong;
+
 import de.flapdoodle.embed.process.distribution.Version;
 
-public class ExecutableProcessConfig implements IExecutableProcessConfig {
 
-	protected final Version version;
-	private final SupportConfig _supportConfig;
+public interface ExecutableProcessConfig {
 
-	public ExecutableProcessConfig(Version version, SupportConfig supportConfig) {
-		this.version = version;
-		_supportConfig = supportConfig;
-	}
+	Version version();
 
-	@Override
-	public Version version() {
-		return version;
-	}
+	SupportConfig supportConfig();
 
-	@Override
-	public SupportConfig supportConfig() {
-		return _supportConfig;
-	}
+	OptionalLong stopTimeoutInMillis();
 }

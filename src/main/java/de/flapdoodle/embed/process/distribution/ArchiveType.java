@@ -23,7 +23,12 @@
  */
 package de.flapdoodle.embed.process.distribution;
 
-import de.flapdoodle.embed.process.extract.*;
+import de.flapdoodle.embed.process.extract.ArchiveIsFileExtractor;
+import de.flapdoodle.embed.process.extract.Extractor;
+import de.flapdoodle.embed.process.extract.Tbz2Extractor;
+import de.flapdoodle.embed.process.extract.TgzExtractor;
+import de.flapdoodle.embed.process.extract.TxzExtractor;
+import de.flapdoodle.embed.process.extract.ZipExtractor;
 
 /**
  *

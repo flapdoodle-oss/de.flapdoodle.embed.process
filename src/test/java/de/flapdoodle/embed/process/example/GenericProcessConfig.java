@@ -23,13 +23,34 @@
  */
 package de.flapdoodle.embed.process.example;
 
+import java.util.OptionalLong;
+
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.distribution.Version;
 
-public class GenericProcessConfig extends ExecutableProcessConfig {
+public class GenericProcessConfig implements ExecutableProcessConfig {
+
+	protected final Version version;
+	private final SupportConfig _supportConfig;
 
 	public GenericProcessConfig(Version version) {
-		super(version,SupportConfig.generic());
+		this.version = version;
+		_supportConfig = SupportConfig.generic();
+	}
+
+	@Override
+	public Version version() {
+		return version;
+	}
+
+	@Override
+	public SupportConfig supportConfig() {
+		return _supportConfig;
+	}
+	
+	@Override
+	public OptionalLong stopTimeoutInMillis() {
+		return OptionalLong.empty();
 	}
 }

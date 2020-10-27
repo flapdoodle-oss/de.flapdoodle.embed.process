@@ -23,14 +23,6 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.ExtractedFileSet;
-import de.flapdoodle.embed.process.runtime.ProcessControl;
-
-import org.immutables.value.Value.Immutable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
@@ -39,15 +31,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
+import de.flapdoodle.embed.process.runtime.ProcessControl;
+
 public class CachingArtifactStore implements IArtifactStore {
 
 	private static final Logger logger = LoggerFactory.getLogger(CachingArtifactStore.class);
 
 	private final IArtifactStore delegate;
 
-	final Object lock = new Object();
+	private final Object lock = new Object();
 
-	final HashMap<Distribution, FilesWithCounter> distributionFiles = new HashMap<>();
+	private final HashMap<Distribution, FilesWithCounter> distributionFiles = new HashMap<>();
 
 	private final ScheduledExecutorService executor;
 
@@ -131,7 +130,7 @@ public class CachingArtifactStore implements IArtifactStore {
 	class FilesWithCounter {
 
 		private Optional<ExtractedFileSet> file;
-		int counter =0;
+		private int counter =0;
 		private final Distribution distribution;
 
 		public FilesWithCounter(Distribution distribution) {
@@ -198,7 +197,7 @@ public class CachingArtifactStore implements IArtifactStore {
 
 	class CustomThreadFactory implements ThreadFactory {
 
-		final ThreadFactory factory=Executors.defaultThreadFactory();
+		private final ThreadFactory factory=Executors.defaultThreadFactory();
 		
 		@Override
 		public Thread newThread(Runnable runnable) {

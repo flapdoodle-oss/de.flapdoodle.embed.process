@@ -23,13 +23,13 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +38,6 @@ import org.junit.rules.TemporaryFolder;
 import de.flapdoodle.embed.process.TempDir;
 import de.flapdoodle.embed.process.config.store.DistributionPackage;
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
-import de.flapdoodle.embed.process.config.store.DownloadConfigBuilder;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.PackageResolver;
@@ -75,8 +74,8 @@ public class LocalArtifactStoreTest {
   }
 
   private DownloadConfig downloadConfig(Directory artifactDir) {
-    return new DownloadConfigBuilder().downloadPrefix("prefix")
-                                      .downloadPath("foo")
+    return DownloadConfig.builder().downloadPrefix("prefix")
+                                      .downloadPath(__ -> "foo")
                                       .packageResolver(packageResolver())
                                       .artifactStorePath(artifactDir)
                                       .fileNaming(new UUIDTempNaming())

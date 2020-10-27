@@ -23,18 +23,21 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
-import de.flapdoodle.embed.process.io.directories.Directory;
-import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.UUID;
+import de.flapdoodle.embed.process.io.directories.Directory;
+import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 
 /**
  *
@@ -42,7 +45,7 @@ import java.util.UUID;
 public class Files {
 
 	private static Logger logger = LoggerFactory.getLogger(Files.class);
-	public static final int BYTE_BUFFER_LENGTH = 1024 * 16;
+	private static final int BYTE_BUFFER_LENGTH = 1024 * 16;
 	/**
 	 * Instance to force loading {@link DeleteDirVisitor} class to avoid
 	 * {@link NoClassDefFoundError} in shutdown hook.

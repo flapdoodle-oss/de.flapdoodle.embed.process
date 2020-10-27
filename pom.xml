@@ -364,12 +364,14 @@
             <scope>test</scope>
         </dependency>
         <!-- needed by infinitest? -->
+        <!--
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
             <version>2.2</version>
             <scope>test</scope>
         </dependency>
+                -->
         <dependency>
             <groupId>de.flapdoodle.testdoc</groupId>
             <artifactId>de.flapdoodle.testdoc</artifactId>

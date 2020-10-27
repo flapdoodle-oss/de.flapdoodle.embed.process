@@ -21,30 +21,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.io.directories;
+package de.flapdoodle.embed.process.extract;
 
-import java.io.File;
 
-import de.flapdoodle.embed.process.io.file.Files;
+public interface ArchiveEntry {
 
-public abstract class Directories {
+	boolean isDirectory();
 
-	private Directories() {
-		// no instance
-	}
-	
-	public static Directory join(final Directory left, final Directory right) {
-		return new Directory() {
-			
-			@Override
-			public boolean isGenerated() {
-				return left.isGenerated() || right.isGenerated();
-			}
-			
-			@Override
-			public File asFile() {
-				return Files.fileOf(left.asFile(), right.asFile());
-			}
-		};
-	}
+	String getName();
+
 }

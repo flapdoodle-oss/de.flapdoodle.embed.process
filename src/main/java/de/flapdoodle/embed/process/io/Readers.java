@@ -31,7 +31,7 @@ import java.io.Reader;
  */
 public class Readers {
 
-	public static final int CHAR_BUFFER_LENGTH = 512;
+	private static final int CHAR_BUFFER_LENGTH = 512;
 
 	private Readers() {
 		throw new IllegalAccessError("singleton");

@@ -31,7 +31,7 @@ import java.io.Reader;
  */
 public class ReaderProcessor extends Thread {
 
-	public static final int CHAR_BUFFER_LENGTH = 512;
+	private static final int CHAR_BUFFER_LENGTH = 512;
 	private final Reader reader;
 	private final StreamProcessor streamProcessor;
 

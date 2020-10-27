@@ -44,6 +44,7 @@ import de.flapdoodle.embed.process.io.Processors;
 
 public class ProcessControl {
 
+	private static final long MAX_STOP_TIMEOUT_MS = 5000;
 	private static Logger logger = LoggerFactory.getLogger(ProcessControl.class);
 	private static final int SLEEP_TIMEOUT = 10;
 
@@ -73,7 +74,11 @@ public class ProcessControl {
 	}
 
 	public int stop() {
-		return waitForProcessGotKilled();
+		return stop(MAX_STOP_TIMEOUT_MS);
+	}
+	
+	public int stop(long maxStopTimeoutMillis) {
+		return waitForProcessGotKilled(maxStopTimeoutMillis);
 	}
 
 	private void closeIOAndDestroy() {
@@ -92,8 +97,11 @@ public class ProcessControl {
 		}
 	}
 
-	private Integer stopOrDestroyProcess() {
+	private Integer stopOrDestroyProcess(long maxStopTimeoutMillis) {
 		Integer returnCode=null;
+		
+		// set back to minimal defaults
+		if (maxStopTimeoutMillis<3000) maxStopTimeoutMillis=MAX_STOP_TIMEOUT_MS;
 
 		try {
 			returnCode=process.exitValue();
@@ -116,19 +124,7 @@ public class ProcessControl {
               closeIOAndDestroy();
 
               try {
-                returnCode = task.get(900, TimeUnit.MILLISECONDS);
-                stopped = true;
-              } catch (ExecutionException | TimeoutException e) {
-              }
-
-              try {
-                returnCode = task.get(2000, TimeUnit.MILLISECONDS);
-                stopped = true;
-              } catch (ExecutionException | TimeoutException e) {
-              }
-
-              try {
-                returnCode = task.get(runtime.maxStopTimeoutMillis(), TimeUnit.MILLISECONDS);
+                returnCode = task.get(maxStopTimeoutMillis, TimeUnit.MILLISECONDS);
                 stopped = true;
               } catch (ExecutionException | TimeoutException e) {
               }
@@ -145,44 +141,9 @@ public class ProcessControl {
 		return returnCode;
 	}
 
-	//CHECKSTYLE:OFF
-
-	/**
-	 * It may happen in tests, that the process is currently using some files in
-	 * the temp directory, e.g. journal files (journal/j._0) and got killed at
-	 * that time, so it takes a bit longer to kill the process. So we just wait
-	 * for a second (in 10 ms steps) that the process got really killed.
-	 */
-	private int waitForProcessGotKilled() {
-//		final ProcessState state = new ProcessState();
-
-//		final Timer timer = new Timer();
-//		timer.scheduleAtFixedRate(new TimerTask() {
-//
-//			public void run() {
-//				try {
-//					state.returnCode = process.waitFor();
-//				} catch (InterruptedException e) {
-//					logger.severe(e.getMessage());
-//				} finally {
-//					state.setKilled(true);
-//					timer.cancel();
-//				}
-//			}
-//		}, 0, 10);
-//		// wait for max. 1 second that process got killed
-		Integer retCode=stopOrDestroyProcess();
-
-//		int countDown = 100;
-//		while (!state.isKilled() && (countDown-- > 0))
-//			try {
-//				Thread.sleep(10);
-//			} catch (InterruptedException e) {
-//				logger.severe(e.getMessage());
-//				Thread.currentThread().interrupt();
-//			}
+	private int waitForProcessGotKilled(long maxStopTimeoutMillis) {
+		Integer retCode=stopOrDestroyProcess(maxStopTimeoutMillis);
 		if (retCode==null) {
-//			timer.cancel();
 			String message = "\n\n" + "----------------------------------------------------\n"
 					+ "Something bad happened. We couldn't kill "+runtime.name()+" process, and tried a lot.\n"
 					+ "If you want this problem solved you can help us if you open a new issue.\n" + "\n"
@@ -194,7 +155,6 @@ public class ProcessControl {
 		return retCode;
 	}
 
-	//CHECKSTYLE:ON
 	public static ProcessControl fromCommandLine(SupportConfig runtime, List<String> commandLine, boolean redirectErrorStream)
 			throws IOException {
 		ProcessBuilder processBuilder = newProcessBuilder(commandLine, redirectErrorStream);

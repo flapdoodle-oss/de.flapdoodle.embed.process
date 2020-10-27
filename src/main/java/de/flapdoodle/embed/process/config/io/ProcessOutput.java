@@ -23,18 +23,16 @@
  */
 package de.flapdoodle.embed.process.config.io;
 
-import java.util.logging.Level;
-
-import de.flapdoodle.embed.process.io.StreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.Slf4jLevel;
+import de.flapdoodle.embed.process.io.StreamProcessor;
 
 
 public class ProcessOutput {
 
-	protected final StreamProcessor output;
-	protected final StreamProcessor error;
-	protected final StreamProcessor commands;
+	private final StreamProcessor output;
+	private final StreamProcessor error;
+	private final StreamProcessor commands;
 
 	public ProcessOutput(StreamProcessor output, StreamProcessor error,
 			StreamProcessor commands) {
@@ -62,12 +60,6 @@ public class ProcessOutput {
 	
 	public static ProcessOutput getDefaultInstanceSilent() {
 		return new ProcessOutput(Processors.silent(),Processors.silent(),Processors.silent());
-	}
-
-	public static ProcessOutput getInstance(String label, java.util.logging.Logger logger) {
-		return new ProcessOutput(Processors.named("["+label+" output]", Processors.logTo(logger, Level.INFO)),
-				Processors.named("["+label+" error]", Processors.logTo(logger, Level.SEVERE)),
-				Processors.logTo(logger, Level.FINE));
 	}
 
 	public static ProcessOutput getInstance(String label, org.slf4j.Logger logger) {

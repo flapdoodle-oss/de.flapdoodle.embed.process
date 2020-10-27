@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,9 +65,9 @@ public abstract class AbstractExtractor implements Extractor {
 		ArchiveWrapper archive = archiveStreamWithExceptionHint(source);
 
 		try {
-			ArchiveEntry entry;
+			org.apache.commons.compress.archivers.ArchiveEntry entry;
 			while ((entry = archive.getNextEntry()) != null) {
-				IExtractionMatch match = toExtract.find(new CommonsArchiveEntryAdapter(entry));
+				ExtractionMatch match = toExtract.find(new CommonsArchiveEntryAdapter(entry));
 				if (match != null) {
 					if (archive.canReadEntryData(entry)) {
 						long size = entry.getSize();
@@ -100,13 +99,13 @@ public abstract class AbstractExtractor implements Extractor {
 
 	protected interface ArchiveWrapper {
 
-		ArchiveEntry getNextEntry() throws IOException;
+		org.apache.commons.compress.archivers.ArchiveEntry getNextEntry() throws IOException;
 
-		InputStream asStream(ArchiveEntry entry) throws IOException;
+		InputStream asStream(org.apache.commons.compress.archivers.ArchiveEntry entry) throws IOException;
 
 		void close() throws IOException;
 
-		boolean canReadEntryData(ArchiveEntry entry);
+		boolean canReadEntryData(org.apache.commons.compress.archivers.ArchiveEntry entry);
 	}
 
 }

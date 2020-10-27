@@ -23,15 +23,15 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
-import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.io.progress.ProgressListener;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.store.FileType;
+import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
 public class ArchiveIsFileExtractor implements Extractor {
 
@@ -44,7 +44,7 @@ public class ArchiveIsFileExtractor implements Extractor {
 		String progressLabel = "Extract (not really) " + source;
 		progressListener.start(progressLabel);
 
-		IExtractionMatch match = toExtract.find(new FileAsArchiveEntry(source));
+		ExtractionMatch match = toExtract.find(new FileAsArchiveEntry(source));
 		if (match != null) {
 			try (FileInputStream fin = new FileInputStream(source);
 				 BufferedInputStream in = new BufferedInputStream(fin)) {
@@ -68,7 +68,7 @@ public class ArchiveIsFileExtractor implements Extractor {
 		return builder.build();
 	}
 
-	static class FileAsArchiveEntry implements IArchiveEntry {
+	static class FileAsArchiveEntry implements ArchiveEntry {
 
 		private final File _source;
 

@@ -23,7 +23,6 @@
  */
 package de.flapdoodle.embed.process.example;
 
-import java.io.File;
 import java.io.IOException;
 
 import de.flapdoodle.embed.process.config.RuntimeConfig;

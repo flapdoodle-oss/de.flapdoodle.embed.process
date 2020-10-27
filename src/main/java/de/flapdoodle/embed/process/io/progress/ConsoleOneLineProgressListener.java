@@ -30,9 +30,9 @@ public class ConsoleOneLineProgressListener implements ProgressListener {
 
 	private static final char BAR_DONE = '=';
 	private static final char BAR_TODO = '-';
-	static final int LINE_LEN = 80;
-	static final char[] CLOCK = {'-', '\\', '|', '/'};
-	public static final int ONE_HUNDRED_PERCENT = 100;
+	private static final int LINE_LEN = 80;
+	private static final char[] CLOCK = {'-', '\\', '|', '/'};
+	private static final int ONE_HUNDRED_PERCENT = 100;
 
 	private int lastPercent = -1;
 	private int lastIdx = 0;

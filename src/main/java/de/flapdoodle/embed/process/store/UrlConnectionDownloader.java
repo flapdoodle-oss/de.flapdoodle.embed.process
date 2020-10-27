@@ -47,9 +47,9 @@ import de.flapdoodle.embed.process.io.progress.ProgressListener;
  */
 public class UrlConnectionDownloader implements Downloader {
 
-	static final int DEFAULT_CONTENT_LENGTH = 20 * 1024 * 1024;
-	static final int BUFFER_LENGTH = 1024 * 8 * 8;
-	static final int READ_COUNT_MULTIPLIER = 100;
+	private static final int DEFAULT_CONTENT_LENGTH = 20 * 1024 * 1024;
+	private static final int BUFFER_LENGTH = 1024 * 8 * 8;
+	private static final int READ_COUNT_MULTIPLIER = 100;
 
 	@Override
 	public String getDownloadUrl(DownloadConfig runtime, Distribution distribution) {

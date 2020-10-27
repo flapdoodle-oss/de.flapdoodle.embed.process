@@ -33,11 +33,14 @@ import de.flapdoodle.embed.process.store.IArtifactStore;
 @Value.Immutable
 public interface RuntimeConfig {
 
-	ProcessOutput getProcessOutput();
+	ProcessOutput processOutput();
 
-	CommandLinePostProcessor getCommandLinePostProcessor();
+	@Default
+	default CommandLinePostProcessor commandLinePostProcessor() {
+		return new CommandLinePostProcessor.Noop();
+	}
 	
-	IArtifactStore getArtifactStore();
+	IArtifactStore artifactStore();
 
 	@Default
 	default boolean isDaemonProcess() {

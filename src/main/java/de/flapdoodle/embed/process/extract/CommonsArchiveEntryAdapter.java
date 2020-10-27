@@ -23,13 +23,11 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
+public class CommonsArchiveEntryAdapter implements ArchiveEntry {
 
-public class CommonsArchiveEntryAdapter implements IArchiveEntry {
+	private final org.apache.commons.compress.archivers.ArchiveEntry _entry;
 
-	private final ArchiveEntry _entry;
-
-	public CommonsArchiveEntryAdapter(ArchiveEntry entry) {
+	public CommonsArchiveEntryAdapter(org.apache.commons.compress.archivers.ArchiveEntry entry) {
 		_entry = entry;
 	}
 

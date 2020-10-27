@@ -31,7 +31,7 @@ public class NamedOutputStreamProcessor implements StreamProcessor {
 
 	private final StreamProcessor destination;
 	private final String name;
-	boolean firstBlock=true;
+	private boolean firstBlock=true;
 
 	public NamedOutputStreamProcessor(String name, StreamProcessor destination) {
 		this.name = name;

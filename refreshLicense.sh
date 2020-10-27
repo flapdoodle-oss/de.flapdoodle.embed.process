@@ -1,3 +1,3 @@
 #!/bin/sh
-mvn license:format
+./mvnw license:format
 

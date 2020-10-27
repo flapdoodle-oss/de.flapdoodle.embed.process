@@ -27,11 +27,14 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.flapdoodle.embed.process.config.Defaults;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
+import de.flapdoodle.embed.process.config.io.ProcessOutput;
+import de.flapdoodle.embed.process.config.store.DistributionPackage;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
+import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
-import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 
 public class TestExampleReadMeCode {
@@ -44,23 +47,20 @@ public class TestExampleReadMeCode {
 	@Test
 	public void genericProcessStarter() throws IOException {
 
-		Version version=Version.of("2.1.1");
+		PackageResolver packageResolver = (dist) -> {
+			return DistributionPackage.builder().archiveType(ArchiveType.TBZ2)
+					.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
+					.archivePath("phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2").build();
+		};
 
-		RuntimeConfig config = new GenericRuntimeConfigBuilder()
-			.name("phantomjs")
-			//https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
-			.downloadPath("https://bitbucket.org/ariya/phantomjs/downloads/")
-			.packageResolver()
-				.files(Distribution.detectFor(version), FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
-				.archivePath(Distribution.detectFor(version), "phantomjs-"+version.asInDownloadPath()+"-linux-x86_64.tar.bz2")
-				.archiveType(Distribution.detectFor(version), ArchiveType.TBZ2)
-				.build()
-			.build();
-
+		RuntimeConfig config = RuntimeConfig.builder()
+				.artifactStore(Defaults.artifactStore(Defaults.genericDownloadConfig("phantomjs",
+						"https://bitbucket.org/ariya/phantomjs/downloads/", packageResolver)))
+				.processOutput(ProcessOutput.getDefaultInstance("phantomjs")).build();
 
 		GenericStarter starter = new GenericStarter(config);
 
-		GenericExecuteable executable = starter.prepare(new GenericProcessConfig(version));
+		GenericExecuteable executable = starter.prepare(new GenericProcessConfig(Version.of("2.1.1")));
 
 		GenericProcess process = executable.start();
 

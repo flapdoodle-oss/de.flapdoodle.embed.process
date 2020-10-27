@@ -38,7 +38,6 @@ import de.flapdoodle.embed.process.extract.ExtractedFileSets;
 import de.flapdoodle.embed.process.extract.Extractor;
 import de.flapdoodle.embed.process.extract.Extractors;
 import de.flapdoodle.embed.process.extract.FilesToExtract;
-import de.flapdoodle.embed.process.extract.ImmutableDirectoryAndExecutableNaming;
 import de.flapdoodle.embed.process.extract.TempNaming;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.store.ImmutableArtifactStore.Builder;

@@ -31,8 +31,8 @@ import java.util.Collections;
 import java.util.List;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.FileSet.Entry;
+import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
 import de.flapdoodle.embed.process.io.file.Files;
@@ -71,7 +71,7 @@ public class FilesToExtract {
 		return Collections.unmodifiableList(_files);
 	}
 
-	public IExtractionMatch find(IArchiveEntry entry) {
+	public ExtractionMatch find(ArchiveEntry entry) {
 		Entry found = null;
 
 		if (!entry.isDirectory()) {
@@ -97,7 +97,7 @@ public class FilesToExtract {
 		return executableNaming.nameFor("extract",fileName(entry));
 	}
 	
-	static class Match implements IExtractionMatch {
+	static class Match implements ExtractionMatch {
 
 		private final Entry _entry;
 		private final File _dirFactoryResult;

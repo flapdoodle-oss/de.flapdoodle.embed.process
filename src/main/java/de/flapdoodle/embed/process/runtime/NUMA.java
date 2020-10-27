@@ -23,18 +23,19 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
+import static java.util.Arrays.asList;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.io.Readers;
-
-import static java.util.Arrays.asList;
 
 /**
  *
@@ -47,7 +48,7 @@ public class NUMA {
 		return NUMA_STATUS_MAP.computeIfAbsent(platform, p -> isNUMAOnce(support, p));
 	}
 
-	static final Map<Platform, Boolean> NUMA_STATUS_MAP = new HashMap<>();
+	private static final Map<Platform, Boolean> NUMA_STATUS_MAP = new HashMap<>();
 
 	public static boolean isNUMAOnce(SupportConfig support, Platform platform) {
 		if (platform == Platform.Linux) {

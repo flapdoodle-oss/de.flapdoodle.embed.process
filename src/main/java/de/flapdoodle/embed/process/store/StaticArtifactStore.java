@@ -23,24 +23,22 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import org.immutables.value.Value.Immutable;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
-public class StaticArtifactStore implements IArtifactStore {
+@Immutable
+public abstract class StaticArtifactStore implements IArtifactStore {
 
-	private final Map<Distribution, ExtractedFileSet> distributionFileSet;
+	protected abstract Map<Distribution, ExtractedFileSet> fileSet();
 
-	public StaticArtifactStore(Map<Distribution, ExtractedFileSet> distributionFileSet) {
-		this.distributionFileSet = new HashMap<>(distributionFileSet);
-	}
-	
 	@Override
 	public Optional<ExtractedFileSet> extractFileSet(Distribution distribution) {
-		return Optional.ofNullable(distributionFileSet.get(distribution));
+		return Optional.ofNullable(fileSet().get(distribution));
 	}
 
 	@Override
@@ -48,4 +46,7 @@ public class StaticArtifactStore implements IArtifactStore {
 		// dont remove any files
 	}
 
+	public static ImmutableStaticArtifactStore.Builder builder() {
+		return ImmutableStaticArtifactStore.builder();
+	}
 }

@@ -23,23 +23,25 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import de.flapdoodle.embed.process.TempDir;
-import de.flapdoodle.embed.process.config.store.*;
-import de.flapdoodle.embed.process.example.GenericPackageResolver;
-import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
-import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import de.flapdoodle.embed.process.TempDir;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.store.FileSet;
+import de.flapdoodle.embed.process.config.store.FileType;
+import de.flapdoodle.embed.process.config.store.PackageResolver;
+import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
+import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 
 /**
  * @author viliusl
@@ -56,9 +58,10 @@ public class ExtractorImplTest {
 
     @Before
     public void setUp() throws IOException {
-        PackageResolver packageResolver=new GenericPackageResolver();
-        runtime=new DownloadConfigBuilder()
-                .downloadPath("http://192.168.0.1")
+        PackageResolver packageResolver = (__) -> { throw new IllegalArgumentException("must not be called"); };
+        
+        runtime=DownloadConfig.builder()
+                .downloadPath((__) -> "http://192.168.0.1")
                 .downloadPrefix("prefix")
                 .packageResolver(packageResolver)
                 .artifactStorePath(new PlatformTempDir())

@@ -23,6 +23,8 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
+import static java.util.Arrays.asList;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
@@ -41,12 +43,10 @@ import com.sun.jna.platform.win32.WinNT;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.distribution.Platform;
-import de.flapdoodle.embed.process.io.StreamProcessor;
 import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.StreamProcessor;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
-
-import static java.util.Arrays.asList;
 
 public abstract class Processes {
 

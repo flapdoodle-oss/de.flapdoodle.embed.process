@@ -21,16 +21,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.builder;
+package de.flapdoodle.embed.process.extract;
 
-@Deprecated
-public interface IProperty<T> {
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
-	T set(T value);
+import de.flapdoodle.embed.process.config.store.FileType;
 
-	T setDefault(T value);
+public interface ExtractionMatch {
 
-	T overwriteDefault(T value);
+	File write(InputStream source, long size) throws IOException;
 
-	T get();
+	FileType type();
+
 }

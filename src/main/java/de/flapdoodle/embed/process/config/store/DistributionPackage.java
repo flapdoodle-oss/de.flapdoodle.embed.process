@@ -43,4 +43,8 @@ public interface DistributionPackage {
 	static DistributionPackage of(ArchiveType archiveType, FileSet fileSet, String path) {
 		return ImmutableDistributionPackage.of(archiveType, fileSet, path);
 	}
+	
+	static ImmutableDistributionPackage.Builder builder() {
+		return ImmutableDistributionPackage.builder();
+	}
 }

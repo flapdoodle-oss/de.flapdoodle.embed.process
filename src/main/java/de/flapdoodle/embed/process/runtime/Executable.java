@@ -26,15 +26,16 @@ package de.flapdoodle.embed.process.runtime;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
+import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
-public abstract class Executable<T extends IExecutableProcessConfig, P extends IStopable> implements IStopable {
+public abstract class Executable<T extends ExecutableProcessConfig, P extends IStopable> implements IStopable {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -44,7 +45,7 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 	private boolean stopped;
 	private boolean registeredJobKiller;
 	
-	List<IStopable> stopables = new ArrayList<>();
+	private List<IStopable> stopables = new ArrayList<>();
 
 	private final Distribution distribution;
 
@@ -81,7 +82,7 @@ public abstract class Executable<T extends IExecutableProcessConfig, P extends I
 			}
 			stopables = new ArrayList<>();
 
-			runtimeConfig.getArtifactStore().removeFileSet(distribution, executable);
+			runtimeConfig.artifactStore().removeFileSet(distribution, executable);
 
 			stopped = true;
 		}

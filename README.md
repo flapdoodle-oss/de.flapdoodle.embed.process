@@ -36,7 +36,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>2.0.6-SNAPSHOT</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -55,7 +55,9 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 ### Changelog
 
 
-#### 2.0.6 (SNAPSHOT)
+#### 3.0.0 (SNAPSHOT)
+
+- big refactoring, using immutables.org instead of hand made builder pattern
 
 #### 2.0.5 / 2.0.4
 

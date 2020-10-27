@@ -29,7 +29,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
+import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.exceptions.DistributionException;
@@ -37,7 +37,7 @@ import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.store.IArtifactStore;
 
 
-public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE extends Executable<CONFIG, PROCESS>,PROCESS extends IStopable> {
+public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE extends Executable<CONFIG, PROCESS>,PROCESS extends IStopable> {
 	
 	private static Logger logger = LoggerFactory.getLogger(Starter.class);
 	
@@ -53,7 +53,7 @@ public abstract class Starter<CONFIG extends IExecutableProcessConfig,EXECUTABLE
 
 	public EXECUTABLE prepare(CONFIG config, Distribution distribution) {
 		try {
-			IArtifactStore artifactStore = runtime.getArtifactStore();
+			IArtifactStore artifactStore = runtime.artifactStore();
 			
 			Optional<ExtractedFileSet> files = artifactStore.extractFileSet(distribution);
 			if (files.isPresent()) {

@@ -23,7 +23,17 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import de.flapdoodle.embed.process.config.IExecutableProcessConfig;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
@@ -31,17 +41,8 @@ import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.io.file.Files;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public abstract class AbstractProcess<T extends IExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>
+public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>
 		implements IStopable {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractProcess.class);
@@ -70,8 +71,6 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 		// pid file needs to be set before ProcessBuilder is called
 		this.pidFile = pidFile(this.executable.getFile().executable());
 
-		ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
-
 		// Refactor me - to much things done in this try/catch
 		String nextCall="";
 		try {
@@ -83,7 +82,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 			nextCall="newProcessBuilder()";
 
 			ProcessBuilder processBuilder = ProcessControl.newProcessBuilder(
-					runtimeConfig.getCommandLinePostProcessor().process(distribution,
+					runtimeConfig.commandLinePostProcessor().process(distribution,
 							getCommandLine(distribution, config, this.executable.getFile())),
 					getEnvironment(distribution, config, this.executable.getFile()), true);
 
@@ -155,7 +154,7 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	}
 
 	protected void onAfterProcessStart(ProcessControl process, RuntimeConfig runtimeConfig) {
-		ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
+		ProcessOutput outputConfig = runtimeConfig.processOutput();
 		Processors.connect(process.getReader(), outputConfig.getOutput());
 		Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.getError()));
 	}
@@ -190,8 +189,9 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 	}
 
 	protected final void stopProcess() {
-		if (process != null)
-			process.stop();
+		if (process != null) { 
+			config.stopTimeoutInMillis().ifPresentOrElse(process::stop, process::stop);
+		}
 	}
 
 	public int waitFor() throws InterruptedException {
@@ -204,17 +204,17 @@ public abstract class AbstractProcess<T extends IExecutableProcessConfig, E exte
 
 	protected boolean sendKillToProcess() {
 		return getProcessId() > 0 && Processes.killProcess(config.supportConfig(), distribution.platform(),
-				StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
+				StreamToLineProcessor.wrap(runtimeConfig.processOutput().getCommands()), getProcessId());
 	}
 
 	protected boolean sendTermToProcess() {
 		return getProcessId() > 0 && Processes.termProcess(config.supportConfig(), distribution.platform(),
-				StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
+				StreamToLineProcessor.wrap(runtimeConfig.processOutput().getCommands()), getProcessId());
 	}
 
 	protected boolean tryKillToProcess() {
 		return getProcessId() > 0 && Processes.tryKillProcess(config.supportConfig(), distribution.platform(),
-				StreamToLineProcessor.wrap(runtimeConfig.getProcessOutput().getCommands()), getProcessId());
+				StreamToLineProcessor.wrap(runtimeConfig.processOutput().getCommands()), getProcessId());
 	}
 
 	public boolean isProcessRunning() {
