@@ -12,7 +12,7 @@ jdk:
 
 env:
   matrix:
-    - TARGET='mvn test'
+    - TARGET='mvn test -Ptravis'
 
 notifications:
   email:
