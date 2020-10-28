@@ -189,8 +189,12 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	}
 
 	protected final void stopProcess() {
-		if (process != null) { 
-			config.stopTimeoutInMillis().ifPresentOrElse(process::stop, process::stop);
+		if (process != null) {
+			if (config.stopTimeoutInMillis().isPresent()) {
+				process.stop(config.stopTimeoutInMillis().getAsLong());
+			} else {
+				process.stop();
+			}
 		}
 	}
 
