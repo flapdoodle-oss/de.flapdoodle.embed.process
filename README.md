@@ -55,6 +55,11 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 ### Changelog
 
 
+#### 3.0.2-SNAPSHOT
+
+- better free server port detection
+- use builder pattern for data classes (immutables.org)
+
 #### 3.0.1
 
 - failed build on jdk8 (fixed)
