@@ -182,10 +182,10 @@ public class ProcessControl {
 	public static boolean executeCommandLine(SupportConfig support, String label, ProcessConfig processConfig) {
 		boolean ret;
 
-		List<String> commandLine = processConfig.getCommandLine();
+		List<String> commandLine = processConfig.commandLine();
 		try {
-			ProcessControl process = fromCommandLine(support, processConfig.getCommandLine(), processConfig.getError() == null);
-			Processors.connect(process.getReader(), processConfig.getOutput());
+			ProcessControl process = fromCommandLine(support, processConfig.commandLine(), processConfig.error() == null);
+			Processors.connect(process.getReader(), processConfig.output());
 			Thread.sleep(SLEEP_TIMEOUT);
 			ret = process.stop() == 0;
 			logger.info("execSuccess: {} {}", ret, commandLine);

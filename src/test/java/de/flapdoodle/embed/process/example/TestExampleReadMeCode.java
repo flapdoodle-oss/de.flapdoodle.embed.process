@@ -56,7 +56,7 @@ public class TestExampleReadMeCode {
 		RuntimeConfig config = RuntimeConfig.builder()
 				.artifactStore(Defaults.artifactStore(Defaults.genericDownloadConfig("phantomjs",
 						"https://bitbucket.org/ariya/phantomjs/downloads/", packageResolver)))
-				.processOutput(ProcessOutput.getDefaultInstance("phantomjs")).build();
+				.processOutput(ProcessOutput.namedConsole("phantomjs")).build();
 
 		GenericStarter starter = new GenericStarter(config);
 

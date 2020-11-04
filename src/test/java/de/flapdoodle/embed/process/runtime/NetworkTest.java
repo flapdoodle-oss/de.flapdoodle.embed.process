@@ -37,41 +37,51 @@ import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
-
 public class NetworkTest {
 
 	@Test
 	public void freeNetworkPortFailOnPoolSizeSmallerThanOne() throws IOException {
 		InetAddress address = Network.getLocalHost();
-		assertThrows(IllegalArgumentException.class, () -> Network.getFreeServerPorts(address, 0));
+		assertThrows(IllegalArgumentException.class, () -> Network.freeServerPorts(address, 0));
 	}
-	
+
 	@Test
 	public void freeNetworkPortMustReturnDifferentAvailablePorts() throws IOException {
 		InetAddress address = Network.getLocalHost();
-		int[] ports = Network.getFreeServerPorts(address, 5);
-		assertTrue(ports.length>0);
+		int[] ports = Network.freeServerPorts(address, 5);
+		assertTrue(ports.length > 0);
 		for (int port : ports) {
 			ServerSocket serverSocket = new ServerSocket(port, 0, address);
 			assertNotNull(serverSocket);
 			serverSocket.close();
 		}
-		HashSet<Integer> set= new HashSet<>();
+		HashSet<Integer> set = new HashSet<>();
 		for (int port : ports) {
 			set.add(port);
 		}
-		assertEquals(5,set.size());
+		assertEquals(5, set.size());
 	}
-	
+
 	@Test
 	public void freeNetworkPortMustFailIfPoolIsTooLarge() throws IOException {
 		InetAddress address = Network.getLocalHost();
-		assertThrows(IOException.class, () -> Network.getFreeServerPorts(address, 50000));
+		assertThrows(IOException.class, () -> Network.freeServerPorts(address, 50000));
 	}
-	
+
 	@Test
 	public void localHostMustNotBe127_0_1_1() throws UnknownHostException {
 		InetAddress address = Network.getLocalHost();
 		assertThat(address.getHostAddress()).isNotEqualTo("127.0.1.1");
+	}
+
+	@Test
+	public void switchToDifferentPortIfPreferedPortIsAllocated() throws UnknownHostException, IOException {
+		InetAddress address = Network.getLocalHost();
+
+		try (ServerSocket socket = new ServerSocket(0, 0, address)) {
+			int freePort = Network.freeServerPort(address, socket.getLocalPort());
+			assertThat(freePort).isNotEqualTo(socket.getLocalPort());
+			assertThat(freePort).isNotEqualTo(0);
+		}
 	}
 }

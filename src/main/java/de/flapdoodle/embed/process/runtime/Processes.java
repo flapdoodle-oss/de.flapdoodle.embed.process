@@ -129,17 +129,17 @@ public abstract class Processes {
 
 	public static boolean killProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
 		return platform.isUnixLike() && ProcessControl.executeCommandLine(support, "[kill process]",
-				new ProcessConfig(asList("kill", "-2", "" + pid), output));
+				ProcessConfig.builder().commandLine(asList("kill", "-2", "" + pid)).output(output).build());
 	}
 
 	public static boolean termProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
 		return platform.isUnixLike() && ProcessControl.executeCommandLine(support, "[term process]",
-				new ProcessConfig(asList("kill", "" + pid), output));
+				ProcessConfig.builder().commandLine(asList("kill", "" + pid)).output(output).build());
 	}
 
 	public static boolean tryKillProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
 		return platform == Platform.Windows && ProcessControl.executeCommandLine(support, "[taskkill process]",
-				new ProcessConfig(asList("taskkill", "/F", "/pid", "" + pid), output));
+				ProcessConfig.builder().commandLine(asList("taskkill", "/F", "/pid", "" + pid)).output(output).build());
 	}
 
 	public static boolean isProcessRunning(Platform platform, long pid) {

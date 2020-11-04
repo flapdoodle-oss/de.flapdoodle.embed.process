@@ -155,8 +155,8 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 
 	protected void onAfterProcessStart(ProcessControl process, RuntimeConfig runtimeConfig) {
 		ProcessOutput outputConfig = runtimeConfig.processOutput();
-		Processors.connect(process.getReader(), outputConfig.getOutput());
-		Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.getError()));
+		Processors.connect(process.getReader(), outputConfig.output());
+		Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.error()));
 	}
 
 	protected abstract List<String> getCommandLine(Distribution distribution, T config, ExtractedFileSet exe)
@@ -208,17 +208,17 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 
 	protected boolean sendKillToProcess() {
 		return getProcessId() > 0 && Processes.killProcess(config.supportConfig(), distribution.platform(),
-				StreamToLineProcessor.wrap(runtimeConfig.processOutput().getCommands()), getProcessId());
+				StreamToLineProcessor.wrap(runtimeConfig.processOutput().commands()), getProcessId());
 	}
 
 	protected boolean sendTermToProcess() {
 		return getProcessId() > 0 && Processes.termProcess(config.supportConfig(), distribution.platform(),
-				StreamToLineProcessor.wrap(runtimeConfig.processOutput().getCommands()), getProcessId());
+				StreamToLineProcessor.wrap(runtimeConfig.processOutput().commands()), getProcessId());
 	}
 
 	protected boolean tryKillToProcess() {
 		return getProcessId() > 0 && Processes.tryKillProcess(config.supportConfig(), distribution.platform(),
-				StreamToLineProcessor.wrap(runtimeConfig.processOutput().getCommands()), getProcessId());
+				StreamToLineProcessor.wrap(runtimeConfig.processOutput().commands()), getProcessId());
 	}
 
 	public boolean isProcessRunning() {

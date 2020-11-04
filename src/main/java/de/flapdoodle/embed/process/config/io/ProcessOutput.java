@@ -23,48 +23,48 @@
  */
 package de.flapdoodle.embed.process.config.io;
 
+import org.immutables.value.Value.Immutable;
+
+import de.flapdoodle.embed.process.config.io.ImmutableProcessOutput.Builder;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.Slf4jLevel;
 import de.flapdoodle.embed.process.io.StreamProcessor;
 
 
-public class ProcessOutput {
+@Immutable
+public interface ProcessOutput {
 
-	private final StreamProcessor output;
-	private final StreamProcessor error;
-	private final StreamProcessor commands;
+	public StreamProcessor output();
 
-	public ProcessOutput(StreamProcessor output, StreamProcessor error,
-			StreamProcessor commands) {
-		this.output = output;
-		this.error = error;
-		this.commands = commands;
+	public StreamProcessor error();
+
+	public StreamProcessor commands();
+
+	public static ProcessOutput namedConsole(String label) {
+		return builder()
+				.output(Processors.namedConsole("["+label+" output]"))
+				.error(Processors.namedConsole("["+label+" error]"))
+				.commands(Processors.console())
+				.build();
 	}
 	
-	public StreamProcessor getOutput() {
-		return output;
+	public static ProcessOutput silent() {
+		return builder()
+				.output(Processors.silent())
+				.error(Processors.silent())
+				.commands(Processors.silent())
+				.build();
 	}
 
-	public StreamProcessor getError() {
-		return error;
+	public static ProcessOutput named(String label, org.slf4j.Logger logger) {
+		return builder()
+				.output(Processors.named("["+label+" output]", Processors.logTo(logger, Slf4jLevel.INFO)))
+				.error(Processors.named("["+label+" error]", Processors.logTo(logger, Slf4jLevel.ERROR)))
+				.commands(Processors.logTo(logger, Slf4jLevel.DEBUG))
+				.build();
 	}
 
-	public StreamProcessor getCommands() {
-		return commands;
-	}
-
-	public static ProcessOutput getDefaultInstance(String label) {
-		return new ProcessOutput(Processors.namedConsole("["+label+" output]"),
-				Processors.namedConsole("["+label+" error]"), Processors.console());
-	}
-	
-	public static ProcessOutput getDefaultInstanceSilent() {
-		return new ProcessOutput(Processors.silent(),Processors.silent(),Processors.silent());
-	}
-
-	public static ProcessOutput getInstance(String label, org.slf4j.Logger logger) {
-		return new ProcessOutput(Processors.named("["+label+" output]", Processors.logTo(logger, Slf4jLevel.INFO)),
-				Processors.named("["+label+" error]", Processors.logTo(logger, Slf4jLevel.ERROR)),
-				Processors.logTo(logger, Slf4jLevel.DEBUG));
+	public static Builder builder() {
+		return ImmutableProcessOutput.builder();
 	}
 }

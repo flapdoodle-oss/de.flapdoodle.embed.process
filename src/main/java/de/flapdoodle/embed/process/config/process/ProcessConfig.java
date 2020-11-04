@@ -23,40 +23,27 @@
  */
 package de.flapdoodle.embed.process.config.process;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.immutables.value.Value.Default;
+import org.immutables.value.Value.Immutable;
+
+import de.flapdoodle.embed.process.config.process.ImmutableProcessConfig.Builder;
 import de.flapdoodle.embed.process.io.StreamProcessor;
 
-/**
- *
- */
-public class ProcessConfig {
+@Immutable
+public interface ProcessConfig {
 
-	private final List<String> commandLine;
-	private final StreamProcessor output;
-	private final StreamProcessor error;
+	List<String> commandLine();
 
-	public ProcessConfig(List<String> commandLine, StreamProcessor output, StreamProcessor error) {
-		this.commandLine = new ArrayList<>(commandLine);
-		this.output = output;
-		this.error = error;
+	StreamProcessor output();
+
+	@Default
+	default StreamProcessor error() {
+		return output();
 	}
 
-	public ProcessConfig(List<String> commandLine, StreamProcessor output) {
-		this(commandLine, output, null);
-	}
-
-	public List<String> getCommandLine() {
-		return Collections.unmodifiableList(commandLine);
-	}
-
-	public StreamProcessor getOutput() {
-		return output;
-	}
-
-	public StreamProcessor getError() {
-		return error;
+	public static Builder builder() {
+		return ImmutableProcessConfig.builder();
 	}
 }

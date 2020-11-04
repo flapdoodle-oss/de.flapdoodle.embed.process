@@ -26,6 +26,7 @@ package de.flapdoodle.embed.process.runtime;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -79,14 +80,17 @@ public class Network {
 		return ret;
 	}
 
+	@Deprecated
 	public static int getPreferredFreeServerPort(int preferredPort) throws IOException {
 		return getPreferredFreeServerPort(getLocalHost(), preferredPort);
 	}
 
+	@Deprecated
 	public static int getFreeServerPort() throws IOException {
 		return getFreeServerPort(getLocalHost());
 	}
 
+	@Deprecated
 	public static int getPreferredFreeServerPort(InetAddress hostAddress, int preferredPort) throws IOException {
 		try (ServerSocket serverSocket = new ServerSocket(preferredPort, 0, hostAddress)) {
 			return preferredPort;
@@ -94,17 +98,40 @@ public class Network {
 			return getFreeServerPort(hostAddress);
 		}
 	}
+	
+	public static int freeServerPort(InetAddress hostAddress, int preferredPort) throws IOException {
+		try {
+			try(Socket socket = new Socket(hostAddress, preferredPort)) {
+				return freeServerPort(hostAddress);
+			}
+		} catch (Exception ex) {
+			return preferredPort;
+		}
+	}
 
+	public static int freeServerPort(InetAddress hostAddress) throws IOException {
+		try(ServerSocket socket = new ServerSocket(0,0,hostAddress)) {
+			return socket.getLocalPort();
+		}
+	}
+	
+	@Deprecated
 	public static int getFreeServerPort(InetAddress hostAddress) throws IOException {
 		int ports[] = getFreeServerPorts(hostAddress, 10);
 		return randomEntryOf(ports);
 	}
 
+	@Deprecated
 	public static int randomEntryOf(int[] ports) {
 		return ports[ThreadLocalRandom.current().nextInt(ports.length)];
 	}
 	
+	@Deprecated
 	public static int[] getFreeServerPorts(InetAddress hostAddress, int poolSize) throws IOException {
+		return freeServerPorts(hostAddress, poolSize);
+	}
+
+	public static int[] freeServerPorts(InetAddress hostAddress, int poolSize) throws IOException {
 		if (poolSize<1) {
 			throw new IllegalArgumentException("poolSize < 1: "+poolSize);
 		}
