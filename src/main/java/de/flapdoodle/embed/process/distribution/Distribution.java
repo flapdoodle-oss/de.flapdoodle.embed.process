@@ -41,16 +41,23 @@ public abstract class Distribution {
 	@Parameter
 	public abstract BitSize bitsize();
 
+	@Parameter
+	public abstract Architecture architecture();
+
 	@Override
 	public String toString() {
-		return "" + version() + ":" + platform() + ":" + bitsize();
+		return "" + version() + ":" + platform() + ":" + architecture() + ":" + bitsize();
 	}
 
 	public static Distribution detectFor(Version version) {
-		return of(version, Platform.detect(), BitSize.detect());
+		return of(version, Platform.detect(), BitSize.detect(), Architecture.detect());
 	}
 
 	public static Distribution of(Version version, Platform platform, BitSize bitsize) {
-		return ImmutableDistribution.of(version, platform, bitsize);
+		return of(version, platform, bitsize, Architecture.detect());
+	}
+
+	public static Distribution of(Version version, Platform platform, BitSize bitsize, Architecture arch) {
+		return ImmutableDistribution.of(version, platform, bitsize, arch);
 	}
 }
