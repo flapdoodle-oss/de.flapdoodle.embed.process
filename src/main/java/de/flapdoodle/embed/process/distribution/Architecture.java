@@ -24,17 +24,28 @@
 package de.flapdoodle.embed.process.distribution;
 
 /**
- *
+ * Architecture enum
  */
-public enum BitSize {
-	B32,
-	B64;
+public enum Architecture {
+    I686,
+    AMD64,
+    AARCH64;
 
-	public static BitSize detect() {
-		BitSize bitSize = BitSize.B32;
-		String osArch = System.getProperty("os.arch");
-		if (osArch.endsWith("64"))
-			bitSize = BitSize.B64;
-		return bitSize;
-	}
+    public static Architecture detect() {
+        String architecture = System.getProperty("os.arch");
+        if (architecture.equalsIgnoreCase("i686")
+                || architecture.equalsIgnoreCase("i386")
+                || architecture.equalsIgnoreCase("x86")) {
+            return I686;
+        }
+        if (architecture.equalsIgnoreCase("i686_64")
+                || architecture.equalsIgnoreCase("x86_64")
+                || architecture.equalsIgnoreCase("amd64")) {
+            return AMD64;
+        }
+        if (architecture.equalsIgnoreCase("aarch64")) {
+            return AARCH64;
+        }
+        throw new IllegalArgumentException("Could not detect Architecture: os.arch=" + architecture);
+    }
 }
