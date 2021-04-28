@@ -13,7 +13,7 @@
     <groupId>de.flapdoodle.embed</groupId>
     <artifactId>de.flapdoodle.embed.process</artifactId>
     <name>Flapdoodle Embedded Process Util</name>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>3.1.0</version>
     <packaging>bundle</packaging>
 
     <description>A embedded process starter ...</description>
@@ -32,7 +32,8 @@
         <connection>scm:git:git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</connection>
         <developerConnection>scm:git:git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</developerConnection>
         <url>git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</url>
-    </scm>
+      <tag>de.flapdoodle.embed.process-3.1.0</tag>
+  </scm>
 
     <!-- https://docs.sonatype.org/display/Repository/Central+Sync+Requirements 
     https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide 
@@ -323,7 +324,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
