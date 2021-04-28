@@ -23,12 +23,12 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 28.10.2020 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
+Stable (Maven Central Repository, Released: 28.04.2021 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.0.1</version>
+		<version>3.1.1</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -36,7 +36,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.0.2-SNAPSHOT</version>
+		<version>3.1.2-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -54,8 +54,14 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 ### Changelog
 
+#### 3.1.2-SNAPSHOT
 
-#### 3.0.2-SNAPSHOT
+#### 3.1.0
+
+- more cleanup
+- use de.flapdoodle.os for os detection
+
+#### 3.0.2
 
 - better free server port detection
 - use builder pattern for data classes (immutables.org)
