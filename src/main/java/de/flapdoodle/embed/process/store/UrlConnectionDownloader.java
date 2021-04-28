@@ -121,6 +121,9 @@ public class UrlConnectionDownloader implements Downloader {
 				openConnection = url.openConnection();
 			}
 			openConnection.setRequestProperty("User-Agent",downloadConfig.getUserAgent());
+			if (downloadConfig.getAuthorization().isPresent()) {
+				openConnection.setRequestProperty("Authorization", downloadConfig.getAuthorization().get());
+			}
 			
 			TimeoutConfig timeoutConfig = downloadConfig.getTimeoutConfig();
 			

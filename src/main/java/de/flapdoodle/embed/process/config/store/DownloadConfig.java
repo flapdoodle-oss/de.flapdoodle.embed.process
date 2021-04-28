@@ -48,6 +48,8 @@ public interface DownloadConfig {
 
 	String getUserAgent();
 
+	Optional<String> getAuthorization();
+
 	PackageResolver getPackageResolver();
 
 	@Default
