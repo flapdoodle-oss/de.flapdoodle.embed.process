@@ -23,30 +23,27 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import static java.util.Arrays.asList;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinNT;
+import de.flapdoodle.embed.process.config.SupportConfig;
+import de.flapdoodle.embed.process.config.process.ProcessConfig;
+import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
+import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.StreamProcessor;
+import de.flapdoodle.embed.process.io.StreamToLineProcessor;
+import de.flapdoodle.os.OS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.lang.model.SourceVersion;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 
-import javax.lang.model.SourceVersion;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinNT;
-
-import de.flapdoodle.embed.process.config.SupportConfig;
-import de.flapdoodle.embed.process.config.process.ProcessConfig;
-import de.flapdoodle.embed.process.distribution.Platform;
-import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
-import de.flapdoodle.embed.process.io.Processors;
-import de.flapdoodle.embed.process.io.StreamProcessor;
-import de.flapdoodle.embed.process.io.StreamToLineProcessor;
+import static java.util.Arrays.asList;
 
 public abstract class Processes {
 
@@ -127,26 +124,34 @@ public abstract class Processes {
 		return null;
 	}
 
-	public static boolean killProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
-		return platform.isUnixLike() && ProcessControl.executeCommandLine(support, "[kill process]",
+	public static boolean killProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, long pid) {
+		return isUnixLike(platform) && ProcessControl.executeCommandLine(support, "[kill process]",
 				ProcessConfig.builder().commandLine(asList("kill", "-2", "" + pid)).output(output).build());
 	}
 
-	public static boolean termProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
-		return platform.isUnixLike() && ProcessControl.executeCommandLine(support, "[term process]",
+	public static boolean termProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, long pid) {
+		return isUnixLike(platform) && ProcessControl.executeCommandLine(support, "[term process]",
 				ProcessConfig.builder().commandLine(asList("kill", "" + pid)).output(output).build());
 	}
 
-	public static boolean tryKillProcess(SupportConfig support,Platform platform, StreamProcessor output, long pid) {
-		return platform == Platform.Windows && ProcessControl.executeCommandLine(support, "[taskkill process]",
+	public static boolean tryKillProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, long pid) {
+		return platform.operatingSystem() == OS.Windows && ProcessControl.executeCommandLine(support, "[taskkill process]",
 				ProcessConfig.builder().commandLine(asList("taskkill", "/F", "/pid", "" + pid)).output(output).build());
 	}
 
-	public static boolean isProcessRunning(Platform platform, long pid) {
+	private static boolean isUnixLike(de.flapdoodle.os.Platform platform) {
+		switch (platform.operatingSystem()) {
+			case Windows:
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isProcessRunning(de.flapdoodle.os.Platform platform, long pid) {
 
 		try {
 			final Process pidof;
-			if (platform.isUnixLike()) {
+			if (isUnixLike(platform)) {
 				pidof = Runtime.getRuntime().exec(
 						new String[] { "kill", "-0", "" + pid });
 				return pidof.waitFor() == 0;

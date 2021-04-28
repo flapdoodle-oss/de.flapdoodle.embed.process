@@ -23,6 +23,13 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
+import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
+import de.flapdoodle.os.OS;
+import de.flapdoodle.os.Platform;
+import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -32,13 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.flapdoodle.embed.process.distribution.Platform;
-import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
-import junit.framework.TestCase;
-
 public class TestFileCleaner extends TestCase {
 
 	private static Logger logger = LoggerFactory.getLogger(TestFileCleaner.class.getName());
@@ -47,7 +47,7 @@ public class TestFileCleaner extends TestCase {
 	
 	public void testCleanup() throws IOException, InterruptedException {
 
-		boolean runsOnWindows = Platform.detect() == Platform.Windows;
+		boolean runsOnWindows = Platform.detect().operatingSystem() == OS.Windows;
 
 		List<File> files = new ArrayList<File>();
 

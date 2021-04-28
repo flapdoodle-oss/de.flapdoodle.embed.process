@@ -23,26 +23,20 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-
-import org.immutables.value.Value.Immutable;
-
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.ImmutableDownloadConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.DirectoryAndExecutableNaming;
-import de.flapdoodle.embed.process.extract.ExtractedFileSet;
-import de.flapdoodle.embed.process.extract.ExtractedFileSets;
-import de.flapdoodle.embed.process.extract.FilesToExtract;
-import de.flapdoodle.embed.process.extract.ImmutableDirectoryAndExecutableNaming;
+import de.flapdoodle.embed.process.extract.*;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.extract.TempNaming;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
+import org.immutables.value.Value.Immutable;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 
 @Immutable
 public abstract class ExtractedArtifactStore implements IArtifactStore {
@@ -137,8 +131,8 @@ public abstract class ExtractedArtifactStore implements IArtifactStore {
 	}
 
 	static String asPath(Distribution distribution) {
-		return distribution.platform().name() + "-" +
-				distribution.bitsize().name() + "--" +
+		return distribution.platform().operatingSystem().name() + "-" +
+				distribution.platform().architecture().bitSize() + "--" +
 				distribution.version().asInDownloadPath();
 	}
 	

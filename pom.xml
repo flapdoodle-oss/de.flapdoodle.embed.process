@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+    <!--
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
+    -->
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.flapdoodle.embed</groupId>
     <artifactId>de.flapdoodle.embed.process</artifactId>
     <name>Flapdoodle Embedded Process Util</name>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <description>A embedded process starter ...</description>
@@ -38,6 +40,15 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
+            
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
@@ -62,7 +73,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
+                <version>3.0.0-M3</version>
                 <executions>
                     <execution>
                         <id>enforce-ban-duplicate-classes</id>
@@ -84,6 +95,9 @@
                                     </ignoreClasses>
                                     <findAllDuplicates>true</findAllDuplicates>
                                 </banDuplicateClasses>
+                                <requireMavenVersion>
+                                    <version>3.5.0</version>
+                                </requireMavenVersion>
                             </rules>
                             <fail>true</fail>
                         </configuration>
@@ -116,7 +130,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
+                <version>3.0.0-M5</version>
                 <configuration>
                     <forkCount>0</forkCount>
                     <excludes>
@@ -185,7 +199,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.1.2</version>
                 <configuration>
                     <configLocation>config/checkstyle.xml</configLocation>
                     <excludes>
@@ -203,7 +217,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>5.1.1</version>
+                <version>5.1.2</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -371,7 +385,7 @@
     </profiles>
 
     <properties>
-        <jna.version>5.6.0</jna.version>
+        <jna.version>5.8.0</jna.version>
         <osgi.category>Bundles</osgi.category>
         <osgi.export>
             de.flapdoodle.embed.process;version=${project.version},
@@ -433,7 +447,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.17.2</version>
+            <version>3.19.0</version>
             <scope>test</scope>
         </dependency>
         <!-- needed by infinitest? -->
@@ -452,15 +466,20 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>de.flapdoodle</groupId>
+            <artifactId>de.flapdoodle.os</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.5.13</version>
+            <version>3.9.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.4.3</version>
+            <version>3.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -479,7 +498,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.11</version>
+            <version>3.12.0</version>
         </dependency>
 
         <dependency>
