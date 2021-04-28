@@ -26,6 +26,14 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <developers>
+        <developer>
+            <name>Michael Mosmann</name>
+            <email>michael@mosmann.de</email>
+            <organization>Flapdoodle OSS</organization>
+            <organizationUrl>http://github.com/flapdoodle-oss</organizationUrl>
+        </developer>
+    </developers>
 
 
     <scm>
@@ -35,7 +43,18 @@
       <tag>HEAD</tag>
   </scm>
 
-    <!-- https://docs.sonatype.org/display/Repository/Central+Sync+Requirements 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+    
+    <!-- https://docs.sonatype.org/display/Repository/Central+Sync+Requirements
     https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide 
     https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven -->
     <build>
@@ -48,7 +67,7 @@
                     <generateBackupPoms>false</generateBackupPoms>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
