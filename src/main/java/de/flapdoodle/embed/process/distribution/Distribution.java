@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.distribution;
 
+import de.flapdoodle.os.Platform;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Parameter;
 
@@ -38,19 +39,16 @@ public abstract class Distribution {
 	@Parameter
 	public abstract Platform platform();
 
-	@Parameter
-	public abstract BitSize bitsize();
-
 	@Override
 	public String toString() {
-		return "" + version() + ":" + platform() + ":" + bitsize();
+		return "" + version() + ":" + platform();
 	}
 
 	public static Distribution detectFor(Version version) {
-		return of(version, Platform.detect(), BitSize.detect());
+		return of(version, Platform.detect());
 	}
 
-	public static Distribution of(Version version, Platform platform, BitSize bitsize) {
-		return ImmutableDistribution.of(version, platform, bitsize);
+	public static Distribution of(Version version, Platform platform) {
+		return ImmutableDistribution.of(version, platform);
 	}
 }

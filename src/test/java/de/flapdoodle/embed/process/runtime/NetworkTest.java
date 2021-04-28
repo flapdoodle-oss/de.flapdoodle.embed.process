@@ -35,6 +35,7 @@ import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.HashSet;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class NetworkTest {
@@ -63,6 +64,7 @@ public class NetworkTest {
 	}
 
 	@Test
+	@Disabled("just run this test if you do changes to Network.freeServerPorts")
 	public void freeNetworkPortMustFailIfPoolIsTooLarge() throws IOException {
 		InetAddress address = Network.getLocalHost();
 		assertThrows(IOException.class, () -> Network.freeServerPorts(address, 50000));
