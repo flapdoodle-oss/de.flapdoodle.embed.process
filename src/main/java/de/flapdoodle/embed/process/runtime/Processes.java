@@ -47,7 +47,7 @@ import static java.util.Arrays.asList;
 
 public abstract class Processes {
 
-	private static Logger logger = LoggerFactory.getLogger(ProcessControl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProcessControl.class);
 
 	private static final PidHelper PID_HELPER;
 
@@ -65,6 +65,7 @@ public abstract class Processes {
 		case "RELEASE_14":
 		case "RELEASE_15":
 		case "RELEASE_16":
+		case "RELEASE_17":
 			PID_HELPER = PidHelper.JDK_11;
 			break;
 		default:
@@ -99,9 +100,9 @@ public abstract class Processes {
 	}
 
 	/**
-	 * @see http://www.golesny.de/p/code/javagetpid
+	 * @see "http://www.golesny.de/p/code/javagetpid"
 	 *
-	 * @return
+	 * @return windows process id
 	 */
 	private static Long windowsProcessId(Process process) {
 		if (process.getClass().getName().equals("java.lang.Win32Process")
@@ -141,11 +142,7 @@ public abstract class Processes {
 	}
 
 	private static boolean isUnixLike(de.flapdoodle.os.Platform platform) {
-		switch (platform.operatingSystem()) {
-			case Windows:
-			return false;
-		}
-		return true;
+		return platform.operatingSystem() != OS.Windows;
 	}
 
 	public static boolean isProcessRunning(de.flapdoodle.os.Platform platform, long pid) {
