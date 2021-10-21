@@ -23,12 +23,12 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 28.04.2021 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
+Stable (Maven Central Repository, Released: 21.10.2021 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.1.1</version>
+		<version>3.1.2</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -36,7 +36,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.1.2-SNAPSHOT</version>
+		<version>3.1.3-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -50,11 +50,15 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 - Embedded Consul [com.github.golovnin.embedded.consul](https://github.com/golovnin/embedded-consul)
 - Embedded Vault [com.github.golovnin.embedded.vault](https://github.com/golovnin/embedded-vault)
 - Embedded InfluxDB [io.apisense.embed.influx](https://github.com/APISENSE/embed-influxDB)
-- Embedded Cassandra [com.github.nosan.embedded.cassandra](https://github.com/nosan/embedded-cassandra)  
+- Embedded Cassandra [com.github.nosan.embedded.cassandra](https://github.com/nosan/embedded-cassandra)
 
 ### Changelog
 
-#### 3.1.2-SNAPSHOT
+#### 3.1.3-SNAPSHOT
+
+#### 3.1.2
+
+- jdk17 support
 
 #### 3.1.0
 
