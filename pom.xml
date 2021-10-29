@@ -405,7 +405,8 @@
     </profiles>
 
     <properties>
-        <jna.version>5.8.0</jna.version>
+        <junit.version>5.8.1</junit.version>
+        <jna.version>5.9.0</jna.version>
         <osgi.category>Bundles</osgi.category>
         <osgi.export>
             de.flapdoodle.embed.process;version=${project.version},
@@ -449,25 +450,25 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.7.0</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.7.0</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.7.0</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.19.0</version>
+            <version>3.21.0</version>
             <scope>test</scope>
         </dependency>
         <!-- needed by infinitest? -->
@@ -488,18 +489,18 @@
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.9.0</version>
+            <version>4.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.6</version>
+            <version>3.7.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
