@@ -174,7 +174,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 			stopInternal();
 			onAfterProcessStop(this.config, this.runtimeConfig);
 			cleanupInternal();
-			if (!Files.forceDelete(pidFile)) {
+			if (pidFile.exists() && !Files.forceDelete(pidFile)) {
 				logger.warn("Could not delete pid file: {}", pidFile);
 			}
 		}
