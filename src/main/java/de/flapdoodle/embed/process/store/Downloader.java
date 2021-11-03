@@ -37,7 +37,7 @@ public interface Downloader {
 
     File download(DownloadConfig runtime, Distribution distribution) throws IOException;
     
-    public static Downloader platformDefault() {
+    static Downloader platformDefault() {
     	return new UrlConnectionDownloader();
     }
 }
