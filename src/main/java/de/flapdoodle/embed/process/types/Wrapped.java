@@ -21,11 +21,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.types;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
+import org.immutables.value.Value;
+import org.immutables.value.Value.Style.ImplementationVisibility;
 
-@FunctionalInterface
-public interface PackageResolver {
-	DistributionPackage packageFor(Distribution distribution);
-}
+@Value.Style(
+		typeAbstract = "_*", 
+		typeImmutable = "*", 
+		visibility = ImplementationVisibility.PUBLIC, 
+		defaults = @Value.Immutable(builder = false, copy = false))
+public @interface Wrapped {}

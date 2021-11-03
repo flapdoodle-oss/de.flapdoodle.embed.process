@@ -21,11 +21,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.types;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
-
-@FunctionalInterface
-public interface PackageResolver {
-	DistributionPackage packageFor(Distribution distribution);
+public class DownloadedDistribution {
+	
 }

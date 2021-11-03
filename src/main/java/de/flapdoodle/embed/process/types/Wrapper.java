@@ -21,11 +21,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.types;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
+import org.immutables.value.Value;
 
-@FunctionalInterface
-public interface PackageResolver {
-	DistributionPackage packageFor(Distribution distribution);
+public abstract class Wrapper<T> {
+	@Value.Parameter
+	public abstract T value();
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "(" + value() + ")";
+	}
 }

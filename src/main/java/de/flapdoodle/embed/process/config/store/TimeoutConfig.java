@@ -24,18 +24,23 @@
 package de.flapdoodle.embed.process.config.store;
 
 import org.immutables.value.Value;
+import org.immutables.value.Value.Default;
 
 @Value.Immutable
 public interface TimeoutConfig {
 	
-	int getConnectionTimeout();
+	@Default
+	default int getConnectionTimeout() {
+		return 10000;
+	}
 	
-	int getReadTimeout();
+	@Default
+	default int getReadTimeout() {
+		return 10000;
+	}
 
 	static ImmutableTimeoutConfig defaults() {
 		return ImmutableTimeoutConfig.builder()
-				.connectionTimeout(10000)
-				.readTimeout(10000)
 				.build();
 	}
 	
