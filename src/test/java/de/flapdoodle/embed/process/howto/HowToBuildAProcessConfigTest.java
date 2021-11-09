@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.howto;
 
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -33,8 +34,13 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
+import de.flapdoodle.transition.initlike.Edge;
+import de.flapdoodle.transition.initlike.edges.Start;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -55,10 +61,7 @@ import de.flapdoodle.embed.process.parts.ProcessFactory;
 import de.flapdoodle.embed.process.types.DownloadPath;
 import de.flapdoodle.transition.StateID;
 import de.flapdoodle.transition.initlike.InitLike;
-import de.flapdoodle.transition.initlike.InitLike.Init;
-import de.flapdoodle.transition.initlike.InitRoutes;
 import de.flapdoodle.transition.initlike.State;
-import de.flapdoodle.transition.routes.SingleDestination;
 import de.flapdoodle.types.Try;
 
 public class HowToBuildAProcessConfigTest {
@@ -66,9 +69,9 @@ public class HowToBuildAProcessConfigTest {
 	@Test
 	public void readableSample() {
 
-		try (Init<Path> tempArtifactStorePath = InitLike.with(InitRoutes.builder()
-				.state(Path.class).isReachedBy(() -> artifactStore())
-				.build()).init(StateID.of(Path.class))) {
+		try (InitLike.ReachedState<Path> tempArtifactStorePath = InitLike.with(Collections.singletonList(
+				Start.of(StateID.of(Path.class), () -> artifactStore())
+		)).init(StateID.of(Path.class))) {
 
 			ProcessFactory processFactory = ProcessFactory.builder()
 					.version(Version.of("2.1.1"))
@@ -92,7 +95,7 @@ public class HowToBuildAProcessConfigTest {
 
 			InitLike initLike = processFactory.initLike();
 
-			try (Init<ArtifactPath> init = initLike.init(StateID.of(ArtifactPath.class))) {
+			try (InitLike.ReachedState<ArtifactPath> init = initLike.init(StateID.of(ArtifactPath.class))) {
 				System.out.println("downloaded: " + init.current());
 
 			}
@@ -106,29 +109,29 @@ public class HowToBuildAProcessConfigTest {
 		StateID<Path> artifactPath = StateID.of("artifactPath", Path.class);
 		StateID<Path> downloadedArtifactPath = StateID.of("downloadedArtifactPath", Path.class);
 		StateID<URL> url = StateID.of(URL.class);
-		InitRoutes<SingleDestination<?>> routes = InitRoutes.builder()
-				.state(Version.class).isInitializedWith(Version.of("2.1.1"))
-				.state(artifactStore).isReachedBy(() -> artifactStore())
-				.state(DownloadPath.class)
-				.isInitializedWith(DownloadPath.of("https://bitbucket.org/ariya/phantomjs/downloads/"))
-				.given(Version.class).state(Distribution.class).isDerivedBy(Distribution::detectFor)
-				.given(Distribution.class).state(DistributionPackage.class).isReachedBy(HowToBuildAProcessConfigTest::packageOf)
-				.given(DownloadPath.class, DistributionPackage.class).state(url)
-				.isReachedBy(HowToBuildAProcessConfigTest::downloadUrl)
-				.given(artifactStore, StateID.of(DistributionPackage.class)).state(artifactPath)
-				.isReachedBy(HowToBuildAProcessConfigTest::artifactPath)
-				.given(artifactPath, url).state(downloadedArtifactPath)
-				.isReachedBy(HowToBuildAProcessConfigTest::useOrDownloadArtifact)
-				.build();
+			List<Edge<?>> routes = Arrays.asList(
+					Start.of(StateID.of(Version.class), () -> State.of(Version.of("2.1.1"))),
+				Start.of(artifactStore, HowToBuildAProcessConfigTest::artifactStore),
+					Start.of(StateID.of(DownloadPath.class), () -> State.of(DownloadPath.of("https://bitbucket.org/ariya/phantomjs/downloads/")))
 
-		try (Init<Path> initArtifactStore = InitLike.with(routes).init(artifactStore)) {
+//				.given(Version.class).state(Distribution.class).isDerivedBy(Distribution::detectFor)
+//				.given(Distribution.class).state(DistributionPackage.class).isReachedBy(HowToBuildAProcessConfigTest::packageOf)
+//				.given(DownloadPath.class, DistributionPackage.class).state(url)
+//				.isReachedBy(HowToBuildAProcessConfigTest::downloadUrl)
+//				.given(artifactStore, StateID.of(DistributionPackage.class)).state(artifactPath)
+//				.isReachedBy(HowToBuildAProcessConfigTest::artifactPath)
+//				.given(artifactPath, url).state(downloadedArtifactPath)
+//				.isReachedBy(HowToBuildAProcessConfigTest::useOrDownloadArtifact)
+			);
 
-			try (Init<Path> init = initArtifactStore.init(downloadedArtifactPath)) {
+		try (InitLike.ReachedState<Path> initArtifactStore = InitLike.with(routes).init(artifactStore)) {
+
+			try (InitLike.ReachedState<Path> init = initArtifactStore.init(downloadedArtifactPath)) {
 				System.out.println("current: " + init.current());
 
 			}
 
-			try (Init<Path> init = initArtifactStore.init(downloadedArtifactPath)) {
+			try (InitLike.ReachedState<Path> init = initArtifactStore.init(downloadedArtifactPath)) {
 				System.out.println("current: " + init.current());
 
 			}
