@@ -59,7 +59,7 @@ public class UrlStreamsTest {
 		Path destination = Files.createTempFile("moveToThisFile", "");
 		Files.delete(destination);
 		
-		try (HttpServers.Server server = HttpServers.httpServer(httpPort, (uri, method, headers, parms, files) -> Optional.empty())) {
+		try (HttpServers.Server server = HttpServers.httpServer(httpPort, (session) -> Optional.empty())) {
 			URLConnection connection = new URL("http://localhost:123/toLong?foo=bar").openConnection();
 			UrlStreams.downloadTo(connection, destination, url -> {
 				Path downloadMock = Files.createTempFile("moveThis", "");
@@ -84,8 +84,8 @@ public class UrlStreamsTest {
 		long contentLengt = 2*1024*1024;
 		byte[] content = randomFilledByteArray((int) contentLengt);
 		
-		HttpServers.Listener listener=(uri, method, headers, parms, files) -> {
-			if (uri.equals("/download")) {
+		HttpServers.Listener listener=(session) -> {
+			if (session.getUri().equals("/download")) {
 				return Optional.of(HttpServers.response(200, "text/text", content));
 			}
 			return Optional.empty();
@@ -131,8 +131,8 @@ public class UrlStreamsTest {
 		long contentLengt = 2*1024*1024;
 		byte[] content = randomFilledByteArray((int) contentLengt);
 		
-		HttpServers.Listener listener=(uri, method, headers, parms, files) -> {
-			if (uri.equals("/download")) {
+		HttpServers.Listener listener=(session) -> {
+			if (session.getUri().equals("/download")) {
 				return Optional.of(HttpServers.chunkedResponse(200, "text/text", content));
 			}
 			return Optional.empty();
@@ -178,11 +178,11 @@ public class UrlStreamsTest {
 		long contentLengt = 2*1024*1024;
 		byte[] content = randomFilledByteArray((int) contentLengt);
 		
-		HttpServers.Listener listener=(uri, method, headers, parms, files) -> {
-			if (uri.equals("/toShort")) {
+		HttpServers.Listener listener=(session) -> {
+			if (session.getUri().equals("/toShort")) {
 				return Optional.of(HttpServers.response(200, "text/text", content, content.length*2));
 			}
-			if (uri.equals("/toLong")) {
+			if (session.getUri().equals("/toLong")) {
 				return Optional.of(HttpServers.response(200, "text/text", content, content.length/2));
 			}
 			return Optional.empty();

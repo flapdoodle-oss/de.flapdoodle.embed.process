@@ -517,9 +517,9 @@
         </dependency>
 
         <dependency>
-            <groupId>de.flapdoodle.transition</groupId>
-            <artifactId>de.flapdoodle.transition</artifactId>
-            <version>2.0.1</version>
+            <groupId>de.flapdoodle.reverse</groupId>
+            <artifactId>de.flapdoodle.reverse</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

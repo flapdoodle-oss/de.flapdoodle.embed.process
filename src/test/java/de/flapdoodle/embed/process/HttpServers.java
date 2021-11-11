@@ -54,17 +54,24 @@ public class HttpServers {
 			this.stop();
 		}
 		
+//		@Override
+//		public Response serve(String uri, Method method, Map<String, String> headers, Map<String, String> parms, Map<String, String> files) {
+//			Optional<Response> response = listener.serve(uri, method, headers, parms, files);
+//			return response
+//					.orElseGet(() -> super.serve(uri, method, headers, parms, files));
+//		}
+
 		@Override
-		public Response serve(String uri, Method method, Map<String, String> headers, Map<String, String> parms, Map<String, String> files) {
-			Optional<Response> response = listener.serve(uri, method, headers, parms, files);
-			return response
-					.orElseGet(() -> super.serve(uri, method, headers, parms, files));
+		public Response serve(IHTTPSession session) {
+				Optional<Response> response = listener.serve(session);
+				return response
+						.orElseGet(() -> super.serve(session));
 		}
 	}
 	
 	@FunctionalInterface
 	public static interface Listener {
-		Optional<Response> serve(String uri, Method method, Map<String, String> headers, Map<String, String> parms, Map<String, String> files);
+		Optional<Response> serve(NanoHTTPD.IHTTPSession session);
 	}
 
 	public static Response response(int status, String mimeType, byte[] data) {

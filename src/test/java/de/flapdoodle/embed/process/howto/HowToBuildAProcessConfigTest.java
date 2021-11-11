@@ -39,8 +39,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import de.flapdoodle.transition.initlike.Edge;
-import de.flapdoodle.transition.initlike.edges.Start;
+import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.reverse.edges.Start;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -59,9 +59,9 @@ import de.flapdoodle.embed.process.parts.CachingArtifactDownloader;
 import de.flapdoodle.embed.process.parts.LocalArtifactPath;
 import de.flapdoodle.embed.process.parts.ProcessFactory;
 import de.flapdoodle.embed.process.types.DownloadPath;
-import de.flapdoodle.transition.StateID;
-import de.flapdoodle.transition.initlike.InitLike;
-import de.flapdoodle.transition.initlike.State;
+import de.flapdoodle.reverse.StateID;
+import de.flapdoodle.reverse.InitLike;
+import de.flapdoodle.reverse.State;
 import de.flapdoodle.types.Try;
 
 public class HowToBuildAProcessConfigTest {
@@ -109,9 +109,9 @@ public class HowToBuildAProcessConfigTest {
 		StateID<Path> artifactPath = StateID.of("artifactPath", Path.class);
 		StateID<Path> downloadedArtifactPath = StateID.of("downloadedArtifactPath", Path.class);
 		StateID<URL> url = StateID.of(URL.class);
-			List<Edge<?>> routes = Arrays.asList(
-					Start.of(StateID.of(Version.class), () -> State.of(Version.of("2.1.1"))),
-				Start.of(artifactStore, HowToBuildAProcessConfigTest::artifactStore),
+			List<Transition<?>> routes = Arrays.asList(
+					Start.to(Version.class).initializedWith(Version.of("2.1.1")),
+				Start.to(artifactStore).with(HowToBuildAProcessConfigTest::artifactStore),
 					Start.of(StateID.of(DownloadPath.class), () -> State.of(DownloadPath.of("https://bitbucket.org/ariya/phantomjs/downloads/")))
 
 //				.given(Version.class).state(Distribution.class).isDerivedBy(Distribution::detectFor)

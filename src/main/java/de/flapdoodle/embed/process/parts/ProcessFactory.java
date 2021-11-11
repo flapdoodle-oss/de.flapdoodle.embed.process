@@ -4,13 +4,12 @@ import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.transition.initlike.Edge;
-import de.flapdoodle.transition.initlike.EdgesAsGraph;
-import de.flapdoodle.transition.initlike.InitLike;
-import de.flapdoodle.transition.initlike.edges.Depends;
-import de.flapdoodle.transition.initlike.edges.Merge2;
-import de.flapdoodle.transition.initlike.edges.Merge3;
-import de.flapdoodle.transition.initlike.edges.Start;
+import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.reverse.TransitionsAsGraph;
+import de.flapdoodle.reverse.InitLike;
+import de.flapdoodle.reverse.edges.Derive;
+import de.flapdoodle.reverse.edges.Join;
+import de.flapdoodle.reverse.edges.Start;
 import org.immutables.value.Value.Auxiliary;
 import org.immutables.value.Value.Immutable;
 
@@ -37,26 +36,26 @@ public abstract class ProcessFactory {
 	public abstract ArtifactPathForUrl artifactPathForUrl();
 
 	@Auxiliary
-	protected List<Edge<?>> routes() {
+	protected List<Transition<?>> routes() {
 		return Arrays.asList(
 				Start.to(Version.class).initializedWith(version()),
 				Start.to(BaseUrl.class).initializedWith(BaseUrl.of(baseDownloadUrl())),
 				Start.to(ArtifactsBasePath.class).initializedWith(ArtifactsBasePath.of(artifactsBasePath())),
-				Depends.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
-				Depends.given(Distribution.class).state(ArchiveType.class).deriveBy(archiveTypeForDistribution()),
-				Depends.given(Distribution.class).state(FileSet.class).deriveBy(fileSetOfDistribution()),
-				Merge3.given(BaseUrl.class).and(Distribution.class).and(ArchiveType.class).state(ArtifactUrl.class)
-						.deriveBy((baseUrl, distribution, archiveType) -> urlOfDistributionAndArchiveType().apply(baseUrl, distribution, archiveType)),
-				Merge2.given(Distribution.class).and(ArchiveType.class).state(LocalArtifactPath.class)
-						.deriveBy(localArtifactPathOfDistributionAndArchiveType()),
-				Merge3.given(ArtifactsBasePath.class).and(ArtifactUrl.class).and(LocalArtifactPath.class).state(ArtifactPath.class)
-						.deriveBy((base, url, localPath) -> artifactPathForUrl().apply(base, url, localPath))
+				Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
+				Derive.given(Distribution.class).state(ArchiveType.class).deriveBy(archiveTypeForDistribution()),
+				Derive.given(Distribution.class).state(FileSet.class).deriveBy(fileSetOfDistribution()),
+//				Merge3.given(BaseUrl.class).and(Distribution.class).and(ArchiveType.class).state(ArtifactUrl.class)
+//						.deriveBy((baseUrl, distribution, archiveType) -> urlOfDistributionAndArchiveType().apply(baseUrl, distribution, archiveType)),
+				Join.given(Distribution.class).and(ArchiveType.class).state(LocalArtifactPath.class)
+						.deriveBy(localArtifactPathOfDistributionAndArchiveType())
+//				Merge3.given(ArtifactsBasePath.class).and(ArtifactUrl.class).and(LocalArtifactPath.class).state(ArtifactPath.class)
+//						.deriveBy((base, url, localPath) -> artifactPathForUrl().apply(base, url, localPath))
 		);
 	}
 
 	@Auxiliary
 	public String setupAsDot(String appName) {
-		return EdgesAsGraph.edgeGraphAsDot(appName, EdgesAsGraph.asGraphIncludingStartAndEnd(routes()));
+		return TransitionsAsGraph.edgeGraphAsDot(appName, TransitionsAsGraph.asGraphIncludingStartAndEnd(routes()));
 	}
 
 	@Auxiliary
