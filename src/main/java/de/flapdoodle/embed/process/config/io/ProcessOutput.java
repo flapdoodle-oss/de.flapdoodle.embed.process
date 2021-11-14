@@ -34,13 +34,13 @@ import de.flapdoodle.embed.process.io.StreamProcessor;
 @Immutable
 public interface ProcessOutput {
 
-	public StreamProcessor output();
+	StreamProcessor output();
 
-	public StreamProcessor error();
+	StreamProcessor error();
 
-	public StreamProcessor commands();
+	StreamProcessor commands();
 
-	public static ProcessOutput namedConsole(String label) {
+	static ProcessOutput namedConsole(String label) {
 		return builder()
 				.output(Processors.namedConsole("["+label+" output]"))
 				.error(Processors.namedConsole("["+label+" error]"))
@@ -48,7 +48,7 @@ public interface ProcessOutput {
 				.build();
 	}
 	
-	public static ProcessOutput silent() {
+	static ProcessOutput silent() {
 		return builder()
 				.output(Processors.silent())
 				.error(Processors.silent())
@@ -56,7 +56,7 @@ public interface ProcessOutput {
 				.build();
 	}
 
-	public static ProcessOutput named(String label, org.slf4j.Logger logger) {
+	static ProcessOutput named(String label, org.slf4j.Logger logger) {
 		return builder()
 				.output(Processors.named("["+label+" output]", Processors.logTo(logger, Slf4jLevel.INFO)))
 				.error(Processors.named("["+label+" error]", Processors.logTo(logger, Slf4jLevel.ERROR)))
@@ -64,7 +64,7 @@ public interface ProcessOutput {
 				.build();
 	}
 
-	public static Builder builder() {
+	static Builder builder() {
 		return ImmutableProcessOutput.builder();
 	}
 }

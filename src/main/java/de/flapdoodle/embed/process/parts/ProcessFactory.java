@@ -31,6 +31,8 @@ public abstract class ProcessFactory {
 
 	public abstract UrlOfDistributionAndArchiveType urlOfDistributionAndArchiveType();
 
+	public abstract ArtifactUrlOfDistributionAndArchiveType artifactUrlOfDistributionAndArchiveType();
+
 	public abstract LocalArtifactPathOfDistributionAndArchiveType localArtifactPathOfDistributionAndArchiveType();
 
 	public abstract ArtifactPathForUrl artifactPathForUrl();

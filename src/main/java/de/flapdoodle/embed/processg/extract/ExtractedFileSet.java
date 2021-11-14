@@ -21,31 +21,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config;
+package de.flapdoodle.embed.processg.extract;
 
-import java.util.function.BiFunction;
-
+import org.immutables.builder.Builder.Parameter;
 import org.immutables.value.Value;
+import org.immutables.value.Value.Style;
+
+import java.io.File;
+import java.util.Set;
 
 @Value.Immutable
-public interface SupportConfig {
+@Style(strictBuilder=true)
+public abstract class ExtractedFileSet {
 
-	String name();
+	@Parameter
+	public abstract File baseDir();
+	
+	public abstract File executable();
+	
+	public abstract Set<File> libraryFiles();
 
-	String supportUrl();
-
-	@Deprecated
-	BiFunction<Class<?>, Exception, String> messageOnException();
-
-	static SupportConfig generic() {
-		return builder()
-				.name("generic")
-				.supportUrl("https://github.com/flapdoodle-oss/de.flapdoodle.embed.process")
-				.messageOnException((clazz,ex) -> null)
-				.build();
-	}
-
-	static ImmutableSupportConfig.Builder builder() {
-		return ImmutableSupportConfig.builder();
+	public static ImmutableExtractedFileSet.Builder builder(File baseDir) {
+		return ImmutableExtractedFileSet.builder(baseDir);
 	}
 }
