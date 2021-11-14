@@ -5,9 +5,9 @@
  *
  * with contributions from
  * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ Archimedes Trajano (trajano@github),
+ Kevin D. Keck (kdkeck@github),
+ Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,24 +23,18 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.store.ProxyFactory;
+import de.flapdoodle.embed.process.config.store.TimeoutConfig;
+import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
+import de.flapdoodle.embed.process.io.file.Files;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
+
+import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
-
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
-import de.flapdoodle.embed.process.config.store.ProxyFactory;
-import de.flapdoodle.embed.process.config.store.TimeoutConfig;
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
-import de.flapdoodle.embed.process.io.file.Files;
-import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
 /**
  * Class for downloading runtime
@@ -52,36 +46,28 @@ public class UrlConnectionDownloader implements Downloader {
 	private static final int READ_COUNT_MULTIPLIER = 100;
 
 	@Override
-	public String getDownloadUrl(DownloadConfig runtime, Distribution distribution) {
-		return runtime.getDownloadPath().getPath(distribution) + runtime.getPackageResolver().packageFor(distribution).archivePath();
-	}
+	public File download(DownloadConfig downloadConfig, String url) throws IOException {
 
-	@Override
-	public File download(DownloadConfig downloadConfig, Distribution distribution) throws IOException {
-
-		String progressLabel = "Download " + distribution;
+		String progressLabel = "Download " + url;
 		ProgressListener progress = downloadConfig.getProgressListener();
 		progress.start(progressLabel);
 
-		File ret = Files.createTempFile(PropertyOrPlatformTempDir.defaultInstance(), downloadConfig.getFileNaming()
-				.nameFor(downloadConfig.getDownloadPrefix(), "." + downloadConfig.getPackageResolver().packageFor(distribution).archiveType()));
+		File ret = Files.createTempFile(PropertyOrPlatformTempDir.defaultInstance(), "download");
 		if (ret.canWrite()) {
 
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(ret));
 
-			InputStreamAndLength downloadStreamAndLength = downloadInputStream(downloadConfig, distribution);
-			
+			InputStreamAndLength downloadStreamAndLength = downloadInputStream(downloadConfig, url);
+
 			long length = downloadStreamAndLength.contentLength();
 			InputStream downloadStream = downloadStreamAndLength.downloadStream();
-			
+
 			progress.info(progressLabel, "DownloadSize: " + length);
-			
+
 			if (length == -1) length = DEFAULT_CONTENT_LENGTH;
 
-
-
 			long downloadStartedAt = System.currentTimeMillis();
-			
+
 			try {
 				BufferedInputStream bis = new BufferedInputStream(downloadStream);
 				byte[] buf = new byte[BUFFER_LENGTH];
@@ -94,8 +80,9 @@ public class UrlConnectionDownloader implements Downloader {
 
 					progress.progress(progressLabel, (int) (readCount * READ_COUNT_MULTIPLIER / length));
 				}
-				progress.info(progressLabel, "downloaded with " + downloadSpeed(downloadStartedAt,length));
-			} finally {
+				progress.info(progressLabel, "downloaded with " + downloadSpeed(downloadStartedAt, length));
+			}
+			finally {
 				downloadStream.close();
 				bos.flush();
 				bos.close();
@@ -107,12 +94,12 @@ public class UrlConnectionDownloader implements Downloader {
 		return ret;
 	}
 
-	private InputStreamAndLength downloadInputStream(DownloadConfig downloadConfig, Distribution distribution)
-			throws IOException {
-		URL url = new URL(getDownloadUrl(downloadConfig, distribution));
-		
+	private InputStreamAndLength downloadInputStream(DownloadConfig downloadConfig, String urlAsString)
+		throws IOException {
+		URL url = new URL(urlAsString);
+
 		Optional<Proxy> proxy = downloadConfig.proxyFactory().map(ProxyFactory::createProxy);
-		
+
 		try {
 			URLConnection openConnection;
 			if (proxy.isPresent()) {
@@ -120,33 +107,33 @@ public class UrlConnectionDownloader implements Downloader {
 			} else {
 				openConnection = url.openConnection();
 			}
-			openConnection.setRequestProperty("User-Agent",downloadConfig.getUserAgent());
+			openConnection.setRequestProperty("User-Agent", downloadConfig.getUserAgent());
 			if (downloadConfig.getAuthorization().isPresent()) {
 				openConnection.setRequestProperty("Authorization", downloadConfig.getAuthorization().get());
 			}
-			
+
 			TimeoutConfig timeoutConfig = downloadConfig.getTimeoutConfig();
-			
+
 			openConnection.setConnectTimeout(timeoutConfig.getConnectionTimeout());
 			openConnection.setReadTimeout(downloadConfig.getTimeoutConfig().getReadTimeout());
-	
+
 			InputStream downloadStream = openConnection.getInputStream();
-	
-			return new InputStreamAndLength(downloadStream,openConnection.getContentLength());
-		} catch (IOException iox) {
+
+			return new InputStreamAndLength(downloadStream, openConnection.getContentLength());
+		}
+		catch (IOException iox) {
 			throw new IOException("Could not open inputStream for " + url + " with proxy " + proxy, iox);
 		}
 	}
 
-	private String downloadSpeed(long downloadStartedAt,long downloadSize) {
-		long timeUsed=(System.currentTimeMillis()-downloadStartedAt)/1000;
-		if (timeUsed==0) {
-			timeUsed=1;
+	private String downloadSpeed(long downloadStartedAt, long downloadSize) {
+		long timeUsed = (System.currentTimeMillis() - downloadStartedAt) / 1000;
+		if (timeUsed == 0) {
+			timeUsed = 1;
 		}
-		long kbPerSecond=downloadSize/(timeUsed*1024);
-		return ""+kbPerSecond+"kb/s";
+		long kbPerSecond = downloadSize / (timeUsed * 1024);
+		return "" + kbPerSecond + "kb/s";
 	}
-
 
 	static class InputStreamAndLength {
 
@@ -157,15 +144,14 @@ public class UrlConnectionDownloader implements Downloader {
 			_downloadStream = downloadStream;
 			_contentLength = contentLength;
 		}
-		
-		
+
 		public int contentLength() {
 			return _contentLength;
 		}
-		
+
 		public InputStream downloadStream() {
 			return _downloadStream;
 		}
-		
+
 	}
 }

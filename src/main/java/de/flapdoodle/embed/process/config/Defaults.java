@@ -56,7 +56,6 @@ public abstract class Defaults {
 		String prefix = "."+name;
 		return DownloadConfig.builder()
 				.downloadPath((__) -> downloadPath)
-				.downloadPrefix(prefix)
 				.packageResolver(packageResolver)
 				.artifactStorePath(new UserHome(prefix))
 				.fileNaming(executableNaming())

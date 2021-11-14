@@ -74,14 +74,14 @@ public class LocalArtifactStoreTest {
   }
 
   private DownloadConfig downloadConfig(Directory artifactDir) {
-    return DownloadConfig.builder().downloadPrefix("prefix")
-                                      .downloadPath(__ -> "foo")
-                                      .packageResolver(packageResolver())
-                                      .artifactStorePath(artifactDir)
-                                      .fileNaming(new UUIDTempNaming())
-                                      .progressListener(new StandardConsoleProgressListener())
-                                      .userAgent("foo-bar")
-                                      .build();
+    return DownloadConfig.builder()
+      .downloadPath(__ -> "foo")
+      .packageResolver(packageResolver())
+      .artifactStorePath(artifactDir)
+      .fileNaming(new UUIDTempNaming())
+      .progressListener(new StandardConsoleProgressListener())
+      .userAgent("foo-bar")
+      .build();
   }
 
   private PackageResolver packageResolver() {

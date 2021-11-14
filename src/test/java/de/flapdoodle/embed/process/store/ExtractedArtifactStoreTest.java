@@ -119,25 +119,13 @@ public class ExtractedArtifactStoreTest {
 	}
 	
 	private static Downloader failingDownloader() {
-		return new Downloader() {
-			
-			@Override
-			public String getDownloadUrl(DownloadConfig runtime,
-					Distribution distribution) {
-				throw new RuntimeException("should not be called ("+distribution+")");
-			}
-			
-			@Override
-			public File download(DownloadConfig runtime, Distribution distribution)
-					throws IOException {
-				throw new RuntimeException("should not be called ("+distribution+")");
-			}
+		return (runtime, url) -> {
+			throw new RuntimeException("should not be called ("+url+")");
 		};
 	}
 
 	private DownloadConfig downloadConfig(Directory artifactDir) {
 		return DownloadConfig.builder()
-			.downloadPrefix("prefix")
 			.downloadPath(__ -> "foo")
 			.packageResolver(packageResolver())
 			.artifactStorePath(artifactDir)
