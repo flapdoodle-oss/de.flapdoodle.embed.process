@@ -13,12 +13,15 @@ import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.processg.runtime.*;
 import de.flapdoodle.reverse.InitLike;
+import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.reverse.TransitionsAsGraph;
 import de.flapdoodle.reverse.edges.Derive;
 import de.flapdoodle.reverse.edges.Start;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class HowToRunAProcessTest {
 
@@ -34,7 +37,7 @@ public class HowToRunAProcessTest {
 		Executable executable = Executable.with(Defaults.artifactStore(Defaults.genericDownloadConfig("phantomjs",
 			"https://bitbucket.org/ariya/phantomjs/downloads/", packageResolver)));
 
-		InitLike init = InitLike.with(Arrays.asList(
+		List<Transition<?>> transitions = Arrays.asList(
 			Start.to(Version.class).initializedWith(Version.of("2.1.1")),
 			Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()),
 			Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()),
@@ -47,7 +50,14 @@ public class HowToRunAProcessTest {
 			//Start.to(ProcessExecutable.class).initializedWith(ProcessExecutable.of())
 			executable,
 			starter
-		));
+		);
+
+		String dot = TransitionsAsGraph.edgeGraphAsDot("sample", TransitionsAsGraph.asGraphIncludingStartAndEnd(transitions));
+		System.out.println("------------------------------");
+		System.out.println(dot);
+		System.out.println("------------------------------");
+
+		InitLike init = InitLike.with(transitions);
 
 		try (InitLike.ReachedState<Starter.Running> started = init.init(starter.destination())) {
 			System.out.println("started: " + started.current());
