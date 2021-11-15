@@ -48,7 +48,6 @@ public class AbstractExtractorTest {
 		
 		DownloadConfig runtime=DownloadConfig.builder()
 			.downloadPath(__ -> "http://192.168.0.1")
-			.downloadPrefix("prefix")
 			.packageResolver(packageResolver)
 			.artifactStorePath(new PlatformTempDir())
 			.fileNaming(new UUIDTempNaming())

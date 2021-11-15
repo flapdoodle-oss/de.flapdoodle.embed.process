@@ -67,7 +67,7 @@ public class Files {
 	}
 
 	public static File createTempFile(File tempDir, String tempFileName) throws IOException {
-		File tempFile =  fileOf(tempDir, tempFileName);
+		File tempFile =  fileOf(tempDir, tempFileName+"--"+UUID.randomUUID().toString());
 		createOrCheckDir(tempFile.getParentFile());
 		if (!tempFile.createNewFile())
 			throw new FileAlreadyExistsException("could not create",tempFile);

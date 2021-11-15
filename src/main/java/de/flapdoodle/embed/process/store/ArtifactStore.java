@@ -69,9 +69,13 @@ public abstract class ArtifactStore implements IArtifactStore {
 		return new CachingArtifactStore(this);
 	}
 
-	private boolean checkDistribution(Distribution distribution) throws IOException {
+		private String getDownloadUrl(DownloadConfig runtime, Distribution distribution) {
+				return runtime.getDownloadPath().getPath(distribution) + runtime.getPackageResolver().packageFor(distribution).archivePath();
+		}
+
+		private boolean checkDistribution(Distribution distribution) throws IOException {
 		return LocalArtifactStore.checkArtifact(downloadConfig(), distribution) || LocalArtifactStore
-				.store(downloadConfig(), distribution, downloader().download(downloadConfig(), distribution));
+				.store(downloadConfig(), distribution, downloader().download(downloadConfig(), getDownloadUrl(downloadConfig(), distribution)));
 	}
 
 	@Override

@@ -5,9 +5,9 @@
  *
  * with contributions from
  * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ Archimedes Trajano (trajano@github),
+ Kevin D. Keck (kdkeck@github),
+ Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,20 +23,15 @@
  */
 package de.flapdoodle.embed.process.store;
 
+import de.flapdoodle.embed.process.config.store.DownloadConfig;
+
 import java.io.File;
 import java.io.IOException;
 
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
-import de.flapdoodle.embed.process.distribution.Distribution;
-
 public interface Downloader {
 
-	@Deprecated
-	// should not be used
-    String getDownloadUrl(DownloadConfig runtime, Distribution distribution);
+		File download(DownloadConfig runtime, String url) throws IOException;
 
-    File download(DownloadConfig runtime, Distribution distribution) throws IOException;
-    
     static Downloader platformDefault() {
     	return new UrlConnectionDownloader();
     }

@@ -44,8 +44,6 @@ public interface DownloadConfig {
 	
 	TempNaming getFileNaming();
 
-	String getDownloadPrefix();
-
 	String getUserAgent();
 
 	Optional<String> getAuthorization();
@@ -59,7 +57,7 @@ public interface DownloadConfig {
 	
 	Optional<ProxyFactory> proxyFactory();
 
-	public static ImmutableDownloadConfig.Builder builder() {
+	static ImmutableDownloadConfig.Builder builder() {
 		return ImmutableDownloadConfig.builder();
 	}
 }
