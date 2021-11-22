@@ -38,12 +38,12 @@ import java.util.Enumeration;
 public class ZipExtractor extends AbstractExtractor {
 
     @Override
-    protected ArchiveWrapper archiveStream(File source) throws IOException {
+    protected Archive.Wrapper archiveStream(File source) throws IOException {
         ZipFile zipIn = new ZipFile(source);
         return new ZipArchiveWrapper(zipIn);
     }
 
-    protected static class ZipArchiveWrapper implements ArchiveWrapper {
+    protected static class ZipArchiveWrapper implements Archive.Wrapper {
 
         private final Enumeration<ZipArchiveEntry> entries;
         private final ZipFile zFile;

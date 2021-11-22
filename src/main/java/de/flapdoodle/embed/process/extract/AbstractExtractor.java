@@ -30,15 +30,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 public abstract class AbstractExtractor implements Extractor {
 	
 	private static Logger _logger=LoggerFactory.getLogger(AbstractExtractor.class);
 	
-	protected abstract ArchiveWrapper archiveStream(File source) throws IOException;
+	protected abstract Archive.Wrapper archiveStream(File source) throws IOException;
 
-	private ArchiveWrapper archiveStreamWithExceptionHint(File source) throws IOException {
+	private Archive.Wrapper archiveStreamWithExceptionHint(File source) throws IOException {
 		try {
 			return archiveStream(source);
 		} catch (IOException iox) {
@@ -55,7 +54,7 @@ public abstract class AbstractExtractor implements Extractor {
 		Builder builder = ExtractedFileSet.builder(toExtract.baseDir())
 				.baseDirIsGenerated(toExtract.baseDirIsGenerated());
 
-		ArchiveWrapper archive = archiveStreamWithExceptionHint(source);
+		Archive.Wrapper archive = archiveStreamWithExceptionHint(source);
 
 		try {
 			org.apache.commons.compress.archivers.ArchiveEntry entry;
@@ -83,17 +82,6 @@ public abstract class AbstractExtractor implements Extractor {
 		}
 
 		return builder.build();
-	}
-
-	protected interface ArchiveWrapper {
-
-		org.apache.commons.compress.archivers.ArchiveEntry getNextEntry() throws IOException;
-
-		InputStream asStream(org.apache.commons.compress.archivers.ArchiveEntry entry) throws IOException;
-
-		void close() throws IOException;
-
-		boolean canReadEntryData(org.apache.commons.compress.archivers.ArchiveEntry entry);
 	}
 
 }

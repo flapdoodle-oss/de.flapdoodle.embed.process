@@ -33,8 +33,6 @@ import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
-import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
-
 
 public class AbstractExtractorTest {
 
@@ -53,7 +51,7 @@ public class AbstractExtractorTest {
 		new AbstractExtractor() {
 			
 			@Override
-			protected ArchiveWrapper archiveStream(File source) throws IOException {
+			protected Archive.Wrapper archiveStream(File source) throws IOException {
 				throw new IOException("foo");
 			}
 		}.extract(new File("bar"), filesToExtract);

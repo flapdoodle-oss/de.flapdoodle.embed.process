@@ -36,7 +36,7 @@ import java.io.IOException;
  */
 public class TxzExtractor extends AbstractTarExtractor {
 
-	protected ArchiveWrapper archiveStream(File source) throws IOException {
+	protected Archive.Wrapper archiveStream(File source) throws IOException {
 		FileInputStream fin = new FileInputStream(source);
 		BufferedInputStream in = new BufferedInputStream(fin);
 		XZCompressorInputStream gzIn = new XZCompressorInputStream(in);

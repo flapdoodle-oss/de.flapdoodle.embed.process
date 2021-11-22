@@ -71,7 +71,7 @@ public class FilesToExtract {
 		return Collections.unmodifiableList(_files);
 	}
 
-	public ExtractionMatch find(ArchiveEntry entry) {
+	public ExtractionMatch find(Archive.Entry entry) {
 		Entry found = null;
 
 		if (!entry.isDirectory()) {

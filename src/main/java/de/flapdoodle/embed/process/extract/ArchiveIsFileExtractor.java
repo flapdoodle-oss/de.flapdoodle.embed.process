@@ -59,7 +59,7 @@ public class ArchiveIsFileExtractor implements Extractor {
 		return builder.build();
 	}
 
-	static class FileAsArchiveEntry implements ArchiveEntry {
+	static class FileAsArchiveEntry implements Archive.Entry {
 
 		private final File _source;
 

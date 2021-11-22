@@ -32,7 +32,7 @@ import java.io.InputStream;
 
 public abstract class AbstractTarExtractor extends AbstractExtractor {
 
-	protected static class TarArchiveWrapper implements ArchiveWrapper {
+	protected static class TarArchiveWrapper implements Archive.Wrapper {
 	
 			private final TarArchiveInputStream _is;
 	

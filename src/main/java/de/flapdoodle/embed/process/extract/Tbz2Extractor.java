@@ -34,7 +34,7 @@ import java.io.IOException;
 public class Tbz2Extractor extends AbstractTarExtractor {
 
 	@Override
-	protected ArchiveWrapper archiveStream(File source) throws IOException {
+	protected Archive.Wrapper archiveStream(File source) throws IOException {
 		FileInputStream fin = new FileInputStream(source);
 		BufferedInputStream in = new BufferedInputStream(fin);
 		BZip2CompressorInputStream gzIn = new BZip2CompressorInputStream(in);
