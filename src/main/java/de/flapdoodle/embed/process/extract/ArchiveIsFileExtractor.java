@@ -23,26 +23,20 @@
  */
 package de.flapdoodle.embed.process.extract;
 
+import de.flapdoodle.embed.process.config.store.FileType;
+import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
-import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.io.progress.ProgressListener;
-
 public class ArchiveIsFileExtractor implements Extractor {
 
 	@Override
-	public ExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
+	public ExtractedFileSet extract(File source, FilesToExtract toExtract) throws IOException {
 		Builder builder = ExtractedFileSet.builder(toExtract.baseDir())
 				.baseDirIsGenerated(toExtract.baseDirIsGenerated());
-
-		ProgressListener progressListener = runtime.getProgressListener();
-		String progressLabel = "Extract (not really) " + source;
-		progressListener.start(progressLabel);
 
 		ExtractionMatch match = toExtract.find(new FileAsArchiveEntry(source));
 		if (match != null) {
@@ -57,11 +51,8 @@ public class ArchiveIsFileExtractor implements Extractor {
 				}
 
 				if (!toExtract.nothingLeft()) {
-					progressListener.info(progressLabel,
-							"Something went a little wrong. Listener say something is left, but we dont have anything");
+					throw new IllegalArgumentException("Something went a little wrong. Listener say something is left, but we dont have anything");
 				}
-				progressListener.done(progressLabel);
-
 			}
 		}
 

@@ -24,16 +24,13 @@
 package de.flapdoodle.embed.process.extract;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
@@ -42,19 +39,8 @@ import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 public class AbstractExtractorTest {
 
 	@Test(expected=IOException.class)
-	public void testForExceptionHint() throws FileNotFoundException, IOException {
-		
-		PackageResolver packageResolver=(__) -> { throw new IllegalArgumentException("what"); };
-		
-		DownloadConfig runtime=DownloadConfig.builder()
-			.downloadPath(__ -> "http://192.168.0.1")
-			.packageResolver(packageResolver)
-			.artifactStorePath(new PlatformTempDir())
-			.fileNaming(new UUIDTempNaming())
-			.progressListener(new StandardConsoleProgressListener())
-			.userAgent("foo-bar")
-			.build();
-		
+	public void testForExceptionHint() throws IOException {
+
 		Directory factory=new PlatformTempDir();
 		TempNaming exeutableNaming=new UUIDTempNaming();
 		
@@ -63,14 +49,14 @@ public class AbstractExtractorTest {
 			.build();
 		
 		FilesToExtract filesToExtract=new FilesToExtract(factory, exeutableNaming, fileSet);
-		
+
 		new AbstractExtractor() {
 			
 			@Override
-			protected ArchiveWrapper archiveStream(File source) throws FileNotFoundException, IOException {
+			protected ArchiveWrapper archiveStream(File source) throws IOException {
 				throw new IOException("foo");
 			}
-		}.extract(runtime, new File("bar"), filesToExtract);
+		}.extract(new File("bar"), filesToExtract);
 	}
 
 }

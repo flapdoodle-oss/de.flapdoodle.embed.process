@@ -23,12 +23,12 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import java.io.File;
-import java.util.Set;
-
 import org.immutables.builder.Builder.Parameter;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Style;
+
+import java.io.File;
+import java.util.Set;
 
 @Value.Immutable
 @Style(strictBuilder=true)

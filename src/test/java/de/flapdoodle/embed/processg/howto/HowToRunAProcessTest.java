@@ -12,8 +12,9 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.processg.runtime.*;
-import de.flapdoodle.reverse.InitLike;
 import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.reverse.TransitionWalker;
+import de.flapdoodle.reverse.Transitions;
 import de.flapdoodle.reverse.TransitionsAsGraph;
 import de.flapdoodle.reverse.edges.Derive;
 import de.flapdoodle.reverse.edges.Start;
@@ -52,14 +53,14 @@ public class HowToRunAProcessTest {
 			starter
 		);
 
-		String dot = TransitionsAsGraph.edgeGraphAsDot("sample", TransitionsAsGraph.asGraphIncludingStartAndEnd(transitions));
+		String dot = Transitions.edgeGraphAsDot("sample", Transitions.asGraph(transitions));
 		System.out.println("------------------------------");
 		System.out.println(dot);
 		System.out.println("------------------------------");
 
-		InitLike init = InitLike.with(transitions);
+		TransitionWalker init = TransitionWalker.with(transitions);
 
-		try (InitLike.ReachedState<Starter.Running> started = init.init(starter.destination())) {
+		try (TransitionWalker.ReachedState<Starter.Running> started = init.initState(starter.destination())) {
 			System.out.println("started: " + started.current());
 		}
 	}

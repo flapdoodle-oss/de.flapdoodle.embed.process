@@ -26,14 +26,12 @@ package de.flapdoodle.embed.process.extract;
 import java.io.File;
 import java.io.IOException;
 
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
-
 /**
  * Extractor interface
  */
 @FunctionalInterface
 public interface Extractor {
 
-	ExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException;
+	ExtractedFileSet extract(File source, FilesToExtract toExtract) throws IOException;
 
 }

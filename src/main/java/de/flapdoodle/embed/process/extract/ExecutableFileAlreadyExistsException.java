@@ -23,9 +23,9 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import java.io.IOException;
-
 import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
+
+import java.io.IOException;
 
 public class ExecutableFileAlreadyExistsException extends IOException {
 

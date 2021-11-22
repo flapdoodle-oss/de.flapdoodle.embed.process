@@ -23,17 +23,14 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
+import de.flapdoodle.embed.process.config.store.FileType;
+import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
-import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
-import de.flapdoodle.embed.process.io.progress.ProgressListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class AbstractExtractor implements Extractor {
 	
@@ -54,13 +51,9 @@ public abstract class AbstractExtractor implements Extractor {
 	}
 
 	@Override
-	public ExtractedFileSet extract(DownloadConfig runtime, File source, FilesToExtract toExtract) throws IOException {
+	public ExtractedFileSet extract(File source, FilesToExtract toExtract) throws IOException {
 		Builder builder = ExtractedFileSet.builder(toExtract.baseDir())
 				.baseDirIsGenerated(toExtract.baseDirIsGenerated());
-
-		ProgressListener progressListener = runtime.getProgressListener();
-		String progressLabel = "Extract " + source;
-		progressListener.start(progressLabel);
 
 		ArchiveWrapper archive = archiveStreamWithExceptionHint(source);
 
@@ -78,11 +71,8 @@ public abstract class AbstractExtractor implements Extractor {
 						} else {
 							builder.addLibraryFiles(file);
 						}
-						//						destination.setExecutable(true);
-						progressListener.info(progressLabel,"extract "+entry.getName());
 					}
 					if (toExtract.nothingLeft()) {
-						progressListener.info(progressLabel,"nothing left");
 						break;
 					}
 				}
@@ -91,8 +81,6 @@ public abstract class AbstractExtractor implements Extractor {
 		} finally {
 			archive.close();
 		}
-		
-		progressListener.done(progressLabel);
 
 		return builder.build();
 	}

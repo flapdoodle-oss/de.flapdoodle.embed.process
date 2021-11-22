@@ -23,11 +23,11 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public abstract class AbstractTarExtractor extends AbstractExtractor {

@@ -30,17 +30,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import de.flapdoodle.embed.process.TempDir;
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.PackageResolver;
-import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 
 /**
@@ -49,7 +47,7 @@ import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
  */
 public class ExtractorImplTest {
 
-    private DownloadConfig runtime;
+    private ProgressListener progressListener;
     private FilesToExtract fte;
     private File fileInArchive;
 
@@ -58,16 +56,7 @@ public class ExtractorImplTest {
 
     @Before
     public void setUp() throws IOException {
-        PackageResolver packageResolver = (__) -> { throw new IllegalArgumentException("must not be called"); };
-        
-        runtime=DownloadConfig.builder()
-                .downloadPath((__) -> "http://192.168.0.1")
-                .packageResolver(packageResolver)
-                .artifactStorePath(new PlatformTempDir())
-                .fileNaming(new UUIDTempNaming())
-                .progressListener(new StandardConsoleProgressListener())
-                .userAgent("foo-bar")
-                .build();
+        progressListener = new StandardConsoleProgressListener();
 
         fte = new FilesToExtract(
                 new TempDir(folder),
@@ -80,7 +69,7 @@ public class ExtractorImplTest {
     public void testZipFormat() throws IOException {
         File source = new File(this.getClass().getResource("/archives/sample.zip").getPath());
         ZipExtractor extractor = new ZipExtractor();
-        ExtractedFileSet extracted = extractor.extract(runtime, source, fte);
+        ExtractedFileSet extracted = extractor.extract(source, fte);
 
         assertTrue("extracted file exists", extracted.executable().exists());
         assertEquals(new String(Files.readAllBytes(fileInArchive.toPath())), new String(Files.readAllBytes(extracted.executable().toPath())));
@@ -91,7 +80,7 @@ public class ExtractorImplTest {
         File source = new File(this.getClass().getResource("/archives/sample.tgz").getPath());
         TgzExtractor extractor = new TgzExtractor();
 
-        ExtractedFileSet extracted = extractor.extract(runtime, source, fte);
+        ExtractedFileSet extracted = extractor.extract(source, fte);
 
         assertTrue("extracted file exists", extracted.executable().exists());
         assertEquals(new String(Files.readAllBytes(fileInArchive.toPath())), new String(Files.readAllBytes(extracted.executable().toPath())));
@@ -102,7 +91,7 @@ public class ExtractorImplTest {
         File source = new File(this.getClass().getResource("/archives/sample.tbz2").getPath());
         Tbz2Extractor extractor = new Tbz2Extractor();
 
-        ExtractedFileSet extracted = extractor.extract(runtime, source, fte);
+        ExtractedFileSet extracted = extractor.extract(source, fte);
 
         assertTrue("extracted file exists", extracted.executable().exists());
         assertEquals(new String(Files.readAllBytes(fileInArchive.toPath())), new String(Files.readAllBytes(extracted.executable().toPath())));

@@ -5,8 +5,8 @@ import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.reverse.TransitionWalker;
 import de.flapdoodle.reverse.TransitionsAsGraph;
-import de.flapdoodle.reverse.InitLike;
 import de.flapdoodle.reverse.edges.Derive;
 import de.flapdoodle.reverse.edges.Join;
 import de.flapdoodle.reverse.edges.Start;
@@ -61,8 +61,8 @@ public abstract class ProcessFactory {
 	}
 
 	@Auxiliary
-	public InitLike initLike() {
-		return InitLike.with(routes());
+	public TransitionWalker initLike() {
+		return TransitionWalker.with(routes());
 	}
 
 	public static ImmutableProcessFactory.Builder builder() {

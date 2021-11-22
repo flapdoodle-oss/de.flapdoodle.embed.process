@@ -39,9 +39,10 @@ public abstract class Executable implements Transition<ExtractedFileSet> {
 	public StateID<ExtractedFileSet> destination() {
 		return StateID.of(ExtractedFileSet.class);
 	}
+
 	@Override
 	@Value.Auxiliary
-	public Set<StateID<?>> sources() {
+	public final Set<StateID<?>> sources() {
 		return StateID.setOf(supportConfig(), distribution());
 	}
 

@@ -87,7 +87,7 @@ public abstract class ArtifactStore implements IArtifactStore {
 			Extractor extractor = Extractors.getExtractor(packageResolver.packageFor(distribution).archiveType());
 
 			File artifact = LocalArtifactStore.getArtifact(downloadConfig(), distribution);
-			return Optional.of(extractor.extract(downloadConfig(), artifact, toExtract));
+			return Optional.of(extractor.extract(artifact, toExtract));
 		}
 		return Optional.empty();
 	}

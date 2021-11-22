@@ -91,7 +91,7 @@ public abstract class UrlStreams {
 	}
 
 	public static URLConnection urlConnectionOf(URL url, String userAgent, TimeoutConfig timeoutConfig, Optional<Proxy> proxy) throws IOException {
-		URLConnection openConnection = Optionals.wrap(proxy)
+		URLConnection openConnection = Optionals.with(proxy)
 			.map(p -> url.openConnection(p))
 			.orElseGet(() -> url.openConnection());
 		
