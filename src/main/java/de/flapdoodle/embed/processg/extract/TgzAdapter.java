@@ -23,25 +23,29 @@
  */
 package de.flapdoodle.embed.processg.extract;
 
-import org.immutables.builder.Builder.Parameter;
-import org.immutables.value.Value;
-import org.immutables.value.Value.Style;
+import de.flapdoodle.embed.process.extract.AbstractTarExtractor;
+import de.flapdoodle.embed.process.extract.Archive;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Set;
 
-@Value.Immutable
-@Style(strictBuilder=true)
-public abstract class ExtractedFileSet {
+/**
+ *
+ */
+public class TgzAdapter extends AbstractTarAdapter {
 
-	@Parameter
-	public abstract Path baseDir();
-	
-	public abstract Path executable();
-	
-	public abstract Set<Path> libraryFiles();
+	@Override
+	protected Archive.Wrapper archiveStream(Path source) throws IOException {
+		FileInputStream fin = new FileInputStream(source.toFile());
+		BufferedInputStream in = new BufferedInputStream(fin);
+		GzipCompressorInputStream gzIn = new GzipCompressorInputStream(in);
 
-	public static ImmutableExtractedFileSet.Builder builder(Path baseDir) {
-		return ImmutableExtractedFileSet.builder(baseDir);
+		TarArchiveInputStream tarIn = new TarArchiveInputStream(gzIn);
+		return new TarArchiveWrapper(tarIn);
 	}
 }

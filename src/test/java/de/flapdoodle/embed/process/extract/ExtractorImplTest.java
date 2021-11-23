@@ -47,7 +47,6 @@ import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
  */
 public class ExtractorImplTest {
 
-    private ProgressListener progressListener;
     private FilesToExtract fte;
     private File fileInArchive;
 
@@ -56,8 +55,6 @@ public class ExtractorImplTest {
 
     @Before
     public void setUp() throws IOException {
-        progressListener = new StandardConsoleProgressListener();
-
         fte = new FilesToExtract(
                 new TempDir(folder),
                 new UUIDTempNaming(),
