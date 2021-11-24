@@ -81,4 +81,16 @@ public class ExtractorImplTest {
 		assertTrue("extracted file exists", extracted.executable().toFile().exists());
 		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));
 	}
+
+	@Test
+	public void testFileIsArchive(@TempDir Path destination) throws IOException, URISyntaxException {
+		Path source = Paths.get(this.getClass().getResource("/archives/sample.txt").toURI());
+		SingleFileAdapter extractor = new SingleFileAdapter();
+		ExtractedFileSet extracted = extractor.extract(destination, source, FileSet.builder()
+			.addEntry(FileType.Executable, "sample.txt")
+			.build());
+
+		assertTrue("extracted file exists", extracted.executable().toFile().exists());
+		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));
+	}
 }

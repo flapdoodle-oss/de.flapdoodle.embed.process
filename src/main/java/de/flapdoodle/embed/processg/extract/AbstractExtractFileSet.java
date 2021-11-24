@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class AbstractExtractFileSet implements ExtractFileSet {
@@ -89,9 +90,7 @@ public abstract class AbstractExtractFileSet implements ExtractFileSet {
 			Optional<FileSet.Entry> ret = Optional.empty();
 
 			if (!entry.isDirectory()) {
-				ret = files.stream()
-					.filter(e -> e.matchingPattern().matcher(entry.getName()).matches())
-					.findFirst();
+				ret = findMatchingEntry(files, entry);
 
 				if (ret.isPresent()) {
 					files.remove(ret.get());
@@ -99,5 +98,13 @@ public abstract class AbstractExtractFileSet implements ExtractFileSet {
 			}
 			return ret;
 		}
+
+	}
+
+
+	static Optional<FileSet.Entry> findMatchingEntry(List<FileSet.Entry> files, Archive.Entry entry) {
+		return files.stream()
+			.filter(e -> e.matchingPattern().matcher(entry.getName()).matches())
+			.findFirst();
 	}
 }
