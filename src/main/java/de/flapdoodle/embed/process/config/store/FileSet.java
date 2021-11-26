@@ -5,9 +5,9 @@
  *
  * with contributions from
  * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ Archimedes Trajano (trajano@github),
+ Kevin D. Keck (kdkeck@github),
+ Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,29 +23,29 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.immutables.value.Value;
 import org.immutables.value.Value.Auxiliary;
 import org.immutables.value.Value.Check;
 import org.immutables.value.Value.Parameter;
 
+import java.util.List;
+import java.util.regex.Pattern;
+
 @Value.Immutable
 public interface FileSet {
 
 	List<Entry> entries();
-	
+
 	@Check
 	default void shouldContainOneMoreExecutable() {
-		boolean oneOrMoreExecutableFound = entries().stream().anyMatch(e -> e.type()==FileType.Executable);
+		boolean oneOrMoreExecutableFound = entries().stream().anyMatch(e -> e.type() == FileType.Executable);
 		if (!oneOrMoreExecutableFound) {
 			throw new IllegalArgumentException("there is no executable in this file set");
 		}
 	}
-	
+
 	@Value.Immutable
-    abstract class Entry {
+	abstract class Entry {
 		@Parameter
 		public abstract FileType type();
 
@@ -54,33 +54,33 @@ public interface FileSet {
 
 		@Parameter
 		protected abstract UncompiledPattern uncompiledMatchingPattern();
-		
+
 		@Auxiliary
 		public Pattern matchingPattern() {
 			return uncompiledMatchingPattern().compile();
 		}
 
 		static Entry of(FileType type, String filename, Pattern pattern) {
-			return ImmutableEntry.of(type,filename, UncompiledPattern.of(pattern));
+			return ImmutableEntry.of(type, filename, UncompiledPattern.of(pattern));
 		}
 	}
-	
+
 	class Builder extends ImmutableFileSet.Builder {
-		
+
 		public Builder addEntry(FileType type, String filename) {
-			return addEntry(type,filename,".*"+filename);
+			return addEntry(type, filename, ".*" + filename);
 		}
 
 		public Builder addEntry(FileType type, String filename, String pattern) {
-			return addEntry(type,filename,Pattern.compile(pattern,Pattern.CASE_INSENSITIVE));
+			return addEntry(type, filename, Pattern.compile(pattern, Pattern.CASE_INSENSITIVE));
 		}
 
 		public Builder addEntry(FileType type, String filename, Pattern pattern) {
-			return addEntries(Entry.of(type,filename, pattern));
+			return addEntries(Entry.of(type, filename, pattern));
 		}
 
 	}
-	
+
 	static Builder builder() {
 		return new Builder();
 	}
