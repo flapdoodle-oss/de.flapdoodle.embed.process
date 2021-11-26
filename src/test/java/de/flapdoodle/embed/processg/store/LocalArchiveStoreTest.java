@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class LocalArchiveStoreTest {
 
@@ -21,13 +24,19 @@ class LocalArchiveStoreTest {
 
 		Distribution distribution = Distribution.of(Version.of("foo"), Platform.detect());
 		ArchiveType zip = ArchiveType.ZIP;
-
 		Path archive = Paths.get(this.getClass().getResource("/archives/sample.zip").toURI());
 
 		Path storedArchive = testee.store("test", distribution, zip, archive);
 
-		Assertions.assertThat(testee.archiveFor("test", distribution, zip))
+		System.out.println("--> "+storedArchive);
+
+		Optional<Path> readBack = testee.archiveFor("test", distribution, zip);
+
+		assertThat(readBack)
 			.isPresent()
 			.contains(storedArchive);
+
+		assertThat(storedArchive.toFile())
+			.hasSameBinaryContentAs(archive.toFile());
 	}
 }
