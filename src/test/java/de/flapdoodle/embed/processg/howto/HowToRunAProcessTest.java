@@ -11,20 +11,87 @@ import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
+import de.flapdoodle.embed.process.io.progress.ProgressListeners;
+import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
+import de.flapdoodle.embed.processg.config.store.DownloadConfig;
+import de.flapdoodle.embed.processg.config.store.Package;
+import de.flapdoodle.embed.processg.parts.Archive;
+import de.flapdoodle.embed.processg.parts.DownloadPackage;
+import de.flapdoodle.embed.processg.parts.ImmutablePackageOfDistribution;
+import de.flapdoodle.embed.processg.parts.PackageOfDistribution;
 import de.flapdoodle.embed.processg.runtime.*;
+import de.flapdoodle.embed.processg.store.ArchiveStore;
+import de.flapdoodle.embed.processg.store.Downloader;
+import de.flapdoodle.embed.processg.store.LocalArchiveStore;
+import de.flapdoodle.embed.processg.store.UrlConnectionDownloader;
+import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.TransitionWalker;
 import de.flapdoodle.reverse.Transitions;
-import de.flapdoodle.reverse.TransitionsAsGraph;
 import de.flapdoodle.reverse.edges.Derive;
 import de.flapdoodle.reverse.edges.Start;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.Closeable;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class HowToRunAProcessTest {
+
+	@Test
+	public void rebuildSample(@TempDir Path temp) {
+		try (ProgressListeners.RemoveProgressListener ignored = ProgressListeners.setProgressListener(new StandardConsoleProgressListener())) {
+			String serverUrl = "https://bitbucket.org/ariya/phantomjs/downloads/";
+
+			ArchiveStore archiveStore = new LocalArchiveStore(temp);
+
+			Starter starter = Starter.withDefaults();
+
+			List<Transition<?>> transitions = Arrays.asList(
+				Start.to(Version.class).initializedWith(Version.of("2.1.1")),
+				Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()),
+				Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()),
+				Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())),
+				Start.to(ProcessOutput.class).initializedWith(ProcessOutput.namedConsole("phantomjs")),
+				Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))),
+
+				Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
+
+				PackageOfDistribution.with(dist -> Package.builder()
+					.archiveType(de.flapdoodle.embed.processg.extract.ArchiveType.TBZ2)
+					.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
+					.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
+					.build()),
+
+				DownloadPackage.builder()
+					.name("phantomjs")
+					.archiveStore(archiveStore)
+					.build(),
+
+				starter
+			);
+
+			String dot = Transitions.edgeGraphAsDot("sample", Transitions.asGraph(transitions));
+			System.out.println("------------------------------");
+			System.out.println(dot);
+			System.out.println("------------------------------");
+
+			TransitionWalker init = TransitionWalker.with(transitions);
+
+			try (TransitionWalker.ReachedState<Archive> test = init.initState(StateID.of(Archive.class))) {
+				System.out.println("test: " + test.current());
+			}
+
+			if (false) {
+				try (TransitionWalker.ReachedState<Starter.Running> started = init.initState(starter.destination())) {
+					System.out.println("started: " + started.current());
+				}
+			}
+		}
+	}
 
 	@Test
 	public void sample() {

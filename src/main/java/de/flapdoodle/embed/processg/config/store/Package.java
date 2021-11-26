@@ -24,8 +24,7 @@
 package de.flapdoodle.embed.processg.config.store;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.ImmutableDistributionPackage;
-import de.flapdoodle.embed.process.distribution.ArchiveType;
+import de.flapdoodle.embed.processg.extract.ArchiveType;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Parameter;
 

@@ -5,9 +5,9 @@
  *
  * with contributions from
  * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ Archimedes Trajano (trajano@github),
+ Kevin D. Keck (kdkeck@github),
+ Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,16 @@
  */
 package de.flapdoodle.embed.processg.store;
 
-import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import de.flapdoodle.embed.processg.config.store.DownloadConfig;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public interface Downloader {
 
-    File download(ProgressListener progressListener, String url) throws IOException;
-    
-    static Downloader platformDefault() {
-    	return new UrlConnectionDownloader(DownloadConfig.defaults());
-    }
+	Path download(Path baseDir, String url) throws IOException;
+
+	static Downloader platformDefault() {
+		return new UrlConnectionDownloader(DownloadConfig.defaults());
+	}
 }

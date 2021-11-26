@@ -5,9 +5,9 @@
  *
  * with contributions from
  * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ Archimedes Trajano (trajano@github),
+ Kevin D. Keck (kdkeck@github),
+ Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,20 +23,21 @@
  */
 package de.flapdoodle.embed.processg.store;
 
-import de.flapdoodle.embed.process.distribution.ArchiveType;
-import de.flapdoodle.embed.processg.config.store.DownloadConfig;
+import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.config.store.ProxyFactory;
 import de.flapdoodle.embed.process.config.store.TimeoutConfig;
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
-import de.flapdoodle.embed.process.io.file.Files;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
+import de.flapdoodle.embed.process.io.progress.ProgressListeners;
+import de.flapdoodle.embed.processg.config.store.DownloadConfig;
 
 import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Class for downloading runtime
@@ -47,37 +48,38 @@ public class UrlConnectionDownloader implements Downloader {
 	private static final int BUFFER_LENGTH = 1024 * 8 * 8;
 	private static final int READ_COUNT_MULTIPLIER = 100;
 
-		private final DownloadConfig downloadConfig;
+	private final DownloadConfig downloadConfig;
 
-		public UrlConnectionDownloader(DownloadConfig downloadConfig) {
-				this.downloadConfig = downloadConfig;
-		}
+	public UrlConnectionDownloader(DownloadConfig downloadConfig) {
+		this.downloadConfig = downloadConfig;
+	}
 
 	@Override
-	public File download(ProgressListener progress, String url) throws IOException {
+	public Path download(Path tempDir, String url) throws IOException {
+		Preconditions.checkArgument(Files.exists(tempDir),"tempDir does not exist: %s", tempDir);
+
+		ProgressListener progress = ProgressListeners.progressListener()
+			.orElse(ProgressListeners.noop());
 
 		String progressLabel = "Download " + url;
 		progress.start(progressLabel);
 
-		File ret = Files.createTempFile(PropertyOrPlatformTempDir.defaultInstance(), "download");
+		Path ret = tempDir.resolve(UUID.randomUUID().toString());
+		if (!Files.exists(ret)) {
 
-		if (ret.canWrite()) {
-
-			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(ret));
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(ret.toFile()));
 
 			InputStreamAndLength downloadStreamAndLength = downloadInputStream(downloadConfig, url);
-			
+
 			long length = downloadStreamAndLength.contentLength();
 			InputStream downloadStream = downloadStreamAndLength.downloadStream();
-			
+
 			progress.info(progressLabel, "DownloadSize: " + length);
-			
+
 			if (length == -1) length = DEFAULT_CONTENT_LENGTH;
 
-
-
 			long downloadStartedAt = System.currentTimeMillis();
-			
+
 			try {
 				BufferedInputStream bis = new BufferedInputStream(downloadStream);
 				byte[] buf = new byte[BUFFER_LENGTH];
@@ -90,8 +92,9 @@ public class UrlConnectionDownloader implements Downloader {
 
 					progress.progress(progressLabel, (int) (readCount * READ_COUNT_MULTIPLIER / length));
 				}
-				progress.info(progressLabel, "downloaded with " + downloadSpeed(downloadStartedAt,length));
-			} finally {
+				progress.info(progressLabel, "downloaded with " + downloadSpeed(downloadStartedAt, length));
+			}
+			finally {
 				downloadStream.close();
 				bos.flush();
 				bos.close();
@@ -100,15 +103,16 @@ public class UrlConnectionDownloader implements Downloader {
 			throw new IOException("Can not write " + ret);
 		}
 		progress.done(progressLabel);
+
 		return ret;
 	}
 
 	private InputStreamAndLength downloadInputStream(DownloadConfig downloadConfig, String urlAsString)
-			throws IOException {
+		throws IOException {
 		URL url = new URL(urlAsString);
 
 		Optional<Proxy> proxy = downloadConfig.proxyFactory().map(ProxyFactory::createProxy);
-		
+
 		try {
 			URLConnection openConnection;
 			if (proxy.isPresent()) {
@@ -116,33 +120,33 @@ public class UrlConnectionDownloader implements Downloader {
 			} else {
 				openConnection = url.openConnection();
 			}
-			openConnection.setRequestProperty("User-Agent",downloadConfig.getUserAgent());
+			openConnection.setRequestProperty("User-Agent", downloadConfig.getUserAgent());
 			if (downloadConfig.getAuthorization().isPresent()) {
 				openConnection.setRequestProperty("Authorization", downloadConfig.getAuthorization().get());
 			}
-			
+
 			TimeoutConfig timeoutConfig = downloadConfig.getTimeoutConfig();
-			
+
 			openConnection.setConnectTimeout(timeoutConfig.getConnectionTimeout());
 			openConnection.setReadTimeout(downloadConfig.getTimeoutConfig().getReadTimeout());
-	
+
 			InputStream downloadStream = openConnection.getInputStream();
-	
-			return new InputStreamAndLength(downloadStream,openConnection.getContentLength());
-		} catch (IOException iox) {
+
+			return new InputStreamAndLength(downloadStream, openConnection.getContentLength());
+		}
+		catch (IOException iox) {
 			throw new IOException("Could not open inputStream for " + url + " with proxy " + proxy, iox);
 		}
 	}
 
-	private String downloadSpeed(long downloadStartedAt,long downloadSize) {
-		long timeUsed=(System.currentTimeMillis()-downloadStartedAt)/1000;
-		if (timeUsed==0) {
-			timeUsed=1;
+	private String downloadSpeed(long downloadStartedAt, long downloadSize) {
+		long timeUsed = (System.currentTimeMillis() - downloadStartedAt) / 1000;
+		if (timeUsed == 0) {
+			timeUsed = 1;
 		}
-		long kbPerSecond=downloadSize/(timeUsed*1024);
-		return ""+kbPerSecond+"kb/s";
+		long kbPerSecond = downloadSize / (timeUsed * 1024);
+		return "" + kbPerSecond + "kb/s";
 	}
-
 
 	static class InputStreamAndLength {
 
@@ -153,15 +157,14 @@ public class UrlConnectionDownloader implements Downloader {
 			_downloadStream = downloadStream;
 			_contentLength = contentLength;
 		}
-		
-		
+
 		public int contentLength() {
 			return _contentLength;
 		}
-		
+
 		public InputStream downloadStream() {
 			return _downloadStream;
 		}
-		
+
 	}
 }
