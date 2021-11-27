@@ -198,7 +198,8 @@ public class UrlStreamsTest {
 			} catch (IllegalArgumentException iax) {
 				assertTrue(iax.getLocalizedMessage().contains("partial"));
 			}
-			
+
+			// looks like URLConnection Impl does only read to content-length size if provided
 			boolean weCanFakeNanoHttpToSendMoreStuffThanInContentLength=false;
 			if (weCanFakeNanoHttpToSendMoreStuffThanInContentLength) {
 				try {
