@@ -81,11 +81,14 @@ public class HowToRunAProcessTest {
 				Starter starter = Starter.withDefaults();
 
 				List<Transition<?>> transitions = Arrays.asList(
-					Start.to(Version.class).initializedWith(Version.of("2.1.1")),
+					Start.to(Name.class).initializedWith(Name.of("phantomjs")),
+					
 					Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()),
 					Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()),
 					Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())),
-					Start.to(ProcessOutput.class).initializedWith(ProcessOutput.namedConsole("phantomjs")),
+
+					Start.to(Version.class).initializedWith(Version.of("2.1.1")),
+					Derive.given(Name.class).state(ProcessOutput.class).deriveBy(name -> ProcessOutput.namedConsole(name.value())),
 					Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))),
 
 					Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
@@ -96,14 +99,9 @@ public class HowToRunAProcessTest {
 						.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
 						.build()),
 
-					DownloadPackage.builder()
-						.name("phantomjs")
-						.archiveStore(archiveStore)
-						.build(),
+					DownloadPackage.with(archiveStore),
 
-					ExtractPackage.builder()
-						.name("phantomjs")
-						.build(),
+					ExtractPackage.withDefaults(),
 
 					Derive.given(StateID.of(de.flapdoodle.embed.processg.extract.ExtractedFileSet.class))
 						.state(ProcessExecutable.class)

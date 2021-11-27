@@ -26,10 +26,12 @@ package de.flapdoodle.embed.processg.parts;
 import de.flapdoodle.embed.processg.config.store.Package;
 import de.flapdoodle.embed.processg.extract.ExtractFileSet;
 import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
+import de.flapdoodle.embed.processg.runtime.Name;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.types.ThrowingFunction;
 import de.flapdoodle.types.ThrowingSupplier;
 import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
@@ -44,7 +46,10 @@ import java.util.Set;
 @Value.Immutable
 public abstract class ExtractPackage implements Transition<ExtractedFileSet> {
 
-	protected abstract String name();
+	@Value.Default
+	protected StateID<Name> name() {
+		return StateID.of(Name.class);
+	}
 
 	@Override
 	@Value.Default
@@ -64,19 +69,21 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet> {
 
 	@Override
 	public Set<StateID<?>> sources() {
-		return StateID.setOf(archive(), distPackage());
+		return StateID.setOf(archive(), distPackage(), name());
 	}
 
 	@Value.Default
-	protected ThrowingSupplier<Path, IOException> tempDir() {
-		return () -> Files.createTempDirectory(name());
+	protected ThrowingFunction<String, Path, IOException> tempDir() {
+		return Files::createTempDirectory;
 	}
 
 	@Override
 	public State<ExtractedFileSet> result(StateLookup lookup) {
 		Package dist = lookup.of(distPackage());
 		Archive archive = lookup.of(archive());
-		Path destination = Try.get(tempDir());
+		Name name = lookup.of(name());
+
+		Path destination = Try.apply(tempDir(), name.value());
 		ExtractFileSet extractor = dist.archiveType().extractor();
 
 		ExtractedFileSet extractedFileSet = Try.get(() -> extractor.extract(destination, archive.value(), dist.fileSet()));
@@ -91,5 +98,9 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet> {
 
 	public static ImmutableExtractPackage.Builder builder() {
 		return ImmutableExtractPackage.builder();
+	}
+
+	public static ImmutableExtractPackage withDefaults() {
+		return builder().build();
 	}
 }

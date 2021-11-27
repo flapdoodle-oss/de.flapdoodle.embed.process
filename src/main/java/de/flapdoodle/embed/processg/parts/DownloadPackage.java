@@ -28,12 +28,14 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.processg.config.store.DownloadConfig;
 import de.flapdoodle.embed.processg.config.store.Package;
 import de.flapdoodle.embed.processg.net.UrlStreams;
+import de.flapdoodle.embed.processg.runtime.Name;
 import de.flapdoodle.embed.processg.store.ArchiveStore;
 import de.flapdoodle.embed.processg.store.Downloader;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.types.ThrowingFunction;
 import de.flapdoodle.types.ThrowingSupplier;
 import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
@@ -50,7 +52,10 @@ import java.util.UUID;
 @Value.Immutable
 public abstract class DownloadPackage implements Transition<Archive> {
 
-	protected abstract String name();
+	@Value.Default
+	protected StateID<Name> name() {
+		return StateID.of(Name.class);
+	}
 
 	protected abstract ArchiveStore archiveStore();
 
@@ -66,8 +71,8 @@ public abstract class DownloadPackage implements Transition<Archive> {
 	}
 
 	@Value.Default
-	protected ThrowingSupplier<Path, IOException> tempDir() {
-		return () -> Files.createTempDirectory(name());
+	protected ThrowingFunction<String, Path, IOException> tempDir() {
+		return Files::createTempDirectory;
 	}
 
 	@Value.Default
@@ -89,7 +94,7 @@ public abstract class DownloadPackage implements Transition<Archive> {
 	@Override
 	@Value.Auxiliary
 	public final Set<StateID<?>> sources() {
-		return StateID.setOf(distribution(), distPackage());
+		return StateID.setOf(distribution(), distPackage(), name());
 	}
 
 	@Override
@@ -97,14 +102,15 @@ public abstract class DownloadPackage implements Transition<Archive> {
 	public State<Archive> result(StateLookup lookup) {
 		Distribution dist = lookup.of(distribution());
 		Package distPackage = lookup.of(distPackage());
+		Name name = lookup.of(name());
 
-		Optional<Path> archive = archiveStore().archiveFor(name(), dist, distPackage.archiveType());
+		Optional<Path> archive = archiveStore().archiveFor(name.value(), dist, distPackage.archiveType());
 		if (archive.isPresent()) {
 			return State.of(archive.map(Archive::of).get());
 		} else {
-			Path downloadedArchive = Try.supplier(tempDir())
+			Path downloadedArchive = Try.function(tempDir())
 				.mapCheckedException(cause -> new IllegalStateException("could not create archive path", cause))
-				.get()
+				.apply(name.value())
 				.resolve(UUID.randomUUID().toString());
 
 			Try.runable(() -> {
@@ -115,7 +121,7 @@ public abstract class DownloadPackage implements Transition<Archive> {
 				}).mapCheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
 				.run();
 
-			Path storedArchive = Try.supplier(() -> archiveStore().store(name(), dist, distPackage.archiveType(), downloadedArchive))
+			Path storedArchive = Try.supplier(() -> archiveStore().store(name.value(), dist, distPackage.archiveType(), downloadedArchive))
 				.mapCheckedException(cause -> new IllegalArgumentException("could not store downloaded artifact", cause))
 				.get();
 			
@@ -123,6 +129,10 @@ public abstract class DownloadPackage implements Transition<Archive> {
 				Try.run(() -> Files.delete(it.value()));
 			});
 		}
+	}
+
+	public static ImmutableDownloadPackage with(ArchiveStore archiveStore) {
+		return builder().archiveStore(archiveStore).build();
 	}
 
 	public static ImmutableDownloadPackage.Builder builder() {
