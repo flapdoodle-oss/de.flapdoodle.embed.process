@@ -41,10 +41,7 @@ import de.flapdoodle.embed.process.runtime.Network;
 import de.flapdoodle.embed.processg.Resources;
 import de.flapdoodle.embed.processg.config.store.DownloadConfig;
 import de.flapdoodle.embed.processg.config.store.Package;
-import de.flapdoodle.embed.processg.parts.Archive;
-import de.flapdoodle.embed.processg.parts.DownloadPackage;
-import de.flapdoodle.embed.processg.parts.ImmutablePackageOfDistribution;
-import de.flapdoodle.embed.processg.parts.PackageOfDistribution;
+import de.flapdoodle.embed.processg.parts.*;
 import de.flapdoodle.embed.processg.runtime.*;
 import de.flapdoodle.embed.processg.store.ArchiveStore;
 import de.flapdoodle.embed.processg.store.Downloader;
@@ -104,6 +101,14 @@ public class HowToRunAProcessTest {
 						.archiveStore(archiveStore)
 						.build(),
 
+					ExtractPackage.builder()
+						.name("phantomjs")
+						.build(),
+
+					Derive.given(StateID.of(de.flapdoodle.embed.processg.extract.ExtractedFileSet.class))
+						.state(ProcessExecutable.class)
+						.deriveBy(fileSet -> ProcessExecutable.of(fileSet.executable().toFile())),
+
 					starter
 				);
 
@@ -114,17 +119,11 @@ public class HowToRunAProcessTest {
 
 				TransitionWalker init = TransitionWalker.with(transitions);
 
-				try (TransitionWalker.ReachedState<Archive> test = init.initState(StateID.of(Archive.class))) {
+				try (TransitionWalker.ReachedState<de.flapdoodle.embed.processg.extract.ExtractedFileSet> test = init.initState(StateID.of(de.flapdoodle.embed.processg.extract.ExtractedFileSet.class))) {
 					System.out.println("test: " + test.current());
 				}
 
-				System.out.println("------------------------------");
-
-				try (TransitionWalker.ReachedState<Archive> test = init.initState(StateID.of(Archive.class))) {
-					System.out.println("second try: " + test.current());
-				}
-
-				if (false) {
+				if (true) {
 					try (TransitionWalker.ReachedState<Starter.Running> started = init.initState(starter.destination())) {
 						System.out.println("started: " + started.current());
 					}
