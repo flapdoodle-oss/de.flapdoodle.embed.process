@@ -74,7 +74,6 @@ public abstract class UrlStreams {
 	private static <E extends Exception> void downloadAndCopy(URLConnection connection, ThrowingSupplier<BufferedOutputStream, E> output, DownloadCopyListener copyListener) throws IOException, E {
 		long length = connection.getContentLengthLong();
 		try (BufferedInputStream bis = new BufferedInputStream(connection.getInputStream())) {
-			System.out.println("available -> "+bis.available());
 			try (BufferedOutputStream bos = output.get()) {
 				byte[] buf = new byte[BUFFER_LENGTH];
 				int read = 0;

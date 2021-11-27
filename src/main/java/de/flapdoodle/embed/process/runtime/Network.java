@@ -101,10 +101,10 @@ public class Network {
 	public static int freeServerPort(InetAddress hostAddress, int preferredPort) throws IOException {
 		try {
 			try(Socket socket = new Socket(hostAddress, preferredPort)) {
-				return preferredPort;
+				return freeServerPort(hostAddress);
 			}
 		} catch (Exception ex) {
-			return freeServerPort(hostAddress);
+			return preferredPort;
 		}
 	}
 

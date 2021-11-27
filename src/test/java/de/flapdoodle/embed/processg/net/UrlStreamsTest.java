@@ -199,7 +199,7 @@ public class UrlStreamsTest {
 				assertTrue(iax.getLocalizedMessage().contains("partial"));
 			}
 			
-			boolean weCanFakeNanoHttpToSendMoreStuffThanInContentLength=true;
+			boolean weCanFakeNanoHttpToSendMoreStuffThanInContentLength=false;
 			if (weCanFakeNanoHttpToSendMoreStuffThanInContentLength) {
 				try {
 					URLConnection connection = new URL("http://localhost:"+httpPort+"/toLong?foo=bar").openConnection();
