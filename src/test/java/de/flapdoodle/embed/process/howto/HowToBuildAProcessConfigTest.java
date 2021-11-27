@@ -25,7 +25,6 @@ package de.flapdoodle.embed.process.howto;
 
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -52,8 +51,8 @@ import de.flapdoodle.embed.process.config.store.TimeoutConfig;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.embed.process.io.net.UrlStreams;
-import de.flapdoodle.embed.process.io.net.UrlStreams.DownloadCopyListener;
+import de.flapdoodle.embed.processg.net.UrlStreams;
+import de.flapdoodle.embed.processg.net.UrlStreams.DownloadCopyListener;
 import de.flapdoodle.embed.process.parts.ArtifactPath;
 import de.flapdoodle.embed.process.parts.ArtifactUrl;
 import de.flapdoodle.embed.process.parts.CachingArtifactDownloader;

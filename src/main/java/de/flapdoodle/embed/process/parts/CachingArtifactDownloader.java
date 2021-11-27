@@ -6,8 +6,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import de.flapdoodle.embed.process.config.store.TimeoutConfig;
-import de.flapdoodle.embed.process.io.net.UrlStreams;
-import de.flapdoodle.embed.process.io.net.UrlStreams.DownloadCopyListener;
+import de.flapdoodle.embed.processg.net.UrlStreams;
+import de.flapdoodle.embed.processg.net.UrlStreams.DownloadCopyListener;
 import de.flapdoodle.types.Try;
 
 public class CachingArtifactDownloader implements ArtifactPathForUrl {
@@ -24,7 +24,7 @@ public class CachingArtifactDownloader implements ArtifactPathForUrl {
 		Path artifactPath = basePath.value().resolve(localPath.value());
 
 		if (!artifactPath.toFile().exists()) {
-			Try.supplier(() -> {
+			return Try.supplier(() -> {
 				URL downloadUrl = new URL(url.value());
 				URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, "flapdoodle-user-agent", timeoutConfig,
 						Optional.empty());

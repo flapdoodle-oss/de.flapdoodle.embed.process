@@ -24,10 +24,15 @@
 package de.flapdoodle.embed.processg.store;
 
 import de.flapdoodle.embed.processg.config.store.DownloadConfig;
+import de.flapdoodle.embed.processg.net.UrlStreams;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
+/**
+ * @see UrlStreams
+ */
+@Deprecated
 public interface Downloader {
 
 	Path download(Path baseDir, String url) throws IOException;

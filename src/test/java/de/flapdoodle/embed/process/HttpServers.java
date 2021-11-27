@@ -25,15 +25,49 @@ package de.flapdoodle.embed.process;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import de.flapdoodle.embed.process.runtime.Network;
+import de.flapdoodle.embed.processg.Resources;
+import de.flapdoodle.types.Try;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.Response;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpServers {
+	private static Logger logger= LoggerFactory.getLogger(HttpServers.class);
+
+	public static Server httpServer(Class<?> testClass, Map<String, String> resourcePathMap) throws IOException {
+		int serverPort = Try.get(() -> Network.freeServerPort(Network.getLocalHost()));
+		Map<String, Supplier<Response>> map = resourcePathMap.entrySet().stream()
+			.collect(Collectors.toMap(entry -> entry.getKey(), entry -> Try.supplier(() -> {
+				Path resourcePath = Resources.resourcePath(testClass, entry.getValue());
+				byte[] content = Files.readAllBytes(resourcePath);
+				return response(200, "application/octet-stream", content);
+			}).mapCheckedException(RuntimeException::new)
+				.onCheckedException(ex -> { throw new RuntimeException(ex);})
+			));
+
+			return httpServer(serverPort, map);
+	}
+
+	public static Server httpServer(int port, Map<String, Supplier<Response>> responseMap) throws IOException {
+		return httpServer(port, session -> Optional.ofNullable(responseMap.get(session.getUri()))
+			.map(it -> {
+				Response response = it.get();
+				logger.info(""+session.getUri()+" -> "+response.getStatus()+":"+response.getMimeType()+"(size="+response.getHeader("content-length")+")");
+				return response;
+			}));
+	}
 
 	public static Server httpServer(int port, Listener listener) throws IOException {
 		return new Server(port, listener);
@@ -44,7 +78,7 @@ public class HttpServers {
 		private final Listener listener;
 
 		public Server(int port, Listener listener) throws IOException {
-			super(port);
+			super("localhost", port);
 			this.listener = listener;
 			start(NanoHTTPD.SOCKET_READ_TIMEOUT, true);
 		}
@@ -53,7 +87,10 @@ public class HttpServers {
 		public void close() {
 			this.stop();
 		}
-		
+
+		public String serverUrl() {
+			return "http://"+getHostname()+":"+getListeningPort();
+		}
 //		@Override
 //		public Response serve(String uri, Method method, Map<String, String> headers, Map<String, String> parms, Map<String, String> files) {
 //			Optional<Response> response = listener.serve(uri, method, headers, parms, files);
@@ -70,7 +107,7 @@ public class HttpServers {
 	}
 	
 	@FunctionalInterface
-	public static interface Listener {
+	public interface Listener {
 		Optional<Response> serve(NanoHTTPD.IHTTPSession session);
 	}
 
@@ -80,7 +117,7 @@ public class HttpServers {
 
 	public static Response response(int status, String mimeType, byte[] data, int contentLength) {
 		Response ret = NanoHTTPD.newFixedLengthResponse(Status.lookup(status), mimeType, new ByteArrayInputStream(data), data.length);
-		ret.addHeader("Content-Length", ""+contentLength);
+		ret.addHeader("content-length", ""+contentLength);
 		return ret;
 				
 	}

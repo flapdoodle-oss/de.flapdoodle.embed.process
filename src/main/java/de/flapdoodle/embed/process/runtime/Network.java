@@ -87,25 +87,24 @@ public class Network {
 
 	@Deprecated
 	public static int getFreeServerPort() throws IOException {
-		return getFreeServerPort(getLocalHost());
+		return freeServerPort(getLocalHost());
 	}
 
+	/**
+	 * @see Network#freeServerPort(InetAddress, int)
+	 */
 	@Deprecated
 	public static int getPreferredFreeServerPort(InetAddress hostAddress, int preferredPort) throws IOException {
-		try (ServerSocket serverSocket = new ServerSocket(preferredPort, 0, hostAddress)) {
-			return preferredPort;
-		} catch (IOException e) {
-			return getFreeServerPort(hostAddress);
-		}
+		return freeServerPort(hostAddress, preferredPort);
 	}
 	
 	public static int freeServerPort(InetAddress hostAddress, int preferredPort) throws IOException {
 		try {
 			try(Socket socket = new Socket(hostAddress, preferredPort)) {
-				return freeServerPort(hostAddress);
+				return preferredPort;
 			}
 		} catch (Exception ex) {
-			return preferredPort;
+			return freeServerPort(hostAddress);
 		}
 	}
 
@@ -114,18 +113,18 @@ public class Network {
 			return socket.getLocalPort();
 		}
 	}
-	
+
+	/**
+	 * @see Network#freeServerPort(InetAddress)
+	 */
 	@Deprecated
 	public static int getFreeServerPort(InetAddress hostAddress) throws IOException {
-		int ports[] = getFreeServerPorts(hostAddress, 10);
-		return randomEntryOf(ports);
+		return freeServerPort(hostAddress);
 	}
 
-	@Deprecated
-	public static int randomEntryOf(int[] ports) {
-		return ports[ThreadLocalRandom.current().nextInt(ports.length)];
-	}
-	
+	/**
+	 * @see Network#freeServerPorts(InetAddress, int)
+	 */
 	@Deprecated
 	public static int[] getFreeServerPorts(InetAddress hostAddress, int poolSize) throws IOException {
 		return freeServerPorts(hostAddress, poolSize);

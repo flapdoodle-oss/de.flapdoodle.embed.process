@@ -1,8 +1,10 @@
 package de.flapdoodle.embed.processg.parts;
 
+import de.flapdoodle.embed.process.config.store.ProxyFactory;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.processg.config.store.DownloadConfig;
 import de.flapdoodle.embed.processg.config.store.Package;
-import de.flapdoodle.embed.processg.config.store.PackageResolver;
+import de.flapdoodle.embed.processg.net.UrlStreams;
 import de.flapdoodle.embed.processg.store.ArchiveStore;
 import de.flapdoodle.embed.processg.store.Downloader;
 import de.flapdoodle.reverse.State;
@@ -14,10 +16,13 @@ import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Value.Immutable
 public abstract class DownloadPackage implements Transition<Archive> {
@@ -27,8 +32,14 @@ public abstract class DownloadPackage implements Transition<Archive> {
 	protected abstract ArchiveStore archiveStore();
 
 	@Value.Default
-	protected Downloader downloader() {
-		return Downloader.platformDefault();
+	protected UrlStreams.DownloadCopyListener downloadCopyListener() {
+		return (bytesCopied, contentLength) -> {
+		};
+	}
+
+	@Value.Default
+	protected DownloadConfig downloadConfig() {
+		return DownloadConfig.defaults();
 	}
 
 	@Value.Default
@@ -59,6 +70,7 @@ public abstract class DownloadPackage implements Transition<Archive> {
 	}
 
 	@Override
+	@Value.Auxiliary
 	public State<Archive> result(StateLookup lookup) {
 		Distribution dist = lookup.of(distribution());
 		Package distPackage = lookup.of(distPackage());
@@ -67,16 +79,26 @@ public abstract class DownloadPackage implements Transition<Archive> {
 		if (archive.isPresent()) {
 			return State.of(archive.map(Archive::of).get());
 		} else {
-			try {
-				Path downloadedArchive = downloader().download(tempDir().get(), distPackage.url());
-				Path storedArchive = archiveStore().store(name(), dist, distPackage.archiveType(), downloadedArchive);
-				return State.of(Archive.of(storedArchive), it -> {
-					Try.run(() -> Files.delete(it.value()));
-				});
-			}
-			catch (IOException iox) {
-				throw new IllegalStateException("download failed", iox);
-			}
+			Path downloadedArchive = Try.supplier(tempDir())
+				.mapCheckedException(cause -> new IllegalStateException("could not create archive path", cause))
+				.get()
+				.resolve(UUID.randomUUID().toString());
+
+			Try.runable(() -> {
+					URL downloadUrl = new URL(distPackage.url());
+					URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, downloadConfig().getUserAgent(), downloadConfig().getTimeoutConfig(),
+						downloadConfig().proxyFactory().map(ProxyFactory::createProxy));
+					UrlStreams.downloadTo(connection, downloadedArchive, downloadCopyListener());
+				}).mapCheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
+				.run();
+
+			Path storedArchive = Try.supplier(() -> archiveStore().store(name(), dist, distPackage.archiveType(), downloadedArchive))
+				.mapCheckedException(cause -> new IllegalArgumentException("could not store downloaded artifact", cause))
+				.get();
+			
+			return State.of(Archive.of(storedArchive), it -> {
+				Try.run(() -> Files.delete(it.value()));
+			});
 		}
 	}
 
