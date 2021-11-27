@@ -33,6 +33,7 @@ import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.reverse.naming.HasLabel;
 import org.immutables.value.Value;
 
 import java.io.File;
@@ -44,7 +45,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Value.Immutable
-public abstract class Starter implements Transition<Starter.Running> {
+public abstract class Starter implements Transition<Starter.Running>, HasLabel {
+
+	@Override
+	@Value.Default
+	public String transitionLabel() {
+		return "Starter";
+	}
 
 	@Value.Default
 	public StateID<ProcessExecutable> processExecutable() {

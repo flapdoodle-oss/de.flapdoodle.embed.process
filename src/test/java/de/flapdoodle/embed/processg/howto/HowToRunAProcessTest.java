@@ -81,17 +81,23 @@ public class HowToRunAProcessTest {
 				Starter starter = Starter.withDefaults();
 
 				List<Transition<?>> transitions = Arrays.asList(
-					Start.to(Name.class).initializedWith(Name.of("phantomjs")),
+					Start.to(Name.class).initializedWith(Name.of("phantomjs")).withTransitionLabel("create Name"),
 					
-					Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()),
-					Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()),
-					Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())),
+					Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()).withTransitionLabel("create default"),
+					Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()).withTransitionLabel("create default"),
+					Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())).withTransitionLabel("create empty env"),
 
-					Start.to(Version.class).initializedWith(Version.of("2.1.1")),
-					Derive.given(Name.class).state(ProcessOutput.class).deriveBy(name -> ProcessOutput.namedConsole(name.value())),
-					Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))),
+					Start.to(Version.class).initializedWith(Version.of("2.1.1")).withTransitionLabel("set version"),
+					Derive.given(Name.class).state(ProcessOutput.class)
+						.deriveBy(name -> ProcessOutput.namedConsole(name.value()))
+						.withTransitionLabel("create named console"),
 
-					Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
+					Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help")))
+						.withTransitionLabel("create arguments"),
+
+					Derive.given(Version.class).state(Distribution.class)
+						.deriveBy(Distribution::detectFor)
+						.withTransitionLabel("version + platform"),
 
 					PackageOfDistribution.with(dist -> Package.builder()
 						.archiveType(de.flapdoodle.embed.processg.extract.ArchiveType.TBZ2)
@@ -105,7 +111,8 @@ public class HowToRunAProcessTest {
 
 					Derive.given(StateID.of(de.flapdoodle.embed.processg.extract.ExtractedFileSet.class))
 						.state(ProcessExecutable.class)
-						.deriveBy(fileSet -> ProcessExecutable.of(fileSet.executable().toFile())),
+						.deriveBy(fileSet -> ProcessExecutable.of(fileSet.executable().toFile()))
+						.withTransitionLabel("executable from file set"),
 
 					starter
 				);

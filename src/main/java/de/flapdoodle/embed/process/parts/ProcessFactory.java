@@ -29,7 +29,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.TransitionWalker;
-import de.flapdoodle.reverse.TransitionsAsGraph;
+import de.flapdoodle.reverse.Transitions;
 import de.flapdoodle.reverse.edges.Derive;
 import de.flapdoodle.reverse.edges.Join;
 import de.flapdoodle.reverse.edges.Start;
@@ -80,7 +80,7 @@ public abstract class ProcessFactory {
 
 	@Auxiliary
 	public String setupAsDot(String appName) {
-		return TransitionsAsGraph.edgeGraphAsDot(appName, TransitionsAsGraph.asGraphIncludingStartAndEnd(routes()));
+		return Transitions.edgeGraphAsDot(appName, Transitions.asGraph(routes()));
 	}
 
 	@Auxiliary

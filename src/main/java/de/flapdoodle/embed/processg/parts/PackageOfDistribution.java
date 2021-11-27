@@ -32,12 +32,19 @@ import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.reverse.naming.HasLabel;
 import org.immutables.value.Value;
 
 import java.util.Set;
 
 @Value.Immutable
-public abstract class PackageOfDistribution implements Transition<Package> {
+public abstract class PackageOfDistribution implements Transition<Package>, HasLabel {
+	@Override
+	@Value.Default
+	public String transitionLabel() {
+		return "PackageOfDistribution";
+	}
+
 	protected abstract PackageResolver packageResolver();
 
 	@Value.Default

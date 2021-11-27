@@ -35,6 +35,7 @@ import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.reverse.naming.HasLabel;
 import de.flapdoodle.types.ThrowingFunction;
 import de.flapdoodle.types.ThrowingSupplier;
 import de.flapdoodle.types.Try;
@@ -50,7 +51,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @Value.Immutable
-public abstract class DownloadPackage implements Transition<Archive> {
+public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
+	@Override
+	@Value.Default
+	public String transitionLabel() {
+		return "DownloadPackage";
+	}
 
 	@Value.Default
 	protected StateID<Name> name() {
