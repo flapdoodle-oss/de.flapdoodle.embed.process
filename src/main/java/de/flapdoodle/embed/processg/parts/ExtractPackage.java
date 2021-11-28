@@ -27,6 +27,7 @@ import de.flapdoodle.embed.processg.config.store.Package;
 import de.flapdoodle.embed.processg.extract.ExtractFileSet;
 import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
 import de.flapdoodle.embed.processg.runtime.Name;
+import de.flapdoodle.embed.processg.runtime.TempDirectory;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
@@ -73,14 +74,15 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 		return StateID.of(Package.class);
 	}
 
-	@Override
-	public Set<StateID<?>> sources() {
-		return StateID.setOf(archive(), distPackage(), name());
+	@Value.Default
+	protected StateID<TempDirectory> tempDirectory() {
+		return StateID.of(TempDirectory.class);
 	}
 
-	@Value.Default
-	protected ThrowingFunction<String, Path, IOException> tempDir() {
-		return Files::createTempDirectory;
+
+	@Override
+	public Set<StateID<?>> sources() {
+		return StateID.setOf(archive(), distPackage(), name(), tempDirectory());
 	}
 
 	@Override
@@ -88,8 +90,9 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 		Package dist = lookup.of(distPackage());
 		Archive archive = lookup.of(archive());
 		Name name = lookup.of(name());
+		TempDirectory tempDir = lookup.of(tempDirectory());
 
-		Path destination = Try.apply(tempDir(), name.value());
+		Path destination = Try.apply(tempDir::createDirectory, name.value());
 		ExtractFileSet extractor = dist.archiveType().extractor();
 
 		ExtractedFileSet extractedFileSet = Try.get(() -> extractor.extract(destination, archive.value(), dist.fileSet()));

@@ -29,6 +29,7 @@ import de.flapdoodle.embed.processg.config.store.DownloadConfig;
 import de.flapdoodle.embed.processg.config.store.Package;
 import de.flapdoodle.embed.processg.net.UrlStreams;
 import de.flapdoodle.embed.processg.runtime.Name;
+import de.flapdoodle.embed.processg.runtime.TempDirectory;
 import de.flapdoodle.embed.processg.store.ArchiveStore;
 import de.flapdoodle.embed.processg.store.Downloader;
 import de.flapdoodle.reverse.State;
@@ -77,11 +78,6 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 	}
 
 	@Value.Default
-	protected ThrowingFunction<String, Path, IOException> tempDir() {
-		return Files::createTempDirectory;
-	}
-
-	@Value.Default
 	protected StateID<Distribution> distribution() {
 		return StateID.of(Distribution.class);
 	}
@@ -89,6 +85,11 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 	@Value.Default
 	protected StateID<Package> distPackage() {
 		return StateID.of(Package.class);
+	}
+
+	@Value.Default
+	protected StateID<TempDirectory> tempDirectory() {
+		return StateID.of(TempDirectory.class);
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 	@Override
 	@Value.Auxiliary
 	public final Set<StateID<?>> sources() {
-		return StateID.setOf(distribution(), distPackage(), name());
+		return StateID.setOf(distribution(), distPackage(), name(), tempDirectory());
 	}
 
 	@Override
@@ -109,14 +110,15 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		Distribution dist = lookup.of(distribution());
 		Package distPackage = lookup.of(distPackage());
 		Name name = lookup.of(name());
+		TempDirectory temp = lookup.of(tempDirectory());
 
 		Optional<Path> archive = archiveStore().archiveFor(name.value(), dist, distPackage.archiveType());
 		if (archive.isPresent()) {
 			return State.of(archive.map(Archive::of).get());
 		} else {
-			Path downloadedArchive = Try.function(tempDir())
+			Path downloadedArchive = Try.supplier(() -> temp.createDirectory(name.value()))
 				.mapCheckedException(cause -> new IllegalStateException("could not create archive path", cause))
-				.apply(name.value())
+				.get()
 				.resolve(UUID.randomUUID().toString());
 
 			Try.runable(() -> {

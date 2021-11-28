@@ -27,20 +27,21 @@ import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
-import de.flapdoodle.embed.process.io.file.Files;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
+import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.naming.HasLabel;
+import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,8 +55,8 @@ public abstract class Starter implements Transition<Starter.Running>, HasLabel {
 	}
 
 	@Value.Default
-	public StateID<ProcessExecutable> processExecutable() {
-		return StateID.of(ProcessExecutable.class);
+	public StateID<ExtractedFileSet> processExecutable() {
+		return StateID.of(ExtractedFileSet.class);
 	}
 
 	@Value.Default
@@ -103,7 +104,7 @@ public abstract class Starter implements Transition<Starter.Running>, HasLabel {
 
 	@Override
 	public State<Running> result(StateLookup lookup) {
-		File executable = lookup.of(processExecutable()).value();
+		ExtractedFileSet fileSet = lookup.of(processExecutable());
 		List<String> arguments = lookup.of(arguments()).value();
 		Map<String, String> environment = lookup.of(processEnv()).value();
 		ProcessConfig processConfig = lookup.of(processConfig());
@@ -111,16 +112,16 @@ public abstract class Starter implements Transition<Starter.Running>, HasLabel {
 		SupportConfig supportConfig = lookup.of(supportConfig());
 
 		try {
-			ProcessControl process = start(executable, arguments, environment, processConfig, processOutput, supportConfig);
-			return State.of(new Running(process, processConfig.stopTimeoutInMillis()), Running::stop);
+			Running running = start(fileSet.executable(), arguments, environment, processConfig, processOutput, supportConfig);
+			return State.of(running, Running::stop);
 		}
 		catch (IOException ix) {
 			throw new RuntimeException("could not start process", ix);
 		}
 	}
 
-	private ProcessControl start(
-		File executable,
+	private Running start(
+		Path executable,
 		List<String> arguments,
 		Map<String, String> environment,
 		ProcessConfig processConfig,
@@ -128,10 +129,10 @@ public abstract class Starter implements Transition<Starter.Running>, HasLabel {
 		SupportConfig supportConfig
 	)
 		throws IOException {
-		File pidFile = pidFile(executable);
+		Path pidFile = pidFile(executable);
 
 		List<String> commandLine = Stream
-			.concat(Stream.of(executable.getAbsolutePath()), arguments.stream())
+			.concat(Stream.of(executable.toFile().getAbsolutePath()), arguments.stream())
 			.collect(Collectors.toList());
 
 		ProcessBuilder processBuilder = ProcessControl.newProcessBuilder(commandLine, environment, true);
@@ -148,9 +149,11 @@ public abstract class Starter implements Transition<Starter.Running>, HasLabel {
 
 			Processors.connect(process.getReader(), outputConfig.output());
 			Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.error()));
-			return process;
+
+			return new Running(process, pidFile, processConfig.stopTimeoutInMillis());
 		}
 		catch (IOException iox) {
+			Files.delete(pidFile);
 			process.stop(processConfig.stopTimeoutInMillis());
 			throw iox;
 		}
@@ -159,14 +162,19 @@ public abstract class Starter implements Transition<Starter.Running>, HasLabel {
 	public static class Running implements RunningProcess {
 
 		private final ProcessControl process;
+		private final Path pidFile;
 		private final long timeout;
-		public Running(ProcessControl process, long timeout) {
+		public Running(ProcessControl process, Path pidFile, long timeout) {
 			this.process = process;
+			this.pidFile = pidFile;
 			this.timeout = timeout;
 		}
 
 		protected void stop() {
 			process.stop(timeout);
+			Try.runable(() -> Files.delete(pidFile))
+				.mapCheckedException(RuntimeException::new)
+				.run();
 		}
 	}
 
@@ -178,12 +186,16 @@ public abstract class Starter implements Transition<Starter.Running>, HasLabel {
 		return name;
 	}
 
+	private static Path pidFile(Path executableFile) {
+		return executableFile.getParent().resolve(executableFile.getFileName().toString()+".pid");
+	}
+
 	private static File pidFile(File executableFile) {
 		return new File(executableFile.getParentFile(), executableBaseName(executableFile.getName()) + ".pid");
 	}
 
-	private static void writePidFile(File pidFile, long pid) throws IOException {
-		Files.write(pid + "\n", pidFile);
+	private static void writePidFile(Path pidFile, long pid) throws IOException {
+		Files.write(pidFile, Collections.singletonList("" + pid));
 	}
 
 	public static ImmutableStarter withDefaults() {

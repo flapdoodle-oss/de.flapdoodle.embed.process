@@ -81,8 +81,10 @@ public class HowToRunAProcessTest {
 				Starter starter = Starter.withDefaults();
 
 				List<Transition<?>> transitions = Arrays.asList(
-					Start.to(Name.class).initializedWith(Name.of("phantomjs")).withTransitionLabel("create Name"),
+					InitTempDirectory.with(temp),
 					
+					Start.to(Name.class).initializedWith(Name.of("phantomjs")).withTransitionLabel("create Name"),
+
 					Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()).withTransitionLabel("create default"),
 					Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()).withTransitionLabel("create default"),
 					Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())).withTransitionLabel("create empty env"),
@@ -108,11 +110,6 @@ public class HowToRunAProcessTest {
 					DownloadPackage.with(archiveStore),
 
 					ExtractPackage.withDefaults(),
-
-					Derive.given(StateID.of(de.flapdoodle.embed.processg.extract.ExtractedFileSet.class))
-						.state(ProcessExecutable.class)
-						.deriveBy(fileSet -> ProcessExecutable.of(fileSet.executable().toFile()))
-						.withTransitionLabel("executable from file set"),
 
 					starter
 				);
