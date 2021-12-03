@@ -26,8 +26,10 @@ package de.flapdoodle.embed.processg.parts;
 import de.flapdoodle.embed.processg.config.store.Package;
 import de.flapdoodle.embed.processg.extract.ExtractFileSet;
 import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
+import de.flapdoodle.embed.processg.io.Directories;
 import de.flapdoodle.embed.processg.runtime.Name;
 import de.flapdoodle.embed.processg.runtime.TempDirectory;
+import de.flapdoodle.embed.processg.store.ExtractedFileSetStore;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
@@ -43,10 +45,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.Set;
 
 @Value.Immutable
 public abstract class ExtractPackage implements Transition<ExtractedFileSet>, HasLabel {
+
+	protected abstract Optional<ExtractedFileSetStore> extractedFileSetStore();
+
 	@Override
 	@Value.Default
 	public String transitionLabel() {
@@ -93,16 +99,35 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 		TempDirectory tempDir = lookup.of(tempDirectory());
 
 		Path destination = Try.apply(tempDir::createDirectory, name.value());
-		ExtractFileSet extractor = dist.archiveType().extractor();
+		return extractedFileSet(dist, archive, destination);
+	}
 
-		ExtractedFileSet extractedFileSet = Try.get(() -> extractor.extract(destination, archive.value(), dist.fileSet()));
+	private State<ExtractedFileSet> extractedFileSet(Package dist, Archive archive, Path destination) {
+		if (extractedFileSetStore().isPresent()) {
+			ExtractedFileSetStore store = extractedFileSetStore().get();
+			Optional<ExtractedFileSet> cachedExtractedFileSet = store.extractedFileSet(archive.value(), dist.fileSet());
+			if (cachedExtractedFileSet.isPresent()) {
+				return State.of(cachedExtractedFileSet.get());
+			} else {
+				ExtractFileSet extractor = dist.archiveType().extractor();
+				ExtractedFileSet extractedFileSet = Try.get(() -> extractor.extract(destination, archive.value(), dist.fileSet()));
 
-		return State.of(extractedFileSet, fileSet -> {
-			Try.run(() -> Files.walk(fileSet.baseDir())
-				.sorted(Comparator.reverseOrder())
-				.map(Path::toFile)
-				.forEach(File::delete));
-		});
+				return Try.supplier(() -> cachedFileSet(store.store(archive.value(), dist.fileSet(), extractedFileSet)))
+					.onCheckedException(ex -> temporaryFileSet(extractedFileSet))
+					.get();
+			}
+		} else {
+			ExtractFileSet extractor = dist.archiveType().extractor();
+			return temporaryFileSet(Try.get(() -> extractor.extract(destination, archive.value(), dist.fileSet())));
+		}
+	}
+
+	private static State<ExtractedFileSet> temporaryFileSet(ExtractedFileSet current) {
+		return State.of(current, fileSet -> Try.run(() -> Directories.deleteAll(fileSet.baseDir())));
+	}
+
+	private static State<ExtractedFileSet> cachedFileSet(ExtractedFileSet current) {
+		return State.of(current);
 	}
 
 	public static ImmutableExtractPackage.Builder builder() {

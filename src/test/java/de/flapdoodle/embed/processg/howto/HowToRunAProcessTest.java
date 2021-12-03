@@ -34,19 +34,16 @@ import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.io.progress.ProgressListeners;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 import de.flapdoodle.embed.process.runtime.Network;
 import de.flapdoodle.embed.processg.Resources;
 import de.flapdoodle.embed.processg.config.store.DownloadConfig;
 import de.flapdoodle.embed.processg.config.store.Package;
+import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
 import de.flapdoodle.embed.processg.parts.*;
 import de.flapdoodle.embed.processg.runtime.*;
-import de.flapdoodle.embed.processg.store.ArchiveStore;
-import de.flapdoodle.embed.processg.store.Downloader;
-import de.flapdoodle.embed.processg.store.LocalArchiveStore;
-import de.flapdoodle.embed.processg.store.UrlConnectionDownloader;
+import de.flapdoodle.embed.processg.store.*;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.TransitionWalker;
@@ -76,7 +73,8 @@ public class HowToRunAProcessTest {
 			try (ProgressListeners.RemoveProgressListener ignored = ProgressListeners.setProgressListener(new StandardConsoleProgressListener())) {
 //				String serverUrl = "https://bitbucket.org/ariya/phantomjs/downloads/";
 
-				ArchiveStore archiveStore = new LocalArchiveStore(temp);
+				ArchiveStore archiveStore = new LocalArchiveStore(temp.resolve("archives"));
+				ExtractedFileSetStore extractedFileSetStore = new ContentHashExtractedFileSetStore(temp.resolve("fileSets"));
 
 				Starter starter = Starter.withDefaults();
 
@@ -109,23 +107,36 @@ public class HowToRunAProcessTest {
 
 					DownloadPackage.with(archiveStore),
 
-					ExtractPackage.withDefaults(),
+					ExtractPackage.withDefaults()
+						.withExtractedFileSetStore(extractedFileSetStore),
 
 					starter
 				);
+
+				TransitionWalker init = TransitionWalker.with(transitions);
 
 				String dot = Transitions.edgeGraphAsDot("sample", Transitions.asGraph(transitions));
 				System.out.println("------------------------------");
 				System.out.println(dot);
 				System.out.println("------------------------------");
 
-				TransitionWalker init = TransitionWalker.with(transitions);
+//				try (TransitionWalker.ReachedState<de.flapdoodle.embed.processg.extract.ExtractedFileSet> test = init.initState(StateID.of(de.flapdoodle.embed.processg.extract.ExtractedFileSet.class))) {
+//					System.out.println("fileSet: " + test.current());
+//				}
 
-				try (TransitionWalker.ReachedState<de.flapdoodle.embed.processg.extract.ExtractedFileSet> test = init.initState(StateID.of(de.flapdoodle.embed.processg.extract.ExtractedFileSet.class))) {
-					System.out.println("test: " + test.current());
+				try (TransitionWalker.ReachedState<Archive> withArchive = init.initState(StateID.of(Archive.class))) {
+					System.out.println("with archive: " + withArchive.current());
+
+					try (TransitionWalker.ReachedState<ExtractedFileSet> withFileSet = withArchive.initState(StateID.of(ExtractedFileSet.class))) {
+						System.out.println("with fileSet: " + withFileSet.current());
+					}
+
+					try (TransitionWalker.ReachedState<ExtractedFileSet> withFileSet = withArchive.initState(StateID.of(ExtractedFileSet.class))) {
+						System.out.println("with fileSet(2): " + withFileSet.current());
+					}
 				}
 
-				if (true) {
+				if (false) {
 					try (TransitionWalker.ReachedState<Starter.Running> started = init.initState(starter.destination())) {
 						System.out.println("started: " + started.current());
 					}
@@ -156,7 +167,7 @@ public class HowToRunAProcessTest {
 				Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())),
 				Start.to(ProcessOutput.class).initializedWith(ProcessOutput.namedConsole("phantomjs")),
 				Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))),
-				Derive.given(ExtractedFileSet.class).state(ProcessExecutable.class).deriveBy(fileSet -> ProcessExecutable.of(fileSet.executable())),
+				Derive.given(de.flapdoodle.embed.process.extract.ExtractedFileSet.class).state(ProcessExecutable.class).deriveBy(fileSet -> ProcessExecutable.of(fileSet.executable())),
 				Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
 
 				//Start.to(ProcessExecutable.class).initializedWith(ProcessExecutable.of())

@@ -33,7 +33,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public interface ExtractedFileSetStore {
-	Optional<ExtractedFileSet> extractedFileSet(Distribution distribution, FileSet fileSet);
+	// hash archive content?
+	Optional<ExtractedFileSet> extractedFileSet(Path archive, FileSet fileSet);
 
-	ExtractedFileSet store(Distribution distribution, ExtractedFileSet src) throws IOException;
+	ExtractedFileSet store(Path archive, FileSet fileSet, ExtractedFileSet src) throws IOException;
 }
