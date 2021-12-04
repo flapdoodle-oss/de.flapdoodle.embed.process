@@ -134,6 +134,10 @@ public class HowToRunAProcessTest {
 					try (TransitionWalker.ReachedState<ExtractedFileSet> withFileSet = withArchive.initState(StateID.of(ExtractedFileSet.class))) {
 						System.out.println("with fileSet(2): " + withFileSet.current());
 					}
+
+					try (TransitionWalker.ReachedState<Starter.Running> started = withArchive.initState(starter.destination())) {
+						System.out.println("started: " + started.current());
+					}
 				}
 
 				if (false) {

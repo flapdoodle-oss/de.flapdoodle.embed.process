@@ -24,6 +24,9 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 
 	public ContentHashExtractedFileSetStore(Path basePath) {
 		this.basePath = basePath;
+		if (!Files.exists(basePath)) {
+			Try.run(() -> Files.createDirectory(basePath));
+		}
 	}
 
 	@Override
@@ -51,19 +54,21 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		try {
 			Map<String, Path> nameMap = src.libraryFiles()
 				.stream()
-				.collect(Collectors.toMap(it -> it.relativize(src.baseDir()).toString(), Function.identity()));
+				.collect(Collectors.toMap(it -> src.baseDir().relativize(it).toString(), Function.identity()));
 
 			ImmutableExtractedFileSet.Builder builder = ExtractedFileSet.builder(fileSetBasePath);
 			for (FileSet.Entry entry : fileSet.entries()) {
 				Path dest = fileSetBasePath.resolve(entry.destination());
 				switch (entry.type()) {
 					case Executable:
+						if (!Files.exists(dest.getParent())) Files.createDirectory(dest.getParent());
 						Files.copy(src.executable(), dest, StandardCopyOption.COPY_ATTRIBUTES);
 						builder.executable(dest);
 						break;
 					case Library:
 						Path srcPath = nameMap.get(entry.destination());
 						if (srcPath==null) throw new IOException("could not find entry for "+entry.destination()+" in "+nameMap);
+						if (!Files.exists(dest.getParent())) Files.createDirectory(dest.getParent());
 						Files.copy(srcPath, dest, StandardCopyOption.COPY_ATTRIBUTES);
 						builder.addLibraryFiles(dest);
 						break;
