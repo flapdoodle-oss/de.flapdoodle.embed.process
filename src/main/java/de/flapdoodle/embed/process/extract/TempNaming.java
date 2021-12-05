@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.extract;
 
 /**
  * Interface for temp naming
+ * @see de.flapdoodle.embed.processg.io.directories.Naming
  */
 public interface TempNaming {
 	String nameFor(String prefix, String postfix);
