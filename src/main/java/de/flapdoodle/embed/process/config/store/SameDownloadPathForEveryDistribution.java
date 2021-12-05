@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.config.store;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
 
+@Deprecated
 public class SameDownloadPathForEveryDistribution implements DistributionDownloadPath {
 
 	private final String _path;

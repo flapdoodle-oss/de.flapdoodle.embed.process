@@ -31,6 +31,10 @@ import org.immutables.value.Value.Immutable;
 import de.flapdoodle.embed.process.config.process.ImmutableProcessConfig.Builder;
 import de.flapdoodle.embed.process.io.StreamProcessor;
 
+/**
+ * @see de.flapdoodle.embed.processg.runtime.ProcessConfig
+ */
+@Deprecated
 @Immutable
 public interface ProcessConfig {
 

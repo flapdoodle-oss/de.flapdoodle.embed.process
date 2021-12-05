@@ -33,6 +33,7 @@ import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 import de.flapdoodle.embed.process.store.ArtifactStore;
 import de.flapdoodle.embed.process.store.Downloader;
 
+@Deprecated
 public abstract class Defaults {
 	
 	public static Directory tempDirFactory() {

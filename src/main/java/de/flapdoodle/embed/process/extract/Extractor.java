@@ -28,8 +28,10 @@ import java.io.IOException;
 
 /**
  * Extractor interface
+ * @see de.flapdoodle.embed.processg.extract.ExtractFileSet
  */
 @FunctionalInterface
+@Deprecated
 public interface Extractor {
 
 	ExtractedFileSet extract(File source, FilesToExtract toExtract) throws IOException;

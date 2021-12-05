@@ -31,8 +31,9 @@ import de.flapdoodle.embed.process.extract.TxzExtractor;
 import de.flapdoodle.embed.process.extract.ZipExtractor;
 
 /**
- *
+ * @see de.flapdoodle.embed.processg.extract.ArchiveType
  */
+@Deprecated
 public enum ArchiveType {
 	TGZ(new TgzExtractor()),
 	TBZ2(new Tbz2Extractor()),

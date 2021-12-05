@@ -31,6 +31,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @see de.flapdoodle.embed.processg.extract.AbstractExtractFileSet
+ */
+@Deprecated
 public abstract class AbstractExtractor implements Extractor {
 	
 	private static Logger _logger=LoggerFactory.getLogger(AbstractExtractor.class);

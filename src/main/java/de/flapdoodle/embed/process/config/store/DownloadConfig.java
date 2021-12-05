@@ -33,6 +33,7 @@ import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
 
 
+@Deprecated
 @Value.Immutable
 public interface DownloadConfig {
 	

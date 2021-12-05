@@ -30,6 +30,7 @@ import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.CommandLinePostProcessor;
 import de.flapdoodle.embed.process.store.IArtifactStore;
 
+@Deprecated
 @Value.Immutable
 public interface RuntimeConfig {
 

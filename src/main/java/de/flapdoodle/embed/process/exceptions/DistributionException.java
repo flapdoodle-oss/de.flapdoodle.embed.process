@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.exceptions;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
 
+@Deprecated
 public class DistributionException extends RuntimeException {
 
 	private final Distribution _distribution;

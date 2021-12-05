@@ -28,6 +28,10 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * @see de.flapdoodle.embed.processg.parts._Archive
+ */
+@Deprecated
 public interface Archive {
 	interface Wrapper {
 		ArchiveEntry getNextEntry() throws IOException;

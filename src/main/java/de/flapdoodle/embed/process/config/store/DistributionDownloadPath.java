@@ -25,7 +25,10 @@ package de.flapdoodle.embed.process.config.store;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
 
-
+/**
+ * @see de.flapdoodle.embed.processg.config.store.Package
+ */
+@Deprecated
 @FunctionalInterface
 public interface DistributionDownloadPath {
 	String getPath(Distribution distribution);

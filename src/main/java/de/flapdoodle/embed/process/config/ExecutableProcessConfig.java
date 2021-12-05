@@ -27,7 +27,10 @@ import java.util.OptionalLong;
 
 import de.flapdoodle.embed.process.distribution.Version;
 
-
+/**
+ * @see de.flapdoodle.embed.processg.runtime.ProcessConfig
+ */
+@Deprecated
 public interface ExecutableProcessConfig {
 
 	Version version();

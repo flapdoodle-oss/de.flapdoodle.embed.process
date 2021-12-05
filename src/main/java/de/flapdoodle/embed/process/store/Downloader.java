@@ -28,6 +28,10 @@ import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @see de.flapdoodle.embed.processg.net.UrlStreams
+ */
+@Deprecated
 public interface Downloader {
 
 		File download(DownloadConfig runtime, String url) throws IOException;
