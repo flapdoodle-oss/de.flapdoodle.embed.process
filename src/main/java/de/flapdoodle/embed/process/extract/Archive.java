@@ -23,13 +23,14 @@
  */
 package de.flapdoodle.embed.process.extract;
 
+import de.flapdoodle.embed.process.types._Archive;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @see de.flapdoodle.embed.processg.parts._Archive
+ * @see _Archive
  */
 @Deprecated
 public interface Archive {

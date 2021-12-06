@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.parts;
+package de.flapdoodle.embed.process.types;
 
 import de.flapdoodle.embed.process.types.Wrapped;
 import de.flapdoodle.embed.process.types.Wrapper;

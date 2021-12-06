@@ -27,6 +27,7 @@ import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.process.archives.ExtractFileSet;
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.nio.Directories;
+import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.processg.runtime.Name;
 import de.flapdoodle.embed.processg.runtime.TempDirectory;
 import de.flapdoodle.embed.processg.store.ExtractedFileSetStore;

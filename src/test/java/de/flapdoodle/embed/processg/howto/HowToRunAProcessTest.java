@@ -38,6 +38,7 @@ import de.flapdoodle.embed.process.io.progress.ProgressListeners;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
+import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.processg.parts.*;
 import de.flapdoodle.embed.processg.runtime.*;
 import de.flapdoodle.embed.processg.store.*;

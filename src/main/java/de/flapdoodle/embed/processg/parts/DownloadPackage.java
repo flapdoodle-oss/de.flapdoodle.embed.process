@@ -28,6 +28,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.config.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.process.net.UrlStreams;
+import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.processg.runtime.Name;
 import de.flapdoodle.embed.processg.runtime.TempDirectory;
 import de.flapdoodle.embed.processg.store.ArchiveStore;
