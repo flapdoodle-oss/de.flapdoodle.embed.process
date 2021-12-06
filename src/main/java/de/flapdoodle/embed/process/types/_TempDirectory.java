@@ -21,16 +21,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.runtime;
+package de.flapdoodle.embed.process.types;
 
 import de.flapdoodle.embed.process.types.Wrapped;
 import de.flapdoodle.embed.process.types.Wrapper;
 import org.immutables.value.Value;
 
-import java.util.Map;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 
 @Value.Immutable
 @Wrapped
-public abstract class _Name extends Wrapper<String> {
+public abstract class _TempDirectory extends Wrapper<Path> {
 
+	@Value.Auxiliary
+	public Path createDirectory(String prefix, FileAttribute<?> ... attrs) throws IOException {
+		return Files.createTempDirectory(value(),prefix, attrs);
+	}
+
+	@Value.Auxiliary
+	public Path createFile(String prefix, String suffix, FileAttribute<?> ... attrs) throws IOException {
+		return Files.createTempFile(value(),prefix, suffix, attrs);
+	}
 }

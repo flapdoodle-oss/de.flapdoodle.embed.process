@@ -21,16 +21,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.runtime;
+package de.flapdoodle.embed.process.types;
 
 import de.flapdoodle.embed.process.types.Wrapped;
 import de.flapdoodle.embed.process.types.Wrapper;
 import org.immutables.value.Value;
 
+import java.io.File;
 import java.util.Map;
 
 @Value.Immutable
 @Wrapped
-public abstract class _ProcessEnv extends Wrapper<Map<String, String>> {
+public abstract class _ProcessExecutable extends Wrapper<File> {
 
 }

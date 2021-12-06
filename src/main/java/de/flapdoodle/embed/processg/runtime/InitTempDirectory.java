@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.processg.runtime;
 
+import de.flapdoodle.embed.process.types.TempDirectory;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;

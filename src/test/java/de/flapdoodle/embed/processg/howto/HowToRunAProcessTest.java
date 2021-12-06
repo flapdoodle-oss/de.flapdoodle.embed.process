@@ -41,7 +41,7 @@ import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.transitions.DownloadPackage;
 import de.flapdoodle.embed.process.transitions.ExtractPackage;
 import de.flapdoodle.embed.process.transitions.PackageOfDistribution;
-import de.flapdoodle.embed.process.types.Archive;
+import de.flapdoodle.embed.process.types.*;
 import de.flapdoodle.embed.processg.runtime.*;
 import de.flapdoodle.embed.processg.store.*;
 import de.flapdoodle.reverse.StateID;
