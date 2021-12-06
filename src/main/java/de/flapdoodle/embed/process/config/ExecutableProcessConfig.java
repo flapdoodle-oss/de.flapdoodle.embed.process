@@ -26,9 +26,10 @@ package de.flapdoodle.embed.process.config;
 import java.util.OptionalLong;
 
 import de.flapdoodle.embed.process.distribution.Version;
+import de.flapdoodle.embed.process.types.ProcessConfig;
 
 /**
- * @see de.flapdoodle.embed.processg.runtime.ProcessConfig
+ * @see ProcessConfig
  */
 @Deprecated
 public interface ExecutableProcessConfig {

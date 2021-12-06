@@ -32,7 +32,7 @@ import de.flapdoodle.embed.process.config.process.ImmutableProcessConfig.Builder
 import de.flapdoodle.embed.process.io.StreamProcessor;
 
 /**
- * @see de.flapdoodle.embed.processg.runtime.ProcessConfig
+ * @see de.flapdoodle.embed.process.types.ProcessConfig
  */
 @Deprecated
 @Immutable

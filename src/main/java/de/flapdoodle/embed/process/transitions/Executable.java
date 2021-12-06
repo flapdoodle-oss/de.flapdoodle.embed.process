@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.runtime;
+package de.flapdoodle.embed.process.transitions;
 
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Value.Immutable
+@Deprecated
 public abstract class Executable implements Transition<ExtractedFileSet> {
 	private static Logger logger = LoggerFactory.getLogger(Starter.class);
 

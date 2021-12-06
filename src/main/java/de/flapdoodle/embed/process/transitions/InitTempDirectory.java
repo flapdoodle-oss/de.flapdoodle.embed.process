@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.runtime;
+package de.flapdoodle.embed.process.transitions;
 
 import de.flapdoodle.embed.process.types.TempDirectory;
 import de.flapdoodle.reverse.State;
@@ -44,6 +44,10 @@ public abstract class InitTempDirectory implements Transition<TempDirectory>, Ha
 	}
 
 	@Value.Default
+	@Deprecated
+	/**
+	 * @see de.flapdoodle.embed.process.nio.directories.TempDir
+	 */
 	protected Path tempDirectory() {
 		return Paths.get(System.getProperty("java.io.tmpdir"));
 	}

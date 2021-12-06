@@ -21,14 +21,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.runtime;
+package de.flapdoodle.embed.process.types;
 
 import org.immutables.value.Value;
 
-@Value.Immutable
-public interface RunningProcess {
+import java.util.OptionalLong;
 
-		static ImmutableRunningProcess.Builder builder() {
-				return ImmutableRunningProcess.builder();
+@Value.Immutable
+public interface ProcessConfig {
+		@Value.Default
+		default boolean daemonProcess() {
+				return false;
+		}
+
+		@Value.Default
+		default long stopTimeoutInMillis() {
+				return 5000;
+		}
+
+		static ImmutableProcessConfig defaults() {
+				return ImmutableProcessConfig.builder().build();
 		}
 }

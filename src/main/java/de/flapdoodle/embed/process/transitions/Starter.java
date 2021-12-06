@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.runtime;
+package de.flapdoodle.embed.process.transitions;
 
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -30,7 +30,9 @@ import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.types.ProcessArguments;
+import de.flapdoodle.embed.process.types.ProcessConfig;
 import de.flapdoodle.embed.process.types.ProcessEnv;
+import de.flapdoodle.embed.process.types.RunningProcess;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
