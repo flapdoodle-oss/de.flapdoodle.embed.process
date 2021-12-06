@@ -35,6 +35,7 @@ import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
+@Deprecated
 public abstract class Executable<T extends ExecutableProcessConfig, P extends IStopable> implements IStopable {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());

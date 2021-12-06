@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Deprecated
 public class FilesToExtract {
 
 	private final ArrayList<FileSet.Entry> _files;

@@ -29,6 +29,7 @@ import java.util.Optional;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 
+@Deprecated
 public interface IArtifactStore {
 
 	Optional<ExtractedFileSet> extractFileSet(Distribution distribution) throws IOException;

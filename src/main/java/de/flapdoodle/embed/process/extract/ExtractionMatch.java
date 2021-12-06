@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Deprecated
 public interface ExtractionMatch {
 
 	File write(InputStream source, long size) throws IOException;

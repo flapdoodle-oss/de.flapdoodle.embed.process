@@ -38,6 +38,7 @@ import de.flapdoodle.embed.process.store.IArtifactStore;
 import de.flapdoodle.os.Platform;
 
 
+@Deprecated
 public abstract class Starter<CONFIG extends ExecutableProcessConfig,EXECUTABLE extends Executable<CONFIG, PROCESS>,PROCESS extends IStopable> {
 	
 	private static Logger logger = LoggerFactory.getLogger(Starter.class);

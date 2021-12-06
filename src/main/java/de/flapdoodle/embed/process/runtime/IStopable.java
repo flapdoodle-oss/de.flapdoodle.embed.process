@@ -24,6 +24,7 @@
 package de.flapdoodle.embed.process.runtime;
 
 
+@Deprecated
 public interface IStopable {
 	void stop();
 	

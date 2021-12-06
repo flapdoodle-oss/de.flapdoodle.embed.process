@@ -28,6 +28,7 @@ import de.flapdoodle.embed.process.distribution.ArchiveType;
 /**
  * Extractor Helper
  */
+@Deprecated
 public class Extractors {
 
 	private Extractors() {

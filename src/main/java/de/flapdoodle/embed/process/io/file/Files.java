@@ -42,6 +42,7 @@ import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 /**
  *
  */
+@Deprecated
 public class Files {
 
 	private static Logger logger = LoggerFactory.getLogger(Files.class);
