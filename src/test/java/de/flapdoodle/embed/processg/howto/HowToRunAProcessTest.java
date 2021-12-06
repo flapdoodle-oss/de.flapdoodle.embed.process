@@ -51,6 +51,7 @@ import de.flapdoodle.reverse.Transitions;
 import de.flapdoodle.reverse.edges.Derive;
 import de.flapdoodle.reverse.edges.Start;
 import de.flapdoodle.types.Try;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -150,6 +151,7 @@ public class HowToRunAProcessTest {
 	}
 
 	@Test
+	@Disabled
 	public void sample() throws IOException {
 		try (HttpServers.Server server = HttpServers.httpServer(getClass(), resourceResponseMap)) {
 			String serverUrl = server.serverUrl() + "/ariya/phantomjs/downloads/";
