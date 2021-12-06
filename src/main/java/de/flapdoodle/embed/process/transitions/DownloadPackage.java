@@ -31,7 +31,7 @@ import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;
 import de.flapdoodle.embed.process.types.TempDirectory;
-import de.flapdoodle.embed.processg.store.ArchiveStore;
+import de.flapdoodle.embed.process.store.ArchiveStore;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;

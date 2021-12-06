@@ -21,16 +21,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.store;
+package de.flapdoodle.embed.process.store;
 
-import de.flapdoodle.os.Platform;
+import de.flapdoodle.embed.process.config.store.FileSet;
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
-public interface PlatformPathResolver {
-	Path resolve(Path base, Platform platform);
+public interface ExtractedFileSetStore {
 
-	static PlatformPathResolver withOperatingSystemAsDirectory() {
-		return new OsAsDirectoryPlatformPathResolver();
-	}
+	Optional<ExtractedFileSet> extractedFileSet(Path archive, FileSet fileSet);
+
+	ExtractedFileSet store(Path archive, FileSet fileSet, ExtractedFileSet src) throws IOException;
 }

@@ -21,17 +21,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.store;
+package de.flapdoodle.embed.process.store;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.archives.ArchiveType;
+import de.flapdoodle.os.Platform;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Optional;
 
-public interface ArchiveStore {
-	Optional<Path> archiveFor(String name, Distribution distribution, ArchiveType archiveType);
+public interface PlatformPathResolver {
+	Path resolve(Path base, Platform platform);
 
-	Path store(String name, Distribution distribution, ArchiveType archiveType, Path archive) throws IOException;
+	static PlatformPathResolver withOperatingSystemAsDirectory() {
+		return new OsAsDirectoryPlatformPathResolver();
+	}
 }

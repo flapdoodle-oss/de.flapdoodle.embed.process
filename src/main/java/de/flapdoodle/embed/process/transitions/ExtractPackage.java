@@ -30,7 +30,7 @@ import de.flapdoodle.embed.process.nio.Directories;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;
 import de.flapdoodle.embed.process.types.TempDirectory;
-import de.flapdoodle.embed.processg.store.ExtractedFileSetStore;
+import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
