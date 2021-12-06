@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.extract;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
+@Deprecated
 public class CommonsArchiveEntryAdapter implements Archive.Entry {
 
 	private final ArchiveEntry _entry;

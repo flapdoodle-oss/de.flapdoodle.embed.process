@@ -21,22 +21,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.extract;
+package de.flapdoodle.embed.process.archives;
 
-public enum ArchiveType {
-	TGZ(new TgzAdapter()),
-	TBZ2(new Tbz2Adapter()),
-	ZIP(new ZipAdapter()),
-	EXE(new SingleFileAdapter()),
-	TXZ(new TxzAdapter());
+import de.flapdoodle.embed.process.extract.Archive;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
-	private final ExtractFileSet extractor;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
 
-	ArchiveType(ExtractFileSet extractor) {
-		this.extractor = extractor;
+public class Tbz2Adapter extends AbstractTarAdapter {
+
+	@Override
+	protected Archive.Wrapper archiveStream(Path source) throws IOException {
+		FileInputStream fin = new FileInputStream(source.toFile());
+		BufferedInputStream in = new BufferedInputStream(fin);
+		BZip2CompressorInputStream gzIn = new BZip2CompressorInputStream(in);
+
+		TarArchiveInputStream tarIn = new TarArchiveInputStream(gzIn);
+		return new TarArchiveWrapper(tarIn);
 	}
 
-	public ExtractFileSet extractor() {
-		return extractor;
-	}
 }

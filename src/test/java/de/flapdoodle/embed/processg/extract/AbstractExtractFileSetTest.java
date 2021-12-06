@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.processg.extract;
 
+import de.flapdoodle.embed.process.archives.AbstractExtractFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.extract.Archive;

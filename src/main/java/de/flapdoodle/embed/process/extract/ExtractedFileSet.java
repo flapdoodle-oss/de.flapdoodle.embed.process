@@ -32,6 +32,7 @@ import java.util.Set;
 
 @Value.Immutable
 @Style(strictBuilder=true)
+@Deprecated
 public abstract class ExtractedFileSet {
 
 	@Parameter

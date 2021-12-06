@@ -28,7 +28,7 @@ import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
-import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;

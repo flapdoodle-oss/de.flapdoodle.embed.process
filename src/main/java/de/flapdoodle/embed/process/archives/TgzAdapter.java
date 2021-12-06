@@ -21,15 +21,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.extract;
+package de.flapdoodle.embed.process.archives;
 
-import de.flapdoodle.embed.process.extract.AbstractTarExtractor;
 import de.flapdoodle.embed.process.extract.Archive;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,13 +35,13 @@ import java.nio.file.Path;
 /**
  *
  */
-public class TxzAdapter extends AbstractTarAdapter {
+public class TgzAdapter extends AbstractTarAdapter {
 
 	@Override
 	protected Archive.Wrapper archiveStream(Path source) throws IOException {
 		FileInputStream fin = new FileInputStream(source.toFile());
 		BufferedInputStream in = new BufferedInputStream(fin);
-		XZCompressorInputStream gzIn = new XZCompressorInputStream(in);
+		GzipCompressorInputStream gzIn = new GzipCompressorInputStream(in);
 
 		TarArchiveInputStream tarIn = new TarArchiveInputStream(gzIn);
 		return new TarArchiveWrapper(tarIn);

@@ -27,6 +27,7 @@ import de.flapdoodle.embed.process.io.directories.Directory;
 import org.immutables.value.Value.Immutable;
 
 @Immutable
+@Deprecated
 public abstract class DirectoryAndExecutableNaming {
 
 	public abstract Directory getDirectory();

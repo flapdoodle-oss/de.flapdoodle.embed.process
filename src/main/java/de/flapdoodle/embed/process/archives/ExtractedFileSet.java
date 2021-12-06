@@ -21,19 +21,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.extract;
+package de.flapdoodle.embed.process.archives;
 
-import de.flapdoodle.embed.process.config.store.FileSet;
+import org.immutables.builder.Builder.Parameter;
+import org.immutables.value.Value;
+import org.immutables.value.Value.Style;
 
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Set;
 
-/**
- * Extractor interface
- */
-@FunctionalInterface
-public interface ExtractFileSet {
+@Value.Immutable
+@Style(strictBuilder=true)
+public abstract class ExtractedFileSet {
 
-	ExtractedFileSet extract(Path destination, Path archive, FileSet filesToExtract) throws IOException;
+	@Parameter
+	public abstract Path baseDir();
+	
+	public abstract Path executable();
+	
+	public abstract Set<Path> libraryFiles();
 
+	public static ImmutableExtractedFileSet.Builder builder(Path baseDir) {
+		return ImmutableExtractedFileSet.builder(baseDir);
+	}
 }

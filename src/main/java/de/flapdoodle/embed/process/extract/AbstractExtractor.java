@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.extract;
 
+import de.flapdoodle.embed.process.archives.AbstractExtractFileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @see de.flapdoodle.embed.processg.extract.AbstractExtractFileSet
+ * @see AbstractExtractFileSet
  */
 @Deprecated
 public abstract class AbstractExtractor implements Extractor {

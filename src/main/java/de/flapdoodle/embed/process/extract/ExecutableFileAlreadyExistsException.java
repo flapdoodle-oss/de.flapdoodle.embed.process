@@ -27,6 +27,7 @@ import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
 
 import java.io.IOException;
 
+@Deprecated
 public class ExecutableFileAlreadyExistsException extends IOException {
 
 	public ExecutableFileAlreadyExistsException(FileAlreadyExistsException cause) {

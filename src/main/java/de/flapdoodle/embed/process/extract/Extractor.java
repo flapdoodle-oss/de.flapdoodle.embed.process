@@ -23,12 +23,14 @@
  */
 package de.flapdoodle.embed.process.extract;
 
+import de.flapdoodle.embed.process.archives.ExtractFileSet;
+
 import java.io.File;
 import java.io.IOException;
 
 /**
  * Extractor interface
- * @see de.flapdoodle.embed.processg.extract.ExtractFileSet
+ * @see ExtractFileSet
  */
 @FunctionalInterface
 @Deprecated

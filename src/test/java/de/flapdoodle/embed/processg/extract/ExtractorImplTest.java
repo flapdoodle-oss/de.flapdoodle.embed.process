@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.processg.extract;
 
+import de.flapdoodle.embed.process.archives.*;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import org.junit.jupiter.api.BeforeEach;

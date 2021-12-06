@@ -21,29 +21,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.extract;
+package de.flapdoodle.embed.process.archives;
 
-import de.flapdoodle.embed.process.extract.AbstractTarExtractor;
 import de.flapdoodle.embed.process.extract.Archive;
+import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.InputStream;
 
-public class Tbz2Adapter extends AbstractTarAdapter {
+public abstract class AbstractTarAdapter extends AbstractExtractFileSet {
 
-	@Override
-	protected Archive.Wrapper archiveStream(Path source) throws IOException {
-		FileInputStream fin = new FileInputStream(source.toFile());
-		BufferedInputStream in = new BufferedInputStream(fin);
-		BZip2CompressorInputStream gzIn = new BZip2CompressorInputStream(in);
-
-		TarArchiveInputStream tarIn = new TarArchiveInputStream(gzIn);
-		return new TarArchiveWrapper(tarIn);
-	}
+	protected static class TarArchiveWrapper implements Archive.Wrapper {
+	
+			private final TarArchiveInputStream _is;
+	
+			public TarArchiveWrapper(TarArchiveInputStream is) {
+				_is = is;
+			}
+	
+			@Override
+			public ArchiveEntry getNextEntry() throws IOException {
+				return _is.getNextTarEntry();
+			}
+	
+			@Override
+			public boolean canReadEntryData(ArchiveEntry entry) {
+				return _is.canReadEntryData(entry);
+			}
+	
+			@Override
+			public void close() throws IOException {
+				_is.close();
+			}
+	
+			@Override
+			public InputStream asStream(ArchiveEntry entry) {
+				return _is;
+			}
+	
+		}
 
 }

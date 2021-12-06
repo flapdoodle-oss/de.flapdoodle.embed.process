@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+@Deprecated
 public abstract class ExtractedFileSets {
 	
 	private static Logger logger = LoggerFactory.getLogger(ExtractedFileSets.class);

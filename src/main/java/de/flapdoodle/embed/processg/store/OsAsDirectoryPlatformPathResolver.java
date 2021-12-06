@@ -23,8 +23,6 @@
  */
 package de.flapdoodle.embed.processg.store;
 
-import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.embed.processg.extract.ArchiveType;
 import de.flapdoodle.os.Architecture;
 import de.flapdoodle.os.Distribution;
 import de.flapdoodle.os.OS;

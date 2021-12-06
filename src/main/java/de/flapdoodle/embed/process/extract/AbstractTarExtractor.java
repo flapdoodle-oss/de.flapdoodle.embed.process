@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
+@Deprecated
 public abstract class AbstractTarExtractor extends AbstractExtractor {
 
 	protected static class TarArchiveWrapper implements Archive.Wrapper {

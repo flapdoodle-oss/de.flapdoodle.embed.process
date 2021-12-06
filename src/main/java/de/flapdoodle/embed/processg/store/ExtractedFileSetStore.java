@@ -24,16 +24,14 @@
 package de.flapdoodle.embed.processg.store;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.distribution.ArchiveType;
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
 public interface ExtractedFileSetStore {
-	// hash archive content?
+
 	Optional<ExtractedFileSet> extractedFileSet(Path archive, FileSet fileSet);
 
 	ExtractedFileSet store(Path archive, FileSet fileSet, ExtractedFileSet src) throws IOException;

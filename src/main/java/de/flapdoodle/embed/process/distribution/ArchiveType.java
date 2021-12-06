@@ -31,7 +31,7 @@ import de.flapdoodle.embed.process.extract.TxzExtractor;
 import de.flapdoodle.embed.process.extract.ZipExtractor;
 
 /**
- * @see de.flapdoodle.embed.processg.extract.ArchiveType
+ * @see de.flapdoodle.embed.process.archives.ArchiveType
  */
 @Deprecated
 public enum ArchiveType {

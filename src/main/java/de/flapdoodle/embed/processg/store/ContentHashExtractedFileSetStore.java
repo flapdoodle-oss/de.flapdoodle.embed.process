@@ -24,9 +24,9 @@
 package de.flapdoodle.embed.processg.store;
 
 import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.embed.process.archives.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
-import de.flapdoodle.embed.processg.extract.ImmutableExtractedFileSet;
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.nio.Directories;
 import de.flapdoodle.types.Try;
 

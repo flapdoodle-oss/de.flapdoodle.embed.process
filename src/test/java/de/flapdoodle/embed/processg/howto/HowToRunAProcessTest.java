@@ -37,7 +37,7 @@ import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.io.progress.ProgressListeners;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 import de.flapdoodle.embed.process.config.store.Package;
-import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.processg.parts.*;
 import de.flapdoodle.embed.processg.runtime.*;
 import de.flapdoodle.embed.processg.store.*;
@@ -95,7 +95,7 @@ public class HowToRunAProcessTest {
 						.withTransitionLabel("version + platform"),
 
 					PackageOfDistribution.with(dist -> Package.builder()
-						.archiveType(de.flapdoodle.embed.processg.extract.ArchiveType.TBZ2)
+						.archiveType(de.flapdoodle.embed.process.archives.ArchiveType.TBZ2)
 						.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
 						.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
 						.build()),
@@ -115,7 +115,7 @@ public class HowToRunAProcessTest {
 				System.out.println(dot);
 				System.out.println("------------------------------");
 
-//				try (TransitionWalker.ReachedState<de.flapdoodle.embed.processg.extract.ExtractedFileSet> test = init.initState(StateID.of(de.flapdoodle.embed.processg.extract.ExtractedFileSet.class))) {
+//				try (TransitionWalker.ReachedState<de.flapdoodle.embed.process.archives.ExtractedFileSet> test = init.initState(StateID.of(de.flapdoodle.embed.process.archives.ExtractedFileSet.class))) {
 //					System.out.println("fileSet: " + test.current());
 //				}
 
