@@ -29,8 +29,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import de.flapdoodle.embed.process.config.store.TimeoutConfig;
-import de.flapdoodle.embed.processg.net.UrlStreams;
-import de.flapdoodle.embed.processg.net.UrlStreams.DownloadCopyListener;
+import de.flapdoodle.embed.process.net.UrlStreams;
+import de.flapdoodle.embed.process.net.UrlStreams.DownloadCopyListener;
 import de.flapdoodle.types.Try;
 
 public class CachingArtifactDownloader implements ArtifactPathForUrl {

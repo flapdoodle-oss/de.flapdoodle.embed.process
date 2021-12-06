@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.net;
+package de.flapdoodle.embed.process.net;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -42,10 +42,11 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import de.flapdoodle.embed.process.net.UrlStreams;
 import org.junit.Test;
 
 import de.flapdoodle.embed.process.HttpServers;
-import de.flapdoodle.embed.processg.net.UrlStreams.DownloadCopyListener;
+import de.flapdoodle.embed.process.net.UrlStreams.DownloadCopyListener;
 import de.flapdoodle.embed.process.runtime.Network;
 
 public class UrlStreamsTest {

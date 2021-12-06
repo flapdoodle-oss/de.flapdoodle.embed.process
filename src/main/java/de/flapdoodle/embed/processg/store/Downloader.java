@@ -24,7 +24,7 @@
 package de.flapdoodle.embed.processg.store;
 
 import de.flapdoodle.embed.process.config.DownloadConfig;
-import de.flapdoodle.embed.processg.net.UrlStreams;
+import de.flapdoodle.embed.process.net.UrlStreams;
 
 import java.io.IOException;
 import java.nio.file.Path;

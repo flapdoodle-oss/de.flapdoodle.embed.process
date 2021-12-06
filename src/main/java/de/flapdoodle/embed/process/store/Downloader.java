@@ -24,12 +24,13 @@
 package de.flapdoodle.embed.process.store;
 
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.net.UrlStreams;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * @see de.flapdoodle.embed.processg.net.UrlStreams
+ * @see UrlStreams
  */
 @Deprecated
 public interface Downloader {
