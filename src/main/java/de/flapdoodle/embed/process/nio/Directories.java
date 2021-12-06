@@ -21,30 +21,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.config.store;
+package de.flapdoodle.embed.process.nio;
 
-import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.processg.extract.ArchiveType;
-import org.immutables.value.Value;
-import org.immutables.value.Value.Parameter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
-@Value.Immutable
-public interface Package {
-	
-	@Parameter
-	ArchiveType archiveType();
-	
-	@Parameter
-	FileSet fileSet();
-	
-	@Parameter
-	String url();
-
-	static Package of(ArchiveType archiveType, FileSet fileSet, String path) {
-		return ImmutablePackage.of(archiveType, fileSet, path);
+public abstract class Directories {
+	private Directories() {
+		// no instance
 	}
-	
-	static ImmutablePackage.Builder builder() {
-		return ImmutablePackage.builder();
+
+	public static void deleteAll(Path rootPath) throws IOException {
+		try (Stream<Path> walk = Files.walk(rootPath)) {
+			walk.sorted(Comparator.reverseOrder())
+				.map(Path::toFile)
+				.forEach(File::delete);
+		}
 	}
 }

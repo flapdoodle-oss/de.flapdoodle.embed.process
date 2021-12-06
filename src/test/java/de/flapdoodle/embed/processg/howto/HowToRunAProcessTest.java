@@ -36,10 +36,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.io.progress.ProgressListeners;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
-import de.flapdoodle.embed.process.runtime.Network;
-import de.flapdoodle.embed.processg.Resources;
-import de.flapdoodle.embed.processg.config.store.DownloadConfig;
-import de.flapdoodle.embed.processg.config.store.Package;
+import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
 import de.flapdoodle.embed.processg.parts.*;
 import de.flapdoodle.embed.processg.runtime.*;
@@ -50,14 +47,11 @@ import de.flapdoodle.reverse.TransitionWalker;
 import de.flapdoodle.reverse.Transitions;
 import de.flapdoodle.reverse.edges.Derive;
 import de.flapdoodle.reverse.edges.Start;
-import de.flapdoodle.types.Try;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.Closeable;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 

@@ -21,8 +21,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.io.directories;
+package de.flapdoodle.embed.process.nio.directories;
 
-public interface Naming {
-	String nameFor(String prefix, String postfix);
+import de.flapdoodle.embed.process.types.Wrapper;
+import org.immutables.value.Value;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.function.Supplier;
+
+@Value.Immutable
+public abstract class PersistentDir extends Wrapper<Path> {
+
+	public static PersistentDir of(Path path) {
+		return ImmutablePersistentDir.of(path);
+	}
+
+	private static Path userHome() {
+		return Paths.get(System.getProperty("user.home"));
+	}
+
+	public static Supplier<PersistentDir> userHome(String prefix) {
+		return () -> of(userHome().resolve(prefix));
+	}
 }

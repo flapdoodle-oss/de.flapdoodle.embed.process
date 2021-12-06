@@ -29,7 +29,7 @@ import org.immutables.value.Value.Parameter;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 
 /**
- * @see de.flapdoodle.embed.processg.config.store.Package
+ * @see Package
  */
 @Deprecated
 @Value.Immutable

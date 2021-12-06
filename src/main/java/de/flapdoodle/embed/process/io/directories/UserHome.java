@@ -29,7 +29,7 @@ import java.nio.file.Paths;
 
 
 /**
- * @see de.flapdoodle.embed.processg.io.directories.PersistentDir
+ * @see de.flapdoodle.embed.process.nio.directories.PersistentDir
  */
 public class UserHome implements Directory {
 	private final String postFix;

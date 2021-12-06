@@ -23,10 +23,10 @@
  */
 package de.flapdoodle.embed.processg.parts;
 
-import de.flapdoodle.embed.processg.config.store.Package;
+import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.processg.extract.ExtractFileSet;
 import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
-import de.flapdoodle.embed.processg.io.Directories;
+import de.flapdoodle.embed.process.nio.Directories;
 import de.flapdoodle.embed.processg.runtime.Name;
 import de.flapdoodle.embed.processg.runtime.TempDirectory;
 import de.flapdoodle.embed.processg.store.ExtractedFileSetStore;
@@ -35,16 +35,10 @@ import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.naming.HasLabel;
-import de.flapdoodle.types.ThrowingFunction;
-import de.flapdoodle.types.ThrowingSupplier;
 import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
 

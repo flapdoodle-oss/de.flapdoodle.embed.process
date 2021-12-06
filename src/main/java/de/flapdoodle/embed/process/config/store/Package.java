@@ -21,27 +21,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.io.directories;
+package de.flapdoodle.embed.process.config.store;
 
-import de.flapdoodle.embed.process.types.Wrapper;
+import de.flapdoodle.embed.processg.extract.ArchiveType;
 import org.immutables.value.Value;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.function.Supplier;
+import org.immutables.value.Value.Parameter;
 
 @Value.Immutable
-public abstract class PersistentDir extends Wrapper<Path> {
+public interface Package {
+	
+	@Parameter
+	ArchiveType archiveType();
+	
+	@Parameter
+	FileSet fileSet();
+	
+	@Parameter
+	String url();
 
-	public static PersistentDir of(Path path) {
-		return ImmutablePersistentDir.of(path);
+	static Package of(ArchiveType archiveType, FileSet fileSet, String path) {
+		return ImmutablePackage.of(archiveType, fileSet, path);
 	}
-
-	private static Path userHome() {
-		return Paths.get(System.getProperty("user.home"));
-	}
-
-	public static Supplier<PersistentDir> userHome(String prefix) {
-		return () -> of(userHome().resolve(prefix));
+	
+	static ImmutablePackage.Builder builder() {
+		return ImmutablePackage.builder();
 	}
 }

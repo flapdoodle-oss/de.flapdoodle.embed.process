@@ -27,7 +27,7 @@ import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.processg.extract.ExtractedFileSet;
 import de.flapdoodle.embed.processg.extract.ImmutableExtractedFileSet;
-import de.flapdoodle.embed.processg.io.Directories;
+import de.flapdoodle.embed.process.nio.Directories;
 import de.flapdoodle.types.Try;
 
 import java.io.IOException;

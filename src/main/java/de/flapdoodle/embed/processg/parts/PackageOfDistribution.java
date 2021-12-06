@@ -24,10 +24,8 @@
 package de.flapdoodle.embed.processg.parts;
 
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.store.IArtifactStore;
-import de.flapdoodle.embed.processg.config.store.Package;
-import de.flapdoodle.embed.processg.config.store.PackageResolver;
-import de.flapdoodle.embed.processg.runtime.ImmutableExecutable;
+import de.flapdoodle.embed.process.config.store.Package;
+import de.flapdoodle.embed.process.distribution.PackageResolver;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;

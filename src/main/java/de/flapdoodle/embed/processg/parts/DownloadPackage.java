@@ -25,24 +25,20 @@ package de.flapdoodle.embed.processg.parts;
 
 import de.flapdoodle.embed.process.config.store.ProxyFactory;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.processg.config.store.DownloadConfig;
-import de.flapdoodle.embed.processg.config.store.Package;
+import de.flapdoodle.embed.process.config.DownloadConfig;
+import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.processg.net.UrlStreams;
 import de.flapdoodle.embed.processg.runtime.Name;
 import de.flapdoodle.embed.processg.runtime.TempDirectory;
 import de.flapdoodle.embed.processg.store.ArchiveStore;
-import de.flapdoodle.embed.processg.store.Downloader;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.naming.HasLabel;
-import de.flapdoodle.types.ThrowingFunction;
-import de.flapdoodle.types.ThrowingSupplier;
 import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;

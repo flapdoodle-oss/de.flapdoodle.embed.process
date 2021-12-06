@@ -21,25 +21,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.io;
+package de.flapdoodle.embed.process.nio.directories;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.stream.Stream;
+import java.util.UUID;
 
-public abstract class Directories {
-	private Directories() {
-		// no instance
-	}
-
-	public static void deleteAll(Path rootPath) throws IOException {
-		try (Stream<Path> walk = Files.walk(rootPath)) {
-			walk.sorted(Comparator.reverseOrder())
-				.map(Path::toFile)
-				.forEach(File::delete);
-		}
+public class UUIDNaming implements Naming {
+	@Override
+	public String nameFor(String prefix, String postfix) {
+		return prefix + "-" + UUID.randomUUID() + postfix;
 	}
 }

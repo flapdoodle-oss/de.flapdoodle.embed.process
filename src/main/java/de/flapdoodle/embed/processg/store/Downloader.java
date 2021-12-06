@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.processg.store;
 
-import de.flapdoodle.embed.processg.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.DownloadConfig;
 import de.flapdoodle.embed.processg.net.UrlStreams;
 
 import java.io.IOException;

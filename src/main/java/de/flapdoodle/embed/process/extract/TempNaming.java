@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.extract;
 
 /**
  * Interface for temp naming
- * @see de.flapdoodle.embed.processg.io.directories.Naming
+ * @see de.flapdoodle.embed.process.nio.directories.Naming
  */
 @Deprecated
 public interface TempNaming {

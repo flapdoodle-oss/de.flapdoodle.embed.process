@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.config.store;
 import de.flapdoodle.embed.process.distribution.Distribution;
 
 /**
- * @see de.flapdoodle.embed.processg.config.store.PackageResolver
+ * @see de.flapdoodle.embed.process.distribution.PackageResolver
  */
 @FunctionalInterface
 @Deprecated

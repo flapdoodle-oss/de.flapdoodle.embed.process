@@ -21,33 +21,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.io.directories;
+package de.flapdoodle.embed.process.nio.directories;
 
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-class TempDirTest {
-
-	@Test
-	public void tempDirectoryIsPlatformTemp() {
-		TempDir result = TempDir.platformTempDir().get();
-
-		assertThat(result)
-			.extracting(TempDir::value)
-			.isEqualTo(Paths.get(System.getProperty("java.io.tmpdir")));
-	}
-
-	@Test
-	public void parentOfSubDirIsPlatformTemp() {
-		TempDir result = TempDir.platformTempSubDir(new UUIDNaming()).get();
-
-		assertThat(result)
-			.extracting(TempDir::value)
-			.extracting(Path::getParent)
-			.isEqualTo(Paths.get(System.getProperty("java.io.tmpdir")));
-	}
+public interface Naming {
+	String nameFor(String prefix, String postfix);
 }

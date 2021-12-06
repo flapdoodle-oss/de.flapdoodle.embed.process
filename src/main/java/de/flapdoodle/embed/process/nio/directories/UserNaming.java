@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.io.directories;
+package de.flapdoodle.embed.process.nio.directories;
 
 public class UserNaming implements Naming {
 	@Override

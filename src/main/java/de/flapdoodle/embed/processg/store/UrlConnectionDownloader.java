@@ -28,7 +28,7 @@ import de.flapdoodle.embed.process.config.store.ProxyFactory;
 import de.flapdoodle.embed.process.config.store.TimeoutConfig;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import de.flapdoodle.embed.process.io.progress.ProgressListeners;
-import de.flapdoodle.embed.processg.config.store.DownloadConfig;
+import de.flapdoodle.embed.process.config.DownloadConfig;
 
 import java.io.*;
 import java.net.Proxy;
