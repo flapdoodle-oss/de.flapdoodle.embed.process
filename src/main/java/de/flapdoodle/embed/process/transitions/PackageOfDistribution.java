@@ -23,8 +23,8 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
-import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.config.store.Package;
+import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.PackageResolver;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;

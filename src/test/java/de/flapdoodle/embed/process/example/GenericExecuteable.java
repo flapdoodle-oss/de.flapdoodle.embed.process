@@ -23,12 +23,12 @@
  */
 package de.flapdoodle.embed.process.example;
 
-import java.io.IOException;
-
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.Executable;
+
+import java.io.IOException;
 
 public class GenericExecuteable extends Executable<GenericProcessConfig, GenericProcess> {
 

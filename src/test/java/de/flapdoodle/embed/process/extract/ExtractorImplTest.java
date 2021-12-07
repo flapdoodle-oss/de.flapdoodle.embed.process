@@ -23,23 +23,20 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
-import de.flapdoodle.embed.process.io.progress.ProgressListener;
+import de.flapdoodle.embed.process.TempDir;
+import de.flapdoodle.embed.process.config.store.FileSet;
+import de.flapdoodle.embed.process.config.store.FileType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import de.flapdoodle.embed.process.TempDir;
-import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author viliusl

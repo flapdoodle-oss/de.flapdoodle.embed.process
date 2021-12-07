@@ -23,11 +23,11 @@
  */
 package de.flapdoodle.embed.process.io.directories;
 
-import java.io.File;
-import java.io.IOException;
-
 import de.flapdoodle.embed.process.extract.UserTempNaming;
 import de.flapdoodle.embed.process.io.file.Files;
+
+import java.io.File;
+import java.io.IOException;
 
 
 

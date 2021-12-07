@@ -23,11 +23,11 @@
  */
 package de.flapdoodle.embed.processg.store;
 
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.archives.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.ImmutableFileSet;
-import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

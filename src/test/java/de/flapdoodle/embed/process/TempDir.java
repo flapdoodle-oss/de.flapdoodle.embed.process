@@ -23,12 +23,11 @@
  */
 package de.flapdoodle.embed.process;
 
-import java.io.File;
-import java.io.IOException;
-
+import de.flapdoodle.embed.process.io.directories.Directory;
 import org.junit.rules.TemporaryFolder;
 
-import de.flapdoodle.embed.process.io.directories.Directory;
+import java.io.File;
+import java.io.IOException;
 
 public class TempDir implements Directory {
 

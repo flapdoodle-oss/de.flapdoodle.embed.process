@@ -23,9 +23,8 @@
  */
 package de.flapdoodle.embed.process.io.progress;
 
-import org.slf4j.Logger;
-
 import de.flapdoodle.embed.process.io.Slf4jLevel;
+import org.slf4j.Logger;
 
 public class Slf4jProgressListener implements ProgressListener {
 

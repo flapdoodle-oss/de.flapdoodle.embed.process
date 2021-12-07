@@ -23,8 +23,6 @@
  */
 package de.flapdoodle.embed.process.io.progress;
 
-import java.util.Optional;
-
 /**
  * Progress listener interface
  */

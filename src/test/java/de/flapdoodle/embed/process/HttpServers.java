@@ -23,25 +23,23 @@
  */
 package de.flapdoodle.embed.process;
 
+import de.flapdoodle.embed.process.runtime.Network;
+import de.flapdoodle.embed.processg.Resources;
+import de.flapdoodle.types.Try;
+import fi.iki.elonen.NanoHTTPD;
+import fi.iki.elonen.NanoHTTPD.Response;
+import fi.iki.elonen.NanoHTTPD.Response.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import de.flapdoodle.embed.process.runtime.Network;
-import de.flapdoodle.embed.processg.Resources;
-import de.flapdoodle.types.Try;
-import fi.iki.elonen.NanoHTTPD;
-import fi.iki.elonen.NanoHTTPD.Method;
-import fi.iki.elonen.NanoHTTPD.Response;
-import fi.iki.elonen.NanoHTTPD.Response.Status;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HttpServers {
 	private static Logger logger= LoggerFactory.getLogger(HttpServers.class);

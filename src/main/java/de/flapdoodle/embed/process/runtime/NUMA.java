@@ -23,20 +23,19 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import static java.util.Arrays.asList;
+import de.flapdoodle.embed.process.config.SupportConfig;
+import de.flapdoodle.embed.process.io.Readers;
+import de.flapdoodle.os.OS;
+import de.flapdoodle.os.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.flapdoodle.os.OS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.flapdoodle.embed.process.config.SupportConfig;
-import de.flapdoodle.os.Platform;
-import de.flapdoodle.embed.process.io.Readers;
+import static java.util.Arrays.asList;
 
 /**
  *

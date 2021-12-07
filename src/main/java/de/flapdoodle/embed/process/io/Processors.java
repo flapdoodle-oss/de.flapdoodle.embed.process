@@ -23,9 +23,9 @@
  */
 package de.flapdoodle.embed.process.io;
 
-import java.io.Reader;
-
 import org.slf4j.Logger;
+
+import java.io.Reader;
 
 /**
  *

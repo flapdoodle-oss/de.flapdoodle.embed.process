@@ -23,16 +23,15 @@
  */
 package de.flapdoodle.embed.process.extract;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.regex.Pattern;
-
-import org.junit.Test;
-
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class AbstractExtractorTest {
 

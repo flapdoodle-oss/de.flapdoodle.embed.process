@@ -25,8 +25,6 @@ package de.flapdoodle.embed.process.types;
 
 import org.immutables.value.Value;
 
-import java.util.OptionalLong;
-
 @Value.Immutable
 public interface ProcessConfig {
 		@Value.Default

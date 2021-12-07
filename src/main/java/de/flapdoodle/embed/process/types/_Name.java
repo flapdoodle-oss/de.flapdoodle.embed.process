@@ -23,11 +23,7 @@
  */
 package de.flapdoodle.embed.process.types;
 
-import de.flapdoodle.embed.process.types.Wrapped;
-import de.flapdoodle.embed.process.types.Wrapper;
 import org.immutables.value.Value;
-
-import java.util.Map;
 
 @Value.Immutable
 @Wrapped

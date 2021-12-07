@@ -23,6 +23,11 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
+import de.flapdoodle.embed.process.io.directories.Directory;
+import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,12 +37,6 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.flapdoodle.embed.process.io.directories.Directory;
-import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 
 /**
  *

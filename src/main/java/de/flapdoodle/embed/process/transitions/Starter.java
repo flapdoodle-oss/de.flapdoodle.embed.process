@@ -23,12 +23,12 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
-import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.types.ProcessArguments;
 import de.flapdoodle.embed.process.types.ProcessConfig;
 import de.flapdoodle.embed.process.types.ProcessEnv;
@@ -45,7 +45,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

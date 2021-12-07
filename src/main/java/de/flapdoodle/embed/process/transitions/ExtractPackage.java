@@ -23,14 +23,14 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
-import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.process.archives.ExtractFileSet;
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
+import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.process.nio.Directories;
+import de.flapdoodle.embed.process.nio.directories.TempDir;
+import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;
-import de.flapdoodle.embed.process.types.TempDirectory;
-import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
@@ -76,14 +76,14 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 	}
 
 	@Value.Default
-	protected StateID<TempDirectory> tempDirectory() {
-		return StateID.of(TempDirectory.class);
+	protected StateID<TempDir> tempDir() {
+		return StateID.of(TempDir.class);
 	}
 
 
 	@Override
 	public Set<StateID<?>> sources() {
-		return StateID.setOf(archive(), distPackage(), name(), tempDirectory());
+		return StateID.setOf(archive(), distPackage(), name(), tempDir());
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 		Package dist = lookup.of(distPackage());
 		Archive archive = lookup.of(archive());
 		Name name = lookup.of(name());
-		TempDirectory tempDir = lookup.of(tempDirectory());
+		TempDir tempDir = lookup.of(tempDir());
 
 		Path destination = Try.apply(tempDir::createDirectory, name.value());
 		return extractedFileSet(dist, archive, destination);

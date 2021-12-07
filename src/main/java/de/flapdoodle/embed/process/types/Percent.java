@@ -23,12 +23,11 @@
  */
 package de.flapdoodle.embed.process.types;
 
+import de.flapdoodle.checks.Preconditions;
 import org.immutables.value.Value.Auxiliary;
 import org.immutables.value.Value.Check;
 import org.immutables.value.Value.Immutable;
 import org.immutables.value.Value.Parameter;
-
-import de.flapdoodle.checks.Preconditions;
 
 @Immutable
 public abstract class Percent {

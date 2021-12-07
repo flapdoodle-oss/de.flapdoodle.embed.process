@@ -23,30 +23,25 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import de.flapdoodle.embed.process.TempDir;
-import de.flapdoodle.embed.process.config.store.DistributionPackage;
-import de.flapdoodle.embed.process.config.store.DownloadConfig;
-import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.PackageResolver;
+import de.flapdoodle.embed.process.config.store.*;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class LocalArtifactStoreTest {
 

@@ -23,19 +23,17 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.exceptions.DistributionException;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.store.IArtifactStore;
-import de.flapdoodle.os.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Optional;
 
 
 @Deprecated

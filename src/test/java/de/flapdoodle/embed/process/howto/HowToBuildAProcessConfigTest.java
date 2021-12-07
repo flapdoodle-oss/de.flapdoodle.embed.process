@@ -23,6 +23,25 @@
  */
 package de.flapdoodle.embed.process.howto;
 
+import de.flapdoodle.embed.process.config.store.DistributionPackage;
+import de.flapdoodle.embed.process.config.store.FileSet;
+import de.flapdoodle.embed.process.config.store.FileType;
+import de.flapdoodle.embed.process.config.store.TimeoutConfig;
+import de.flapdoodle.embed.process.distribution.ArchiveType;
+import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.distribution.Version;
+import de.flapdoodle.embed.process.net.UrlStreams;
+import de.flapdoodle.embed.process.net.UrlStreams.DownloadCopyListener;
+import de.flapdoodle.embed.process.parts.*;
+import de.flapdoodle.embed.process.types.DownloadPath;
+import de.flapdoodle.reverse.State;
+import de.flapdoodle.reverse.StateID;
+import de.flapdoodle.reverse.Transition;
+import de.flapdoodle.reverse.TransitionWalker;
+import de.flapdoodle.reverse.edges.Start;
+import de.flapdoodle.types.Try;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -37,31 +56,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import de.flapdoodle.reverse.Transition;
-import de.flapdoodle.reverse.TransitionWalker;
-import de.flapdoodle.reverse.edges.Start;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import de.flapdoodle.embed.process.config.store.DistributionPackage;
-import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.TimeoutConfig;
-import de.flapdoodle.embed.process.distribution.ArchiveType;
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.embed.process.net.UrlStreams;
-import de.flapdoodle.embed.process.net.UrlStreams.DownloadCopyListener;
-import de.flapdoodle.embed.process.parts.ArtifactPath;
-import de.flapdoodle.embed.process.parts.ArtifactUrl;
-import de.flapdoodle.embed.process.parts.CachingArtifactDownloader;
-import de.flapdoodle.embed.process.parts.LocalArtifactPath;
-import de.flapdoodle.embed.process.parts.ProcessFactory;
-import de.flapdoodle.embed.process.types.DownloadPath;
-import de.flapdoodle.reverse.StateID;
-import de.flapdoodle.reverse.State;
-import de.flapdoodle.types.Try;
 
 public class HowToBuildAProcessConfigTest {
 

@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
-import de.flapdoodle.embed.process.types.TempDirectory;
+import de.flapdoodle.embed.process.nio.directories.TempDir;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
@@ -32,29 +32,24 @@ import de.flapdoodle.reverse.naming.HasLabel;
 import org.immutables.value.Value;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Set;
 
 @Value.Immutable
-public abstract class InitTempDirectory implements Transition<TempDirectory>, HasLabel {
+public abstract class InitTempDirectory implements Transition<TempDir>, HasLabel {
 
 	@Override public String transitionLabel() {
 		return "InitTempDirectory";
 	}
 
 	@Value.Default
-	@Deprecated
-	/**
-	 * @see de.flapdoodle.embed.process.nio.directories.TempDir
-	 */
-	protected Path tempDirectory() {
-		return Paths.get(System.getProperty("java.io.tmpdir"));
+	protected TempDir tempDir() {
+		return TempDir.platformTempDir().get();
 	}
 
 	@Override
-	public StateID<TempDirectory> destination() {
-		return StateID.of(TempDirectory.class);
+	public StateID<TempDir> destination() {
+		return StateID.of(TempDir.class);
 	}
 
 	@Override
@@ -63,8 +58,8 @@ public abstract class InitTempDirectory implements Transition<TempDirectory>, Ha
 	}
 
 	@Override
-	public State<TempDirectory> result(StateLookup lookup) {
-		return State.of(TempDirectory.of(tempDirectory()));
+	public State<TempDir> result(StateLookup lookup) {
+		return State.of(tempDir());
 	}
 
 	public static ImmutableInitTempDirectory withPlatformTemp() {
@@ -76,6 +71,8 @@ public abstract class InitTempDirectory implements Transition<TempDirectory>, Ha
 	}
 
 	public static ImmutableInitTempDirectory with(Path path) {
-		return builder().tempDirectory(path).build();
+		return builder()
+			.tempDir(TempDir.of(path))
+			.build();
 	}
 }

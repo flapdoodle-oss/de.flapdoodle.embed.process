@@ -23,9 +23,9 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import java.util.List;
-
 import de.flapdoodle.embed.process.distribution.Distribution;
+
+import java.util.List;
 
 @FunctionalInterface
 public interface CommandLinePostProcessor {

@@ -23,13 +23,12 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.util.Map;
-import java.util.Optional;
-
-import org.immutables.value.Value.Immutable;
-
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
+import org.immutables.value.Value.Immutable;
+
+import java.util.Map;
+import java.util.Optional;
 
 @Immutable
 public abstract class StaticArtifactStore implements IArtifactStore {

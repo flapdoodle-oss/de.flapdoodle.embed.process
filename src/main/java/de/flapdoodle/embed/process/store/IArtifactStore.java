@@ -23,11 +23,11 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.io.IOException;
-import java.util.Optional;
-
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @Deprecated
 public interface IArtifactStore {

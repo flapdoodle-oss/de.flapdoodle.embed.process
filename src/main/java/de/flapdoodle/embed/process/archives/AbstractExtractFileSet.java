@@ -25,7 +25,9 @@ package de.flapdoodle.embed.process.archives;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.extract.*;
+import de.flapdoodle.embed.process.extract.AbstractExtractor;
+import de.flapdoodle.embed.process.extract.Archive;
+import de.flapdoodle.embed.process.extract.CommonsArchiveEntryAdapter;
 import de.flapdoodle.embed.process.io.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

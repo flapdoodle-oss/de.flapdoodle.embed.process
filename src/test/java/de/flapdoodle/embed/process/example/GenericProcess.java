@@ -23,14 +23,14 @@
  */
 package de.flapdoodle.embed.process.example;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.runtime.AbstractProcess;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenericProcess extends AbstractProcess<GenericProcessConfig, GenericExecuteable, GenericProcess> {
 

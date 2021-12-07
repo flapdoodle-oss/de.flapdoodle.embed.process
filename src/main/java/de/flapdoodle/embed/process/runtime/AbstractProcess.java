@@ -23,16 +23,6 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -41,6 +31,15 @@ import de.flapdoodle.embed.process.extract.ExtractedFileSet;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.io.file.Files;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Deprecated
 public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>

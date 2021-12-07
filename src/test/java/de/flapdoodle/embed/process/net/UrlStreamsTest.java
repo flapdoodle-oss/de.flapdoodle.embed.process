@@ -23,10 +23,10 @@
  */
 package de.flapdoodle.embed.process.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.flapdoodle.embed.process.HttpServers;
+import de.flapdoodle.embed.process.net.UrlStreams.DownloadCopyListener;
+import de.flapdoodle.embed.process.runtime.Network;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,12 +42,7 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import de.flapdoodle.embed.process.net.UrlStreams;
-import org.junit.Test;
-
-import de.flapdoodle.embed.process.HttpServers;
-import de.flapdoodle.embed.process.net.UrlStreams.DownloadCopyListener;
-import de.flapdoodle.embed.process.runtime.Network;
+import static org.junit.Assert.*;
 
 public class UrlStreamsTest {
 

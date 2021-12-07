@@ -23,13 +23,13 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.file.Files;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 
 /**
  * not part of public api

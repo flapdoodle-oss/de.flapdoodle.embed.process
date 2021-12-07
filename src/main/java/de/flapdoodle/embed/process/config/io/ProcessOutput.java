@@ -23,12 +23,11 @@
  */
 package de.flapdoodle.embed.process.config.io;
 
-import org.immutables.value.Value.Immutable;
-
 import de.flapdoodle.embed.process.config.io.ImmutableProcessOutput.Builder;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.Slf4jLevel;
 import de.flapdoodle.embed.process.io.StreamProcessor;
+import org.immutables.value.Value.Immutable;
 
 
 @Immutable

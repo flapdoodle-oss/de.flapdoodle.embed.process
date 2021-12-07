@@ -23,12 +23,11 @@
  */
 package de.flapdoodle.embed.process.config;
 
-import org.immutables.value.Value;
-import org.immutables.value.Value.Default;
-
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.CommandLinePostProcessor;
 import de.flapdoodle.embed.process.store.IArtifactStore;
+import org.immutables.value.Value;
+import org.immutables.value.Value.Default;
 
 @Deprecated
 @Value.Immutable

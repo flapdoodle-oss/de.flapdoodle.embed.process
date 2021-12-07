@@ -25,7 +25,6 @@ package de.flapdoodle.embed.process.io.progress;
 
 import de.flapdoodle.checks.Preconditions;
 
-import java.io.Closeable;
 import java.util.Optional;
 
 public class ProgressListeners {

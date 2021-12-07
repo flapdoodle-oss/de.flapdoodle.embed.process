@@ -23,10 +23,10 @@
  */
 package de.flapdoodle.embed.process.parts;
 
-import java.util.function.BiFunction;
-
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
+
+import java.util.function.BiFunction;
 
 public interface LocalArtifactPathOfDistributionAndArchiveType
 		extends BiFunction<Distribution, ArchiveType, LocalArtifactPath> {

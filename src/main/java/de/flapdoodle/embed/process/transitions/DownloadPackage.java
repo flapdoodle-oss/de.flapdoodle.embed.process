@@ -23,15 +23,15 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
-import de.flapdoodle.embed.process.config.store.ProxyFactory;
-import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.config.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.Package;
+import de.flapdoodle.embed.process.config.store.ProxyFactory;
+import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.net.UrlStreams;
+import de.flapdoodle.embed.process.nio.directories.TempDir;
+import de.flapdoodle.embed.process.store.ArchiveStore;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;
-import de.flapdoodle.embed.process.types.TempDirectory;
-import de.flapdoodle.embed.process.store.ArchiveStore;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
@@ -85,8 +85,8 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 	}
 
 	@Value.Default
-	protected StateID<TempDirectory> tempDirectory() {
-		return StateID.of(TempDirectory.class);
+	protected StateID<TempDir> tempDirectory() {
+		return StateID.of(TempDir.class);
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		Distribution dist = lookup.of(distribution());
 		Package distPackage = lookup.of(distPackage());
 		Name name = lookup.of(name());
-		TempDirectory temp = lookup.of(tempDirectory());
+		TempDir temp = lookup.of(tempDirectory());
 
 		Optional<Path> archive = archiveStore().archiveFor(name.value(), dist, distPackage.archiveType());
 		if (archive.isPresent()) {

@@ -23,9 +23,9 @@
  */
 package de.flapdoodle.embed.process.config;
 
-import java.util.function.BiFunction;
-
 import org.immutables.value.Value;
+
+import java.util.function.BiFunction;
 
 @Value.Immutable
 public interface SupportConfig {

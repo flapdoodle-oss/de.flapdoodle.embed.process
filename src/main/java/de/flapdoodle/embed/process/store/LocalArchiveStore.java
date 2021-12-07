@@ -24,9 +24,9 @@
 package de.flapdoodle.embed.process.store;
 
 import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.embed.process.archives.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.embed.process.archives.ArchiveType;
 
 import java.io.IOException;
 import java.nio.file.Files;

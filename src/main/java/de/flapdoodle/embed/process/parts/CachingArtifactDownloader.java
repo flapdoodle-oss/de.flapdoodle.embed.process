@@ -23,15 +23,15 @@
  */
 package de.flapdoodle.embed.process.parts;
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Path;
-import java.util.Optional;
-
 import de.flapdoodle.embed.process.config.store.TimeoutConfig;
 import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.net.UrlStreams.DownloadCopyListener;
 import de.flapdoodle.types.Try;
+
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.Path;
+import java.util.Optional;
 
 public class CachingArtifactDownloader implements ArtifactPathForUrl {
 

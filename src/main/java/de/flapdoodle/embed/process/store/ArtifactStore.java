@@ -23,24 +23,18 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-
-import org.immutables.value.Value.Auxiliary;
-import org.immutables.value.Value.Immutable;
-
 import de.flapdoodle.embed.process.config.store.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.PackageResolver;
 import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.ExtractedFileSet;
-import de.flapdoodle.embed.process.extract.ExtractedFileSets;
-import de.flapdoodle.embed.process.extract.Extractor;
-import de.flapdoodle.embed.process.extract.Extractors;
-import de.flapdoodle.embed.process.extract.FilesToExtract;
-import de.flapdoodle.embed.process.extract.TempNaming;
+import de.flapdoodle.embed.process.extract.*;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.store.ImmutableArtifactStore.Builder;
+import org.immutables.value.Value.Auxiliary;
+import org.immutables.value.Value.Immutable;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 
 @Immutable
 public abstract class ArtifactStore implements IArtifactStore {

@@ -24,20 +24,17 @@
 package de.flapdoodle.embed.processg.howto;
 
 import de.flapdoodle.embed.process.HttpServers;
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.config.Defaults;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
-import de.flapdoodle.embed.process.config.store.DistributionPackage;
-import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.PackageResolver;
+import de.flapdoodle.embed.process.config.store.Package;
+import de.flapdoodle.embed.process.config.store.*;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.io.progress.ProgressListeners;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
-import de.flapdoodle.embed.process.config.store.Package;
-import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.store.ArchiveStore;
 import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
 import de.flapdoodle.embed.process.store.ExtractedFileSetStore;

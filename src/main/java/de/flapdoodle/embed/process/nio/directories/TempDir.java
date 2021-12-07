@@ -28,13 +28,25 @@ import de.flapdoodle.embed.process.types.Wrapper;
 import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
 import java.util.function.Supplier;
 
 @Value.Immutable
 public abstract class TempDir extends Wrapper<Path> {
+
+	@Value.Auxiliary
+	public Path createDirectory(String prefix, FileAttribute<?>... attrs) throws IOException {
+		return Files.createTempDirectory(value(),prefix, attrs);
+	}
+
+	@Value.Auxiliary
+	public Path createFile(String prefix, String suffix, FileAttribute<?> ... attrs) throws IOException {
+		return Files.createTempFile(value(),prefix, suffix, attrs);
+	}
 
 	public static TempDir of(Path path) {
 		return ImmutableTempDir.of(path);

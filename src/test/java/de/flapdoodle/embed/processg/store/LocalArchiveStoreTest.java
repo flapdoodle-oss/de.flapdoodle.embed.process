@@ -23,9 +23,9 @@
  */
 package de.flapdoodle.embed.processg.store;
 
+import de.flapdoodle.embed.process.archives.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.embed.process.archives.ArchiveType;
 import de.flapdoodle.embed.process.store.LocalArchiveStore;
 import de.flapdoodle.os.Platform;
 import org.junit.jupiter.api.Test;

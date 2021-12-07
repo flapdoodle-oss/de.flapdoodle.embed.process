@@ -23,6 +23,12 @@
  */
 package de.flapdoodle.embed.process.store;
 
+import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.extract.ExtractedFileSet;
+import de.flapdoodle.embed.process.runtime.ProcessControl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
@@ -30,13 +36,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.flapdoodle.embed.process.distribution.Distribution;
-import de.flapdoodle.embed.process.extract.ExtractedFileSet;
-import de.flapdoodle.embed.process.runtime.ProcessControl;
 
 public class CachingArtifactStore implements IArtifactStore {
 

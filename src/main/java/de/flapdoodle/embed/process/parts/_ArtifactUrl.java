@@ -23,10 +23,9 @@
  */
 package de.flapdoodle.embed.process.parts;
 
-import org.immutables.value.Value;
-
 import de.flapdoodle.embed.process.types.Wrapped;
 import de.flapdoodle.embed.process.types.Wrapper;
+import org.immutables.value.Value;
 
 @Value.Immutable
 @Wrapped

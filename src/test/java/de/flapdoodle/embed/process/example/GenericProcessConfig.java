@@ -23,11 +23,11 @@
  */
 package de.flapdoodle.embed.process.example;
 
-import java.util.OptionalLong;
-
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.distribution.Version;
+
+import java.util.OptionalLong;
 
 public class GenericProcessConfig implements ExecutableProcessConfig {
 

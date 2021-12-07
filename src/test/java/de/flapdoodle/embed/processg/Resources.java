@@ -23,8 +23,6 @@
  */
 package de.flapdoodle.embed.processg;
 
-import de.flapdoodle.types.Try;
-
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;

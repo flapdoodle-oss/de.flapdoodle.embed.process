@@ -23,15 +23,12 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import de.flapdoodle.embed.process.config.store.FileSet.Entry;
+import org.junit.Test;
 
 import java.util.regex.Pattern;
 
-import org.junit.Test;
-
-import de.flapdoodle.embed.process.config.store.FileSet.Entry;
+import static org.junit.Assert.*;
 
 public class FileSetTest {
 

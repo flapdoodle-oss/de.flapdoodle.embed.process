@@ -23,13 +23,12 @@
  */
 package de.flapdoodle.embed.process.config.process;
 
-import java.util.List;
-
+import de.flapdoodle.embed.process.config.process.ImmutableProcessConfig.Builder;
+import de.flapdoodle.embed.process.io.StreamProcessor;
 import org.immutables.value.Value.Default;
 import org.immutables.value.Value.Immutable;
 
-import de.flapdoodle.embed.process.config.process.ImmutableProcessConfig.Builder;
-import de.flapdoodle.embed.process.io.StreamProcessor;
+import java.util.List;
 
 /**
  * @see de.flapdoodle.embed.process.types.ProcessConfig

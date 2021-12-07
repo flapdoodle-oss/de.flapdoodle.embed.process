@@ -23,23 +23,19 @@
  */
 package de.flapdoodle.embed.process.net;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.embed.process.config.store.TimeoutConfig;
+import de.flapdoodle.types.Optionals;
+import de.flapdoodle.types.ThrowingFunction;
+import de.flapdoodle.types.ThrowingSupplier;
+
+import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-
-import de.flapdoodle.checks.Preconditions;
-import de.flapdoodle.embed.process.config.store.TimeoutConfig;
-import de.flapdoodle.types.Optionals;
-import de.flapdoodle.types.ThrowingFunction;
-import de.flapdoodle.types.ThrowingSupplier;
 
 public abstract class UrlStreams {
 
