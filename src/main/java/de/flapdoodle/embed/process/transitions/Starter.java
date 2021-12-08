@@ -26,9 +26,6 @@ package de.flapdoodle.embed.process.transitions;
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
-import de.flapdoodle.embed.process.io.Processors;
-import de.flapdoodle.embed.process.io.StreamToLineProcessor;
-import de.flapdoodle.embed.process.runtime.ProcessControl;
 import de.flapdoodle.embed.process.types.*;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
@@ -39,14 +36,9 @@ import org.immutables.builder.Builder;
 import org.immutables.value.Value;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Value.Immutable
 public abstract class Starter<T extends RunningProcess> implements Transition<RunningProcess>, HasLabel {
@@ -118,65 +110,12 @@ public abstract class Starter<T extends RunningProcess> implements Transition<Ru
 		SupportConfig supportConfig = lookup.of(supportConfig());
 
 		try {
-			RunningProcess running = start(fileSet.executable(), arguments, environment, processConfig, processOutput, supportConfig);
+			RunningProcess running = RunningProcess.start(runningProcessFactory(), fileSet.executable(), arguments, environment, processConfig, processOutput, supportConfig);
 			return State.of(running, RunningProcess::stop);
 		}
 		catch (IOException ix) {
 			throw new RuntimeException("could not start process", ix);
 		}
-	}
-
-	private T start(
-		Path executable,
-		List<String> arguments,
-		Map<String, String> environment,
-		ProcessConfig processConfig,
-		ProcessOutput outputConfig,
-		SupportConfig supportConfig
-	)
-		throws IOException {
-		Path pidFile = pidFile(executable);
-
-		List<String> commandLine = Stream
-			.concat(Stream.of(executable.toFile().getAbsolutePath()), arguments.stream())
-			.collect(Collectors.toList());
-
-		ProcessBuilder processBuilder = ProcessControl.newProcessBuilder(commandLine, environment, true);
-		ProcessControl process = ProcessControl.start(supportConfig, processBuilder);
-
-		try {
-			if (process.getPid() != null) {
-				writePidFile(pidFile, process.getPid());
-			}
-
-			T running = runningProcessFactory().startedWith(process, outputConfig, pidFile, processConfig.stopTimeoutInMillis());
-			
-			if (processConfig.daemonProcess()) {
-				ProcessControl.addShutdownHook(running::stop);
-			}
-			return running;
-		}
-		catch (IOException iox) {
-			Files.delete(pidFile);
-			process.stop(processConfig.stopTimeoutInMillis());
-			throw iox;
-		}
-	}
-
-	private static String executableBaseName(String name) {
-		int idx = name.lastIndexOf('.');
-		if (idx != -1) {
-			return name.substring(0, idx);
-		}
-		return name;
-	}
-
-	private static Path pidFile(Path executableFile) {
-		return executableFile.getParent().resolve(executableBaseName(executableFile.getFileName().toString())+".pid");
-	}
-
-	private static void writePidFile(Path pidFile, long pid) throws IOException {
-		Files.write(pidFile, Collections.singletonList("" + pid));
 	}
 
 	public static <T extends RunningProcess> ImmutableStarter.Builder<T> with(RunningProcessFactory<T> runningProcessFactory) {
