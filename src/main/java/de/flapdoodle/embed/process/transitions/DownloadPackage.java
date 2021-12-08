@@ -131,7 +131,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 				.get();
 			
 			return State.of(Archive.of(storedArchive), it -> {
-				Try.run(() -> Files.delete(it.value()));
+				Try.run(() -> Files.delete(downloadedArchive));
 			});
 		}
 	}
