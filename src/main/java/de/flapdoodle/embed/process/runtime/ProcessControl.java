@@ -24,8 +24,8 @@
 package de.flapdoodle.embed.process.runtime;
 
 import de.flapdoodle.embed.process.config.SupportConfig;
-import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.StreamProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +36,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 
 public class ProcessControl {
 
 	private static final long MAX_STOP_TIMEOUT_MS = 5000;
 	private static Logger logger = LoggerFactory.getLogger(ProcessControl.class);
-	private static final int SLEEP_TIMEOUT = 10;
 
 	private final Process process;
 
@@ -174,18 +174,23 @@ public class ProcessControl {
 		return processBuilder;
 	}
 
-	public static boolean executeCommandLine(SupportConfig support, String label, ProcessConfig processConfig) {
+	public static boolean executeCommandLine(
+		SupportConfig support,
+		List<String> commandLine,
+		Consumer<ProcessControl> beforeStop,
+		StreamProcessor output,
+		boolean redirectErrorStream
+	) {
 		boolean ret;
 
-		List<String> commandLine = processConfig.commandLine();
 		try {
-			ProcessControl process = fromCommandLine(support, processConfig.commandLine(), processConfig.error() == null);
-			Processors.connect(process.getReader(), processConfig.output());
-			Thread.sleep(SLEEP_TIMEOUT);
+			ProcessControl process = fromCommandLine(support, commandLine, redirectErrorStream);
+			Processors.connect(process.getReader(), output);
+			beforeStop.accept(process);
 			ret = process.stop() == 0;
 			logger.info("execSuccess: {} {}", ret, commandLine);
 			return ret;
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e) {
 			logger.error("" + commandLine, e);
 		}
 		return false;

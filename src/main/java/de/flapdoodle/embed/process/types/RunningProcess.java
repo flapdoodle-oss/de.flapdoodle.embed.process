@@ -5,9 +5,9 @@
  *
  * with contributions from
  * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ Archimedes Trajano (trajano@github),
+ Kevin D. Keck (kdkeck@github),
+ Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,42 @@
  */
 package de.flapdoodle.embed.process.types;
 
-import org.immutables.value.Value;
+import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.embed.process.config.SupportConfig;
+import de.flapdoodle.embed.process.config.io.ProcessOutput;
+import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.StreamProcessor;
+import de.flapdoodle.embed.process.io.StreamToLineProcessor;
+import de.flapdoodle.embed.process.runtime.ProcessControl;
+import de.flapdoodle.embed.process.runtime.Processes;
+import de.flapdoodle.os.Platform;
+import de.flapdoodle.types.Try;
 
-@Value.Immutable
-public interface RunningProcess {
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-		static ImmutableRunningProcess.Builder builder() {
-				return ImmutableRunningProcess.builder();
-		}
+public class RunningProcess {
+	private final ProcessControl process;
+	private final Path pidFile;
+	private final long timeout;
+
+	public RunningProcess(ProcessControl process, Path pidFile, long timeout) {
+		this.process = process;
+		this.pidFile = pidFile;
+		this.timeout = timeout;
+	}
+
+	public void stop() {
+		process.stop(timeout);
+		Try.runable(() -> Files.delete(pidFile))
+			.mapCheckedException(RuntimeException::new)
+			.run();
+	}
+
+	public static RunningProcess withConnectedOutput(ProcessControl process, ProcessOutput processOutput, Path pidFile, long timeout) {
+		Processors.connect(process.getReader(), processOutput.output());
+		Processors.connect(process.getError(), StreamToLineProcessor.wrap(processOutput.error()));
+
+		return new RunningProcess(process, pidFile, timeout);
+	}
 }

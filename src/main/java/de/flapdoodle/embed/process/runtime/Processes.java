@@ -27,7 +27,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
 import de.flapdoodle.embed.process.config.SupportConfig;
-import de.flapdoodle.embed.process.config.process.ProcessConfig;
 import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamProcessor;
@@ -42,6 +41,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 
@@ -126,19 +126,44 @@ public abstract class Processes {
 		return null;
 	}
 
-	public static boolean killProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, long pid) {
-		return isUnixLike(platform) && ProcessControl.executeCommandLine(support, "[kill process]",
-				ProcessConfig.builder().commandLine(asList("kill", "-2", "" + pid)).output(output).build());
+	public static Consumer<ProcessControl> justWaitALittle() {
+		return processControl -> {
+			try {
+				Thread.sleep(10);
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new RuntimeException(e);
+			}
+		};
 	}
 
+	public static boolean killProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, long pid) {
+	 	return killProcess(support,platform,output, justWaitALittle(), pid);
+	}
+	
+	public static boolean killProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, Consumer<ProcessControl> beforeStop, long pid) {
+		return isUnixLike(platform) && ProcessControl
+			.executeCommandLine(support, asList("kill", "-2", "" + pid),beforeStop, output,true);
+	}
+
+
 	public static boolean termProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, long pid) {
-		return isUnixLike(platform) && ProcessControl.executeCommandLine(support, "[term process]",
-				ProcessConfig.builder().commandLine(asList("kill", "" + pid)).output(output).build());
+		return termProcess(support, platform, output, justWaitALittle(), pid);
+	}
+
+	public static boolean termProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, Consumer<ProcessControl> beforeStop, long pid) {
+		return isUnixLike(platform) && ProcessControl
+			.executeCommandLine(support, asList("kill", "" + pid), beforeStop,output, true);
 	}
 
 	public static boolean tryKillProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, long pid) {
-		return platform.operatingSystem() == OS.Windows && ProcessControl.executeCommandLine(support, "[taskkill process]",
-				ProcessConfig.builder().commandLine(asList("taskkill", "/F", "/pid", "" + pid)).output(output).build());
+		return tryKillProcess(support, platform, output, justWaitALittle(), pid);
+	}
+
+	public static boolean tryKillProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, Consumer<ProcessControl> beforeStop, long pid) {
+		return platform.operatingSystem() == OS.Windows && ProcessControl
+			.executeCommandLine(support, asList("taskkill", "/F", "/pid", "" + pid), beforeStop, output, true);
 	}
 
 	private static boolean isUnixLike(de.flapdoodle.os.Platform platform) {

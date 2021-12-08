@@ -130,13 +130,13 @@ public class HowToRunAProcessTest {
 						System.out.println("with fileSet(2): " + withFileSet.current());
 					}
 
-					try (TransitionWalker.ReachedState<Starter.Running> started = withArchive.initState(starter.destination())) {
+					try (TransitionWalker.ReachedState<RunningProcess> started = withArchive.initState(starter.destination())) {
 						System.out.println("started: " + started.current());
 					}
 				}
 
 				if (false) {
-					try (TransitionWalker.ReachedState<Starter.Running> started = init.initState(starter.destination())) {
+					try (TransitionWalker.ReachedState<RunningProcess> started = init.initState(starter.destination())) {
 						System.out.println("started: " + started.current());
 					}
 				}
@@ -182,7 +182,7 @@ public class HowToRunAProcessTest {
 
 			TransitionWalker init = TransitionWalker.with(transitions);
 
-			try (TransitionWalker.ReachedState<Starter.Running> started = init.initState(starter.destination())) {
+			try (TransitionWalker.ReachedState<RunningProcess> started = init.initState(starter.destination())) {
 				System.out.println("started: " + started.current());
 			}
 		}
