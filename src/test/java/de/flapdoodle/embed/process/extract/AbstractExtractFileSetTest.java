@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.extract;
+package de.flapdoodle.embed.process.extract;
 
 import de.flapdoodle.embed.process.archives.AbstractExtractFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;

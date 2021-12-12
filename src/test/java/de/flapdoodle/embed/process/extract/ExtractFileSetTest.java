@@ -21,9 +21,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.processg.extract;
+package de.flapdoodle.embed.process.extract;
 
 import de.flapdoodle.embed.process.archives.*;
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ExtractorImplTest {
+public class ExtractFileSetTest {
 	private FileSet fileSet;
 	private Path fileInArchive;
 
@@ -55,7 +56,7 @@ public class ExtractorImplTest {
 	public void testZipFormat(@TempDir Path destination) throws IOException, URISyntaxException {
 		Path source = Paths.get(this.getClass().getResource("/archives/sample.zip").toURI());
 		ZipAdapter extractor = new ZipAdapter();
-		ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
+		de.flapdoodle.embed.process.archives.ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
 
 		assertTrue("extracted file exists", extracted.executable().toFile().exists());
 		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));
@@ -66,7 +67,7 @@ public class ExtractorImplTest {
 		Path source = Paths.get(this.getClass().getResource("/archives/sample.tgz").toURI());
 		TgzAdapter extractor = new TgzAdapter();
 
-		ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
+		de.flapdoodle.embed.process.archives.ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
 
 		assertTrue("extracted file exists", extracted.executable().toFile().exists());
 		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));
@@ -77,7 +78,7 @@ public class ExtractorImplTest {
 		Path source = Paths.get(this.getClass().getResource("/archives/sample.tbz2").toURI());
 		Tbz2Adapter extractor = new Tbz2Adapter();
 
-		ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
+		de.flapdoodle.embed.process.archives.ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
 
 		assertTrue("extracted file exists", extracted.executable().toFile().exists());
 		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));

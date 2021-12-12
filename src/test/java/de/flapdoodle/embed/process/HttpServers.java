@@ -24,7 +24,6 @@
 package de.flapdoodle.embed.process;
 
 import de.flapdoodle.embed.process.runtime.Network;
-import de.flapdoodle.embed.processg.Resources;
 import de.flapdoodle.types.Try;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response;
