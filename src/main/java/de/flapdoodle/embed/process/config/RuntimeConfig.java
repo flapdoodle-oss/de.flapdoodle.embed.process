@@ -50,4 +50,15 @@ public interface RuntimeConfig {
 	static ImmutableRuntimeConfig.Builder builder() {
 		return ImmutableRuntimeConfig.builder();
 	}
+
+	/**
+	 * some api hacks to reenable spring boot support until they fix their api usage
+	 */
+	static interface Builder {
+		ImmutableRuntimeConfig.Builder processOutput(ProcessOutput processOutput);
+
+		default ImmutableRuntimeConfig.Builder processOutput(de.flapdoodle.embed.process.config.io.ProcessOutput processOutput) {
+			return processOutput((ProcessOutput) processOutput);
+		}
+	}
 }
