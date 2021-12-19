@@ -23,47 +23,55 @@
  */
 package de.flapdoodle.embed.process.config.io;
 
-import de.flapdoodle.embed.process.config.io.ImmutableProcessOutput.Builder;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.Slf4jLevel;
 import de.flapdoodle.embed.process.io.StreamProcessor;
 import org.immutables.value.Value.Immutable;
 
+/**
+ * helper class to fix some spring boot issues
+ * @see de.flapdoodle.embed.process.config.process.ProcessOutput#builder()
+ */
+@Deprecated
+public class ProcessOutput implements de.flapdoodle.embed.process.config.process.ProcessOutput {
 
-@Immutable
-public interface ProcessOutput {
+	private final StreamProcessor output;
+	private final StreamProcessor error;
+	private final StreamProcessor commands;
 
-	StreamProcessor output();
-
-	StreamProcessor error();
-
-	StreamProcessor commands();
-
-	static ProcessOutput namedConsole(String label) {
-		return builder()
-				.output(Processors.namedConsole("["+label+" output]"))
-				.error(Processors.namedConsole("["+label+" error]"))
-				.commands(Processors.console())
-				.build();
-	}
-	
-	static ProcessOutput silent() {
-		return builder()
-				.output(Processors.silent())
-				.error(Processors.silent())
-				.commands(Processors.silent())
-				.build();
+	public ProcessOutput(StreamProcessor output, StreamProcessor error, StreamProcessor commands) {
+		this.output = output;
+		this.error = error;
+		this.commands = commands;
 	}
 
-	static ProcessOutput named(String label, org.slf4j.Logger logger) {
-		return builder()
-				.output(Processors.named("["+label+" output]", Processors.logTo(logger, Slf4jLevel.INFO)))
-				.error(Processors.named("["+label+" error]", Processors.logTo(logger, Slf4jLevel.ERROR)))
-				.commands(Processors.logTo(logger, Slf4jLevel.DEBUG))
-				.build();
+	@Override
+	public StreamProcessor output() {
+		return output;
 	}
 
-	static Builder builder() {
-		return ImmutableProcessOutput.builder();
+	@Override
+	public StreamProcessor error() {
+		return error;
+	}
+
+	@Override
+	public StreamProcessor commands() {
+		return commands;
+	}
+
+	public static ProcessOutput namedConsole(String label) {
+		return new ProcessOutput(
+			Processors.namedConsole("["+label+" output]"),
+			Processors.namedConsole("["+label+" error]"),
+			Processors.console()
+		);
+	}
+
+	public static ProcessOutput named(String label, org.slf4j.Logger logger) {
+		return new ProcessOutput(
+			Processors.named("["+label+" output]", Processors.logTo(logger, Slf4jLevel.INFO)),
+			Processors.named("["+label+" error]", Processors.logTo(logger, Slf4jLevel.ERROR)),
+			Processors.logTo(logger, Slf4jLevel.DEBUG));
 	}
 }

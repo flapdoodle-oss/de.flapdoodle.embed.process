@@ -23,7 +23,10 @@
  */
 package de.flapdoodle.embed.process.config;
 
-import de.flapdoodle.embed.process.config.io.ProcessOutput;
+import org.immutables.value.Value;
+import org.immutables.value.Value.Default;
+
+import de.flapdoodle.embed.process.config.process.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.CommandLinePostProcessor;
 import de.flapdoodle.embed.process.store.IArtifactStore;
 import org.immutables.value.Value;
@@ -49,5 +52,16 @@ public interface RuntimeConfig {
 	
 	static ImmutableRuntimeConfig.Builder builder() {
 		return ImmutableRuntimeConfig.builder();
+	}
+
+	/**
+	 * some api hacks to reenable spring boot support until they fix their api usage
+	 */
+	static interface Builder {
+		ImmutableRuntimeConfig.Builder processOutput(ProcessOutput processOutput);
+
+		default ImmutableRuntimeConfig.Builder processOutput(de.flapdoodle.embed.process.config.io.ProcessOutput processOutput) {
+			return processOutput((ProcessOutput) processOutput);
+		}
 	}
 }
