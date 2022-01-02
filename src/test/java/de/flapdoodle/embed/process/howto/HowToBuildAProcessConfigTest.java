@@ -38,7 +38,7 @@ import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.TransitionWalker;
-import de.flapdoodle.reverse.edges.Start;
+import de.flapdoodle.reverse.transitions.Start;
 import de.flapdoodle.types.Try;
 import org.junit.Ignore;
 import org.junit.Test;

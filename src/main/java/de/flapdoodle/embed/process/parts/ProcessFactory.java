@@ -30,9 +30,9 @@ import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.TransitionWalker;
 import de.flapdoodle.reverse.Transitions;
-import de.flapdoodle.reverse.edges.Derive;
-import de.flapdoodle.reverse.edges.Join;
-import de.flapdoodle.reverse.edges.Start;
+import de.flapdoodle.reverse.transitions.Derive;
+import de.flapdoodle.reverse.transitions.Join;
+import de.flapdoodle.reverse.transitions.Start;
 import org.immutables.value.Value.Auxiliary;
 import org.immutables.value.Value.Immutable;
 
