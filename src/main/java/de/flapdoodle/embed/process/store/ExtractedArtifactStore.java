@@ -32,10 +32,12 @@ import de.flapdoodle.embed.process.extract.*;
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.file.FileAlreadyExistsException;
+import de.flapdoodle.os.Version;
 import org.immutables.value.Value.Immutable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Optional;
 
 @Immutable
@@ -133,6 +135,7 @@ public abstract class ExtractedArtifactStore implements IArtifactStore {
 	static String asPath(Distribution distribution) {
 		return distribution.platform().operatingSystem().name() + "-" +
 				distribution.platform().architecture().bitSize() + "--" +
+				distribution.platform().version().map(Version::name).orElse("unknown").toLowerCase(Locale.ROOT) + "---" +
 				distribution.version().asInDownloadPath();
 	}
 	
