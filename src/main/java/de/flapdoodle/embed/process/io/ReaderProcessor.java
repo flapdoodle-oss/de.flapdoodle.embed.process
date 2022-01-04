@@ -43,6 +43,8 @@ public class ReaderProcessor extends Thread {
 		start();
 	}
 
+	// TODO close
+
 	@Override
 	public void run() {
 		try {
@@ -59,5 +61,31 @@ public class ReaderProcessor extends Thread {
 		}
 		//CHECKSTYLE:ON
 
+	}
+
+	public void abort() {
+		try {
+			interrupt();
+			join(1000);
+		}
+		catch (InterruptedException ix) {
+			interrupt();
+		}
+	}
+
+	public static void abortAll(ReaderProcessor ... readerProcessors) {
+		if (readerProcessors.length>0) {
+			abortIndex(0, readerProcessors);
+		}
+	}
+
+	private static void abortIndex(int idx, ReaderProcessor[] readerProcessors) {
+		if (readerProcessors.length>idx) {
+			try {
+				abortIndex(idx+1,readerProcessors);
+			} finally {
+				readerProcessors[idx].abort();
+			}
+		}
 	}
 }

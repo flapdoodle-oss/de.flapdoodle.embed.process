@@ -26,6 +26,7 @@ package de.flapdoodle.embed.process.types;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.ReaderProcessor;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
 import de.flapdoodle.types.Try;
@@ -43,11 +44,13 @@ public class RunningProcess {
 	private final ProcessControl process;
 	private final Path pidFile;
 	private final long timeout;
+	private final Runnable onStop;
 
-	public RunningProcess(ProcessControl process, Path pidFile, long timeout) {
+	public RunningProcess(ProcessControl process, Path pidFile, long timeout, Runnable onStop) {
 		this.process = process;
 		this.pidFile = pidFile;
 		this.timeout = timeout;
+		this.onStop = onStop;
 	}
 
 	public void stop() {
@@ -58,10 +61,10 @@ public class RunningProcess {
 	}
 
 	public static RunningProcess withConnectedOutput(ProcessControl process, ProcessOutput processOutput, Path pidFile, long timeout) {
-		Processors.connect(process.getReader(), processOutput.output());
-		Processors.connect(process.getError(), StreamToLineProcessor.wrap(processOutput.error()));
+		ReaderProcessor outputReader = Processors.connect(process.getReader(), processOutput.output());
+		ReaderProcessor errorReader = Processors.connect(process.getError(), StreamToLineProcessor.wrap(processOutput.error()));
 
-		return new RunningProcess(process, pidFile, timeout);
+		return new RunningProcess(process, pidFile, timeout, () -> ReaderProcessor.abortAll(outputReader, errorReader));
 	}
 
 	public static <T extends RunningProcess> T start(
