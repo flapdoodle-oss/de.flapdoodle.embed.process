@@ -120,6 +120,6 @@ public abstract class Starter<T extends RunningProcess> implements Transition<T>
 	}
 
 	public static ImmutableStarter<RunningProcess> withDefaults() {
-		return with(RunningProcess::withConnectedOutput).destination(StateID.of(RunningProcess.class)).build();
+		return with(RunningProcess::new).destination(StateID.of(RunningProcess.class)).build();
 	}
 }

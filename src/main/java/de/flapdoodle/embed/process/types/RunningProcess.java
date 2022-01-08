@@ -53,19 +53,23 @@ public class RunningProcess {
 		this.onStop = onStop;
 	}
 
-	public void stop() {
-		Try.runable(() -> process.stop(timeout))
-			.andFinally(onStop::run)
-			.andFinally(Try.runable(() -> Files.delete(pidFile))
-				.mapCheckedException(RuntimeException::new)::run)
-			.run();
+	public RunningProcess(ProcessControl process, ProcessOutput processOutput, Path pidFile, long timeout) {
+		this(process, pidFile, timeout , connectIOTo(process, processOutput));
 	}
 
-	public static RunningProcess withConnectedOutput(ProcessControl process, ProcessOutput processOutput, Path pidFile, long timeout) {
+	private static Runnable connectIOTo(ProcessControl process, ProcessOutput processOutput) {
 		ReaderProcessor outputReader = Processors.connect(process.getReader(), processOutput.output());
 		ReaderProcessor errorReader = Processors.connect(process.getError(), StreamToLineProcessor.wrap(processOutput.error()));
 
-		return new RunningProcess(process, pidFile, timeout, () -> ReaderProcessor.abortAll(outputReader, errorReader));
+		return () -> ReaderProcessor.abortAll(outputReader, errorReader);
+	}
+
+	public void stop() {
+		Try.runable(() -> process.stop(timeout))
+			.andFinally(onStop)
+			.andFinally(Try.runable(() -> Files.delete(pidFile))
+				.mapCheckedException(RuntimeException::new)::run)
+			.run();
 	}
 
 	public static <T extends RunningProcess> T start(
