@@ -108,7 +108,7 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 				ExtractedFileSet extractedFileSet = Try.get(() -> extractor.extract(destination, archive.value(), dist.fileSet()));
 
 				return Try.supplier(() -> cachedFileSet(store.store(archive.value(), dist.fileSet(), extractedFileSet)))
-					.onCheckedException(ex -> temporaryFileSet(extractedFileSet))
+					.fallbackTo(ex -> temporaryFileSet(extractedFileSet))
 					.get();
 			}
 		} else {

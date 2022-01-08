@@ -58,7 +58,7 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		Path fileSetBasePath = basePath.resolve(hash);
 		if (Files.isDirectory(fileSetBasePath)) {
 			return Try.supplier(() -> Optional.of(readFileSet(fileSetBasePath, fileSet)))
-				.onCheckedException(ex -> Optional.empty())
+				.fallbackTo(ex -> Optional.empty())
 				.get();
 		}
 		

@@ -46,12 +46,12 @@ public class HttpServers {
 	public static Server httpServer(Class<?> testClass, Map<String, String> resourcePathMap) throws IOException {
 		int serverPort = Try.get(() -> Network.freeServerPort(Network.getLocalHost()));
 		Map<String, Supplier<Response>> map = resourcePathMap.entrySet().stream()
-			.collect(Collectors.toMap(entry -> entry.getKey(), entry -> Try.supplier(() -> {
+			.collect(Collectors.toMap(Map.Entry::getKey, entry -> Try.supplier(() -> {
 				Path resourcePath = Resources.resourcePath(testClass, entry.getValue());
 				byte[] content = Files.readAllBytes(resourcePath);
 				return response(200, "application/octet-stream", content);
-			}).mapCheckedException(RuntimeException::new)
-				.onCheckedException(ex -> { throw new RuntimeException(ex);})
+			}).mapCheckedException(RuntimeException::new)::get
+				//.fallbackTo(ex -> { throw new RuntimeException(ex);})
 			));
 
 			return httpServer(serverPort, map);

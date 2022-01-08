@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Value.Immutable
-public abstract class Starter<T extends RunningProcess> implements Transition<RunningProcess>, HasLabel {
+public abstract class Starter<T extends RunningProcess> implements Transition<T>, HasLabel {
 
 	@Override
 	@Value.Default
@@ -80,10 +80,7 @@ public abstract class Starter<T extends RunningProcess> implements Transition<Ru
 	}
 
 	@Override
-	@Value.Default
-	public StateID<RunningProcess> destination() {
-		return StateID.of(RunningProcess.class);
-	}
+	public abstract StateID<T> destination();
 
 	@Builder.Parameter
 	protected abstract RunningProcessFactory<T> runningProcessFactory();
@@ -101,7 +98,7 @@ public abstract class Starter<T extends RunningProcess> implements Transition<Ru
 	}
 
 	@Override
-	public State<RunningProcess> result(StateLookup lookup) {
+	public State<T> result(StateLookup lookup) {
 		ExtractedFileSet fileSet = lookup.of(processExecutable());
 		List<String> arguments = lookup.of(arguments()).value();
 		Map<String, String> environment = lookup.of(processEnv()).value();
@@ -110,7 +107,7 @@ public abstract class Starter<T extends RunningProcess> implements Transition<Ru
 		SupportConfig supportConfig = lookup.of(supportConfig());
 
 		try {
-			RunningProcess running = RunningProcess.start(runningProcessFactory(), fileSet.executable(), arguments, environment, processConfig, processOutput, supportConfig);
+			T running = RunningProcess.start(runningProcessFactory(), fileSet.executable(), arguments, environment, processConfig, processOutput, supportConfig);
 			return State.of(running, RunningProcess::stop);
 		}
 		catch (IOException ix) {
@@ -123,6 +120,6 @@ public abstract class Starter<T extends RunningProcess> implements Transition<Ru
 	}
 
 	public static ImmutableStarter<RunningProcess> withDefaults() {
-		return with(RunningProcess::withConnectedOutput).build();
+		return with(RunningProcess::withConnectedOutput).destination(StateID.of(RunningProcess.class)).build();
 	}
 }

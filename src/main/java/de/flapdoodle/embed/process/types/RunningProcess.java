@@ -54,9 +54,10 @@ public class RunningProcess {
 	}
 
 	public void stop() {
-		process.stop(timeout);
-		Try.runable(() -> Files.delete(pidFile))
-			.mapCheckedException(RuntimeException::new)
+		Try.runable(() -> process.stop(timeout))
+			.andFinally(onStop::run)
+			.andFinally(Try.runable(() -> Files.delete(pidFile))
+				.mapCheckedException(RuntimeException::new)::run)
 			.run();
 	}
 
