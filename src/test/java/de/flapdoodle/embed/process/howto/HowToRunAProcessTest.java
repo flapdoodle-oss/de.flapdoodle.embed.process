@@ -35,10 +35,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.io.progress.ProgressListeners;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
-import de.flapdoodle.embed.process.store.ArchiveStore;
-import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
-import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
-import de.flapdoodle.embed.process.store.LocalArchiveStore;
+import de.flapdoodle.embed.process.store.*;
 import de.flapdoodle.embed.process.transitions.*;
 import de.flapdoodle.embed.process.types.*;
 import de.flapdoodle.reverse.StateID;
@@ -68,7 +65,7 @@ public class HowToRunAProcessTest {
 			try (ProgressListeners.RemoveProgressListener ignored = ProgressListeners.setProgressListener(new StandardConsoleProgressListener())) {
 //				String serverUrl = "https://bitbucket.org/ariya/phantomjs/downloads/";
 
-				ArchiveStore archiveStore = new LocalArchiveStore(temp.resolve("archives"));
+				DownloadCache downloadCache = new LocalDownloadCache(temp.resolve("archives"));
 				ExtractedFileSetStore extractedFileSetStore = new ContentHashExtractedFileSetStore(temp.resolve("fileSets"));
 
 				Starter starter = Starter.withDefaults();
@@ -100,7 +97,7 @@ public class HowToRunAProcessTest {
 						.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
 						.build()),
 
-					DownloadPackage.with(archiveStore),
+					DownloadPackage.with(downloadCache),
 
 					ExtractPackage.withDefaults()
 						.withExtractedFileSetStore(extractedFileSetStore),

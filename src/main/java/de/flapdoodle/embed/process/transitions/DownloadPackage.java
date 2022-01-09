@@ -30,6 +30,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.nio.directories.TempDir;
 import de.flapdoodle.embed.process.store.ArchiveStore;
+import de.flapdoodle.embed.process.store.DownloadCache;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;
 import de.flapdoodle.reverse.State;
@@ -61,7 +62,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		return StateID.of(Name.class);
 	}
 
-	protected abstract ArchiveStore archiveStore();
+	protected abstract DownloadCache downloadCache();
 
 	@Value.Default
 	protected UrlStreams.DownloadCopyListener downloadCopyListener() {
@@ -109,7 +110,11 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		Name name = lookup.of(name());
 		TempDir temp = lookup.of(tempDirectory());
 
-		Optional<Path> archive = archiveStore().archiveFor(name.value(), dist, distPackage.archiveType());
+		URL downloadUrl = Try.supplier(() -> new URL(distPackage.url()))
+			.mapCheckedException(RuntimeException::new)
+			.get();
+
+		Optional<Path> archive = downloadCache().archiveFor(downloadUrl, distPackage.archiveType());
 		if (archive.isPresent()) {
 			return State.of(archive.map(Archive::of).get());
 		} else {
@@ -119,14 +124,13 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 				.resolve(UUID.randomUUID().toString());
 
 			Try.runable(() -> {
-					URL downloadUrl = new URL(distPackage.url());
 					URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, downloadConfig().getUserAgent(), downloadConfig().getTimeoutConfig(),
 						downloadConfig().proxyFactory().map(ProxyFactory::createProxy));
 					UrlStreams.downloadTo(connection, downloadedArchive, downloadCopyListener());
 				}).mapCheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
 				.run();
 
-			Path storedArchive = Try.supplier(() -> archiveStore().store(name.value(), dist, distPackage.archiveType(), downloadedArchive))
+			Path storedArchive = Try.supplier(() -> downloadCache().store(downloadUrl, distPackage.archiveType(), downloadedArchive))
 				.mapCheckedException(cause -> new IllegalArgumentException("could not store downloaded artifact", cause))
 				.get();
 			
@@ -136,8 +140,8 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		}
 	}
 
-	public static ImmutableDownloadPackage with(ArchiveStore archiveStore) {
-		return builder().archiveStore(archiveStore).build();
+	public static ImmutableDownloadPackage with(DownloadCache downloadCache) {
+		return builder().downloadCache(downloadCache).build();
 	}
 
 	public static ImmutableDownloadPackage.Builder builder() {

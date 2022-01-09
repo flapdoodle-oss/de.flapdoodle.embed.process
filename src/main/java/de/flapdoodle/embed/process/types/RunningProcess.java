@@ -5,9 +5,9 @@
  *
  * with contributions from
  * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ Archimedes Trajano (trajano@github),
+ Kevin D. Keck (kdkeck@github),
+ Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class RunningProcess {
 	}
 
 	public RunningProcess(ProcessControl process, ProcessOutput processOutput, Path pidFile, long timeout) {
-		this(process, pidFile, timeout , connectIOTo(process, processOutput));
+		this(process, pidFile, timeout, connectIOTo(process, processOutput));
 	}
 
 	private static Runnable connectIOTo(ProcessControl process, ProcessOutput processOutput) {
@@ -65,11 +65,17 @@ public class RunningProcess {
 	}
 
 	public void stop() {
-		Try.runable(() -> process.stop(timeout))
-			.andFinally(onStop)
-			.andFinally(Try.runable(() -> Files.delete(pidFile))
-				.mapCheckedException(RuntimeException::new)::run)
-			.run();
+		try {
+			process.stop(timeout);
+		} finally {
+			try {
+				onStop.run();
+			} finally {
+				Try.runable(() -> Files.delete(pidFile))
+					.mapCheckedException(RuntimeException::new)
+					.run();
+			}
+		}
 	}
 
 	public static <T extends RunningProcess> T start(
@@ -119,7 +125,7 @@ public class RunningProcess {
 	}
 
 	private static Path pidFile(Path executableFile) {
-		return executableFile.getParent().resolve(executableBaseName(executableFile.getFileName().toString())+".pid");
+		return executableFile.getParent().resolve(executableBaseName(executableFile.getFileName().toString()) + ".pid");
 	}
 
 	private static void writePidFile(Path pidFile, long pid) throws IOException {

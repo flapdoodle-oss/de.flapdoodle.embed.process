@@ -30,6 +30,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
+/**
+ * @see DownloadCache
+ */
+@Deprecated
 public interface ArchiveStore {
 	Optional<Path> archiveFor(String name, Distribution distribution, ArchiveType archiveType);
 
