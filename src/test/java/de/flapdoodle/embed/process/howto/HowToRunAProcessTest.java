@@ -68,7 +68,8 @@ public class HowToRunAProcessTest {
 				DownloadCache downloadCache = new LocalDownloadCache(temp.resolve("archives"));
 				ExtractedFileSetStore extractedFileSetStore = new ContentHashExtractedFileSetStore(temp.resolve("fileSets"));
 
-				Starter starter = Starter.withDefaults();
+//				Starter starter = Starter.withDefaults();
+				Executer starter = Executer.withDefaults();
 
 				List<Transition<?>> transitions = Arrays.asList(
 					InitTempDirectory.with(temp),

@@ -40,19 +40,52 @@ import java.util.Map;
 import java.util.Set;
 
 @Value.Immutable
-public abstract class Starter<T extends RunningProcess> extends RunAProcess<T, T> implements HasLabel {
+public abstract class Executer<R extends RunningProcess, T extends ExecutedProcess> extends RunAProcess<R, T> implements HasLabel {
 
 	@Override
 	@Value.Default
 	public String transitionLabel() {
-		return "Starter";
+		return "Execute";
+	}
+
+	@Value.Default
+	public StateID<ExtractedFileSet> processExecutable() {
+		return StateID.of(ExtractedFileSet.class);
+	}
+
+	@Value.Default
+	public StateID<ProcessConfig> processConfig() {
+		return StateID.of(ProcessConfig.class);
+	}
+
+	@Value.Default
+	public StateID<ProcessEnv> processEnv() {
+		return StateID.of(ProcessEnv.class);
+	}
+
+	@Value.Default
+	public StateID<ProcessArguments> arguments() {
+		return StateID.of(ProcessArguments.class);
+	}
+
+	@Value.Default
+	public StateID<ProcessOutput> processOutput() {
+		return StateID.of(ProcessOutput.class);
+	}
+
+	@Value.Default
+	public StateID<SupportConfig> supportConfig() {
+		return StateID.of(SupportConfig.class);
 	}
 
 	@Override
 	public abstract StateID<T> destination();
 
 	@Builder.Parameter
-	protected abstract RunningProcessFactory<T> runningProcessFactory();
+	protected abstract RunningProcessFactory<R> runningProcessFactory();
+
+	@Builder.Parameter
+	protected abstract ExecutedProcessFactory<R, T> executedProcessFactory();
 
 	@Override
 	public Set<StateID<?>> sources() {
@@ -76,20 +109,23 @@ public abstract class Starter<T extends RunningProcess> extends RunAProcess<T, T
 		SupportConfig supportConfig = lookup.of(supportConfig());
 
 		try {
-			T running = RunningProcess.start(runningProcessFactory(), fileSet.executable(), arguments, environment, processConfig, processOutput, supportConfig);
-			return State.of(running, RunningProcess::stop);
+			R running = RunningProcess.start(runningProcessFactory(), fileSet.executable(), arguments, environment, processConfig, processOutput, supportConfig);
+			T executedProcess = executedProcessFactory().stop(running);
+			return State.of(executedProcess);
 		}
 		catch (IOException ix) {
-			throw new RuntimeException("could not start process", ix);
+			throw new RuntimeException("could not execute process", ix);
 		}
 	}
 
-	public static <T extends RunningProcess> ImmutableStarter.Builder<T> with(RunningProcessFactory<T> runningProcessFactory) {
-		return ImmutableStarter.builder(runningProcessFactory);
+	public static <R extends RunningProcess, T extends ExecutedProcess> ImmutableExecuter.Builder<R, T> with(
+		RunningProcessFactory<R> runningProcessFactory, ExecutedProcessFactory<R, T> executedProcessFactory) {
+		return ImmutableExecuter.builder(runningProcessFactory, executedProcessFactory);
 	}
 
-	public static ImmutableStarter<RunningProcess> withDefaults() {
-		return Starter.<RunningProcess>with(RunningProcessImpl::new)
-			.destination(StateID.of(RunningProcess.class)).build();
+	public static ImmutableExecuter<RunningProcessImpl, ExecutedProcess> withDefaults() {
+		return with(RunningProcessImpl::new, ExecutedProcessImpl::stop)
+			.destination(StateID.of(ExecutedProcess.class))
+			.build();
 	}
 }
