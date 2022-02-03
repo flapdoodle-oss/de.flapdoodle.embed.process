@@ -50,7 +50,13 @@ public abstract class ExtractedFileSets {
 				.baseDirIsGenerated(directory.isGenerated());
 
 		Files.createOrCheckDir(Files.fileOf(destination, oldExe).getParentFile());
-		Path newExeFile = java.nio.file.Files.copy(Files.fileOf(baseDir, oldExe).toPath(), Files.fileOf(destination, executableNaming.nameFor("extract", oldExe.getName())).toPath());
+		Path newExeFile = Files.fileOf(destination, executableNaming.nameFor("extract", oldExe.getName())).toPath();
+		if (!java.nio.file.Files.exists(newExeFile)) {
+			java.nio.file.Files.copy(Files.fileOf(baseDir, oldExe).toPath(), newExeFile);
+		}
+		else {
+			logger.info("Will not override {} because it already exists.", newExeFile);
+		}
 		builder.executable(newExeFile.toFile());
 
 		for (File srcFile : src.libraryFiles()) {
