@@ -23,21 +23,17 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import de.flapdoodle.embed.process.io.directories.Directory;
+import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.flapdoodle.embed.process.io.directories.Directory;
-import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 
 /**
  *
@@ -150,7 +146,6 @@ public class Files {
 			java.nio.file.Files.walkFileTree(path, DeleteDirVisitor.getInstance());
 		}
 	}
-
 	private static class DeleteDirVisitor extends SimpleFileVisitor<Path> {
 		public static SimpleFileVisitor<Path> getInstance() {
 			return DELETE_DIR_VISITOR;
@@ -211,5 +206,28 @@ public class Files {
 
 	public static File fileOf(File base, String relative) {
 		return base.toPath().resolve(relative).toFile();
+	}
+
+	public static boolean sameContent(Path source, Path destination) throws IOException {
+		if (java.nio.file.Files.exists(source) && java.nio.file.Files.exists(destination)) {
+			if (java.nio.file.Files.isReadable(source) && java.nio.file.Files.isReadable(destination)) {
+				try (BufferedInputStream fis1 = new BufferedInputStream(new FileInputStream(source.toFile()));
+					BufferedInputStream fis2 = new BufferedInputStream(new FileInputStream(destination.toFile()))) {
+
+					int chl;
+					int chr;
+					do {
+						chl = fis1.read();
+						chr = fis2.read();
+						if (chl != chr) {
+							return false;
+						}
+					} while (chl != -1);
+
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

@@ -26,6 +26,7 @@ package de.flapdoodle.embed.process.extract;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +51,10 @@ public abstract class ExtractedFileSets {
 				.baseDirIsGenerated(directory.isGenerated());
 
 		Files.createOrCheckDir(Files.fileOf(destination, oldExe).getParentFile());
+		File source = Files.fileOf(baseDir, oldExe);
 		Path newExeFile = Files.fileOf(destination, executableNaming.nameFor("extract", oldExe.getName())).toPath();
-		if (!java.nio.file.Files.exists(newExeFile)) {
-			java.nio.file.Files.copy(Files.fileOf(baseDir, oldExe).toPath(), newExeFile);
-		}
-		else {
-			logger.info("Will not override {} because it already exists.", newExeFile);
+		if (!java.nio.file.Files.exists(newExeFile) || !Files.sameContent(source.toPath(), newExeFile)) {
+			java.nio.file.Files.copy(source.toPath(), newExeFile, StandardCopyOption.REPLACE_EXISTING);
 		}
 		builder.executable(newExeFile.toFile());
 
