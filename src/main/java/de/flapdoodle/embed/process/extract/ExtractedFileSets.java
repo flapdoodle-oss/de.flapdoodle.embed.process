@@ -23,6 +23,14 @@
  */
 package de.flapdoodle.embed.process.extract;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.flapdoodle.embed.process.extract.ImmutableExtractedFileSet.Builder;
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.file.Files;
@@ -50,7 +58,11 @@ public abstract class ExtractedFileSets {
 				.baseDirIsGenerated(directory.isGenerated());
 
 		Files.createOrCheckDir(Files.fileOf(destination, oldExe).getParentFile());
-		Path newExeFile = java.nio.file.Files.copy(Files.fileOf(baseDir, oldExe).toPath(), Files.fileOf(destination, executableNaming.nameFor("extract", oldExe.getName())).toPath());
+		File source = Files.fileOf(baseDir, oldExe);
+		Path newExeFile = Files.fileOf(destination, executableNaming.nameFor("extract", oldExe.getName())).toPath();
+		if (!java.nio.file.Files.exists(newExeFile) || !Files.sameContent(source.toPath(), newExeFile)) {
+			java.nio.file.Files.copy(source.toPath(), newExeFile, StandardCopyOption.REPLACE_EXISTING);
+		}
 		builder.executable(newExeFile.toFile());
 
 		for (File srcFile : src.libraryFiles()) {
