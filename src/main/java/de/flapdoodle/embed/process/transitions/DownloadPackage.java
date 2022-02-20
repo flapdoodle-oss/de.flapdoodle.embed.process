@@ -62,7 +62,10 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		return StateID.of(Name.class);
 	}
 
-	protected abstract DownloadCache downloadCache();
+	@Value.Default
+	protected StateID<DownloadCache> downloadCache() {
+		return StateID.of(DownloadCache.class);
+	}
 
 	@Value.Default
 	protected UrlStreams.DownloadCopyListener downloadCopyListener() {
@@ -99,7 +102,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 	@Override
 	@Value.Auxiliary
 	public final Set<StateID<?>> sources() {
-		return StateID.setOf(distribution(), distPackage(), name(), tempDirectory());
+		return StateID.setOf(distribution(), distPackage(), name(), tempDirectory(), downloadCache());
 	}
 
 	@Override
@@ -107,6 +110,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 	public State<Archive> result(StateLookup lookup) {
 		Distribution dist = lookup.of(distribution());
 		Package distPackage = lookup.of(distPackage());
+		DownloadCache downloadCache = lookup.of(downloadCache());
 		Name name = lookup.of(name());
 		TempDir temp = lookup.of(tempDirectory());
 
@@ -114,7 +118,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 			.mapCheckedException(RuntimeException::new)
 			.get();
 
-		Optional<Path> archive = downloadCache().archiveFor(downloadUrl, distPackage.archiveType());
+		Optional<Path> archive = downloadCache.archiveFor(downloadUrl, distPackage.archiveType());
 		if (archive.isPresent()) {
 			return State.of(archive.map(Archive::of).get());
 		} else {
@@ -130,7 +134,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 				}).mapCheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
 				.run();
 
-			Path storedArchive = Try.supplier(() -> downloadCache().store(downloadUrl, distPackage.archiveType(), downloadedArchive))
+			Path storedArchive = Try.supplier(() -> downloadCache.store(downloadUrl, distPackage.archiveType(), downloadedArchive))
 				.mapCheckedException(cause -> new IllegalArgumentException("could not store downloaded artifact", cause))
 				.get();
 			
@@ -140,12 +144,11 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		}
 	}
 
-	public static ImmutableDownloadPackage with(DownloadCache downloadCache) {
-		return builder().downloadCache(downloadCache).build();
-	}
-
 	public static ImmutableDownloadPackage.Builder builder() {
 		return ImmutableDownloadPackage.builder();
 	}
 
+	public static ImmutableDownloadPackage withDefaults() {
+		return builder().build();
+	}
 }

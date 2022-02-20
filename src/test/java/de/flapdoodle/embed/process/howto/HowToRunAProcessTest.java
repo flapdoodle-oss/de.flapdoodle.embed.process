@@ -65,15 +65,19 @@ public class HowToRunAProcessTest {
 			try (ProgressListeners.RemoveProgressListener ignored = ProgressListeners.setProgressListener(new StandardConsoleProgressListener())) {
 //				String serverUrl = "https://bitbucket.org/ariya/phantomjs/downloads/";
 
-				DownloadCache downloadCache = new LocalDownloadCache(temp.resolve("archives"));
-				ExtractedFileSetStore extractedFileSetStore = new ContentHashExtractedFileSetStore(temp.resolve("fileSets"));
-
-//				Starter starter = Starter.withDefaults();
 				Executer starter = Executer.withDefaults();
 
-				List<Transition<?>> transitions = Arrays.asList(
+				Transitions transitions = Transitions.from(
 					InitTempDirectory.with(temp),
-					
+
+					Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
+							.state(DownloadCache.class)
+								.deriveBy(t -> new LocalDownloadCache(t.value().resolve("archives"))),
+
+					Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
+						.state(ExtractedFileSetStore.class)
+						.deriveBy(t -> new ContentHashExtractedFileSetStore(t.value().resolve("fileSets"))),
+
 					Start.to(Name.class).initializedWith(Name.of("phantomjs")).withTransitionLabel("create Name"),
 
 					Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()).withTransitionLabel("create default"),
@@ -98,17 +102,17 @@ public class HowToRunAProcessTest {
 						.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
 						.build()),
 
-					DownloadPackage.with(downloadCache),
+					DownloadPackage.withDefaults(),
 
 					ExtractPackage.withDefaults()
-						.withExtractedFileSetStore(extractedFileSetStore),
+						.withExtractedFileSetStore(StateID.of(ExtractedFileSetStore.class)),
 
 					starter
 				);
 
-				TransitionWalker init = TransitionWalker.with(transitions);
+				TransitionWalker init = transitions.walker();
 
-				String dot = Transitions.edgeGraphAsDot("sample", Transitions.asGraph(transitions));
+				String dot = Transitions.edgeGraphAsDot("sample", transitions.asGraph());
 				System.out.println("------------------------------");
 				System.out.println(dot);
 				System.out.println("------------------------------");

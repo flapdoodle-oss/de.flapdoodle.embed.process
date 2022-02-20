@@ -46,7 +46,7 @@ import java.util.Set;
 @Value.Immutable
 public abstract class ExtractPackage implements Transition<ExtractedFileSet>, HasLabel {
 
-	protected abstract Optional<ExtractedFileSetStore> extractedFileSetStore();
+//	protected abstract Optional<ExtractedFileSetStore> extractedFileSetStore();
 
 	@Override
 	@Value.Default
@@ -80,10 +80,13 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 		return StateID.of(TempDir.class);
 	}
 
+	protected abstract Optional<StateID<ExtractedFileSetStore>> extractedFileSetStore();
 
 	@Override
 	public Set<StateID<?>> sources() {
-		return StateID.setOf(archive(), distPackage(), name(), tempDir());
+		return extractedFileSetStore().isPresent()
+			? StateID.setOf(archive(), distPackage(), name(), tempDir(), extractedFileSetStore().get())
+			: StateID.setOf(archive(), distPackage(), name(), tempDir());
 	}
 
 	@Override
@@ -93,13 +96,15 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 		Name name = lookup.of(name());
 		TempDir tempDir = lookup.of(tempDir());
 
+		Optional<ExtractedFileSetStore> store = extractedFileSetStore().map(lookup::of);
+
 		Path destination = Try.apply(tempDir::createDirectory, name.value());
-		return extractedFileSet(dist, archive, destination);
+		return extractedFileSet(dist, archive, destination, store);
 	}
 
-	private State<ExtractedFileSet> extractedFileSet(Package dist, Archive archive, Path destination) {
-		if (extractedFileSetStore().isPresent()) {
-			ExtractedFileSetStore store = extractedFileSetStore().get();
+	private State<ExtractedFileSet> extractedFileSet(Package dist, Archive archive, Path destination, Optional<ExtractedFileSetStore> extractedFileSetStore) {
+		if (extractedFileSetStore.isPresent()) {
+			ExtractedFileSetStore store = extractedFileSetStore.get();
 			Optional<ExtractedFileSet> cachedExtractedFileSet = store.extractedFileSet(archive.value(), dist.fileSet());
 			if (cachedExtractedFileSet.isPresent()) {
 				return State.of(cachedExtractedFileSet.get());
