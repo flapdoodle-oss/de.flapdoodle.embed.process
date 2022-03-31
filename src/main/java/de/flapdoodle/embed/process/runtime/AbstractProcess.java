@@ -42,6 +42,8 @@ import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.io.file.Files;
 
+import java.util.concurrent.TimeUnit;
+
 public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>
 		implements IStopable {
 
@@ -198,8 +200,16 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 		}
 	}
 
+	@Deprecated
+	/**
+	 * @see AbstractProcess#waitFor(long, TimeUnit)
+	 */
 	public int waitFor() throws InterruptedException {
 		return process.waitFor();
+	}
+
+	public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
+		return process.waitFor(timeout, unit);
 	}
 
 	protected void setProcessId(long processId) {
