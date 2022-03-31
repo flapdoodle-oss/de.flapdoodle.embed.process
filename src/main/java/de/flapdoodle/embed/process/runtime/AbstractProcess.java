@@ -200,16 +200,8 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 		}
 	}
 
-	@Deprecated
-	/**
-	 * @see AbstractProcess#waitFor(long, TimeUnit)
-	 */
 	public int waitFor() throws InterruptedException {
 		return process.waitFor();
-	}
-
-	public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
-		return process.waitFor(timeout, unit);
 	}
 
 	protected void setProcessId(long processId) {
