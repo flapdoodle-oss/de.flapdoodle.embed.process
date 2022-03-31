@@ -199,16 +199,8 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 		}
 	}
 
-	@Deprecated
-	/**
-	 * @see AbstractProcess#waitFor(long, TimeUnit) 
-	 */
 	public int waitFor() throws InterruptedException {
 		return process.waitFor();
-	}
-	
-	public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
-		return process.waitFor(timeout, unit);
 	}
 
 	protected void setProcessId(long processId) {
@@ -219,7 +211,7 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 		return getProcessId() > 0 && Processes.killProcess(config.supportConfig(), distribution.platform(),
 				StreamToLineProcessor.wrap(runtimeConfig.processOutput().commands()), getProcessId());
 	}
-	
+
 	protected boolean sendTermToProcess() {
 		return getProcessId() > 0 && Processes.termProcess(config.supportConfig(), distribution.platform(),
 				StreamToLineProcessor.wrap(runtimeConfig.processOutput().commands()), getProcessId());
