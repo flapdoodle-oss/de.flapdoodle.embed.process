@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Deprecated
 public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>
@@ -198,8 +199,16 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 		}
 	}
 
+	@Deprecated
+	/**
+	 * @see AbstractProcess#waitFor(long, TimeUnit) 
+	 */
 	public int waitFor() throws InterruptedException {
 		return process.waitFor();
+	}
+	
+	public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
+		return process.waitFor(timeout, unit);
 	}
 
 	protected void setProcessId(long processId) {

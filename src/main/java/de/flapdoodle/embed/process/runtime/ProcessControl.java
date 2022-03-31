@@ -196,8 +196,16 @@ public class ProcessControl {
 		return false;
 	}
 
+	@Deprecated
+	/**
+	 * @see ProcessControl#waitFor(long, TimeUnit)
+	 */
 	public int waitFor() throws InterruptedException {
 		return process.waitFor();
+	}
+
+	public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
+		return process.waitFor(timeout, unit);
 	}
 
 	public static void addShutdownHook(Runnable runnable) {
