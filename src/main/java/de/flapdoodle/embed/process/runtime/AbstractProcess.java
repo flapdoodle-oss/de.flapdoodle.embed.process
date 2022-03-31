@@ -203,6 +203,10 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 		return process.waitFor();
 	}
 
+	public int waitFor(long timeoutInMs) throws InterruptedException {
+		return process.waitFor(timeoutInMs);
+	}
+
 	protected void setProcessId(long processId) {
 		this.processId = processId;
 	}

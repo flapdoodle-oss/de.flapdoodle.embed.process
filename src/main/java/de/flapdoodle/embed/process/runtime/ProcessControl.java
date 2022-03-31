@@ -200,6 +200,16 @@ public class ProcessControl {
 		return process.waitFor();
 	}
 
+	public int waitFor(long timeoutInMs) throws InterruptedException {
+		synchronized (process) {
+			while (process.isAlive()) {
+				process.wait(timeoutInMs);
+			}
+
+			return process.exitValue();
+		}
+	}
+
 	public static void addShutdownHook(Runnable runnable) {
 		Runtime.getRuntime().addShutdownHook(new Thread(runnable));
 	}
