@@ -5,9 +5,9 @@
  *
  * with contributions from
  * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ Archimedes Trajano (trajano@github),
+ Kevin D. Keck (kdkeck@github),
+ Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,34 +25,48 @@ package de.flapdoodle.embed.process.howto;
 
 import de.flapdoodle.embed.process.HttpServers;
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
-import de.flapdoodle.embed.process.config.Defaults;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
+import de.flapdoodle.embed.process.config.store.FileSet;
+import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.Package;
-import de.flapdoodle.embed.process.config.store.*;
-import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.io.progress.ProgressListeners;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
-import de.flapdoodle.embed.process.store.*;
+import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
+import de.flapdoodle.embed.process.store.DownloadCache;
+import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
+import de.flapdoodle.embed.process.store.LocalDownloadCache;
 import de.flapdoodle.embed.process.transitions.*;
 import de.flapdoodle.embed.process.types.*;
 import de.flapdoodle.reverse.StateID;
-import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.TransitionWalker;
 import de.flapdoodle.reverse.Transitions;
 import de.flapdoodle.reverse.transitions.Derive;
 import de.flapdoodle.reverse.transitions.Start;
-import org.junit.jupiter.api.Disabled;
+import de.flapdoodle.testdoc.Recorder;
+import de.flapdoodle.testdoc.Recording;
+import de.flapdoodle.testdoc.TabSize;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HowToRunAProcessTest {
+
+	@RegisterExtension
+	public static Recording recording = Recorder.with("HowToRunAProcess.md", TabSize.spaces(2));
+
 	private static Map<String, String> resourceResponseMap = new LinkedHashMap<String, String>() {{
 		put("/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2", "/archives/phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2");
 	}};
@@ -60,23 +74,25 @@ public class HowToRunAProcessTest {
 	@Test
 	public void rebuildSample(@TempDir Path temp) throws IOException {
 		try (HttpServers.Server server = HttpServers.httpServer(getClass(), resourceResponseMap)) {
-			String serverUrl = server.serverUrl()+"/ariya/phantomjs/downloads/";
+			String serverUrl = server.serverUrl() + "/ariya/phantomjs/downloads/";
 
 			try (ProgressListeners.RemoveProgressListener ignored = ProgressListeners.setProgressListener(new StandardConsoleProgressListener())) {
 //				String serverUrl = "https://bitbucket.org/ariya/phantomjs/downloads/";
 
-				Executer starter = Executer.withDefaults();
+				recording.begin();
 
 				Transitions transitions = Transitions.from(
 					InitTempDirectory.with(temp),
 
 					Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
-							.state(DownloadCache.class)
-								.deriveBy(t -> new LocalDownloadCache(t.value().resolve("archives"))),
+						.state(DownloadCache.class)
+						.deriveBy(tempDir -> new LocalDownloadCache(tempDir.value().resolve("archives")))
+						.withTransitionLabel("setup DownloadCache"),
 
 					Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
 						.state(ExtractedFileSetStore.class)
-						.deriveBy(t -> new ContentHashExtractedFileSetStore(t.value().resolve("fileSets"))),
+						.deriveBy(tempDir -> new ContentHashExtractedFileSetStore(tempDir.value().resolve("fileSets")))
+						.withTransitionLabel("setup ExtractedFileSetStore"),
 
 					Start.to(Name.class).initializedWith(Name.of("phantomjs")).withTransitionLabel("create Name"),
 
@@ -107,41 +123,24 @@ public class HowToRunAProcessTest {
 					ExtractPackage.withDefaults()
 						.withExtractedFileSetStore(StateID.of(ExtractedFileSetStore.class)),
 
-					starter
+					Executer.withDefaults()
 				);
 
 				TransitionWalker init = transitions.walker();
 
 				String dot = Transitions.edgeGraphAsDot("sample", transitions.asGraph());
-				System.out.println("------------------------------");
-				System.out.println(dot);
-				System.out.println("------------------------------");
-
-//				try (TransitionWalker.ReachedState<de.flapdoodle.embed.process.archives.ExtractedFileSet> test = init.initState(StateID.of(de.flapdoodle.embed.process.archives.ExtractedFileSet.class))) {
-//					System.out.println("fileSet: " + test.current());
-//				}
+				recording.output("sample.dot", dot);
 
 				try (TransitionWalker.ReachedState<Archive> withArchive = init.initState(StateID.of(Archive.class))) {
-					System.out.println("with archive: " + withArchive.current());
-
 					try (TransitionWalker.ReachedState<ExtractedFileSet> withFileSet = withArchive.initState(StateID.of(ExtractedFileSet.class))) {
-						System.out.println("with fileSet: " + withFileSet.current());
-					}
-
-					try (TransitionWalker.ReachedState<ExtractedFileSet> withFileSet = withArchive.initState(StateID.of(ExtractedFileSet.class))) {
-						System.out.println("with fileSet(2): " + withFileSet.current());
-					}
-
-					try (TransitionWalker.ReachedState<RunningProcess> started = withArchive.initState(starter.destination())) {
-						System.out.println("started: " + started.current());
+						try (TransitionWalker.ReachedState<ExecutedProcess> started = withFileSet.initState(StateID.of(ExecutedProcess.class))) {
+							assertThat(started.current().returnCode())
+								.isEqualTo(0);
+						}
 					}
 				}
 
-				if (false) {
-					try (TransitionWalker.ReachedState<RunningProcess> started = init.initState(starter.destination())) {
-						System.out.println("started: " + started.current());
-					}
-				}
+				recording.end();
 			}
 		}
 	}

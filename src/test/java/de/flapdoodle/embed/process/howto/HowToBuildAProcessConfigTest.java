@@ -60,7 +60,7 @@ import java.util.Optional;
 public class HowToBuildAProcessConfigTest {
 
 	@Test
-	@Ignore("enable when refactoring is dome")
+	@Ignore("enable when refactoring is done")
 	public void readableSample() {
 
 		try (TransitionWalker.ReachedState<Path> tempArtifactStorePath = TransitionWalker.with(Collections.singletonList(
@@ -167,10 +167,6 @@ public class HowToBuildAProcessConfigTest {
 		};
 	}
 
-	private static State<Path> artifactPath(Path storePath, DistributionPackage dist) {
-		return State.of(storePath.resolve(dist.archivePath()));
-	}
-
 	private static State<Path> artifactStore() {
 		return Try.supplier(() -> {
 			Path artifactStore = Files.createTempDirectory("artifactStore-");
@@ -215,19 +211,6 @@ public class HowToBuildAProcessConfigTest {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static State<URL> downloadUrl(DownloadPath path, DistributionPackage dist) {
-		try {
-			return State.of(new URL(path.value() + dist.archivePath()));
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("could not create downloadUrl for " + path + " and " + dist);
-		}
-	}
-
-	private static State<DistributionPackage> packageOf(Distribution distribution) {
-		ArchiveType archiveType = getArchiveType(distribution);
-		return State.of(DistributionPackage.of(archiveType, fileSetFor(distribution), getPath(distribution, archiveType)));
 	}
 
 	private static FileSet fileSetFor(Distribution distribution) {

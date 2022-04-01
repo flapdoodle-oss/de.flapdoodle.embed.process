@@ -21,6 +21,8 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 ## Howto
 
+[How to run a process](HowToRunAProcess.md)
+
 ### Maven
 
 Stable (Maven Central Repository, Released: 31.03.2022 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
