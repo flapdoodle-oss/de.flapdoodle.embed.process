@@ -145,48 +145,4 @@ public class HowToRunAProcessTest {
 			}
 		}
 	}
-
-	@Test
-	@Disabled
-	public void sample() throws IOException {
-		try (HttpServers.Server server = HttpServers.httpServer(getClass(), resourceResponseMap)) {
-			String serverUrl = server.serverUrl() + "/ariya/phantomjs/downloads/";
-
-			PackageResolver packageResolver = (dist) -> {
-				return DistributionPackage.builder().archiveType(ArchiveType.TBZ2)
-					.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
-					.archivePath("phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2").build();
-			};
-
-			Starter starter = Starter.withDefaults();
-			Executable executable = Executable.with(Defaults.artifactStore(Defaults.genericDownloadConfig("phantomjs",
-				serverUrl /*"https://bitbucket.org/ariya/phantomjs/downloads/"*/, packageResolver)));
-
-			List<Transition<?>> transitions = Arrays.asList(
-				Start.to(Version.class).initializedWith(Version.of("2.1.1")),
-				Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()),
-				Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()),
-				Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())),
-				Start.to(ProcessOutput.class).initializedWith(ProcessOutput.namedConsole("phantomjs")),
-				Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))),
-				Derive.given(de.flapdoodle.embed.process.extract.ExtractedFileSet.class).state(ProcessExecutable.class).deriveBy(fileSet -> ProcessExecutable.of(fileSet.executable())),
-				Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
-
-				//Start.to(ProcessExecutable.class).initializedWith(ProcessExecutable.of())
-				executable,
-				starter
-			);
-
-			String dot = Transitions.edgeGraphAsDot("sample", Transitions.asGraph(transitions));
-			System.out.println("------------------------------");
-			System.out.println(dot);
-			System.out.println("------------------------------");
-
-			TransitionWalker init = TransitionWalker.with(transitions);
-
-			try (TransitionWalker.ReachedState<RunningProcess> started = init.initState(starter.destination())) {
-				System.out.println("started: " + started.current());
-			}
-		}
-	}
 }
