@@ -7,3 +7,5 @@ ${rebuildSample}
 ```dot
 ${rebuildSample.sample.dot}
 ```
+
+![dot file](HowToRunAProcess.png)
