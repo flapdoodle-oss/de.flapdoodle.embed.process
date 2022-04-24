@@ -116,23 +116,23 @@ digraph "sample" {
 	"de.flapdoodle.embed.process.transitions.ImmutablePackageOfDistribution:0" -> "<empty>:interface de.flapdoodle.embed.process.config.store.Package";
 	"<empty>:class de.flapdoodle.embed.process.distribution.Distribution" -> "de.flapdoodle.embed.process.transitions.ImmutablePackageOfDistribution:0";
 	"de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0" -> "<empty>:class de.flapdoodle.embed.process.types.Archive";
-	"<empty>:interface de.flapdoodle.embed.process.config.store.Package" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
 	"<empty>:interface de.flapdoodle.embed.process.store.DownloadCache" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
-	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
-	"<empty>:class de.flapdoodle.embed.process.distribution.Distribution" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
+	"<empty>:interface de.flapdoodle.embed.process.config.store.Package" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
 	"<empty>:class de.flapdoodle.embed.process.types.Name" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
+	"<empty>:class de.flapdoodle.embed.process.distribution.Distribution" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
+	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
 	"de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0" -> "<empty>:class de.flapdoodle.embed.process.archives.ExtractedFileSet";
 	"<empty>:interface de.flapdoodle.embed.process.config.store.Package" -> "de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0";
-	"<empty>:class de.flapdoodle.embed.process.types.Archive" -> "de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0";
-	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0";
 	"<empty>:interface de.flapdoodle.embed.process.store.ExtractedFileSetStore" -> "de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0";
 	"<empty>:class de.flapdoodle.embed.process.types.Name" -> "de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0";
+	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0";
+	"<empty>:class de.flapdoodle.embed.process.types.Archive" -> "de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0";
 	"de.flapdoodle.embed.process.transitions.ImmutableExecuter:0" -> "<empty>:interface de.flapdoodle.embed.process.types.ExecutedProcess";
-	"<empty>:class de.flapdoodle.embed.process.types.ProcessEnv" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
-	"<empty>:class de.flapdoodle.embed.process.archives.ExtractedFileSet" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
-	"<empty>:interface de.flapdoodle.embed.process.types.ProcessConfig" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
-	"<empty>:interface de.flapdoodle.embed.process.config.SupportConfig" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 	"<empty>:class de.flapdoodle.embed.process.types.ProcessArguments" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
+	"<empty>:interface de.flapdoodle.embed.process.types.ProcessConfig" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
+	"<empty>:class de.flapdoodle.embed.process.archives.ExtractedFileSet" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
+	"<empty>:class de.flapdoodle.embed.process.types.ProcessEnv" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
+	"<empty>:interface de.flapdoodle.embed.process.config.SupportConfig" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 	"<empty>:class de.flapdoodle.embed.process.config.io.ProcessOutput" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 }
 
