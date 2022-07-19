@@ -56,6 +56,10 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 ### Changelog
 
+#### 3.1.11
+
+- platform detection override, see [de.flapdoodle.os](https://github.com/flapdoodle-oss/de.flapdoodle.os)
+
 #### 3.1.10
 
 - Process.waitFor with timeout (second try)
