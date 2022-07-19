@@ -66,6 +66,8 @@ public abstract class Processes {
 		case "RELEASE_15":
 		case "RELEASE_16":
 		case "RELEASE_17":
+		case "RELEASE_18":
+		case "RELEASE_19":
 			PID_HELPER = PidHelper.JDK_11;
 			break;
 		default:
