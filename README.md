@@ -28,7 +28,7 @@ Stable (Maven Central Repository, Released: 19.07.2022 - wait 24hrs for [maven c
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.1.13</version>
+		<version>3.1.14</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -36,7 +36,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.1.14-SNAPSHOT</version>
+		<version>3.1.15-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -53,6 +53,10 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 - Embedded Cassandra [com.github.nosan.embedded.cassandra](https://github.com/nosan/embedded-cassandra)
 
 ### Changelog
+
+#### 3.1.24
+
+- NPE fix, cleanup fix
 
 #### 3.1.12
 
