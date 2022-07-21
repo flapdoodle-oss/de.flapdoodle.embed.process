@@ -232,7 +232,8 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	}
 
 	public long getProcessId() {
-		Long pid = process.getPid();
+		// NPE can occure if process start failed
+		Long pid = process != null ? process.getPid() : null;
 		return pid!=null ? pid : processId;
 	}
 
