@@ -172,11 +172,14 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	public synchronized final void stop() {
 		if (!stopped) {
 			stopped = true;
-			stopInternal();
-			onAfterProcessStop(this.config, this.runtimeConfig);
-			cleanupInternal();
-			if (pidFile.exists() && !Files.forceDelete(pidFile)) {
-				logger.warn("Could not delete pid file: {}", pidFile);
+			try {
+				stopInternal();
+			} finally {
+				onAfterProcessStop(this.config, this.runtimeConfig);
+				cleanupInternal();
+				if (pidFile.exists() && !Files.forceDelete(pidFile)) {
+					logger.warn("Could not delete pid file: {}", pidFile);
+				}
 			}
 		}
 	}
@@ -231,7 +234,8 @@ public abstract class AbstractProcess<T extends ExecutableProcessConfig, E exten
 	}
 
 	public long getProcessId() {
-		Long pid = process.getPid();
+		// NPE can occure if process start failed
+		Long pid = process != null ? process.getPid() : null;
 		return pid!=null ? pid : processId;
 	}
 
