@@ -35,6 +35,7 @@ import org.immutables.builder.Builder;
 import org.immutables.value.Value;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,6 +58,7 @@ public abstract class Starter<T extends RunningProcess> extends RunAProcess<T, T
 	@Override
 	public Set<StateID<?>> sources() {
 		return StateID.setOf(
+			processWorkingDir(),
 			processExecutable(),
 			processConfig(),
 			processEnv(),
@@ -68,6 +70,7 @@ public abstract class Starter<T extends RunningProcess> extends RunAProcess<T, T
 
 	@Override
 	public State<T> result(StateLookup lookup) {
+		Path processWorkingDir = lookup.of(processWorkingDir()).value();
 		ExtractedFileSet fileSet = lookup.of(processExecutable());
 		List<String> arguments = lookup.of(arguments()).value();
 		Map<String, String> environment = lookup.of(processEnv()).value();
@@ -76,7 +79,7 @@ public abstract class Starter<T extends RunningProcess> extends RunAProcess<T, T
 		SupportConfig supportConfig = lookup.of(supportConfig());
 
 		try {
-			T running = RunningProcess.start(runningProcessFactory(), fileSet.executable(), arguments, environment, processConfig, processOutput, supportConfig);
+			T running = RunningProcess.start(runningProcessFactory(), processWorkingDir, fileSet.executable(), arguments, environment, processConfig, processOutput, supportConfig);
 			return State.of(running, RunningProcess::stop);
 		}
 		catch (IOException ix) {

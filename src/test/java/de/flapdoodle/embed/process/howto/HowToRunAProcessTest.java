@@ -40,20 +40,20 @@ import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
 import de.flapdoodle.embed.process.store.LocalDownloadCache;
 import de.flapdoodle.embed.process.transitions.*;
 import de.flapdoodle.embed.process.types.*;
-import de.flapdoodle.reverse.StateID;
-import de.flapdoodle.reverse.TransitionWalker;
-import de.flapdoodle.reverse.Transitions;
+import de.flapdoodle.reverse.*;
 import de.flapdoodle.reverse.transitions.Derive;
 import de.flapdoodle.reverse.transitions.Start;
 import de.flapdoodle.testdoc.Recorder;
 import de.flapdoodle.testdoc.Recording;
 import de.flapdoodle.testdoc.TabSize;
+import de.flapdoodle.types.Try;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -83,6 +83,15 @@ public class HowToRunAProcessTest {
 
 				Transitions transitions = Transitions.from(
 					InitTempDirectory.with(temp),
+
+					Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
+							.state(ProcessWorkingDir.class)
+							.with(tempDir -> {
+									Path workDir = Try.get(() -> tempDir.createDirectory("workDir"));
+									return State.of(ProcessWorkingDir.of(workDir), w -> {
+										Try.run(() -> Files.deleteIfExists(w.value()));
+									});
+								}),
 
 					Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
 						.state(DownloadCache.class)

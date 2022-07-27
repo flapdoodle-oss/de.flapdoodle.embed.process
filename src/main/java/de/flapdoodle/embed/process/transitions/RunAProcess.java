@@ -41,6 +41,11 @@ public abstract class RunAProcess<R extends RunningProcess, T> implements Transi
 	}
 
 	@Value.Default
+	public StateID<ProcessWorkingDir> processWorkingDir() {
+		return StateID.of(ProcessWorkingDir.class);
+	}
+
+	@Value.Default
 	public StateID<ProcessConfig> processConfig() {
 		return StateID.of(ProcessConfig.class);
 	}
@@ -70,6 +75,7 @@ public abstract class RunAProcess<R extends RunningProcess, T> implements Transi
 	@Override
 	public Set<StateID<?>> sources() {
 		return StateID.setOf(
+			processWorkingDir(),
 			processExecutable(),
 			processConfig(),
 			processEnv(),

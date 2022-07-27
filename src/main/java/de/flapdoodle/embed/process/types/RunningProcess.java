@@ -36,6 +36,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +52,7 @@ public interface RunningProcess {
 
 	static <T extends RunningProcess> T start(
 		RunningProcessFactory<T> runningProcessFactory,
+		Path workingDir,
 		Path executable,
 		List<String> arguments,
 		Map<String, String> environment,
@@ -59,13 +61,14 @@ public interface RunningProcess {
 		SupportConfig supportConfig
 	)
 		throws IOException {
-		Path pidFile = pidFile(executable);
+		Path pidFile = pidFile(workingDir, executable);
 
 		List<String> commandLine = Stream
 			.concat(Stream.of(executable.toFile().getAbsolutePath()), arguments.stream())
 			.collect(Collectors.toList());
 
-		ProcessBuilder processBuilder = ProcessControl.newProcessBuilder(commandLine, environment, true);
+		ProcessBuilder processBuilder = ProcessControl.newProcessBuilder(commandLine, environment, true)
+			.directory(workingDir.toFile());
 		ProcessControl process = ProcessControl.start(supportConfig, processBuilder);
 
 		try {
@@ -95,8 +98,8 @@ public interface RunningProcess {
 		return name;
 	}
 
-	static Path pidFile(Path executableFile) {
-		return executableFile.getParent().resolve(executableBaseName(executableFile.getFileName().toString()) + ".pid");
+	static Path pidFile(Path workingDir, Path executableFile) {
+		return workingDir.resolve(executableBaseName(executableFile.getFileName().toString()) + ".pid");
 	}
 
 	static void writePidFile(Path pidFile, long pid) throws IOException {
