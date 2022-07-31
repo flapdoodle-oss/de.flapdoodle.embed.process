@@ -37,11 +37,11 @@ public abstract class PersistentDir extends Wrapper<Path> {
 		return ImmutablePersistentDir.of(path);
 	}
 
-	private static Path userHome() {
+	public static Path userHome() {
 		return Paths.get(System.getProperty("user.home"));
 	}
 
-	public static Supplier<PersistentDir> userHome(String prefix) {
-		return () -> of(userHome().resolve(prefix));
+	public static Supplier<PersistentDir> userHome(String subDir) {
+		return () -> of(userHome().resolve(subDir));
 	}
 }
