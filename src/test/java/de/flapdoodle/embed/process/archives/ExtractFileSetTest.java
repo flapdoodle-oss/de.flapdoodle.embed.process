@@ -21,10 +21,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.extract;
+package de.flapdoodle.embed.process.archives;
 
-import de.flapdoodle.embed.process.archives.*;
-import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,63 +34,79 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExtractFileSetTest {
+class ExtractFileSetTest {
 	private FileSet fileSet;
 	private Path fileInArchive;
 
+	private static Path ofResource(String name) throws URISyntaxException {
+		return Paths.get(Objects.requireNonNull(ExtractFileSetTest.class.getResource(name)).toURI());
+	}
+
 	@BeforeEach
-	public void setUp() throws IOException {
-		fileInArchive = Paths.get(this.getClass().getResource("/archives/readme.txt").getPath());
+	public void setUp() throws URISyntaxException {
+		fileInArchive = ofResource("/archives/readme.txt");
 		fileSet = FileSet.builder()
 			.addEntry(FileType.Executable, "readme.txt")
 			.build();
 	}
 
 	@Test
+	public void testSingleFile(@TempDir Path destination) throws IOException, URISyntaxException {
+		Path source = ofResource("/archives/readme.txt");
+		SingleFileAdapter extractor = new SingleFileAdapter();
+		de.flapdoodle.embed.process.archives.ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
+
+		assertTrue(extracted.executable().toFile().exists(), "extracted file exists");
+		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));
+	}
+
+	@Test
 	public void testZipFormat(@TempDir Path destination) throws IOException, URISyntaxException {
-		Path source = Paths.get(this.getClass().getResource("/archives/sample.zip").toURI());
+		Path source = ofResource("/archives/sample.zip");
 		ZipAdapter extractor = new ZipAdapter();
 		de.flapdoodle.embed.process.archives.ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
 
-		assertTrue("extracted file exists", extracted.executable().toFile().exists());
+		assertTrue(extracted.executable().toFile().exists());
 		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));
 	}
 
 	@Test
 	public void testTgzFormat(@TempDir Path destination) throws IOException, URISyntaxException {
-		Path source = Paths.get(this.getClass().getResource("/archives/sample.tgz").toURI());
+		Path source = ofResource("/archives/sample.tgz");
 		TgzAdapter extractor = new TgzAdapter();
 
 		de.flapdoodle.embed.process.archives.ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
 
-		assertTrue("extracted file exists", extracted.executable().toFile().exists());
+		assertTrue(extracted.executable().toFile().exists());
 		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));
 	}
 
 	@Test
 	public void testTbz2Format(@TempDir Path destination) throws IOException, URISyntaxException {
-		Path source = Paths.get(this.getClass().getResource("/archives/sample.tbz2").toURI());
+		Path source = ofResource("/archives/sample.tbz2");
 		Tbz2Adapter extractor = new Tbz2Adapter();
 
 		de.flapdoodle.embed.process.archives.ExtractedFileSet extracted = extractor.extract(destination, source, fileSet);
 
-		assertTrue("extracted file exists", extracted.executable().toFile().exists());
+		assertTrue(extracted.executable().toFile().exists());
 		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));
 	}
 
 	@Test
 	public void testFileIsArchive(@TempDir Path destination) throws IOException, URISyntaxException {
-		Path source = Paths.get(this.getClass().getResource("/archives/sample.txt").toURI());
+		Path source = ofResource("/archives/sample.txt");
 		SingleFileAdapter extractor = new SingleFileAdapter();
 		ExtractedFileSet extracted = extractor.extract(destination, source, FileSet.builder()
 			.addEntry(FileType.Executable, "sample.txt")
 			.build());
 
-		assertTrue("extracted file exists", extracted.executable().toFile().exists());
+		assertTrue(extracted.executable().toFile().exists());
 		assertEquals(new String(Files.readAllBytes(fileInArchive)), new String(Files.readAllBytes(extracted.executable())));
 	}
+
 }

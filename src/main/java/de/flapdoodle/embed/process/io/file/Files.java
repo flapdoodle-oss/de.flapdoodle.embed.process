@@ -23,13 +23,6 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
-import de.flapdoodle.embed.process.io.directories.Directory;
-import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.flapdoodle.embed.process.io.directories.Directory;
-import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,16 +51,6 @@ public class Files {
 
 	}
 
-	@Deprecated
-	public static File createTempFile(String tempFileName) throws IOException {
-		return createTempFile(PropertyOrPlatformTempDir.defaultInstance(), tempFileName);
-	}
-
-	public static File createTempFile(Directory directory, String tempFileName) throws IOException {
-		File tempDir = directory.asFile();
-		return createTempFile(tempDir, tempFileName);
-	}
-
 	public static File createTempFile(File tempDir, String tempFileName) throws IOException {
 		File tempFile =  fileOf(tempDir, tempFileName+"--"+ UUID.randomUUID());
 		createOrCheckDir(tempFile.getParentFile());
@@ -76,36 +59,10 @@ public class Files {
 		return tempFile;
 	}
 
-	public static File createOrCheckDir(String dir) throws IOException {
-		File tempFile = new File(dir);
-		return createOrCheckDir(tempFile);
-	}
-
 	public static File createOrCheckDir(File dir) throws IOException {
 		if ((dir.exists()) && (dir.isDirectory()))
 			return dir;
 		return createDir(dir);
-	}
-
-	public static File createOrCheckUserDir(String prefix) throws IOException {
-		File tempDir = new File(System.getProperty("user.home"));
-		File tempFile = new File(tempDir, prefix);
-		return createOrCheckDir(tempFile);
-	}
-
-	@Deprecated
-	public static File createTempDir(String prefix) throws IOException {
-		return createTempDir(PropertyOrPlatformTempDir.defaultInstance(), prefix);
-	}
-
-	public static File createTempDir(Directory directory, String prefix) throws IOException {
-		File tempDir = directory.asFile();
-		return createTempDir(tempDir, prefix);
-	}
-
-	public static File createTempDir(File tempDir, String prefix) throws IOException {
-		File tempFile = new File(tempDir, prefix + "-" + UUID.randomUUID().toString());
-		return createDir(tempFile);
 	}
 
 	public static File createDir(File tempFile) throws IOException {

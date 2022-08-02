@@ -21,21 +21,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.store;
+package de.flapdoodle.embed.process.archives;
 
-import de.flapdoodle.embed.process.archives.ArchiveType;
-import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.config.store.FileSet;
+import de.flapdoodle.embed.process.config.store.FileType;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Optional;
 
-/**
- * @see DownloadCache
- */
-@Deprecated
-public interface ArchiveStore {
-	Optional<Path> archiveFor(String name, Distribution distribution, ArchiveType archiveType);
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-	Path store(String name, Distribution distribution, ArchiveType archiveType, Path archive) throws IOException;
+class AbstractExtractFileSetTest {
+
+	@Test
+	public void onExceptionHintIsShown(@TempDir Path tempDir) {
+		AbstractExtractFileSet testee = new AbstractExtractFileSet() {
+
+			@Override protected ArchiveStream archiveStream(Path source) throws IOException {
+				throw new IOException("failed somehow");
+			}
+		};
+
+		assertThatThrownBy(() -> testee.extract(tempDir, tempDir.resolve("source"), FileSet.builder()
+			.addEntry(FileType.Executable, "does not matter")
+			.build()))
+			.isInstanceOf(IOException.class)
+			.hasMessageContaining("You should check if the file is corrupt");
+	}
 }

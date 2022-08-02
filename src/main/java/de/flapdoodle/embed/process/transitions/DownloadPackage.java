@@ -29,7 +29,6 @@ import de.flapdoodle.embed.process.config.store.ProxyFactory;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.nio.directories.TempDir;
-import de.flapdoodle.embed.process.store.ArchiveStore;
 import de.flapdoodle.embed.process.store.DownloadCache;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;

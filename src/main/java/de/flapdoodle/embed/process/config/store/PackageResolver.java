@@ -26,6 +26,7 @@ package de.flapdoodle.embed.process.config.store;
 import de.flapdoodle.embed.process.distribution.Distribution;
 
 /**
+ * DON'T DELETE, still needed for legacy support
  * @see de.flapdoodle.embed.process.distribution.PackageResolver
  */
 @FunctionalInterface

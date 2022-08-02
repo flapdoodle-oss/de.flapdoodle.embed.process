@@ -23,7 +23,6 @@
  */
 package de.flapdoodle.embed.process.archives;
 
-import de.flapdoodle.embed.process.extract.Archive;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
@@ -35,7 +34,7 @@ import java.nio.file.Path;
 public class Tbz2Adapter extends AbstractTarAdapter {
 
 	@Override
-	protected Archive.Wrapper archiveStream(Path source) throws IOException {
+	protected ArchiveStream archiveStream(Path source) throws IOException {
 		FileInputStream fin = new FileInputStream(source.toFile());
 		BufferedInputStream in = new BufferedInputStream(fin);
 		BZip2CompressorInputStream gzIn = new BZip2CompressorInputStream(in);

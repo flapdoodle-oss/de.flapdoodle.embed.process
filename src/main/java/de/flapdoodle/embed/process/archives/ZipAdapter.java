@@ -23,7 +23,6 @@
  */
 package de.flapdoodle.embed.process.archives;
 
-import de.flapdoodle.embed.process.extract.Archive;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
@@ -39,12 +38,12 @@ import java.util.Enumeration;
 public class ZipAdapter extends AbstractExtractFileSet {
 
     @Override
-    protected Archive.Wrapper archiveStream(Path source) throws IOException {
+    protected ArchiveStream archiveStream(Path source) throws IOException {
         ZipFile zipIn = new ZipFile(source.toFile());
         return new ZipArchiveWrapper(zipIn);
     }
 
-    protected static class ZipArchiveWrapper implements Archive.Wrapper {
+    protected static class ZipArchiveWrapper implements ArchiveStream {
 
         private final Enumeration<ZipArchiveEntry> entries;
         private final ZipFile zFile;

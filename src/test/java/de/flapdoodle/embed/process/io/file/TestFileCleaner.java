@@ -23,10 +23,10 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
-import de.flapdoodle.embed.process.io.directories.PlatformTempDir;
 import de.flapdoodle.os.OS;
 import de.flapdoodle.os.Platform;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,13 +39,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class TestFileCleaner extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class TestFileCleaner {
 
 	private static Logger logger = LoggerFactory.getLogger(TestFileCleaner.class.getName());
 
 	String prefix = UUID.randomUUID().toString();
-	
-	public void testCleanup() throws IOException, InterruptedException {
+
+	@Test
+	public void testCleanup(@TempDir File tempDir) throws IOException, InterruptedException {
 
 		boolean runsOnWindows = Platform.detect().operatingSystem() == OS.Windows;
 
@@ -54,7 +58,7 @@ public class TestFileCleaner extends TestCase {
 		logger.info("create temp files");
 
 		for (int i = 0; i < 10; i++) {
-			files.add(Files.createTempFile(new PlatformTempDir(), "fileCleanerTest-" + prefix + "-some-" + i));
+			files.add(Files.createTempFile(tempDir, "fileCleanerTest-" + prefix + "-some-" + i));
 		}
 
 		List<FileLock> locks = new ArrayList<FileLock>();
@@ -84,7 +88,7 @@ public class TestFileCleaner extends TestCase {
 			logger.info("check if temp files there (should be)");
 
 			for (File file : files) {
-				assertTrue("File " + file + " exists", file.exists());
+				assertTrue(file.exists());
 			}
 		}
 
@@ -101,21 +105,22 @@ public class TestFileCleaner extends TestCase {
 		logger.info("check if temp files there (should NOT be)");
 
 		for (File file : files) {
-			assertFalse("File " + file + " exists", file.exists());
+			assertFalse(file.exists());
 		}
 	}
-	
-	public void testMultipleFiles() throws IOException {
+
+	@Test
+	public void testMultipleFiles(@TempDir File tempDir) throws IOException {
 		
 		List<File> files=new ArrayList<File>();
 		
-		File lastFile = Files.createTempFile(new PlatformTempDir(), "fileCleanerTest-" + prefix + "-some-final");
+		File lastFile = Files.createTempFile(tempDir, "fileCleanerTest-" + prefix + "-some-final");
 		for (int i=0;i<10000;i++) {
 			FileCleaner.forceDeleteOnExit(lastFile);
 		}
 		
 		for (int i = 0; i < 100; i++) {
-			files.add(Files.createTempFile(new PlatformTempDir(), "fileCleanerTest-" + prefix + "-some-" + i));
+			files.add(Files.createTempFile(tempDir, "fileCleanerTest-" + prefix + "-some-" + i));
 		}
 		
 		for (File file : files) {

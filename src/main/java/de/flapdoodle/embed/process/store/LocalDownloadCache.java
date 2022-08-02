@@ -24,7 +24,7 @@
 package de.flapdoodle.embed.process.store;
 
 import de.flapdoodle.checks.Preconditions;
-import de.flapdoodle.embed.process.archives.ArchiveType;
+import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.hash.Hasher;
 import org.jheaps.annotations.VisibleForTesting;
 

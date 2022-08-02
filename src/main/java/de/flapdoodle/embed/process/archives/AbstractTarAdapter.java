@@ -23,7 +23,6 @@
  */
 package de.flapdoodle.embed.process.archives;
 
-import de.flapdoodle.embed.process.extract.Archive;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
@@ -32,7 +31,7 @@ import java.io.InputStream;
 
 public abstract class AbstractTarAdapter extends AbstractExtractFileSet {
 
-	protected static class TarArchiveWrapper implements Archive.Wrapper {
+	protected static class TarArchiveWrapper implements ArchiveStream {
 	
 			private final TarArchiveInputStream _is;
 	

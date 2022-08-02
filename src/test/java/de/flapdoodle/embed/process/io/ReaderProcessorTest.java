@@ -48,11 +48,10 @@ class ReaderProcessorTest {
 			Thread.sleep(10);
 
 			Assertions.assertThat(testee.blocks()).containsExactly("first line");
+			Assertions.assertThat(testee.processedCalled()).isFalse();
+
+			testee.processor.abort();
 		}
-
-		Assertions.assertThat(testee.processedCalled()).isFalse();
-
-		testee.processor.abort();
 
 		Assertions.assertThat(testee.processedCalled()).isTrue();
 		Assertions.assertThat(testee.processor.isAlive()).isFalse();

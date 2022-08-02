@@ -23,26 +23,22 @@
  */
 package de.flapdoodle.embed.process.distribution;
 
-import de.flapdoodle.embed.process.extract.*;
+import de.flapdoodle.embed.process.archives.*;
 
-/**
- * @see de.flapdoodle.embed.process.archives.ArchiveType
- */
-@Deprecated
 public enum ArchiveType {
-	TGZ(new TgzExtractor()),
-	TBZ2(new Tbz2Extractor()),
-	ZIP(new ZipExtractor()),
-	EXE(new ArchiveIsFileExtractor()),
-	TXZ(new TxzExtractor());
+	TGZ(new TgzAdapter()),
+	TBZ2(new Tbz2Adapter()),
+	ZIP(new ZipAdapter()),
+	EXE(new SingleFileAdapter()),
+	TXZ(new TxzAdapter());
 
-	private final Extractor extractor;
+	private final ExtractFileSet extractor;
 
-	ArchiveType(Extractor extractor) {
+	ArchiveType(ExtractFileSet extractor) {
 		this.extractor = extractor;
 	}
 
-	public Extractor getExtractor() {
+	public ExtractFileSet extractor() {
 		return extractor;
 	}
 }

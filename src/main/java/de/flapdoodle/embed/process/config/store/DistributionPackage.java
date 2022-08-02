@@ -28,6 +28,7 @@ import org.immutables.value.Value;
 import org.immutables.value.Value.Parameter;
 
 /**
+ * DON'T DELETE, still needed for legacy support
  * @see Package
  */
 @Deprecated

@@ -21,46 +21,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.extract;
+package de.flapdoodle.embed.process.archives;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+public interface ArchiveStream {
+	ArchiveEntry getNextEntry() throws IOException;
 
-@Deprecated
-public abstract class AbstractTarExtractor extends AbstractExtractor {
+	InputStream asStream(ArchiveEntry entry) throws IOException;
 
-	protected static class TarArchiveWrapper implements Archive.Wrapper {
-	
-			private final TarArchiveInputStream _is;
-	
-			public TarArchiveWrapper(TarArchiveInputStream is) {
-				_is = is;
-			}
-	
-			@Override
-			public ArchiveEntry getNextEntry() throws IOException {
-				return _is.getNextTarEntry();
-			}
-	
-			@Override
-			public boolean canReadEntryData(ArchiveEntry entry) {
-				return _is.canReadEntryData(entry);
-			}
-	
-			@Override
-			public void close() throws IOException {
-				_is.close();
-			}
-	
-			@Override
-			public InputStream asStream(ArchiveEntry entry) {
-				return _is;
-			}
-	
-		}
+	void close() throws IOException;
 
+	boolean canReadEntryData(ArchiveEntry entry);
 }

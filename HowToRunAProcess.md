@@ -43,7 +43,7 @@ Transitions transitions = Transitions.from(
     .withTransitionLabel("version + platform"),
 
   PackageOfDistribution.with(dist -> Package.builder()
-    .archiveType(de.flapdoodle.embed.process.archives.ArchiveType.TBZ2)
+    .archiveType(ArchiveType.TBZ2)
     .fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
     .url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
     .build()),

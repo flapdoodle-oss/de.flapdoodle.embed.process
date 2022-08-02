@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.archives;
 
+@Deprecated
 public enum ArchiveType {
 	TGZ(new TgzAdapter()),
 	TBZ2(new Tbz2Adapter()),

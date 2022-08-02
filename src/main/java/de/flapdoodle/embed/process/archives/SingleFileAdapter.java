@@ -24,7 +24,6 @@
 package de.flapdoodle.embed.process.archives;
 
 import de.flapdoodle.checks.Preconditions;
-import de.flapdoodle.embed.process.extract.Archive;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
 import java.io.*;
@@ -35,11 +34,11 @@ import java.util.Date;
 
 public class SingleFileAdapter extends AbstractExtractFileSet {
 
-	@Override protected Archive.Wrapper archiveStream(Path source) throws IOException {
+	@Override protected ArchiveStream archiveStream(Path source) throws IOException {
 		return new SingleFileAsArchiveWrapper(source);
 	}
 
-	static class SingleFileAsArchiveWrapper implements Archive.Wrapper {
+	static class SingleFileAsArchiveWrapper implements ArchiveStream {
 
 		private final SingleFileEntryWrapper singleFile;
 		private boolean nextCalled=false;

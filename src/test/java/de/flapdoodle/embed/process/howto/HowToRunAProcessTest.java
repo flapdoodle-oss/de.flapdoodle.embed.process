@@ -30,6 +30,7 @@ import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.Package;
+import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.io.progress.ProgressListeners;
@@ -122,7 +123,7 @@ public class HowToRunAProcessTest {
 						.withTransitionLabel("version + platform"),
 
 					PackageOfDistribution.with(dist -> Package.builder()
-						.archiveType(de.flapdoodle.embed.process.archives.ArchiveType.TBZ2)
+						.archiveType(ArchiveType.TBZ2)
 						.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
 						.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
 						.build()),

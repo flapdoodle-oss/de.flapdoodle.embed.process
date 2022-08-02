@@ -23,7 +23,8 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import de.flapdoodle.embed.process.archives.ArchiveType;
+
+import de.flapdoodle.embed.process.distribution.ArchiveType;
 
 import java.io.IOException;
 import java.net.URL;

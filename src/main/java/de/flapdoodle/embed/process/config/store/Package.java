@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
-import de.flapdoodle.embed.process.archives.ArchiveType;
+import de.flapdoodle.embed.process.distribution.ArchiveType;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Parameter;
 
