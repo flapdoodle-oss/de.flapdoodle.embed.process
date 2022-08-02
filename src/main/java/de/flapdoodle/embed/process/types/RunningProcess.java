@@ -24,7 +24,7 @@
 package de.flapdoodle.embed.process.types;
 
 import de.flapdoodle.embed.process.config.SupportConfig;
-import de.flapdoodle.embed.process.config.io.ProcessOutput;
+import de.flapdoodle.embed.process.config.process.ProcessOutput;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.ReaderProcessor;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;

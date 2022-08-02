@@ -87,7 +87,7 @@ digraph "sample" {
 	"<empty>:class de.flapdoodle.embed.process.types.ProcessArguments"[ shape="ellipse", label="<empty>:ProcessArguments" ];
 	"<empty>:interface de.flapdoodle.embed.process.types.ProcessConfig"[ shape="ellipse", label="<empty>:ProcessConfig" ];
 	"<empty>:class de.flapdoodle.embed.process.types.ProcessEnv"[ shape="ellipse", label="<empty>:ProcessEnv" ];
-	"<empty>:class de.flapdoodle.embed.process.config.io.ProcessOutput"[ shape="ellipse", label="<empty>:ProcessOutput" ];
+	"<empty>:interface de.flapdoodle.embed.process.config.process.ProcessOutput"[ shape="ellipse", label="<empty>:ProcessOutput" ];
 	"<empty>:class de.flapdoodle.embed.process.types.ProcessWorkingDir"[ shape="ellipse", label="<empty>:ProcessWorkingDir" ];
 	"<empty>:interface de.flapdoodle.embed.process.config.SupportConfig"[ shape="ellipse", label="<empty>:SupportConfig" ];
 	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir"[ shape="ellipse", label="<empty>:TempDir" ];
@@ -123,7 +123,7 @@ digraph "sample" {
 	"<empty>:class de.flapdoodle.embed.process.types.ProcessArguments" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 	"<empty>:interface de.flapdoodle.embed.process.types.ProcessConfig" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 	"<empty>:class de.flapdoodle.embed.process.types.ProcessEnv" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
-	"<empty>:class de.flapdoodle.embed.process.config.io.ProcessOutput" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
+	"<empty>:interface de.flapdoodle.embed.process.config.process.ProcessOutput" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 	"<empty>:class de.flapdoodle.embed.process.types.ProcessWorkingDir" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 	"<empty>:interface de.flapdoodle.embed.process.config.SupportConfig" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.reverse.transitions.ImmutableDerive:0";
@@ -143,7 +143,7 @@ digraph "sample" {
 	"de.flapdoodle.reverse.transitions.ImmutableStart:3" -> "<empty>:interface de.flapdoodle.embed.process.types.ProcessConfig";
 	"de.flapdoodle.reverse.transitions.ImmutableStart:2" -> "<empty>:interface de.flapdoodle.embed.process.config.SupportConfig";
 	"de.flapdoodle.reverse.transitions.ImmutableStart:4" -> "<empty>:class de.flapdoodle.embed.process.types.ProcessEnv";
-	"de.flapdoodle.reverse.transitions.ImmutableDerive:1" -> "<empty>:class de.flapdoodle.embed.process.config.io.ProcessOutput";
+	"de.flapdoodle.reverse.transitions.ImmutableDerive:1" -> "<empty>:interface de.flapdoodle.embed.process.config.process.ProcessOutput";
 	"de.flapdoodle.reverse.transitions.ImmutableStart:5" -> "<empty>:interface de.flapdoodle.embed.process.distribution.Version";
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:2" -> "<empty>:interface de.flapdoodle.embed.process.store.DownloadCache";
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:3" -> "<empty>:interface de.flapdoodle.embed.process.store.ExtractedFileSetStore";
