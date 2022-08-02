@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process.types;
 
-import de.flapdoodle.embed.process.config.process.ProcessOutput;
+import de.flapdoodle.embed.process.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
 import de.flapdoodle.types.Try;
 

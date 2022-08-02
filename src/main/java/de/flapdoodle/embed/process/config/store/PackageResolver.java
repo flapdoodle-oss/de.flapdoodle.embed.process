@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
+import de.flapdoodle.embed.process.Legacy;
 import de.flapdoodle.embed.process.distribution.Distribution;
 
 /**
@@ -30,6 +31,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
  * @see de.flapdoodle.embed.process.distribution.PackageResolver
  */
 @FunctionalInterface
+@Legacy
 @Deprecated
 public interface PackageResolver {
 	DistributionPackage packageFor(Distribution distribution);

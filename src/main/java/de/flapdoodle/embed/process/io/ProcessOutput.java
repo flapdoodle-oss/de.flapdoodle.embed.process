@@ -21,14 +21,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.process;
+package de.flapdoodle.embed.process.io;
 
 import org.immutables.value.Value.Immutable;
-
-import de.flapdoodle.embed.process.io.Processors;
-import de.flapdoodle.embed.process.io.Slf4jLevel;
-import de.flapdoodle.embed.process.io.StreamProcessor;
-
 
 @Immutable
 public interface ProcessOutput {

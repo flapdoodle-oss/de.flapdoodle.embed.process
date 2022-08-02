@@ -21,24 +21,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-
-public class HttpProxyFactory implements ProxyFactory {
-
-	private final String _hostName;
-	private final int _port;
-
-	public HttpProxyFactory(String hostName, int port) {
-		_hostName = hostName;
-		_port = port;
-	}
-
-	@Override
-	public Proxy createProxy() {
-		return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(_hostName, _port));
-	}
-
+/**
+ * DON'T DELETE code marked with this, still needed for legacy support
+**/
+public @interface Legacy {
 }

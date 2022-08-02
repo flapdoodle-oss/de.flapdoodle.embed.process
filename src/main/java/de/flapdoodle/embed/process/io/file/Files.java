@@ -34,10 +34,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.UUID;
 
 /**
- *
+ * as we cleanup everything in tear down we may dont need this stuff anymore
+ * @see de.flapdoodle.embed.process.nio.Directories#deleteAll(Path) 
  */
 @Deprecated
-public class Files {
+public abstract class Files {
 
 	private static Logger logger = LoggerFactory.getLogger(Files.class);
 	private static final int BYTE_BUFFER_LENGTH = 1024 * 16;
@@ -48,41 +49,21 @@ public class Files {
 	private static final SimpleFileVisitor<Path> DELETE_DIR_VISITOR = new DeleteDirVisitor();
 
 	private Files() {
-
+		// no instance
 	}
 
-	public static File createTempFile(File tempDir, String tempFileName) throws IOException {
-		File tempFile =  fileOf(tempDir, tempFileName+"--"+ UUID.randomUUID());
-		createOrCheckDir(tempFile.getParentFile());
-		if (!tempFile.createNewFile())
-			throw new FileAlreadyExistsException("could not create",tempFile);
-		return tempFile;
-	}
-
-	public static File createOrCheckDir(File dir) throws IOException {
-		if ((dir.exists()) && (dir.isDirectory()))
-			return dir;
-		return createDir(dir);
-	}
-
-	public static File createDir(File tempFile) throws IOException {
-		if (!tempFile.mkdirs())
-			throw new IOException("could not create dirs: " + tempFile);
-		return tempFile;
-	}
-
-	public static boolean forceDelete(final File fileOrDir) {
+	public static boolean delete(final Path fileOrDir) {
 		boolean ret = false;
 
 		try {
-			if ((fileOrDir != null) && (fileOrDir.exists())) {
-				forceDelete(fileOrDir.toPath());
+			if ((fileOrDir != null) && (fileOrDir.toFile().exists())) {
+				forceDelete(fileOrDir);
 				logger.debug("could delete {}", fileOrDir);
 				ret = true;
 			}
 		} catch (IOException e) {
 			logger.warn("could not delete {}. Will try to delete it again when program exits.", fileOrDir);
-			FileCleaner.forceDeleteOnExit(fileOrDir);
+			ShutdownHooks.forceDeleteOnExit(fileOrDir);
 			ret = true;
 		}
 
@@ -109,6 +90,7 @@ public class Files {
 			java.nio.file.Files.walkFileTree(path, DeleteDirVisitor.getInstance());
 		}
 	}
+	
 	private static class DeleteDirVisitor extends SimpleFileVisitor<Path> {
 		public static SimpleFileVisitor<Path> getInstance() {
 			return DELETE_DIR_VISITOR;
@@ -131,16 +113,15 @@ public class Files {
 		}
 	}
 
-	public static void write(final InputStream in, long size, final File output)
-			throws IOException {
-		try (final OutputStream out = java.nio.file.Files.newOutputStream(output.toPath())) {
+	public static void write(InputStream inputStream, long size, Path destination) throws IOException {
+		try (final OutputStream out = java.nio.file.Files.newOutputStream(destination)) {
 			final byte[] buf = new byte[BYTE_BUFFER_LENGTH];
 			int read;
 			int left = buf.length;
 			if (left > size) {
 				left = (int) size;
 			}
-			while ((read = in.read(buf, 0, left)) > 0) {
+			while ((read = inputStream.read(buf, 0, left)) > 0) {
 
 				out.write(buf, 0, read);
 
@@ -149,48 +130,5 @@ public class Files {
 					left = (int) size;
 			}
 		}
-	}
-
-	public static void write(final InputStream in, final File output) throws IOException {
-		java.nio.file.Files.copy(in, output.toPath());
-	}
-
-	public static void write(final String content, final File output) throws IOException {
-		java.nio.file.Files.write(output.toPath(), content.getBytes());
-	}
-
-	public static void moveFile(final File source, final File destination) throws IOException {
-    java.nio.file.Files.move(source.toPath(), destination.toPath());
-	}
-
-	public static File fileOf(File base, File relative) {
-		return base.toPath().resolve(relative.toPath()).toFile();
-	}
-
-	public static File fileOf(File base, String relative) {
-		return base.toPath().resolve(relative).toFile();
-	}
-
-	public static boolean sameContent(Path source, Path destination) throws IOException {
-		if (java.nio.file.Files.exists(source) && java.nio.file.Files.exists(destination)) {
-			if (java.nio.file.Files.isReadable(source) && java.nio.file.Files.isReadable(destination)) {
-				try (BufferedInputStream fis1 = new BufferedInputStream(new FileInputStream(source.toFile()));
-					BufferedInputStream fis2 = new BufferedInputStream(new FileInputStream(destination.toFile()))) {
-
-					int chl;
-					int chr;
-					do {
-						chl = fis1.read();
-						chr = fis2.read();
-						if (chl != chr) {
-							return false;
-						}
-					} while (chl != -1);
-
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 }

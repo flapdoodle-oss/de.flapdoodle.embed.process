@@ -26,66 +26,53 @@ package de.flapdoodle.embed.process.io.file;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
-public class FileCleaner {
-
-	private static Logger logger = LoggerFactory.getLogger(FileCleaner.class);
-
-	private static final int MAX_FILES_TO_CLEAN = 10000;
-	private static final int MAX_RETRIES = 100;
-	private static Cleaner cleaner;
-
-	public synchronized static void forceDeleteOnExit(File fileOrDir) {
-		//		FileUtils.forceDeleteOnExit(file);
-		if (cleaner == null) {
-			cleaner = new Cleaner();
-
-			Thread cleanerThread = new Thread(new CleanerThreadRunner(cleaner));
-			cleanerThread.setDaemon(true);
-			cleanerThread.start();
-
-			Runtime.getRuntime().addShutdownHook(new Thread(new CleanerShutdownHook(cleaner)));
-		}
-
-		cleaner.forceDelete(fileOrDir);
+/**
+ * see @{@link Files}
+ */
+@Deprecated
+abstract class ShutdownHooks {
+	private ShutdownHooks() {
+		// no instance
 	}
 
-	static class CleanerThreadRunner implements Runnable {
+	public static final AtomicReference<Cleaner> cleanerRef=new AtomicReference<>();
 
-		private final Cleaner _cleaner;
-
-		CleanerThreadRunner(Cleaner cleaner) {
-			_cleaner = cleaner;
+	private synchronized static Cleaner lazyGetCleaner() {
+		Cleaner ret = cleanerRef.get();
+		if (ret==null) {
+			ret=new Cleaner();
+			startThreadAndAddHook(ret);
+			cleanerRef.set(ret);
 		}
-
-		@Override
-		public void run() {
-			_cleaner.clean();
-		}
+		return ret;
 	}
 
-	static class CleanerShutdownHook implements Runnable {
+	private static void startThreadAndAddHook(Cleaner cleaner) {
+		Thread thread = new Thread(() -> cleaner.clean());
+		thread.setDaemon(true);
+		thread.start();
 
-		private final Cleaner _cleaner;
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> cleaner.deleteFiles()));
+	}
 
-		CleanerShutdownHook(Cleaner cleaner) {
-			_cleaner = cleaner;
-		}
-
-		@Override
-		public void run() {
-			_cleaner.deleteFiles();
-		}
-
+	public static void forceDeleteOnExit(Path path) {
+		Cleaner cleaner = lazyGetCleaner();
+		cleaner.add(path);
 	}
 
 	static class Cleaner {
+		private static final int MAX_FILES_TO_CLEAN = 10000;
+		private static final int MAX_RETRIES = 10;
+		private static Logger logger = LoggerFactory.getLogger(Cleaner.class);
 
-		private final Map<File, Integer> fileToClean = new HashMap<>();
+		private final Map<Path, Integer> fileToClean = new ConcurrentHashMap<>();
 
 		public void clean() {
 			while (true)
@@ -94,20 +81,22 @@ public class FileCleaner {
 						fileToClean.wait(1000);
 						deleteFiles();
 					}
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 				}
 		}
 
 		private void deleteFiles() {
 			synchronized (fileToClean) {
-				Map<File, Integer> copy = new HashMap<>(fileToClean);
-				for (File f : copy.keySet()) {
+				HashMap<Path, Integer> copy = new HashMap<>(fileToClean);
+				for (Path f : copy.keySet()) {
 					try {
-						Files.forceDelete(f.toPath());
+						Files.forceDelete(f);
 						fileToClean.remove(f);
 						logger.info("Could delete " + f);
-					} catch (IOException iox) {
+					}
+					catch (IOException iox) {
 						int newCounter = fileToClean.get(f) + 1;
 						if (newCounter > MAX_RETRIES) {
 							logger.error("Could not delete {} after {} retries, leave it unchanged", f, newCounter);
@@ -120,20 +109,19 @@ public class FileCleaner {
 			}
 		}
 
-		public void forceDelete(File fileOrDir) {
-			if (fileOrDir.exists()) {
+		public void add(Path fileOrDir) {
+			if (fileOrDir.toFile().exists()) {
 				synchronized (fileToClean) {
 					if (fileToClean.size() < MAX_FILES_TO_CLEAN) {
-						Integer oldValue = fileToClean.put(fileOrDir, 0);
-						if (oldValue!=null) logger.error("forceDelete {}, but already in list with {} tries.", fileOrDir, oldValue);
+						Integer oldValue = fileToClean.putIfAbsent(fileOrDir, 0);
+						if (oldValue != null) logger.error("forceDelete {}, but already in list with {} tries.", fileOrDir, oldValue);
 						fileToClean.notify();
 					} else {
 						throw new RuntimeException("filesToClean exceeded " + MAX_FILES_TO_CLEAN
-								+ ", something is wrong here (tried to delete " + fileOrDir + ")");
+							+ ", something is wrong here (tried to delete " + fileOrDir + ")");
 					}
 				}
 			}
 		}
 	}
-
 }

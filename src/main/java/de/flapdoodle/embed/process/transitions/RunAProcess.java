@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.transitions;
 
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.config.SupportConfig;
-import de.flapdoodle.embed.process.config.process.ProcessOutput;
+import de.flapdoodle.embed.process.io.ProcessOutput;
 import de.flapdoodle.embed.process.types.*;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.Transition;

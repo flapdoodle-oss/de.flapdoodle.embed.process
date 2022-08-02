@@ -63,13 +63,12 @@ public abstract class AbstractExtractFileSet implements ExtractFileSet {
 						long size = archiveEntry.getSize();
 						FileType type = matchingEntry.get().type();
 						Path dest = destination.resolve(matchingEntry.get().destination());
-						File output = dest.toFile();
-						Files.write(wrapper.asStream(archiveEntry), size, output);
+						Files.write(wrapper.asStream(archiveEntry), size, dest);
 
 						if (type==FileType.Executable) {
 							builder.executable(dest);
-							if (!output.setExecutable(true)) {
-								throw new IllegalArgumentException("could not set executable flag on "+output);
+							if (!dest.toFile().setExecutable(true)) {
+								throw new IllegalArgumentException("could not set executable flag on "+ dest);
 							}
 						} else {
 							builder.addLibraryFiles(dest);

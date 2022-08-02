@@ -30,42 +30,43 @@ import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestFileCleaner {
+public class ShutdownHooksTest {
 
-	private static Logger logger = LoggerFactory.getLogger(TestFileCleaner.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(ShutdownHooksTest.class.getName());
 
 	String prefix = UUID.randomUUID().toString();
 
 	@Test
-	public void testCleanup(@TempDir File tempDir) throws IOException, InterruptedException {
+	public void testCleanup(@TempDir Path tempDir) throws IOException, InterruptedException {
 
 		boolean runsOnWindows = Platform.detect().operatingSystem() == OS.Windows;
 
-		List<File> files = new ArrayList<File>();
+		List<Path> files = new ArrayList<>();
 
 		logger.info("create temp files");
 
 		for (int i = 0; i < 10; i++) {
-			files.add(Files.createTempFile(tempDir, "fileCleanerTest-" + prefix + "-some-" + i));
+			files.add(createTempFile(tempDir, "fileCleanerTest-" + prefix + "-some-" + i));
 		}
 
 		List<FileLock> locks = new ArrayList<FileLock>();
 
 		logger.info("lock temp files");
 
-		for (File file : files) {
+		for (Path file : files) {
 			FileLock lock = lock(file);
 			if (lock == null)
 				throw new RuntimeException("Could not get lock for " + file);
@@ -74,9 +75,9 @@ public class TestFileCleaner {
 
 		logger.info("try to delete temp files");
 
-		for (File file : files) {
+		for (Path file : files) {
 			Thread.sleep(100);
-			FileCleaner.forceDeleteOnExit(file);
+			ShutdownHooks.forceDeleteOnExit(file);
 		}
 
 		logger.info("after try to delete temp files (wait a little)");
@@ -87,8 +88,8 @@ public class TestFileCleaner {
 
 			logger.info("check if temp files there (should be)");
 
-			for (File file : files) {
-				assertTrue(file.exists());
+			for (Path file : files) {
+				assertTrue(file.toFile().exists());
 			}
 		}
 
@@ -104,32 +105,37 @@ public class TestFileCleaner {
 
 		logger.info("check if temp files there (should NOT be)");
 
-		for (File file : files) {
-			assertFalse(file.exists());
+		for (Path file : files) {
+			assertFalse(file.toFile().exists());
 		}
 	}
 
 	@Test
-	public void testMultipleFiles(@TempDir File tempDir) throws IOException {
+	public void testMultipleFiles(@TempDir Path tempDir) throws IOException {
 		
-		List<File> files=new ArrayList<File>();
-		
-		File lastFile = Files.createTempFile(tempDir, "fileCleanerTest-" + prefix + "-some-final");
+		List<Path> files=new ArrayList<>();
+
+		Path lastFile = createTempFile(tempDir, "fileCleanerTest-" + prefix + "-some-final");
 		for (int i=0;i<10000;i++) {
-			FileCleaner.forceDeleteOnExit(lastFile);
+			ShutdownHooks.forceDeleteOnExit(lastFile);
 		}
 		
 		for (int i = 0; i < 100; i++) {
-			files.add(Files.createTempFile(tempDir, "fileCleanerTest-" + prefix + "-some-" + i));
+			files.add(createTempFile(tempDir, "fileCleanerTest-" + prefix + "-some-" + i));
 		}
 		
-		for (File file : files) {
-			FileCleaner.forceDeleteOnExit(file);
+		for (Path file : files) {
+			ShutdownHooks.forceDeleteOnExit(file);
+		}
+
+		assertThat(lastFile).doesNotExist();
+		for (Path file : files) {
+			assertThat(file).doesNotExist();
 		}
 	}
 
-	public FileLock lock(File file) throws IOException {
-		FileChannel channel = new RandomAccessFile(file, "rw").getChannel();
+	public FileLock lock(Path file) throws IOException {
+		FileChannel channel = new RandomAccessFile(file.toFile(), "rw").getChannel();
 		return channel.tryLock();
 	}
 
@@ -138,4 +144,9 @@ public class TestFileCleaner {
 		lock.channel().close();
 	}
 
+	public static Path createTempFile(Path tempDir, String tempFileName) throws IOException {
+		Path tempFile = tempDir.resolve(tempFileName + "--" + UUID.randomUUID());
+		java.nio.file.Files.createDirectories(tempDir);
+		return java.nio.file.Files.createFile(tempFile);
+	}
 }
