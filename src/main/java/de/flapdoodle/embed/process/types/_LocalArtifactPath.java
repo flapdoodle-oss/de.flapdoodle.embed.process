@@ -21,13 +21,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.nio.directories;
+package de.flapdoodle.embed.process.types;
 
-import java.util.UUID;
+import org.immutables.value.Value;
 
-public class UUIDNaming implements Naming {
-	@Override
-	public String nameFor(String prefix, String postfix) {
-		return prefix + "-" + UUID.randomUUID() + postfix;
-	}
+@Value.Immutable
+@Wrapped
+public abstract class _LocalArtifactPath extends Wrapper<String> {
+
 }

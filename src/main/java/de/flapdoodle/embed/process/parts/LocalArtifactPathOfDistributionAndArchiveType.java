@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.parts;
 
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.types.LocalArtifactPath;
 
 import java.util.function.BiFunction;
 

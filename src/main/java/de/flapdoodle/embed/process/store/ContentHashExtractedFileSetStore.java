@@ -28,7 +28,7 @@ import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.archives.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.hash.Hasher;
-import de.flapdoodle.embed.process.nio.Directories;
+import de.flapdoodle.embed.process.io.Directories;
 import de.flapdoodle.types.Try;
 
 import java.io.IOException;
@@ -36,7 +36,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.security.MessageDigest;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;

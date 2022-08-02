@@ -23,19 +23,21 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
+import de.flapdoodle.embed.process.io.Directories;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.UUID;
 
 /**
  * as we cleanup everything in tear down we may dont need this stuff anymore
- * @see de.flapdoodle.embed.process.nio.Directories#deleteAll(Path) 
+ * @see Directories#deleteAll(Path)
  */
 @Deprecated
 public abstract class Files {

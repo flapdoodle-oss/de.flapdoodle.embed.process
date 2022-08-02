@@ -21,14 +21,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.parts;
+package de.flapdoodle.embed.process.types;
 
-import de.flapdoodle.embed.process.types.Wrapped;
-import de.flapdoodle.embed.process.types.Wrapper;
 import org.immutables.value.Value;
+
+import java.nio.file.Path;
 
 @Value.Immutable
 @Wrapped
-public abstract class _BaseUrl extends Wrapper<String> {
+public abstract class _ArtifactsBasePath extends Wrapper<Path> {
 
 }

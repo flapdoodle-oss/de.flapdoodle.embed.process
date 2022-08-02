@@ -27,6 +27,9 @@ import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
+import de.flapdoodle.embed.process.types.ArtifactsBasePath;
+import de.flapdoodle.embed.process.types.BaseUrl;
+import de.flapdoodle.embed.process.types.LocalArtifactPath;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.TransitionWalker;
 import de.flapdoodle.reverse.Transitions;
@@ -69,8 +72,6 @@ public abstract class ProcessFactory {
 				Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
 				Derive.given(Distribution.class).state(ArchiveType.class).deriveBy(archiveTypeForDistribution()),
 				Derive.given(Distribution.class).state(FileSet.class).deriveBy(fileSetOfDistribution()),
-//				Merge3.given(BaseUrl.class).and(Distribution.class).and(ArchiveType.class).state(ArtifactUrl.class)
-//						.deriveBy((baseUrl, distribution, archiveType) -> urlOfDistributionAndArchiveType().apply(baseUrl, distribution, archiveType)),
 				Join.given(Distribution.class).and(ArchiveType.class).state(LocalArtifactPath.class)
 						.deriveBy(localArtifactPathOfDistributionAndArchiveType())
 //				Merge3.given(ArtifactsBasePath.class).and(ArtifactUrl.class).and(LocalArtifactPath.class).state(ArtifactPath.class)

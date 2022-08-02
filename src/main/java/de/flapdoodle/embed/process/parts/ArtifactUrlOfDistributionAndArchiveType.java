@@ -25,6 +25,8 @@ package de.flapdoodle.embed.process.parts;
 
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.types.ArtifactUrl;
+import de.flapdoodle.embed.process.types.BaseUrl;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.Transition;
 

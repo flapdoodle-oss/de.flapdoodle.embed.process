@@ -21,16 +21,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.parts;
+package de.flapdoodle.embed.process.io.directories;
 
-import de.flapdoodle.embed.process.types.Wrapped;
 import de.flapdoodle.embed.process.types.Wrapper;
 import org.immutables.value.Value;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 @Value.Immutable
-@Wrapped
-public abstract class _ArtifactsBasePath extends Wrapper<Path> {
+public abstract class PersistentDir extends Wrapper<Path> {
 
+	public static PersistentDir of(Path path) {
+		return ImmutablePersistentDir.of(path);
+	}
+
+	public static Path userHome() {
+		return Paths.get(System.getProperty("user.home"));
+	}
+
+	public static Supplier<PersistentDir> userHome(String subDir) {
+		return () -> of(userHome().resolve(subDir));
+	}
 }

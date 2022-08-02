@@ -84,7 +84,7 @@ public class HowToRunAProcessTest {
 				Transitions transitions = Transitions.from(
 					InitTempDirectory.with(temp),
 
-					Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
+					Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
 							.state(ProcessWorkingDir.class)
 							.with(tempDir -> {
 									Path workDir = Try.get(() -> tempDir.createDirectory("workDir"));
@@ -93,12 +93,12 @@ public class HowToRunAProcessTest {
 									});
 								}),
 
-					Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
+					Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
 						.state(DownloadCache.class)
 						.deriveBy(tempDir -> new LocalDownloadCache(tempDir.value().resolve("archives")))
 						.withTransitionLabel("setup DownloadCache"),
 
-					Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
+					Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
 						.state(ExtractedFileSetStore.class)
 						.deriveBy(tempDir -> new ContentHashExtractedFileSetStore(tempDir.value().resolve("fileSets")))
 						.withTransitionLabel("setup ExtractedFileSetStore"),

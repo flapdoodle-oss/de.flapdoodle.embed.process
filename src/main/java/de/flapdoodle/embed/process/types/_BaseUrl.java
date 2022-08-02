@@ -21,8 +21,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.nio.directories;
+package de.flapdoodle.embed.process.types;
 
-public interface Naming {
-	String nameFor(String prefix, String postfix);
+import org.immutables.value.Value;
+
+@Value.Immutable
+@Wrapped
+public abstract class _BaseUrl extends Wrapper<String> {
+
 }

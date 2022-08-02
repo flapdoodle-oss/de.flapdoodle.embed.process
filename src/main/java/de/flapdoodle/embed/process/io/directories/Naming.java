@@ -21,14 +21,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.parts;
+package de.flapdoodle.embed.process.io.directories;
 
-import de.flapdoodle.embed.process.types.Wrapped;
-import de.flapdoodle.embed.process.types.Wrapper;
-import org.immutables.value.Value;
-
-@Value.Immutable
-@Wrapped
-public abstract class _LocalArtifactPath extends Wrapper<String> {
-
+public interface Naming {
+	String nameFor(String prefix, String postfix);
 }

@@ -23,6 +23,11 @@
  */
 package de.flapdoodle.embed.process.parts;
 
+import de.flapdoodle.embed.process.types.ArtifactPath;
+import de.flapdoodle.embed.process.types.ArtifactUrl;
+import de.flapdoodle.embed.process.types.ArtifactsBasePath;
+import de.flapdoodle.embed.process.types.LocalArtifactPath;
+
 public interface ArtifactPathForUrl {
 	ArtifactPath apply(ArtifactsBasePath basePath, ArtifactUrl url, LocalArtifactPath localPath);
 }

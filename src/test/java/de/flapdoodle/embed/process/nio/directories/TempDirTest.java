@@ -23,6 +23,8 @@
  */
 package de.flapdoodle.embed.process.nio.directories;
 
+import de.flapdoodle.embed.process.io.directories.TempDir;
+import de.flapdoodle.embed.process.io.directories.UUIDNaming;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;

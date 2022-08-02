@@ -21,16 +21,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.parts;
+package de.flapdoodle.embed.process.io.directories;
 
-import de.flapdoodle.embed.process.types.Wrapped;
-import de.flapdoodle.embed.process.types.Wrapper;
-import org.immutables.value.Value;
-
-import java.nio.file.Path;
-
-@Value.Immutable
-@Wrapped
-public abstract class _ArtifactPath extends Wrapper<Path> {
-
+public class UserNaming implements Naming {
+	@Override
+	public String nameFor(String prefix, String postfix) {
+		String username = System.getProperty("user.name");
+		return prefix + "-" + username + "-" + postfix;
+	}
 }

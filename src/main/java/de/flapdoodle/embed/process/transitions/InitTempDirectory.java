@@ -23,8 +23,8 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
-import de.flapdoodle.embed.process.nio.directories.TempDir;
-import de.flapdoodle.embed.process.nio.directories.UUIDNaming;
+import de.flapdoodle.embed.process.io.directories.TempDir;
+import de.flapdoodle.embed.process.io.directories.UUIDNaming;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;

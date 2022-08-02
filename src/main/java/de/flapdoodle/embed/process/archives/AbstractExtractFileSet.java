@@ -28,7 +28,6 @@ import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.io.file.Files;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;

@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.nio.directories;
+package de.flapdoodle.embed.process.io.directories;
 
 import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.types.Wrapper;

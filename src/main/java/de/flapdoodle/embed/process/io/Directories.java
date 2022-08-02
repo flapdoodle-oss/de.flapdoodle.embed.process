@@ -21,14 +21,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.parts;
+package de.flapdoodle.embed.process.io;
 
-import de.flapdoodle.embed.process.types.Wrapped;
-import de.flapdoodle.embed.process.types.Wrapper;
-import org.immutables.value.Value;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
-@Value.Immutable
-@Wrapped
-public abstract class _ArtifactUrl extends Wrapper<String> {
+public abstract class Directories {
+	private Directories() {
+		// no instance
+	}
 
+	public static void deleteAll(Path rootPath) throws IOException {
+		try (Stream<Path> walk = Files.walk(rootPath)) {
+			walk.sorted(Comparator.reverseOrder())
+				.map(Path::toFile)
+				.forEach(File::delete);
+		}
+	}
 }
