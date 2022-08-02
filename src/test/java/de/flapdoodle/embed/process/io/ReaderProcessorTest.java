@@ -45,7 +45,7 @@ class ReaderProcessorTest {
 
 			writeToThisStream.write("first line".getBytes(StandardCharsets.UTF_8));
 			writeToThisStream.flush();
-			Thread.sleep(10);
+			Thread.sleep(100);
 
 			Assertions.assertThat(testee.blocks()).containsExactly("first line");
 			Assertions.assertThat(testee.processedCalled()).isFalse();
