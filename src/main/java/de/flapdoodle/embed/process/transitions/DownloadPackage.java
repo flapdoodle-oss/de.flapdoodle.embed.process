@@ -73,11 +73,15 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 			if (bytesCopied == 0) {
 				listener.start("download " + url);
 			} else {
-				if (bytesCopied == contentLength) {
-					listener.done("download " + url);
+				if (contentLength!=-1L) {
+					if (bytesCopied == contentLength) {
+						listener.done("download " + url);
+					} else {
+						int percent = (int) (bytesCopied * 100 / contentLength);
+						listener.progress("download " + url, percent);
+					}
 				} else {
-					int percent = (int) (bytesCopied * 100 / contentLength);
-					listener.progress("download " + url, percent);
+					listener.info("download "+url, bytesCopied + " bytes");
 				}
 			}
 		});

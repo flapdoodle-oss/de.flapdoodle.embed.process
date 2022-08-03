@@ -47,7 +47,7 @@ public class StandardConsoleProgressListener implements ProgressListener {
 
 	@Override
 	public void done(String label) {
-		System.out.println(label + " DONE");
+		System.out.println("\n"+ label + " DONE");
 	}
 
 	@Override

@@ -83,7 +83,6 @@ public abstract class UrlStreams {
 				}
 				bos.flush();
 				Preconditions.checkArgument(length==-1 || length==readCount, "hmm.. readCount smaller than contentLength(partial download?): %s > %s",readCount, length);
-				copyListener.downloaded(connection.getURL(), readCount, length);
 			}
 		}
 	}
