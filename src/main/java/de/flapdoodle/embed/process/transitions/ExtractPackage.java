@@ -26,7 +26,7 @@ package de.flapdoodle.embed.process.transitions;
 import de.flapdoodle.embed.process.archives.ExtractFileSet;
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.Package;
-import de.flapdoodle.embed.process.io.Directories;
+import de.flapdoodle.embed.process.io.Files;
 import de.flapdoodle.embed.process.io.directories.TempDir;
 import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
 import de.flapdoodle.embed.process.types.Archive;
@@ -123,7 +123,7 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 	}
 
 	private static State<ExtractedFileSet> temporaryFileSet(ExtractedFileSet current) {
-		return State.of(current, fileSet -> Try.run(() -> Directories.deleteAll(fileSet.baseDir())));
+		return State.of(current, fileSet -> Try.run(() -> Files.deleteAll(fileSet.baseDir())));
 	}
 
 	private static State<ExtractedFileSet> cachedFileSet(ExtractedFileSet current) {

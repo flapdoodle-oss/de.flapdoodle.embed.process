@@ -28,12 +28,11 @@ import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.archives.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.hash.Hasher;
-import de.flapdoodle.embed.process.io.Directories;
+import de.flapdoodle.embed.process.io.Files;
 import de.flapdoodle.types.Try;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Map;
@@ -47,8 +46,8 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 
 	public ContentHashExtractedFileSetStore(Path basePath) {
 		this.basePath = basePath;
-		if (!Files.exists(basePath)) {
-			Try.run(() -> Files.createDirectory(basePath));
+		if (!java.nio.file.Files.exists(basePath)) {
+			Try.run(() -> java.nio.file.Files.createDirectory(basePath));
 		}
 	}
 
@@ -56,7 +55,7 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 	public Optional<ExtractedFileSet> extractedFileSet(Path archive, FileSet fileSet) {
 		String hash = hash(archive, fileSet);
 		Path fileSetBasePath = basePath.resolve(hash);
-		if (Files.isDirectory(fileSetBasePath)) {
+		if (java.nio.file.Files.isDirectory(fileSetBasePath)) {
 			return Try.supplier(() -> Optional.of(readFileSet(fileSetBasePath, fileSet)))
 				.fallbackTo(ex -> Optional.empty())
 				.get();
@@ -69,8 +68,8 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 	public ExtractedFileSet store(Path archive, FileSet fileSet, ExtractedFileSet src) throws IOException {
 		String hash = hash(archive, fileSet);
 		Path fileSetBasePath = basePath.resolve(hash);
-		Preconditions.checkArgument(!Files.exists(fileSetBasePath),"hash collision for %s (hash=%s)",archive, hash);
-		Files.createDirectory(fileSetBasePath);
+		Preconditions.checkArgument(!java.nio.file.Files.exists(fileSetBasePath),"hash collision for %s (hash=%s)",archive, hash);
+		java.nio.file.Files.createDirectory(fileSetBasePath);
 		return makeCopyOf(fileSetBasePath, fileSet, src);
 	}
 	private static ExtractedFileSet makeCopyOf(Path fileSetBasePath, FileSet fileSet, ExtractedFileSet src) throws IOException {
@@ -84,22 +83,22 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 				Path dest = fileSetBasePath.resolve(entry.destination());
 				switch (entry.type()) {
 					case Executable:
-						if (!Files.exists(dest.getParent())) Files.createDirectory(dest.getParent());
-						Files.copy(src.executable(), dest, StandardCopyOption.COPY_ATTRIBUTES);
+						if (!java.nio.file.Files.exists(dest.getParent())) java.nio.file.Files.createDirectory(dest.getParent());
+						java.nio.file.Files.copy(src.executable(), dest, StandardCopyOption.COPY_ATTRIBUTES);
 						builder.executable(dest);
 						break;
 					case Library:
 						Path srcPath = nameMap.get(entry.destination());
 						if (srcPath==null) throw new IOException("could not find entry for "+entry.destination()+" in "+nameMap);
-						if (!Files.exists(dest.getParent())) Files.createDirectory(dest.getParent());
-						Files.copy(srcPath, dest, StandardCopyOption.COPY_ATTRIBUTES);
+						if (!java.nio.file.Files.exists(dest.getParent())) java.nio.file.Files.createDirectory(dest.getParent());
+						java.nio.file.Files.copy(srcPath, dest, StandardCopyOption.COPY_ATTRIBUTES);
 						builder.addLibraryFiles(dest);
 						break;
 				}
 			}
 			return builder.build();
 		} catch (IOException iox) {
-			Directories.deleteAll(fileSetBasePath);
+			Files.deleteAll(fileSetBasePath);
 			throw iox;
 		}
 	}
@@ -112,7 +111,7 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 			digest.update(entry.matchingPattern().toString().getBytes(StandardCharsets.UTF_8));
 		});
 		digest.update("--".getBytes(StandardCharsets.UTF_8));
-		digest.update(Try.get(() -> Files.readAllBytes(archive)));
+		digest.update(Try.get(() -> java.nio.file.Files.readAllBytes(archive)));
 		return digest.hashAsString();
 
 //		return Try.get(() -> {
@@ -138,7 +137,7 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		ImmutableExtractedFileSet.Builder builder = ExtractedFileSet.builder(fileSetBasePath);
 		fileSet.entries().forEach(entry -> {
 			Path entryPath = fileSetBasePath.resolve(entry.destination());
-			Preconditions.checkArgument(Files.exists(entryPath),"could not find matching file: %s", entryPath);
+			Preconditions.checkArgument(java.nio.file.Files.exists(entryPath),"could not find matching file: %s", entryPath);
 			switch (entry.type()) {
 				case Executable:
 					builder.executable(entryPath);

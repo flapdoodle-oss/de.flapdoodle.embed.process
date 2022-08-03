@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
+import de.flapdoodle.embed.process.Legacy;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Auxiliary;
 import org.immutables.value.Value.Check;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Value.Immutable
+@Legacy
 public interface FileSet {
 
 	List<Entry> entries();

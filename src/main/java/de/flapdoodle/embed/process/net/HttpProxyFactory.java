@@ -23,8 +23,6 @@
  */
 package de.flapdoodle.embed.process.net;
 
-import de.flapdoodle.embed.process.config.store.ProxyFactory;
-
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 

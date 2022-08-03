@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.howto;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.config.store.TimeoutConfig;
+import de.flapdoodle.embed.process.config.TimeoutConfig;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
@@ -153,7 +153,7 @@ public class HowToBuildAProcessConfigTest {
 			long lastMessage = System.currentTimeMillis();
 
 			@Override
-			public void downloaded(long bytesCopied, long contentLength) {
+			public void downloaded(URL url, long bytesCopied, long contentLength) {
 				long current = System.currentTimeMillis();
 				if (current - lastMessage > 1000 || bytesCopied == contentLength) {
 					lastMessage = current;

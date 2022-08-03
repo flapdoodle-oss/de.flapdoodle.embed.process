@@ -23,7 +23,6 @@
  */
 package de.flapdoodle.embed.process.io.file;
 
-import de.flapdoodle.embed.process.io.Directories;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +36,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * as we cleanup everything in tear down we may dont need this stuff anymore
- * @see Directories#deleteAll(Path)
+ * @see de.flapdoodle.embed.process.io.Files#deleteAll(Path)
  */
 @Deprecated
 public abstract class Files {

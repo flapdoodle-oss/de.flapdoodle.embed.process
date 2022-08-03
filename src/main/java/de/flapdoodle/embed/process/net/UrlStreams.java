@@ -24,7 +24,7 @@
 package de.flapdoodle.embed.process.net;
 
 import de.flapdoodle.checks.Preconditions;
-import de.flapdoodle.embed.process.config.store.TimeoutConfig;
+import de.flapdoodle.embed.process.config.TimeoutConfig;
 import de.flapdoodle.types.Optionals;
 import de.flapdoodle.types.ThrowingFunction;
 import de.flapdoodle.types.ThrowingSupplier;
@@ -69,6 +69,7 @@ public abstract class UrlStreams {
 
 	private static <E extends Exception> void downloadAndCopy(URLConnection connection, ThrowingSupplier<BufferedOutputStream, E> output, DownloadCopyListener copyListener) throws IOException, E {
 		long length = connection.getContentLengthLong();
+		copyListener.downloaded(connection.getURL(), 0, length);
 		try (BufferedInputStream bis = new BufferedInputStream(connection.getInputStream())) {
 			try (BufferedOutputStream bos = output.get()) {
 				byte[] buf = new byte[BUFFER_LENGTH];
@@ -78,10 +79,11 @@ public abstract class UrlStreams {
 					bos.write(buf, 0, read);
 					readCount = readCount + read;
 					Preconditions.checkArgument(length==-1 || length>=readCount, "hmm.. readCount bigger than contentLength(more than we want to): %s > %s",readCount, length);
-					copyListener.downloaded(readCount, length);
+					copyListener.downloaded(connection.getURL(), readCount, length);
 				}
 				bos.flush();
 				Preconditions.checkArgument(length==-1 || length==readCount, "hmm.. readCount smaller than contentLength(partial download?): %s > %s",readCount, length);
+				copyListener.downloaded(connection.getURL(), readCount, length);
 			}
 		}
 	}
@@ -98,6 +100,6 @@ public abstract class UrlStreams {
 	}
 	
 	public static interface DownloadCopyListener {
-		void downloaded(long bytesCopied, long contentLength);
+		void downloaded(URL url, long bytesCopied, long contentLength);
 	}
 }

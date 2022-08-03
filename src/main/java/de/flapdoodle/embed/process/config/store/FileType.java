@@ -23,6 +23,9 @@
  */
 package de.flapdoodle.embed.process.config.store;
 
+import de.flapdoodle.embed.process.Legacy;
+
+@Legacy
 public enum FileType {
 	Executable,
 	Library

@@ -25,7 +25,8 @@ package de.flapdoodle.embed.process.transitions;
 
 import de.flapdoodle.embed.process.config.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.Package;
-import de.flapdoodle.embed.process.config.store.ProxyFactory;
+import de.flapdoodle.embed.process.io.progress.ProgressListeners;
+import de.flapdoodle.embed.process.net.ProxyFactory;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.directories.TempDir;
 import de.flapdoodle.embed.process.net.UrlStreams;
@@ -68,8 +69,18 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 
 	@Value.Default
 	protected UrlStreams.DownloadCopyListener downloadCopyListener() {
-		return (bytesCopied, contentLength) -> {
-		};
+		return (url, bytesCopied, contentLength) -> ProgressListeners.progressListener().ifPresent(listener -> {
+			if (bytesCopied == 0) {
+				listener.start("download " + url);
+			} else {
+				if (bytesCopied == contentLength) {
+					listener.done("download " + url);
+				} else {
+					int percent = (int) (bytesCopied * 100 / contentLength);
+					listener.progress("download " + url, percent);
+				}
+			}
+		});
 	}
 
 	@Value.Default

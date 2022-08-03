@@ -5,7 +5,7 @@
 Transitions transitions = Transitions.from(
   InitTempDirectory.with(temp),
 
-  Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
+  Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
       .state(ProcessWorkingDir.class)
       .with(tempDir -> {
           Path workDir = Try.get(() -> tempDir.createDirectory("workDir"));
@@ -14,12 +14,12 @@ Transitions transitions = Transitions.from(
           });
         }),
 
-  Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
+  Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
     .state(DownloadCache.class)
     .deriveBy(tempDir -> new LocalDownloadCache(tempDir.value().resolve("archives")))
     .withTransitionLabel("setup DownloadCache"),
 
-  Derive.given(de.flapdoodle.embed.process.nio.directories.TempDir.class)
+  Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
     .state(ExtractedFileSetStore.class)
     .deriveBy(tempDir -> new ContentHashExtractedFileSetStore(tempDir.value().resolve("fileSets")))
     .withTransitionLabel("setup ExtractedFileSetStore"),
@@ -90,7 +90,7 @@ digraph "sample" {
 	"<empty>:interface de.flapdoodle.embed.process.io.ProcessOutput"[ shape="ellipse", label="<empty>:ProcessOutput" ];
 	"<empty>:class de.flapdoodle.embed.process.types.ProcessWorkingDir"[ shape="ellipse", label="<empty>:ProcessWorkingDir" ];
 	"<empty>:interface de.flapdoodle.embed.process.config.SupportConfig"[ shape="ellipse", label="<empty>:SupportConfig" ];
-	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir"[ shape="ellipse", label="<empty>:TempDir" ];
+	"<empty>:class de.flapdoodle.embed.process.io.directories.TempDir"[ shape="ellipse", label="<empty>:TempDir" ];
 	"<empty>:interface de.flapdoodle.embed.process.distribution.Version"[ shape="ellipse", label="<empty>:Version" ];
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:0"[ shape="rectangle", label="Derive" ];
 	"de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0"[ shape="rectangle", label="DownloadPackage" ];
@@ -126,17 +126,17 @@ digraph "sample" {
 	"<empty>:interface de.flapdoodle.embed.process.io.ProcessOutput" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 	"<empty>:class de.flapdoodle.embed.process.types.ProcessWorkingDir" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
 	"<empty>:interface de.flapdoodle.embed.process.config.SupportConfig" -> "de.flapdoodle.embed.process.transitions.ImmutableExecuter:0";
-	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.reverse.transitions.ImmutableDerive:0";
-	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
-	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0";
-	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.reverse.transitions.ImmutableDerive:2";
-	"<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir" -> "de.flapdoodle.reverse.transitions.ImmutableDerive:3";
+	"<empty>:class de.flapdoodle.embed.process.io.directories.TempDir" -> "de.flapdoodle.reverse.transitions.ImmutableDerive:0";
+	"<empty>:class de.flapdoodle.embed.process.io.directories.TempDir" -> "de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0";
+	"<empty>:class de.flapdoodle.embed.process.io.directories.TempDir" -> "de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0";
+	"<empty>:class de.flapdoodle.embed.process.io.directories.TempDir" -> "de.flapdoodle.reverse.transitions.ImmutableDerive:2";
+	"<empty>:class de.flapdoodle.embed.process.io.directories.TempDir" -> "de.flapdoodle.reverse.transitions.ImmutableDerive:3";
 	"<empty>:interface de.flapdoodle.embed.process.distribution.Version" -> "de.flapdoodle.reverse.transitions.ImmutableDerive:4";
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:0" -> "<empty>:class de.flapdoodle.embed.process.types.ProcessWorkingDir";
 	"de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0" -> "<empty>:class de.flapdoodle.embed.process.types.Archive";
 	"de.flapdoodle.embed.process.transitions.ImmutableExecuter:0" -> "<empty>:interface de.flapdoodle.embed.process.types.ExecutedProcess";
 	"de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0" -> "<empty>:class de.flapdoodle.embed.process.archives.ExtractedFileSet";
-	"de.flapdoodle.embed.process.transitions.ImmutableInitTempDirectory:0" -> "<empty>:class de.flapdoodle.embed.process.nio.directories.TempDir";
+	"de.flapdoodle.embed.process.transitions.ImmutableInitTempDirectory:0" -> "<empty>:class de.flapdoodle.embed.process.io.directories.TempDir";
 	"de.flapdoodle.embed.process.transitions.ImmutablePackageOfDistribution:0" -> "<empty>:interface de.flapdoodle.embed.process.config.store.Package";
 	"de.flapdoodle.reverse.transitions.ImmutableStart:0" -> "<empty>:class de.flapdoodle.embed.process.types.Name";
 	"de.flapdoodle.reverse.transitions.ImmutableStart:1" -> "<empty>:class de.flapdoodle.embed.process.types.ProcessArguments";

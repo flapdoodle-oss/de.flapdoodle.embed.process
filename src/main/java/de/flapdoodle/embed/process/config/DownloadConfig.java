@@ -23,8 +23,7 @@
  */
 package de.flapdoodle.embed.process.config;
 
-import de.flapdoodle.embed.process.config.store.ProxyFactory;
-import de.flapdoodle.embed.process.config.store.TimeoutConfig;
+import de.flapdoodle.embed.process.net.ProxyFactory;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Default;
 

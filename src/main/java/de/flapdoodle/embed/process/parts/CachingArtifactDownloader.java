@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process.parts;
 
-import de.flapdoodle.embed.process.config.store.TimeoutConfig;
+import de.flapdoodle.embed.process.config.TimeoutConfig;
 import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.net.UrlStreams.DownloadCopyListener;
 import de.flapdoodle.embed.process.types.ArtifactPath;

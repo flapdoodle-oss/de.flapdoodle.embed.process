@@ -92,7 +92,7 @@ public class UrlStreamsTest {
 		try (HttpServers.Server server = HttpServers.httpServer(httpPort, listener)) {
 			URLConnection connection = new URL("http://localhost:"+httpPort+"/download?foo=bar").openConnection();
 			
-			DownloadCopyListener copyListener=(bytesCopied, downloadContentLength) -> {
+			DownloadCopyListener copyListener=(url, bytesCopied, downloadContentLength) -> {
 				downloadSizes.add(bytesCopied);
 				assertEquals("contentLengt", contentLengt, downloadContentLength);
 			};
@@ -139,7 +139,7 @@ public class UrlStreamsTest {
 		try (HttpServers.Server server = HttpServers.httpServer(httpPort, listener)) {
 			URLConnection connection = new URL("http://localhost:"+httpPort+"/download?foo=bar").openConnection();
 			
-			DownloadCopyListener copyListener=(bytesCopied, downloadContentLength) -> {
+			DownloadCopyListener copyListener=(url, bytesCopied, downloadContentLength) -> {
 				downloadSizes.add(bytesCopied);
 				assertEquals("contentLengt", -1, downloadContentLength);
 			};
@@ -188,7 +188,7 @@ public class UrlStreamsTest {
 			
 			try {
 				URLConnection connection = new URL("http://localhost:"+httpPort+"/toShort?foo=bar").openConnection();
-				UrlStreams.downloadIntoTempFile(connection, (bytesCopied, downloadContentLength) -> {
+				UrlStreams.downloadIntoTempFile(connection, (url, bytesCopied, downloadContentLength) -> {
 				});
 				fail("should not reach this");
 			} catch (IllegalArgumentException iax) {
@@ -200,7 +200,7 @@ public class UrlStreamsTest {
 			if (weCanFakeNanoHttpToSendMoreStuffThanInContentLength) {
 				try {
 					URLConnection connection = new URL("http://localhost:"+httpPort+"/toLong?foo=bar").openConnection();
-					UrlStreams.downloadIntoTempFile(connection, (bytesCopied, downloadContentLength) -> {
+					UrlStreams.downloadIntoTempFile(connection, (url, bytesCopied, downloadContentLength) -> {
 					});
 					fail("should not reach this");
 				} catch (IllegalArgumentException iax) {
@@ -226,12 +226,12 @@ public class UrlStreamsTest {
 
 		try (HttpServers.Server server = HttpServers.httpServer(httpPort, listener)) {
 			URLConnection connection = new URL("http://localhost:"+httpPort+"/stuff").openConnection();
-			UrlStreams.downloadIntoTempFile(connection, (bytesCopied, downloadContentLength) -> {
+			UrlStreams.downloadIntoTempFile(connection, (url, bytesCopied, downloadContentLength) -> {
 				assertEquals("contentLength", content.length, downloadContentLength);
 			});
 
 			connection = new URL("http://localhost:"+httpPort+"/stuff").openConnection();
-			UrlStreams.downloadIntoTempFile(connection, (bytesCopied, downloadContentLength) -> {
+			UrlStreams.downloadIntoTempFile(connection, (url, bytesCopied, downloadContentLength) -> {
 				assertEquals("contentLength", content.length, downloadContentLength);
 			});
 		}

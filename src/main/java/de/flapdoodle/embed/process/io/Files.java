@@ -21,12 +21,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.config.store;
+package de.flapdoodle.embed.process.io;
 
-import java.net.Proxy;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
+public abstract class Files {
+	private Files() {
+		// no instance
+	}
 
-public interface ProxyFactory {
-
-	Proxy createProxy();
+	public static void deleteAll(Path rootPath) throws IOException {
+		try (Stream<Path> walk = java.nio.file.Files.walk(rootPath)) {
+			walk.sorted(Comparator.reverseOrder())
+				.map(Path::toFile)
+				.forEach(File::delete);
+		}
+	}
 }

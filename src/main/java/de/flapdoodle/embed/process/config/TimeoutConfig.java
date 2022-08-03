@@ -21,25 +21,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.io;
+package de.flapdoodle.embed.process.config;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.stream.Stream;
+import org.immutables.value.Value;
+import org.immutables.value.Value.Default;
 
-public abstract class Directories {
-	private Directories() {
-		// no instance
+@Value.Immutable
+public interface TimeoutConfig {
+	
+	@Default
+	default int getConnectionTimeout() {
+		return 10000;
+	}
+	
+	@Default
+	default int getReadTimeout() {
+		return 10000;
 	}
 
-	public static void deleteAll(Path rootPath) throws IOException {
-		try (Stream<Path> walk = Files.walk(rootPath)) {
-			walk.sorted(Comparator.reverseOrder())
-				.map(Path::toFile)
-				.forEach(File::delete);
-		}
+	static ImmutableTimeoutConfig defaults() {
+		return ImmutableTimeoutConfig.builder()
+				.build();
+	}
+	
+	static ImmutableTimeoutConfig.Builder builder() {
+		return ImmutableTimeoutConfig.builder();
 	}
 }
