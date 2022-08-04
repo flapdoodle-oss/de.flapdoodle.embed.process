@@ -21,12 +21,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.flapdoodle.embed.process.parts;
+package de.flapdoodle.embed.process.transitions;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
+import de.flapdoodle.embed.process.parts.*;
 import de.flapdoodle.embed.process.types.ArtifactsBasePath;
 import de.flapdoodle.embed.process.types.BaseUrl;
 import de.flapdoodle.embed.process.types.LocalArtifactPath;

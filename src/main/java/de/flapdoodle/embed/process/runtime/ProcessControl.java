@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.runtime;
 
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.ReaderProcessor;
 import de.flapdoodle.embed.process.io.StreamProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,11 +186,15 @@ public class ProcessControl {
 
 		try {
 			ProcessControl process = fromCommandLine(support, commandLine, redirectErrorStream);
-			Processors.connect(process.getReader(), output);
-			beforeStop.accept(process);
-			ret = process.stop() == 0;
-			logger.info("execSuccess: {} {}", ret, commandLine);
-			return ret;
+			ReaderProcessor processor = Processors.connect(process.getReader(), output);
+			try {
+				beforeStop.accept(process);
+				ret = process.stop() == 0;
+				logger.info("execSuccess: {} {}", ret, commandLine);
+				return ret;
+			} finally {
+				processor.abort();
+			}
 		} catch (IOException e) {
 			logger.error("" + commandLine, e);
 		}

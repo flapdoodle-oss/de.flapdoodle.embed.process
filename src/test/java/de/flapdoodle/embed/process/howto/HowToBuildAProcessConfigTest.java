@@ -32,6 +32,7 @@ import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.net.UrlStreams.DownloadCopyListener;
 import de.flapdoodle.embed.process.parts.*;
+import de.flapdoodle.embed.process.transitions.ProcessFactory;
 import de.flapdoodle.embed.process.types.ArtifactPath;
 import de.flapdoodle.embed.process.types.ArtifactUrl;
 import de.flapdoodle.embed.process.types.DownloadPath;
