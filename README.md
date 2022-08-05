@@ -7,8 +7,8 @@ We are now a github organisation. You are invited to participate. Starting with 
 
 # Embedded Process Util
 
-Embedded Process Util will provide a platform neutral way for running processes in unittests.
-
+Embedded Process Util will provide a platform neutral way for running processes in unittests. This version is a complete rewrite,
+so there are major changes.
 
 ## Why?
 
@@ -30,7 +30,7 @@ Stable (Maven Central Repository, Released: 19.07.2022 - wait 24hrs for [maven c
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.1.14</version>
+		<version>4.0.0-beta</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -38,7 +38,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.1.15-SNAPSHOT</version>
+		<version>4.0.1-beta-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -56,225 +56,8 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 ### Changelog
 
-#### 3.1.24
+#### 4.0.0
 
-- NPE fix, cleanup fix
-
-#### 3.1.12
-
-- pid helper fix for jdk18
-
-#### 3.1.11
-
-- dependency updates, see [os detection](https://github.com/flapdoodle-oss/de.flapdoodle.os#run)
-
-#### 3.1.10
-
-- Process.waitFor with timeout (second try)
-
-#### 3.1.9
-
-- revert: Process.waitFor with timeout
-
-#### 3.1.8
-
-- Process.waitFor with timeout
-
-#### 3.1.7
-
-- dependency updates
-
-#### 3.1.6
-
-- dependency updates
-
-#### 3.1.5
-
-- executable name collision fix
-- dependency updates
-
-#### 3.1.4
-
-- spring boot api fix
-
-#### 3.1.3
-
-- de.flapdoodle.os upgrade
-
-#### 3.1.2
-
-- jdk17 support
-
-#### 3.1.0
-
-- more cleanup
-- use de.flapdoodle.os for os detection
-
-#### 3.0.2
-
-- better free server port detection
-- use builder pattern for data classes (immutables.org)
-
-#### 3.0.1
-
-- failed build on jdk8 (fixed)
-
-#### 3.0.0
-
-- big refactoring, using immutables.org instead of hand made builder pattern
-
-#### 2.0.5 / 2.0.4
-
-- initialise logger with getClass
-- added stop timeout config
-- Force Files.DeleteDirVisitor instantiation to avoid NCDFE (#85)
-- Moved DeleteDirVisitor instance to Files, so it's loaded before shutdown hook starts and avoids NoClassDefFoundError.
-
-#### 2.0.3
-
-- Make pid method detection more resilient
-- Remove dependency on Apache Commons IO in favour of Java NIO.2 file
-- Refactor to use NIO.2 file
-
-#### 2.0.2
-
-- Don't add several shutdown hooks for process/executable combination
-- dep version update, lic header in tests
-- [jdk9] java.lang.Process#getPid renamed to pid
-
-#### 2.0.1
-
-- bugfix for wrong path of executable
-
-#### 2.0.0 
-
-- java 8
-
-#### 1.50.2
-
-- starter accepts custom distribution
-
-#### 1.50.1
-
-- processId is of type long
-
-#### 1.50.0
-
-- major refactoring, api changes
-
-#### 1.41.2
-
-- fixed NPE when getting the next entry from a Zip Archive
-
-#### 1.41.1
-
-- jdk9 support thanks to https://github.com/gunnarmorling
-
-#### 1.41.0
-
-- changed logging to slf4j
-
-#### 1.40.1
-
-- bugfixes in CachedArtifactStore
-
-#### 1.40.0
-
-- ILibraryStore now uses Distribution instead of Platform
-- Artifact is now a valid OSGi bundle - thanks to https://github.com/bertramn
-
-#### 1.39.0
-
-- proxy support
-
-#### 1.38
-
-- improved error logging
-
-#### 1.37
-
-- detect executable creation collision
-
-#### 1.36
-
-#### 1.35
-
-- minor api change
-
-#### 1.34
-
-- write pid file for every executable
-
-#### 1.33
-
-- artifact store refactoring to support extraction of library files
-
-#### 1.32
-
-- solaris detection fixed
-
-#### 1.31
-
-- solaris support added
-
-#### 1.30
-
-- fixed daemon thread problem
-- fixed multiple stop calls problem
-
-#### 1.29
-
-- added more builder for configurations
-
-#### 1.28
-
-- added download timeout config
-
-#### 1.27
-
-- generic process builder (download and start packages)
-- minor improvments
-- better network ipv6 detection error message
-
-#### 1.26
-
-- major api changes, easier configuration
-
-#### 1.25
-
-- fixed NPE on process start
-- support sub dirs in temp file creation (thanks to matthewadams)
-
-#### 1.24
-
-- fixed NPE on process start
-
-#### 1.23
-
-- fixed some shutdown race conditions
-- removed File.deleteOnExit
-- shutdown hock refactoring
-
-#### 1.22
-
-- you can change temp dir with code or system property "de.flapdoodle.embed.io.tmpdir"
-
-#### 1.21
-
-- "archive type" exe supported
-
-#### 1.20
-
-- creating subdirs if needed
-
-#### 1.19
-
-- initial cut out from Embedded MongoDB Project
-
-#### 1.18
-
-### Usage
-
- NOT DOCUMENTED
+- nearly complete rewrite
 
 
