@@ -25,6 +25,8 @@ package de.flapdoodle.embed.process.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.stream.Stream;
@@ -41,4 +43,26 @@ public abstract class Files {
 				.forEach(File::delete);
 		}
 	}
+
+	private static final int BYTE_BUFFER_LENGTH = 1024 * 16;
+
+	public static void write(InputStream inputStream, long size, Path destination) throws IOException {
+		try (final OutputStream out = java.nio.file.Files.newOutputStream(destination)) {
+			final byte[] buf = new byte[BYTE_BUFFER_LENGTH];
+			int read;
+			int left = buf.length;
+			if (left > size) {
+				left = (int) size;
+			}
+			while ((read = inputStream.read(buf, 0, left)) > 0) {
+
+				out.write(buf, 0, read);
+
+				size = size - read;
+				if (left > size)
+					left = (int) size;
+			}
+		}
+	}
+
 }

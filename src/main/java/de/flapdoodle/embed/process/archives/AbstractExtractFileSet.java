@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.archives;
 
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
-import de.flapdoodle.embed.process.io.file.Files;
+import de.flapdoodle.embed.process.io.Files;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
 import java.io.IOException;

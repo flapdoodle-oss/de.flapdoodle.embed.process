@@ -72,6 +72,7 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		java.nio.file.Files.createDirectory(fileSetBasePath);
 		return makeCopyOf(fileSetBasePath, fileSet, src);
 	}
+	
 	private static ExtractedFileSet makeCopyOf(Path fileSetBasePath, FileSet fileSet, ExtractedFileSet src) throws IOException {
 		try {
 			Map<String, Path> nameMap = src.libraryFiles()
@@ -113,26 +114,8 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		digest.update("--".getBytes(StandardCharsets.UTF_8));
 		digest.update(Try.get(() -> java.nio.file.Files.readAllBytes(archive)));
 		return digest.hashAsString();
-
-//		return Try.get(() -> {
-//			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-//			fileSet.entries().forEach(entry -> {
-//				digest.update(entry.type().name().getBytes(StandardCharsets.UTF_8));
-//				digest.update(entry.destination().getBytes(StandardCharsets.UTF_8));
-//				digest.update(entry.matchingPattern().toString().getBytes(StandardCharsets.UTF_8));
-//			});
-//			digest.update("--".getBytes(StandardCharsets.UTF_8));
-//			digest.update(Files.readAllBytes(archive));
-//			return byteArrayToHex(digest.digest());
-//		});
 	}
 
-//	private static String byteArrayToHex(byte[] a) {
-//		StringBuilder sb = new StringBuilder(a.length * 2);
-//		for(byte b: a)			sb.append(String.format("%02x", b));
-//		return sb.toString();
-//	}
-//
 	private static ExtractedFileSet readFileSet(Path fileSetBasePath, FileSet fileSet) {
 		ImmutableExtractedFileSet.Builder builder = ExtractedFileSet.builder(fileSetBasePath);
 		fileSet.entries().forEach(entry -> {
