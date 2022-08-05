@@ -186,7 +186,7 @@ public class HowToRunAProcessTest {
 						.build())
 					.build();
 
-				TransitionWalker walker = processFactory.initLike();
+				TransitionWalker walker = processFactory.walker();
 				String dot = Transitions.edgeGraphAsDot("process factory sample", processFactory.transitions().asGraph());
 				recording.output("sample.dot", dot);
 

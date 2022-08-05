@@ -54,6 +54,8 @@ public abstract class ProcessFactory {
 
 	public abstract Version version();
 
+	protected abstract Transition<Name> name();
+
 	@Value.Default
 	protected Transition<TempDir> initTempDirectory() {
 		return InitTempDirectory.withPlatformTempRandomSubDir();
@@ -88,16 +90,10 @@ public abstract class ProcessFactory {
 			.withTransitionLabel("create named console");
 	}
 
-	protected abstract Transition<Name> name();
-
 	@Value.Default
 	protected Transition<SupportConfig> supportConfig() {
 		return Start.to(SupportConfig .class).initializedWith(SupportConfig.generic());
 	}
-
-//						Start.to(Name.class).initializedWith(Name.of("phantomjs")).withTransitionLabel("create Name"),
-//
-//					Start.to(SupportConfig .class).initializedWith(SupportConfig.generic()).withTransitionLabel("create default"),
 
 	protected abstract Transition<PersistentDir> persistentBaseDir();
 
@@ -136,6 +132,7 @@ public abstract class ProcessFactory {
 
 	protected abstract Function<Distribution, Package> packageInformation();
 
+	@Value.Default
 	protected Transition<ExecutedProcess> executer() {
 		return Executer.withDefaults();
 	}
@@ -165,51 +162,8 @@ public abstract class ProcessFactory {
 		);
 	}
 
-
-//
-//
-
-//	public abstract Version version();
-//
-//	public abstract String baseDownloadUrl();
-//
-//	public abstract Path artifactsBasePath();
-//
-//	public abstract ArchiveTypeOfDistribution archiveTypeForDistribution();
-//
-//	public abstract FileSetOfDistribution fileSetOfDistribution();
-//
-//	public abstract UrlOfDistributionAndArchiveType urlOfDistributionAndArchiveType();
-//
-//	public abstract ArtifactUrlOfDistributionAndArchiveType artifactUrlOfDistributionAndArchiveType();
-//
-//	public abstract LocalArtifactPathOfDistributionAndArchiveType localArtifactPathOfDistributionAndArchiveType();
-//
-//	public abstract ArtifactPathForUrl artifactPathForUrl();
-
-//	@Auxiliary
-//	protected List<Transition<?>> routes() {
-//		return Arrays.asList(
-//				Start.to(Version.class).initializedWith(version()),
-//				Start.to(BaseUrl.class).initializedWith(BaseUrl.of(baseDownloadUrl())),
-//				Start.to(ArtifactsBasePath.class).initializedWith(ArtifactsBasePath.of(artifactsBasePath())),
-//				Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
-//				Derive.given(Distribution.class).state(ArchiveType.class).deriveBy(archiveTypeForDistribution()),
-//				Derive.given(Distribution.class).state(FileSet.class).deriveBy(fileSetOfDistribution()),
-//				Join.given(Distribution.class).and(ArchiveType.class).state(LocalArtifactPath.class)
-//						.deriveBy(localArtifactPathOfDistributionAndArchiveType())
-////				Merge3.given(ArtifactsBasePath.class).and(ArtifactUrl.class).and(LocalArtifactPath.class).state(ArtifactPath.class)
-////						.deriveBy((base, url, localPath) -> artifactPathForUrl().apply(base, url, localPath))
-//		);
-//	}
-
 	@Auxiliary
-	public String setupAsDot(String appName) {
-		return Transitions.edgeGraphAsDot(appName, transitions().asGraph());
-	}
-
-	@Auxiliary
-	public TransitionWalker initLike() {
+	public TransitionWalker walker() {
 		return transitions().walker();
 	}
 
