@@ -23,71 +23,194 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
-import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.distribution.ArchiveType;
+import de.flapdoodle.embed.process.archives.ExtractedFileSet;
+import de.flapdoodle.embed.process.config.SupportConfig;
+import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
-import de.flapdoodle.embed.process.parts.*;
-import de.flapdoodle.embed.process.types.ArtifactsBasePath;
-import de.flapdoodle.embed.process.types.BaseUrl;
-import de.flapdoodle.embed.process.types.LocalArtifactPath;
+import de.flapdoodle.embed.process.io.ProcessOutput;
+import de.flapdoodle.embed.process.io.directories.PersistentDir;
+import de.flapdoodle.embed.process.io.directories.TempDir;
+import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
+import de.flapdoodle.embed.process.store.DownloadCache;
+import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
+import de.flapdoodle.embed.process.store.LocalDownloadCache;
+import de.flapdoodle.embed.process.types.*;
+import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.TransitionWalker;
 import de.flapdoodle.reverse.Transitions;
 import de.flapdoodle.reverse.transitions.Derive;
-import de.flapdoodle.reverse.transitions.Join;
 import de.flapdoodle.reverse.transitions.Start;
+import org.immutables.value.Value;
 import org.immutables.value.Value.Auxiliary;
 import org.immutables.value.Value.Immutable;
 
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.function.Function;
 
 @Immutable
 public abstract class ProcessFactory {
+
 	public abstract Version version();
 
-	public abstract String baseDownloadUrl();
+	@Value.Default
+	protected Transition<TempDir> initTempDirectory() {
+		return InitTempDirectory.withPlatformTempRandomSubDir();
+	}
 
-	public abstract Path artifactsBasePath();
+	@Value.Default
+	protected Transition<ProcessWorkingDir> processWorkingDir() {
+		return Derive.given(TempDir.class)
+			.state(ProcessWorkingDir.class)
+			.with(Directories.deleteOnTearDown(
+				TempDir.createDirectoryWith("workDir"),
+				ProcessWorkingDir::of
+			));
+	}
 
-	public abstract ArchiveTypeOfDistribution archiveTypeForDistribution();
+	@Value.Default
+	protected Start<ProcessConfig> processConfig() {
+		return Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()).withTransitionLabel("create default");
+	}
 
-	public abstract FileSetOfDistribution fileSetOfDistribution();
+	@Value.Default
+	protected Transition<ProcessEnv> processEnv() {
+		return Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())).withTransitionLabel("create empty env");
+	}
 
-	public abstract UrlOfDistributionAndArchiveType urlOfDistributionAndArchiveType();
+	protected abstract Transition<ProcessArguments> processArguments();
 
-	public abstract ArtifactUrlOfDistributionAndArchiveType artifactUrlOfDistributionAndArchiveType();
+	@Value.Default
+	protected Transition<ProcessOutput> processOutput() {
+		return Derive.given(Name.class).state(ProcessOutput.class)
+			.deriveBy(name -> ProcessOutput.namedConsole(name.value()))
+			.withTransitionLabel("create named console");
+	}
 
-	public abstract LocalArtifactPathOfDistributionAndArchiveType localArtifactPathOfDistributionAndArchiveType();
+	protected abstract Transition<Name> name();
 
-	public abstract ArtifactPathForUrl artifactPathForUrl();
+	@Value.Default
+	protected Transition<SupportConfig> supportConfig() {
+		return Start.to(SupportConfig .class).initializedWith(SupportConfig.generic());
+	}
 
-	@Auxiliary
-	protected List<Transition<?>> routes() {
-		return Arrays.asList(
-				Start.to(Version.class).initializedWith(version()),
-				Start.to(BaseUrl.class).initializedWith(BaseUrl.of(baseDownloadUrl())),
-				Start.to(ArtifactsBasePath.class).initializedWith(ArtifactsBasePath.of(artifactsBasePath())),
-				Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
-				Derive.given(Distribution.class).state(ArchiveType.class).deriveBy(archiveTypeForDistribution()),
-				Derive.given(Distribution.class).state(FileSet.class).deriveBy(fileSetOfDistribution()),
-				Join.given(Distribution.class).and(ArchiveType.class).state(LocalArtifactPath.class)
-						.deriveBy(localArtifactPathOfDistributionAndArchiveType())
-//				Merge3.given(ArtifactsBasePath.class).and(ArtifactUrl.class).and(LocalArtifactPath.class).state(ArtifactPath.class)
-//						.deriveBy((base, url, localPath) -> artifactPathForUrl().apply(base, url, localPath))
-		);
+//						Start.to(Name.class).initializedWith(Name.of("phantomjs")).withTransitionLabel("create Name"),
+//
+//					Start.to(SupportConfig .class).initializedWith(SupportConfig.generic()).withTransitionLabel("create default"),
+
+	protected abstract Transition<PersistentDir> persistentBaseDir();
+
+	@Value.Default
+	protected Transition<DownloadCache> downloadCache() {
+		return Derive.given(PersistentDir.class)
+			.state(DownloadCache.class)
+			.deriveBy(storeBaseDir -> new LocalDownloadCache(storeBaseDir.value().resolve("archives")))
+			.withTransitionLabel("downloadCache");
+	}
+
+	@Value.Default
+	protected Transition<ExtractedFileSetStore> extractedFileSetStore() {
+		return Derive.given(PersistentDir.class)
+			.state(ExtractedFileSetStore.class)
+			.deriveBy(baseDir -> new ContentHashExtractedFileSetStore(baseDir.value().resolve("fileSets")))
+			.withTransitionLabel("extractedFileSetStore");
+	}
+
+	@Value.Default
+	protected Transition<ExtractedFileSet> extractPackage() {
+		return ExtractPackage.withDefaults()
+			.withExtractedFileSetStore(StateID.of(ExtractedFileSetStore.class));
+	}
+
+	@Value.Default
+	protected Transition<Archive> downloadPackage() {
+		return DownloadPackage.withDefaults();
+	}
+
+	@Value.Default
+	protected Transition<Distribution> distribution() {
+		return Derive.given(Version.class).state(Distribution.class)
+			.deriveBy(Distribution::detectFor);
+	}
+
+	protected abstract Function<Distribution, Package> packageInformation();
+
+	protected Transition<ExecutedProcess> executer() {
+		return Executer.withDefaults();
 	}
 
 	@Auxiliary
+	public Transitions transitions() {
+		return Transitions.from(
+			initTempDirectory(),
+			processWorkingDir(),
+			name(),
+			Start.to(Version.class).initializedWith(version()),
+			supportConfig(),
+			processConfig(),
+			processEnv(),
+			processArguments(),
+			processOutput(),
+			persistentBaseDir(),
+			Derive.given(Distribution.class)
+				.state(Package.class)
+				.deriveBy(packageInformation()),
+			distribution(),
+			downloadCache(),
+			extractedFileSetStore(),
+			extractPackage(),
+			downloadPackage(),
+			executer()
+		);
+	}
+
+
+//
+//
+
+//	public abstract Version version();
+//
+//	public abstract String baseDownloadUrl();
+//
+//	public abstract Path artifactsBasePath();
+//
+//	public abstract ArchiveTypeOfDistribution archiveTypeForDistribution();
+//
+//	public abstract FileSetOfDistribution fileSetOfDistribution();
+//
+//	public abstract UrlOfDistributionAndArchiveType urlOfDistributionAndArchiveType();
+//
+//	public abstract ArtifactUrlOfDistributionAndArchiveType artifactUrlOfDistributionAndArchiveType();
+//
+//	public abstract LocalArtifactPathOfDistributionAndArchiveType localArtifactPathOfDistributionAndArchiveType();
+//
+//	public abstract ArtifactPathForUrl artifactPathForUrl();
+
+//	@Auxiliary
+//	protected List<Transition<?>> routes() {
+//		return Arrays.asList(
+//				Start.to(Version.class).initializedWith(version()),
+//				Start.to(BaseUrl.class).initializedWith(BaseUrl.of(baseDownloadUrl())),
+//				Start.to(ArtifactsBasePath.class).initializedWith(ArtifactsBasePath.of(artifactsBasePath())),
+//				Derive.given(Version.class).state(Distribution.class).deriveBy(Distribution::detectFor),
+//				Derive.given(Distribution.class).state(ArchiveType.class).deriveBy(archiveTypeForDistribution()),
+//				Derive.given(Distribution.class).state(FileSet.class).deriveBy(fileSetOfDistribution()),
+//				Join.given(Distribution.class).and(ArchiveType.class).state(LocalArtifactPath.class)
+//						.deriveBy(localArtifactPathOfDistributionAndArchiveType())
+////				Merge3.given(ArtifactsBasePath.class).and(ArtifactUrl.class).and(LocalArtifactPath.class).state(ArtifactPath.class)
+////						.deriveBy((base, url, localPath) -> artifactPathForUrl().apply(base, url, localPath))
+//		);
+//	}
+
+	@Auxiliary
 	public String setupAsDot(String appName) {
-		return Transitions.edgeGraphAsDot(appName, Transitions.asGraph(routes()));
+		return Transitions.edgeGraphAsDot(appName, transitions().asGraph());
 	}
 
 	@Auxiliary
 	public TransitionWalker initLike() {
-		return TransitionWalker.with(routes());
+		return transitions().walker();
 	}
 
 	public static ImmutableProcessFactory.Builder builder() {

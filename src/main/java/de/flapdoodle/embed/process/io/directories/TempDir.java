@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Value.Immutable
@@ -91,5 +92,9 @@ public abstract class TempDir extends Wrapper<Path> {
 	public static Supplier<TempDir> propertyOrPlatformTempSubDir(Naming naming) {
 		return () -> of(createDirectoryIfNotExist(propertyOrPlatformTemp()
 			.resolve(naming.nameFor("temp-",""))));
+	}
+
+	public static Function<TempDir, Path> createDirectoryWith(String prefix, FileAttribute<?>... attrs) {
+		return it -> Try.get(() -> it.createDirectory(prefix, attrs));
 	}
 }

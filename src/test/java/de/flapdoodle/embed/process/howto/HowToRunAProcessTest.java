@@ -5,9 +5,9 @@
  *
  * with contributions from
  * 	konstantin-ba@github,
-	Archimedes Trajano (trajano@github),
-	Kevin D. Keck (kdkeck@github),
-	Ben McCann (benmccann@github)
+ Archimedes Trajano (trajano@github),
+ Kevin D. Keck (kdkeck@github),
+ Ben McCann (benmccann@github)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,35 +26,39 @@ package de.flapdoodle.embed.process.howto;
 import de.flapdoodle.embed.process.HttpServers;
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.config.SupportConfig;
-import de.flapdoodle.embed.process.io.ProcessOutput;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Version;
+import de.flapdoodle.embed.process.io.ProcessOutput;
+import de.flapdoodle.embed.process.io.directories.PersistentDir;
+import de.flapdoodle.embed.process.io.directories.TempDir;
 import de.flapdoodle.embed.process.io.progress.ProgressListeners;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
-import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
 import de.flapdoodle.embed.process.store.DownloadCache;
 import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
 import de.flapdoodle.embed.process.store.LocalDownloadCache;
 import de.flapdoodle.embed.process.transitions.*;
 import de.flapdoodle.embed.process.types.*;
-import de.flapdoodle.reverse.*;
+import de.flapdoodle.os.OS;
+import de.flapdoodle.os.Platform;
+import de.flapdoodle.reverse.StateID;
+import de.flapdoodle.reverse.TransitionWalker;
+import de.flapdoodle.reverse.Transitions;
 import de.flapdoodle.reverse.transitions.Derive;
 import de.flapdoodle.reverse.transitions.Start;
 import de.flapdoodle.testdoc.Recorder;
 import de.flapdoodle.testdoc.Recording;
 import de.flapdoodle.testdoc.TabSize;
-import de.flapdoodle.types.Try;
+import org.junit.Assume;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -68,31 +72,35 @@ public class HowToRunAProcessTest {
 	@RegisterExtension
 	public static Recording recording = Recorder.with("HowToRunAProcess.md", TabSize.spaces(2));
 
+	//	https://bitbucket.org/ariya/phantomjs/downloads/
 	private static Map<String, String> resourceResponseMap = new LinkedHashMap<String, String>() {{
 		put("/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2", "/archives/phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2");
 	}};
 
+	@BeforeEach
+	void skipIfNotLinux() {
+		if (Platform.detect().operatingSystem() != OS.Linux) {
+			Assume.assumeTrue("works only on linux", true);
+		}
+	}
+
 	@Test
-	public void rebuildSample(@TempDir Path temp) throws IOException {
+	public void genericSample(@org.junit.jupiter.api.io.TempDir Path temp) throws IOException {
 		try (HttpServers.Server server = HttpServers.httpServer(getClass(), resourceResponseMap)) {
 			String serverUrl = server.serverUrl() + "/ariya/phantomjs/downloads/";
 
 			try (ProgressListeners.RemoveProgressListener ignored = ProgressListeners.setProgressListener(new StandardConsoleProgressListener())) {
-//				String serverUrl = "https://bitbucket.org/ariya/phantomjs/downloads/";
-
 				recording.begin();
 
 				Transitions transitions = Transitions.from(
 					InitTempDirectory.with(temp),
 
-					Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
-							.state(ProcessWorkingDir.class)
-							.with(tempDir -> {
-									Path workDir = Try.get(() -> tempDir.createDirectory("workDir"));
-									return State.of(ProcessWorkingDir.of(workDir), w -> {
-										Try.run(() -> Files.deleteIfExists(w.value()));
-									});
-								}),
+					Derive.given(TempDir.class)
+						.state(ProcessWorkingDir.class)
+						.with(Directories.deleteOnTearDown(
+							TempDir.createDirectoryWith("workDir"),
+							ProcessWorkingDir::of
+						)),
 
 					Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
 						.state(DownloadCache.class)
@@ -148,6 +156,43 @@ public class HowToRunAProcessTest {
 								.isEqualTo(0);
 						}
 					}
+				}
+
+				recording.end();
+			}
+		}
+	}
+
+	@Test
+	public void processFactorySample(@org.junit.jupiter.api.io.TempDir Path tempDir) throws IOException {
+		try (HttpServers.Server server = HttpServers.httpServer(getClass(), resourceResponseMap)) {
+			String serverUrl = server.serverUrl() + "/ariya/phantomjs/downloads/";
+
+			try (ProgressListeners.RemoveProgressListener ignored = ProgressListeners.setProgressListener(new StandardConsoleProgressListener())) {
+				recording.begin();
+
+				Version.GenericVersion version = Version.of("2.1.1");
+
+				ProcessFactory processFactory = ProcessFactory.builder()
+					.version(version)
+					.persistentBaseDir(Start.to(PersistentDir.class)
+						.initializedWith(PersistentDir.of(tempDir)))
+					.name(Start.to(Name.class).initializedWith(Name.of("phantomjs")))
+					.processArguments(Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))))
+					.packageInformation(dist -> Package.builder()
+						.archiveType(ArchiveType.TBZ2)
+						.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
+						.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
+						.build())
+					.build();
+
+				TransitionWalker walker = processFactory.initLike();
+				String dot = Transitions.edgeGraphAsDot("process factory sample", processFactory.transitions().asGraph());
+				recording.output("sample.dot", dot);
+
+				try (TransitionWalker.ReachedState<ExecutedProcess> started = walker.initState(StateID.of(ExecutedProcess.class))) {
+					assertThat(started.current().returnCode())
+						.isEqualTo(0);
 				}
 
 				recording.end();
