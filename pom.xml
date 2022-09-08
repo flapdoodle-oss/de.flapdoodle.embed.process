@@ -481,7 +481,7 @@
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os</artifactId>
-            <version>1.1.11</version>
+            <version>1.1.12</version>
         </dependency>
         <dependency>
             <groupId>org.immutables</groupId>
