@@ -42,8 +42,6 @@ import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.io.file.Files;
 
-import java.util.concurrent.TimeUnit;
-
 public abstract class AbstractProcess<T extends ExecutableProcessConfig, E extends Executable<T, P>, P extends IStopable>
 		implements IStopable {
 
