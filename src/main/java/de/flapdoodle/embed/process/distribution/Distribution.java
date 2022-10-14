@@ -26,12 +26,18 @@ package de.flapdoodle.embed.process.distribution;
 import de.flapdoodle.os.Platform;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Parameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  *
  */
 @Value.Immutable
 public abstract class Distribution {
+
+	private static final Logger logger = LoggerFactory.getLogger(Distribution.class);
 
 	@Parameter
 	public abstract Version version();
@@ -45,7 +51,19 @@ public abstract class Distribution {
 	}
 
 	public static Distribution detectFor(Version version) {
-		return of(version, Platform.detect());
+		List<Platform> platforms = Platform.guess();
+		if (platforms.isEmpty()) {
+			throw new IllegalArgumentException("could not detect platform");
+		}
+		
+		Platform platform = platforms.get(0);
+
+		if (platforms.size()!=1) {
+			logger.info("more than one platform detected: {}", platforms);
+			logger.info("use {}", platform);
+		}
+
+		return of(version, platform);
 	}
 
 	public static Distribution of(Version version, Platform platform) {
