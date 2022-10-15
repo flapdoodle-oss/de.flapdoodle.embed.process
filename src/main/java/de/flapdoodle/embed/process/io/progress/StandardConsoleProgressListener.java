@@ -40,6 +40,7 @@ public class StandardConsoleProgressListener implements ProgressListener {
 		if (percent != lastPercent) {
 			System.out.print(percent);
 			System.out.print("% ");
+			System.out.flush();
 		}
 		lastLabel = label;
 		lastPercent = percent;
