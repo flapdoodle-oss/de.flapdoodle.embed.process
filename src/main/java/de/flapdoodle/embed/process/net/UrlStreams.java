@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.net;
 
 import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.config.TimeoutConfig;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import de.flapdoodle.types.Optionals;
 import de.flapdoodle.types.ThrowingFunction;
 import de.flapdoodle.types.ThrowingSupplier;
@@ -57,7 +58,7 @@ public abstract class UrlStreams {
 		Path tempFile = java.nio.file.Files.createTempFile("download", "");
 		boolean downloadSucceeded=false; 
 		try {
-			downloadAndCopy(connection, () -> new BufferedOutputStream(new FileOutputStream(tempFile.toFile())), copyListener);
+			downloadAndCopy(connection, () -> new BufferedOutputStream(Files.newOutputStream(tempFile.toFile().toPath())), copyListener);
 			downloadSucceeded=true;
 			return tempFile;
 		} finally {
@@ -98,7 +99,26 @@ public abstract class UrlStreams {
 		return openConnection;
 	}
 	
-	public static interface DownloadCopyListener {
+	public interface DownloadCopyListener {
 		void downloaded(URL url, long bytesCopied, long contentLength);
+	}
+
+	public static DownloadCopyListener downloadCopyListenerDelegatingTo(ProgressListener progressListener) {
+		return (url, bytesCopied, contentLength) -> {
+			if (bytesCopied == 0) {
+				progressListener.start("download " + url);
+			} else {
+				if (contentLength!=-1L) {
+					if (bytesCopied == contentLength) {
+						progressListener.done("download " + url);
+					} else {
+						int percent = (int) (bytesCopied * 100 / contentLength);
+						progressListener.progress("download " + url, percent);
+					}
+				} else {
+					progressListener.info("download "+url, bytesCopied + " bytes");
+				}
+			}
+		};
 	}
 }

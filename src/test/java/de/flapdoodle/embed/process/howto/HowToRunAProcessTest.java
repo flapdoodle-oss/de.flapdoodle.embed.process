@@ -35,7 +35,7 @@ import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.io.ProcessOutput;
 import de.flapdoodle.embed.process.io.directories.PersistentDir;
 import de.flapdoodle.embed.process.io.directories.TempDir;
-import de.flapdoodle.embed.process.io.progress.ProgressListeners;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
 import de.flapdoodle.embed.process.store.DownloadCache;
@@ -89,77 +89,79 @@ public class HowToRunAProcessTest {
 		try (HttpServers.Server server = HttpServers.httpServer(getClass(), resourceResponseMap)) {
 			String serverUrl = server.serverUrl() + "/ariya/phantomjs/downloads/";
 
-			try (ProgressListeners.RemoveProgressListener ignored = ProgressListeners.setProgressListener(new StandardConsoleProgressListener())) {
-				recording.begin();
+			recording.begin();
 
-				Transitions transitions = Transitions.from(
-					InitTempDirectory.with(temp),
+			Transitions transitions = Transitions.from(
+				InitTempDirectory.with(temp),
 
-					Derive.given(TempDir.class)
-						.state(ProcessWorkingDir.class)
-						.with(Directories.deleteOnTearDown(
-							TempDir.createDirectoryWith("workDir"),
-							ProcessWorkingDir::of
-						)),
+				Derive.given(TempDir.class)
+					.state(ProcessWorkingDir.class)
+					.with(Directories.deleteOnTearDown(
+						TempDir.createDirectoryWith("workDir"),
+						ProcessWorkingDir::of
+					)),
 
-					Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
-						.state(DownloadCache.class)
-						.deriveBy(tempDir -> new LocalDownloadCache(tempDir.value().resolve("archives")))
-						.withTransitionLabel("setup DownloadCache"),
+				Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
+					.state(DownloadCache.class)
+					.deriveBy(tempDir -> new LocalDownloadCache(tempDir.value().resolve("archives")))
+					.withTransitionLabel("setup DownloadCache"),
 
-					Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
-						.state(ExtractedFileSetStore.class)
-						.deriveBy(tempDir -> new ContentHashExtractedFileSetStore(tempDir.value().resolve("fileSets")))
-						.withTransitionLabel("setup ExtractedFileSetStore"),
+				Derive.given(de.flapdoodle.embed.process.io.directories.TempDir.class)
+					.state(ExtractedFileSetStore.class)
+					.deriveBy(tempDir -> new ContentHashExtractedFileSetStore(tempDir.value().resolve("fileSets")))
+					.withTransitionLabel("setup ExtractedFileSetStore"),
 
-					Start.to(Name.class).initializedWith(Name.of("phantomjs")).withTransitionLabel("create Name"),
+				Start.to(Name.class).initializedWith(Name.of("phantomjs")).withTransitionLabel("create Name"),
 
-					Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()).withTransitionLabel("create default"),
-					Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()).withTransitionLabel("create default"),
-					Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())).withTransitionLabel("create empty env"),
+				Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()).withTransitionLabel("create default"),
+				Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()).withTransitionLabel("create default"),
+				Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())).withTransitionLabel("create empty env"),
 
-					Start.to(Version.class).initializedWith(Version.of("2.1.1")).withTransitionLabel("set version"),
-					Derive.given(Name.class).state(ProcessOutput.class)
-						.deriveBy(name -> ProcessOutput.namedConsole(name.value()))
-						.withTransitionLabel("create named console"),
+				Start.to(Version.class).initializedWith(Version.of("2.1.1")).withTransitionLabel("set version"),
+				Derive.given(Name.class).state(ProcessOutput.class)
+					.deriveBy(name -> ProcessOutput.namedConsole(name.value()))
+					.withTransitionLabel("create named console"),
 
-					Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help")))
-						.withTransitionLabel("create arguments"),
+				Start.to(ProgressListener.class)
+					.providedBy(StandardConsoleProgressListener::new)
+					.withTransitionLabel("progressListener"),
 
-					Derive.given(Version.class).state(Distribution.class)
-						.deriveBy(Distribution::detectFor)
-						.withTransitionLabel("version + platform"),
+				Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help")))
+					.withTransitionLabel("create arguments"),
 
-					PackageOfDistribution.with(dist -> Package.builder()
-						.archiveType(ArchiveType.TBZ2)
-						.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
-						.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
-						.build()),
+				Derive.given(Version.class).state(Distribution.class)
+					.deriveBy(Distribution::detectFor)
+					.withTransitionLabel("version + platform"),
 
-					DownloadPackage.withDefaults(),
+				PackageOfDistribution.with(dist -> Package.builder()
+					.archiveType(ArchiveType.TBZ2)
+					.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
+					.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
+					.build()),
 
-					ExtractPackage.withDefaults()
-						.withExtractedFileSetStore(StateID.of(ExtractedFileSetStore.class)),
+				DownloadPackage.withDefaults(),
 
-					Executer.withDefaults()
-				);
+				ExtractPackage.withDefaults()
+					.withExtractedFileSetStore(StateID.of(ExtractedFileSetStore.class)),
 
-				TransitionWalker init = transitions.walker();
+				Executer.withDefaults()
+			);
 
-				String dot = Transitions.edgeGraphAsDot("sample", transitions.asGraph());
-				recording.output("sample.dot", dot);
+			TransitionWalker init = transitions.walker();
 
-				try (TransitionWalker.ReachedState<Archive> withArchive = init.initState(StateID.of(Archive.class))) {
-					try (TransitionWalker.ReachedState<ExtractedFileSet> withFileSet = withArchive.initState(StateID.of(ExtractedFileSet.class))) {
-						try (TransitionWalker.ReachedState<ExecutedProcess> started = withFileSet.initState(StateID.of(ExecutedProcess.class))) {
-							assertThat(started.current().returnCode())
-								.isEqualTo(0);
-						}
+			String dot = Transitions.edgeGraphAsDot("sample", transitions.asGraph());
+			recording.output("sample.dot", dot);
+
+			try (TransitionWalker.ReachedState<Archive> withArchive = init.initState(StateID.of(Archive.class))) {
+				try (TransitionWalker.ReachedState<ExtractedFileSet> withFileSet = withArchive.initState(StateID.of(ExtractedFileSet.class))) {
+					try (TransitionWalker.ReachedState<ExecutedProcess> started = withFileSet.initState(StateID.of(ExecutedProcess.class))) {
+						assertThat(started.current().returnCode())
+							.isEqualTo(0);
 					}
 				}
-
-				recording.end();
 			}
+
+			recording.end();
 		}
 	}
 
@@ -168,35 +170,33 @@ public class HowToRunAProcessTest {
 		try (HttpServers.Server server = HttpServers.httpServer(getClass(), resourceResponseMap)) {
 			String serverUrl = server.serverUrl() + "/ariya/phantomjs/downloads/";
 
-			try (ProgressListeners.RemoveProgressListener ignored = ProgressListeners.setProgressListener(new StandardConsoleProgressListener())) {
-				recording.begin();
+			recording.begin();
 
-				Version.GenericVersion version = Version.of("2.1.1");
+			Version.GenericVersion version = Version.of("2.1.1");
 
-				ProcessFactory processFactory = ProcessFactory.builder()
-					.version(version)
-					.persistentBaseDir(Start.to(PersistentDir.class)
-						.initializedWith(PersistentDir.of(tempDir)))
-					.name(Start.to(Name.class).initializedWith(Name.of("phantomjs")))
-					.processArguments(Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))))
-					.packageInformation(dist -> Package.builder()
-						.archiveType(ArchiveType.TBZ2)
-						.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
-						.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
-						.build())
-					.build();
+			ProcessFactory processFactory = ProcessFactory.builder()
+				.version(version)
+				.persistentBaseDir(Start.to(PersistentDir.class)
+					.initializedWith(PersistentDir.of(tempDir)))
+				.name(Start.to(Name.class).initializedWith(Name.of("phantomjs")))
+				.processArguments(Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))))
+				.packageInformation(dist -> Package.builder()
+					.archiveType(ArchiveType.TBZ2)
+					.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
+					.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
+					.build())
+				.build();
 
-				TransitionWalker walker = processFactory.walker();
-				String dot = Transitions.edgeGraphAsDot("process factory sample", processFactory.transitions().asGraph());
-				recording.output("sample.dot", dot);
+			TransitionWalker walker = processFactory.walker();
+			String dot = Transitions.edgeGraphAsDot("process factory sample", processFactory.transitions().asGraph());
+			recording.output("sample.dot", dot);
 
-				try (TransitionWalker.ReachedState<ExecutedProcess> started = walker.initState(StateID.of(ExecutedProcess.class))) {
-					assertThat(started.current().returnCode())
-						.isEqualTo(0);
-				}
-
-				recording.end();
+			try (TransitionWalker.ReachedState<ExecutedProcess> started = walker.initState(StateID.of(ExecutedProcess.class))) {
+				assertThat(started.current().returnCode())
+					.isEqualTo(0);
 			}
+
+			recording.end();
 		}
 	}
 }

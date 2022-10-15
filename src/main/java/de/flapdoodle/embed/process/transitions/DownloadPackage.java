@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.transitions;
 
 import de.flapdoodle.embed.process.config.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.Package;
-import de.flapdoodle.embed.process.io.progress.ProgressListeners;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import de.flapdoodle.embed.process.net.ProxyFactory;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.directories.TempDir;
@@ -68,24 +68,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 	}
 
 	@Value.Default
-	protected UrlStreams.DownloadCopyListener downloadCopyListener() {
-		return (url, bytesCopied, contentLength) -> ProgressListeners.progressListener().ifPresent(listener -> {
-			if (bytesCopied == 0) {
-				listener.start("download " + url);
-			} else {
-				if (contentLength!=-1L) {
-					if (bytesCopied == contentLength) {
-						listener.done("download " + url);
-					} else {
-						int percent = (int) (bytesCopied * 100 / contentLength);
-						listener.progress("download " + url, percent);
-					}
-				} else {
-					listener.info("download "+url, bytesCopied + " bytes");
-				}
-			}
-		});
-	}
+	protected StateID<ProgressListener> progressListener() { return StateID.of(ProgressListener.class); }
 
 	@Value.Default
 	protected DownloadConfig downloadConfig() {
@@ -116,7 +99,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 	@Override
 	@Value.Auxiliary
 	public final Set<StateID<?>> sources() {
-		return StateID.setOf(distribution(), distPackage(), name(), tempDirectory(), downloadCache());
+		return StateID.setOf(distribution(), distPackage(), name(), tempDirectory(), downloadCache(), progressListener());
 	}
 
 	@Override
@@ -125,6 +108,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		Distribution dist = lookup.of(distribution());
 		Package distPackage = lookup.of(distPackage());
 		DownloadCache downloadCache = lookup.of(downloadCache());
+		ProgressListener progressListener = lookup.of(progressListener());
 		Name name = lookup.of(name());
 		TempDir temp = lookup.of(tempDirectory());
 
@@ -144,7 +128,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 			Try.runable(() -> {
 					URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, downloadConfig().getUserAgent(), downloadConfig().getTimeoutConfig(),
 						downloadConfig().proxyFactory().map(ProxyFactory::createProxy));
-					UrlStreams.downloadTo(connection, downloadedArchive, downloadCopyListener());
+					UrlStreams.downloadTo(connection, downloadedArchive, UrlStreams.downloadCopyListenerDelegatingTo(progressListener));
 				}).mapCheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
 				.run();
 

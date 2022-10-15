@@ -31,6 +31,8 @@ import de.flapdoodle.embed.process.distribution.Version;
 import de.flapdoodle.embed.process.io.ProcessOutput;
 import de.flapdoodle.embed.process.io.directories.PersistentDir;
 import de.flapdoodle.embed.process.io.directories.TempDir;
+import de.flapdoodle.embed.process.io.progress.ProgressListener;
+import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
 import de.flapdoodle.embed.process.store.DownloadCache;
 import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
@@ -88,6 +90,13 @@ public abstract class ProcessFactory {
 		return Derive.given(Name.class).state(ProcessOutput.class)
 			.deriveBy(name -> ProcessOutput.namedConsole(name.value()))
 			.withTransitionLabel("create named console");
+	}
+
+	@Value.Default
+	protected Transition<ProgressListener> progressListener() {
+		return Start.to(ProgressListener.class)
+			.providedBy(StandardConsoleProgressListener::new)
+			.withTransitionLabel("progressListener");
 	}
 
 	@Value.Default
@@ -149,6 +158,7 @@ public abstract class ProcessFactory {
 			processEnv(),
 			processArguments(),
 			processOutput(),
+			progressListener(),
 			persistentBaseDir(),
 			Derive.given(Distribution.class)
 				.state(Package.class)
