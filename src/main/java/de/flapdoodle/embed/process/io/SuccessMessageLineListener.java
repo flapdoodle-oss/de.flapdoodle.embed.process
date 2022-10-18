@@ -49,12 +49,15 @@ public class SuccessMessageLineListener {
 	}
 
 	public void inspect(String line) {
+		boolean anyChange = false;
+
 		if (!successMessageFound && errorMessage ==null) {
 			allLines.append(line).append("\n");
 
 			for (Pattern successPattern : successPatterns) {
 				if (successPattern.matcher(line).find()) {
 					successMessageFound=true;
+					anyChange=true;
 					break;
 				}
 			}
@@ -64,12 +67,15 @@ public class SuccessMessageLineListener {
 					Matcher matcher = errorPattern.matcher(line);
 					if (matcher.find()) {
 						errorMessage = matcher.group(errorMessageGroupName);
+						anyChange=true;
 					}
 				}
 			}
 		}
-		synchronized(this) {
-			notify();
+		if (anyChange) {
+			synchronized (this) {
+				notify();
+			}
 		}
 	}
 

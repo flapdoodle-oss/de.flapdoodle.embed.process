@@ -83,11 +83,13 @@ class SuccessMessageLineListenerTest {
 	}
 
 	@Test
-	void waitNotifyShouldWork() throws InterruptedException {
+	void waitUntilAnyChange() throws InterruptedException {
 		assertThat(testee.successMessageFound()).isFalse();
 
 		new Thread(() -> {
 			try {
+				Thread.sleep(100);
+				testee.inspect("nothing");
 				Thread.sleep(100);
 				testee.inspect("OK");
 			}
