@@ -36,6 +36,7 @@ public class SuccessMessageLineListener {
 
 	private boolean successMessageFound = false;
 	private String errorMessage = null;
+	private StringBuilder allLines = new StringBuilder();
 
 	public SuccessMessageLineListener(
 		List<Pattern> successPatterns,
@@ -49,6 +50,8 @@ public class SuccessMessageLineListener {
 
 	public void inspect(String line) {
 		if (!successMessageFound && errorMessage ==null) {
+			allLines.append(line).append("\n");
+
 			for (Pattern successPattern : successPatterns) {
 				if (successPattern.matcher(line).find()) {
 					successMessageFound=true;
@@ -84,6 +87,10 @@ public class SuccessMessageLineListener {
 
 	public Optional<String> errorMessage() {
 		return Optional.ofNullable(errorMessage);
+	}
+
+	public String allLines() {
+		return allLines.toString();
 	}
 
 	public static SuccessMessageLineListener of(String ... successPatterns) {

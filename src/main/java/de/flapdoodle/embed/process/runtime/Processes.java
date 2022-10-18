@@ -172,7 +172,7 @@ public abstract class Processes {
 //						new HashSet<>(), StreamToLineProcessor.wrap(Processors.silent()));
 				Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
 				lineListener.waitForResult(2000);
-				//logger.trace("logWatch output: {}", logWatch.getOutput());
+				logger.trace("logWatch output: {}", lineListener.allLines());
 				return lineListener.successMessageFound();
 			}
 
