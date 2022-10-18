@@ -26,6 +26,11 @@ package de.flapdoodle.embed.process.io;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @see ListeningStreamProcessor
+ * @see SuccessMessageLineListener
+ */
+@Deprecated
 public class LogWatchStreamProcessor implements StreamProcessor {
 
 	//private final Reader _reader;
