@@ -44,6 +44,8 @@ class SuccessMessageLineListenerTest {
 			.isFalse();
 		assertThat(testee.errorMessage())
 			.isEmpty();
+		assertThat(testee.allLines())
+			.isEqualTo("NOPE\n");
 	}
 
 	@Test
@@ -52,6 +54,8 @@ class SuccessMessageLineListenerTest {
 
 		assertThat(testee.successMessageFound())
 			.isTrue();
+		assertThat(testee.allLines())
+			.isEqualTo("well done\n");
 	}
 
 	@Test
@@ -62,6 +66,8 @@ class SuccessMessageLineListenerTest {
 			.isFalse();
 		assertThat(testee.errorMessage())
 			.contains("something went wrong");
+		assertThat(testee.allLines())
+			.isEqualTo("Error: something went wrong\n");
 	}
 
 	@Test
@@ -72,6 +78,8 @@ class SuccessMessageLineListenerTest {
 			.isFalse();
 		assertThat(testee.errorMessage())
 			.contains("ABC");
+		assertThat(testee.allLines())
+			.isEqualTo("failed with ABC code\n");
 	}
 
 	@Test

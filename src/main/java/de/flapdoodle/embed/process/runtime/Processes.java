@@ -192,7 +192,7 @@ public abstract class Processes {
 				ListeningStreamProcessor logWatch = new ListeningStreamProcessor(StreamToLineProcessor.wrap(Processors.silent()), lineListener::inspect);
 				Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
 				lineListener.waitForResult(2000);
-				//logger.trace("logWatch output: {}", logWatch.getOutput());
+				logger.trace("logWatch output: {}", lineListener.allLines());
 				return lineListener.successMessageFound();
 			}
 
