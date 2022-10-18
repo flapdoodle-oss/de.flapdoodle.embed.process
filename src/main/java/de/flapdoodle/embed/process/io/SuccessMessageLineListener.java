@@ -48,7 +48,7 @@ public class SuccessMessageLineListener {
 		this.errorMessageGroupName = errorMessageGroupName;
 	}
 
-	public void inspect(String line) {
+	public synchronized void inspect(String line) {
 		boolean anyChange = false;
 
 		if (!successMessageFound && errorMessage ==null) {
@@ -73,9 +73,7 @@ public class SuccessMessageLineListener {
 			}
 		}
 		if (anyChange) {
-			synchronized (this) {
-				notify();
-			}
+			notify();
 		}
 	}
 
@@ -87,15 +85,15 @@ public class SuccessMessageLineListener {
 		}
 	}
 
-	public boolean successMessageFound() {
+	public synchronized boolean successMessageFound() {
 		return successMessageFound;
 	}
 
-	public Optional<String> errorMessage() {
+	public synchronized Optional<String> errorMessage() {
 		return Optional.ofNullable(errorMessage);
 	}
 
-	public String allLines() {
+	public synchronized String allLines() {
 		return allLines.toString();
 	}
 
