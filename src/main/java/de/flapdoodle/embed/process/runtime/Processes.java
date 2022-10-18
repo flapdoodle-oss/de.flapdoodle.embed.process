@@ -27,10 +27,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
 import de.flapdoodle.embed.process.config.SupportConfig;
-import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
-import de.flapdoodle.embed.process.io.Processors;
-import de.flapdoodle.embed.process.io.StreamProcessor;
-import de.flapdoodle.embed.process.io.StreamToLineProcessor;
+import de.flapdoodle.embed.process.io.*;
 import de.flapdoodle.os.OS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +140,7 @@ public abstract class Processes {
 	public static boolean killProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, long pid) {
 	 	return killProcess(support,platform,output, justWaitALittle(), pid);
 	}
-	
+
 	public static boolean killProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, Consumer<ProcessControl> beforeStop, long pid) {
 		return isUnixLike(platform) && ProcessControl
 			.executeCommandLine(support, asList("kill", "-2", "" + pid),beforeStop, output,true);
@@ -191,12 +188,12 @@ public abstract class Processes {
 						.newProcessBuilder(asList(cmd), true);
 				Process process = processBuilder.start();
 				// look for the PID in the output, pass it in for 'success' state
-				LogWatchStreamProcessor logWatch = new LogWatchStreamProcessor(""+pid,
-						new HashSet<>(), StreamToLineProcessor.wrap(Processors.silent()));
+				SuccessMessageLineListener lineListener=SuccessMessageLineListener.of("" + pid);
+				ListeningStreamProcessor logWatch = new ListeningStreamProcessor(StreamToLineProcessor.wrap(Processors.silent()), lineListener::inspect);
 				Processors.connect(new InputStreamReader(process.getInputStream()), logWatch);
-				logWatch.waitForResult(2000);
-				logger.trace("logWatch output: {}", logWatch.getOutput());
-				return logWatch.isInitWithSuccess();
+				lineListener.waitForResult(2000);
+				//logger.trace("logWatch output: {}", logWatch.getOutput());
+				return lineListener.successMessageFound();
 			}
 
 		} catch (IOException | InterruptedException e) {
