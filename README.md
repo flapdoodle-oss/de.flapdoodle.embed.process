@@ -25,12 +25,12 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 18.10.2022 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
+Stable (Maven Central Repository, Released: 01.11.2022 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.0.7-beta</version>
+		<version>4.0.8-beta</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -38,7 +38,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.0.8-beta-SNAPSHOT</version>
+		<version>4.0.9-beta-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -55,6 +55,10 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 - Embedded Cassandra [com.github.nosan.embedded.cassandra](https://github.com/nosan/embedded-cassandra)
 
 ### Changelog
+
+#### 4.0.8
+
+- dep updates
 
 #### 4.0.7
 
