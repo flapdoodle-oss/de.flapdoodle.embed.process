@@ -28,7 +28,7 @@ Stable (Maven Central Repository, Released: 01.11.2022 - wait 24hrs for [maven c
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.2.6</version>
+		<version>3.2.7</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -36,7 +36,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.2.7-SNAPSHOT</version>
+		<version>3.2.8-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -54,7 +54,7 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 
 ### Changelog
 
-#### 3.2.6
+#### 3.2.7
 
 - dep updates
 
