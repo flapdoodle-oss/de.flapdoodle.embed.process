@@ -115,7 +115,7 @@ public class HowToRunAProcessTest {
 
 				Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()).withTransitionLabel("create default"),
 				Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()).withTransitionLabel("create default"),
-				Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())).withTransitionLabel("create empty env"),
+				Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(phantomJsEnv())).withTransitionLabel("create empty env"),
 
 				Start.to(Version.class).initializedWith(Version.of("2.1.1")).withTransitionLabel("set version"),
 				Derive.given(Name.class).state(ProcessOutput.class)
@@ -165,6 +165,13 @@ public class HowToRunAProcessTest {
 		}
 	}
 
+	private static Map<String, String> phantomJsEnv() {
+		Map<String,String> phantomJsEnv=new LinkedHashMap<>();
+		// see https://stackoverflow.com/questions/73004195/phantomjs-wont-install-autoconfiguration-error
+		phantomJsEnv.put("OPENSSL_CONF","/dev/null");
+		return phantomJsEnv;
+	}
+
 	@Test
 	public void processFactorySample(@org.junit.jupiter.api.io.TempDir Path tempDir) throws IOException {
 		try (HttpServers.Server server = HttpServers.httpServer(getClass(), resourceResponseMap)) {
@@ -180,6 +187,7 @@ public class HowToRunAProcessTest {
 					.initializedWith(PersistentDir.of(tempDir)))
 				.name(Start.to(Name.class).initializedWith(Name.of("phantomjs")))
 				.processArguments(Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))))
+				.processEnv(Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(phantomJsEnv())))
 				.packageInformation(dist -> Package.builder()
 					.archiveType(ArchiveType.TBZ2)
 					.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())

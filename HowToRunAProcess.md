@@ -34,7 +34,7 @@ Transitions transitions = Transitions.from(
 
   Start.to(SupportConfig.class).initializedWith(SupportConfig.generic()).withTransitionLabel("create default"),
   Start.to(ProcessConfig.class).initializedWith(ProcessConfig.defaults()).withTransitionLabel("create default"),
-  Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(Collections.emptyMap())).withTransitionLabel("create empty env"),
+  Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(phantomJsEnv())).withTransitionLabel("create empty env"),
 
   Start.to(Version.class).initializedWith(Version.of("2.1.1")).withTransitionLabel("set version"),
   Derive.given(Name.class).state(ProcessOutput.class)
@@ -182,6 +182,7 @@ ProcessFactory processFactory = ProcessFactory.builder()
     .initializedWith(PersistentDir.of(tempDir)))
   .name(Start.to(Name.class).initializedWith(Name.of("phantomjs")))
   .processArguments(Start.to(ProcessArguments.class).initializedWith(ProcessArguments.of(Arrays.asList("--help"))))
+  .processEnv(Start.to(ProcessEnv.class).initializedWith(ProcessEnv.of(phantomJsEnv())))
   .packageInformation(dist -> Package.builder()
     .archiveType(ArchiveType.TBZ2)
     .fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
@@ -234,8 +235,8 @@ digraph "process factory sample" {
 	"de.flapdoodle.reverse.transitions.ImmutableStart:2"[ shape="rectangle", label="Start" ];
 	"de.flapdoodle.reverse.transitions.ImmutableStart:3"[ shape="rectangle", label="Start" ];
 	"de.flapdoodle.reverse.transitions.ImmutableStart:4"[ shape="rectangle", label="Start" ];
-	"de.flapdoodle.reverse.transitions.ImmutableStart:5"[ shape="rectangle", label="create default" ];
-	"de.flapdoodle.reverse.transitions.ImmutableStart:6"[ shape="rectangle", label="create empty env" ];
+	"de.flapdoodle.reverse.transitions.ImmutableStart:5"[ shape="rectangle", label="Start" ];
+	"de.flapdoodle.reverse.transitions.ImmutableStart:6"[ shape="rectangle", label="create default" ];
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:3"[ shape="rectangle", label="create named console" ];
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:4"[ shape="rectangle", label="downloadCache" ];
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:5"[ shape="rectangle", label="extractedFileSetStore" ];
@@ -273,12 +274,12 @@ digraph "process factory sample" {
 	"de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0" -> "<empty>:class de.flapdoodle.embed.process.archives.ExtractedFileSet";
 	"de.flapdoodle.embed.process.transitions.ImmutableInitTempDirectory:0" -> "<empty>:class de.flapdoodle.embed.process.io.directories.TempDir";
 	"de.flapdoodle.reverse.transitions.ImmutableStart:0" -> "<empty>:class de.flapdoodle.embed.process.types.Name";
-	"de.flapdoodle.reverse.transitions.ImmutableStart:4" -> "<empty>:class de.flapdoodle.embed.process.io.directories.PersistentDir";
-	"de.flapdoodle.reverse.transitions.ImmutableStart:3" -> "<empty>:class de.flapdoodle.embed.process.types.ProcessArguments";
+	"de.flapdoodle.reverse.transitions.ImmutableStart:5" -> "<empty>:class de.flapdoodle.embed.process.io.directories.PersistentDir";
+	"de.flapdoodle.reverse.transitions.ImmutableStart:4" -> "<empty>:class de.flapdoodle.embed.process.types.ProcessArguments";
+	"de.flapdoodle.reverse.transitions.ImmutableStart:3" -> "<empty>:class de.flapdoodle.embed.process.types.ProcessEnv";
 	"de.flapdoodle.reverse.transitions.ImmutableStart:2" -> "<empty>:interface de.flapdoodle.embed.process.config.SupportConfig";
 	"de.flapdoodle.reverse.transitions.ImmutableStart:1" -> "<empty>:interface de.flapdoodle.embed.process.distribution.Version";
-	"de.flapdoodle.reverse.transitions.ImmutableStart:5" -> "<empty>:interface de.flapdoodle.embed.process.types.ProcessConfig";
-	"de.flapdoodle.reverse.transitions.ImmutableStart:6" -> "<empty>:class de.flapdoodle.embed.process.types.ProcessEnv";
+	"de.flapdoodle.reverse.transitions.ImmutableStart:6" -> "<empty>:interface de.flapdoodle.embed.process.types.ProcessConfig";
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:3" -> "<empty>:interface de.flapdoodle.embed.process.io.ProcessOutput";
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:4" -> "<empty>:interface de.flapdoodle.embed.process.store.DownloadCache";
 	"de.flapdoodle.reverse.transitions.ImmutableDerive:5" -> "<empty>:interface de.flapdoodle.embed.process.store.ExtractedFileSetStore";
