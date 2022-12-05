@@ -2,18 +2,12 @@
 [![Maven Central](https://img.shields.io/maven-central/v/de.flapdoodle.embed/de.flapdoodle.embed.process.svg)](https://maven-badges.herokuapp.com/maven-central/de.flapdoodle.embed/de.flapdoodle.embed.process)
 # Organisation Flapdoodle OSS
 
-We are now a github organisation. You are invited to participate. Starting with version 2 we are going to support only java 8 or higher. If you are looking for the older version you can find it in the 1.7 branch.
-
+We are a github organisation. You are invited to participate.
 
 # Embedded Process Util
 
-Embedded Process Util will provide a platform neutral way for running processes in unittests. This version is a complete rewrite,
-so there are major changes.
-
-## Why?
-
-- its easy, much easier as installing right version by hand
-- you can change version per test
+Embedded Process Util will provide a platform neutral way for running processes in unittests. Every version < 4.x.x is now considered as
+legacy.
 
 ## License
 
@@ -25,20 +19,12 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 28.11.2022 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml))
+[maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml)
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
 		<version>4.0.9-beta</version>
-	</dependency>
-
-Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
-
-	<dependency>
-		<groupId>de.flapdoodle.embed</groupId>
-		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.0.10-beta-SNAPSHOT</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -53,27 +39,3 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 - Embedded Vault [com.github.golovnin.embedded.vault](https://github.com/golovnin/embedded-vault)
 - Embedded InfluxDB [io.apisense.embed.influx](https://github.com/APISENSE/embed-influxDB)
 - Embedded Cassandra [com.github.nosan.embedded.cassandra](https://github.com/nosan/embedded-cassandra)
-
-### Changelog
-
-#### 4.0.9
-
-- dep updates, build fix
-
-#### 4.0.8
-
-- dep updates
-
-#### 4.0.7
-
-- log error parser improvments
-
-#### 4.0.3
-
-- cleanup, bugfixes
-
-#### 4.0.0
-
-- nearly complete rewrite
-
-
