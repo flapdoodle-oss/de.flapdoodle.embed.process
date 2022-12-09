@@ -25,11 +25,13 @@ package de.flapdoodle.embed.process.io.directories;
 
 import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.types.Wrapper;
+import de.flapdoodle.types.ThrowingSupplier;
 import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,8 +56,12 @@ public abstract class PersistentDir extends Wrapper<Path> {
 		return userHome(System::getProperty);
 	}
 
-	public static Supplier<PersistentDir> inUserHome(String subDir) {
+	public static ThrowingSupplier<PersistentDir, IOException> inUserHome(String subDir) {
 		return inUserHome(System::getProperty, subDir);
+	}
+
+	public static ThrowingSupplier<PersistentDir, IOException> inWorkingDir(String subDir) {
+		return relativeTo(Paths.get(""), subDir);
 	}
 
 	/**
@@ -63,16 +69,25 @@ public abstract class PersistentDir extends Wrapper<Path> {
 	 */
 	@Deprecated
 	public static Supplier<PersistentDir> userHome(String subDir) {
-		return inUserHome(subDir);
+		return inUserHome(subDir).mapCheckedException(RuntimeException::new)::get;
 	}
 
 	// VisibleForTesting
-	static Supplier<PersistentDir> inUserHome(Function<String, String> systemGetProperty, String subDir) {
+	static ThrowingSupplier<PersistentDir, IOException> relativeTo(Path base, String subDir) {
+		return () -> {
+			Path current = base.resolve(subDir);
+			if (!Files.exists(current)) {
+				Files.createDirectory(current);
+			}
+			return PersistentDir.of(current);
+		};
+	}
+
+	// VisibleForTesting
+	static ThrowingSupplier<PersistentDir, IOException> inUserHome(Function<String, String> systemGetProperty, String subDir) {
 		return () -> {
 			Path resolved = userHome(systemGetProperty).resolve(subDir);
-			Try.run(() -> {
-				if (!Files.exists(resolved)) Files.createDirectory(resolved);
-			});
+			if (!Files.exists(resolved)) Files.createDirectory(resolved);
 			return of(resolved);
 		};
 	}

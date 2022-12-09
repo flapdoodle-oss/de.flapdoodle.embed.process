@@ -23,21 +23,47 @@
  */
 package de.flapdoodle.embed.process.io.directories;
 
+import de.flapdoodle.types.ThrowingSupplier;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PersistentDirTest {
 
 	@Test
-	void createSubDirectory(@TempDir Path tempDir) {
+	void createSubDirectoryInWorkingDir(@TempDir Path tempDir) throws IOException {
+		String subDir = UUID.randomUUID().toString();
+		ThrowingSupplier<PersistentDir, IOException> supplier = PersistentDir.relativeTo(tempDir, subDir);
+
+		assertThat(tempDir.resolve(subDir)).doesNotExist();
+
+		PersistentDir result = supplier.get();
+
+		assertThat(result.value())
+			.isEqualTo(tempDir.resolve(subDir));
+		assertThat(result.value())
+			.exists()
+			.isDirectory();
+
+		PersistentDir secondCall = supplier.get();
+
+		assertThat(secondCall.value())
+			.isEqualTo(tempDir.resolve(subDir));
+		assertThat(secondCall.value())
+			.exists()
+			.isDirectory();
+
+	}
+
+	@Test
+	void createSubDirectory(@TempDir Path tempDir) throws IOException {
 		Function<String, String> systemGetProperty=key -> {
 			switch (key) {
 				case "user.home":
@@ -47,7 +73,7 @@ class PersistentDirTest {
 			}
 		};
 		String subDir = UUID.randomUUID().toString();
-		Supplier<PersistentDir> supplier = PersistentDir.inUserHome(systemGetProperty, subDir);
+		ThrowingSupplier<PersistentDir, IOException> supplier = PersistentDir.inUserHome(systemGetProperty, subDir);
 
 		assertThat(tempDir.resolve(subDir)).doesNotExist();
 
