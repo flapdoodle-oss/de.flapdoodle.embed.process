@@ -26,6 +26,7 @@ package de.flapdoodle.embed.process.store;
 import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
 import de.flapdoodle.embed.process.hash.Hasher;
+import de.flapdoodle.types.Try;
 import org.jheaps.annotations.VisibleForTesting;
 
 import java.io.IOException;
@@ -42,6 +43,9 @@ public class LocalDownloadCache implements DownloadCache {
 
 	public LocalDownloadCache(Path baseDir) {
 		this.baseDir = baseDir;
+		if (!java.nio.file.Files.exists(baseDir)) {
+			Try.run(() -> java.nio.file.Files.createDirectory(baseDir));
+		}
 	}
 
 	@Override
