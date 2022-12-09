@@ -58,6 +58,14 @@ class PersistentDirTest {
 		assertThat(result.value())
 			.exists()
 			.isDirectory();
+
+		PersistentDir secondCall = supplier.get();
+
+		assertThat(secondCall.value())
+			.isEqualTo(tempDir.resolve(subDir));
+		assertThat(secondCall.value())
+			.exists()
+			.isDirectory();
 	}
 
 	@Test

@@ -70,7 +70,9 @@ public abstract class PersistentDir extends Wrapper<Path> {
 	static Supplier<PersistentDir> inUserHome(Function<String, String> systemGetProperty, String subDir) {
 		return () -> {
 			Path resolved = userHome(systemGetProperty).resolve(subDir);
-			Try.run(() -> Files.createDirectory(resolved));
+			Try.run(() -> {
+				if (!Files.exists(resolved)) Files.createDirectory(resolved);
+			});
 			return of(resolved);
 		};
 	}
