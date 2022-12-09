@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.io.file;
 
 import de.flapdoodle.embed.process.io.directories.Directory;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
+import de.flapdoodle.embed.process.io.directories.UserHome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +83,7 @@ public class Files {
 	}
 
 	public static File createOrCheckUserDir(String prefix) throws IOException {
-		File tempDir = new File(System.getProperty("user.home"));
+		File tempDir = UserHome.userHome(System::getProperty).toFile();
 		File tempFile = new File(tempDir, prefix);
 		return createOrCheckDir(tempFile);
 	}

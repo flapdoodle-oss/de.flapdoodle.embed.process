@@ -23,10 +23,14 @@
  */
 package de.flapdoodle.embed.process.io.directories;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-
-
+import java.util.function.Function;
 
 /**
  *
@@ -34,17 +38,36 @@ import java.nio.file.Paths;
 public class UserHome implements Directory {
 	private final String postFix;
 
+	private static Logger logger= LoggerFactory.getLogger(UserHome.class);
+
 	public UserHome(String postFix) {
 		this.postFix=postFix;
 	}
 	
 	@Override
 	public File asFile() {
-		return Paths.get(System.getProperty("user.home")).resolve(postFix).toFile();
+		return userHome(System::getProperty).resolve(postFix).toFile();
 	}
 	
 	@Override
 	public boolean isGenerated() {
 		return false;
+	}
+
+	public static Path userHome(Function<String, String> systemGetProperty) {
+		String userHome = systemGetProperty.apply("user.home");
+		if (userHome==null) throw new IllegalArgumentException("user.home is null");
+		if ("?".equals(userHome)) {
+			logger.warn("user.home is set to '?', maybe this is running inside a docker container");
+			logger.warn("use fallback to user.dir");
+			String userDir = systemGetProperty.apply("user.dir");
+			if (userDir==null) throw new IllegalArgumentException("user.dir is null");
+			if (userDir.equals("?")) throw new IllegalArgumentException("user.dir is set to '?'");
+			logger.warn("use user.dir('{}') as fallback for user.home('{}')",userDir, userHome);
+			userHome = userDir;
+		}
+		Path path = Paths.get(userHome);
+		if (!Files.isDirectory(path)) throw new IllegalArgumentException(""+path+" is not a directory");
+		return path;
 	}
 }
