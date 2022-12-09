@@ -28,11 +28,37 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PersistentDirTest {
+
+	@Test
+	void createSubDirectory(@TempDir Path tempDir) {
+		Function<String, String> systemGetProperty=key -> {
+			switch (key) {
+				case "user.home":
+					return tempDir.toString();
+				default:
+					throw new IllegalArgumentException("should not happen");
+			}
+		};
+		String subDir = UUID.randomUUID().toString();
+		Supplier<PersistentDir> supplier = PersistentDir.inUserHome(systemGetProperty, subDir);
+
+		assertThat(tempDir.resolve(subDir)).doesNotExist();
+
+		PersistentDir result = supplier.get();
+
+		assertThat(result.value())
+			.isEqualTo(tempDir.resolve(subDir));
+		assertThat(result.value())
+			.exists()
+			.isDirectory();
+	}
 
 	@Test
 	void justUserHomeIfValidAndSet(@TempDir Path tempDir) {

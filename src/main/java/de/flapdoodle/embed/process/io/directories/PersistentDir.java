@@ -25,6 +25,7 @@ package de.flapdoodle.embed.process.io.directories;
 
 import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.types.Wrapper;
+import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,12 @@ import java.util.function.Supplier;
 public abstract class PersistentDir extends Wrapper<Path> {
 	private static Logger logger= LoggerFactory.getLogger(PersistentDir.class);
 
+	@Value.Check
+	protected void check() {
+		Preconditions.checkArgument(Files.exists(value()),"does not exist: %s", value());
+		Preconditions.checkArgument(Files.isDirectory(value()),"is not a directory: %s", value());
+	}
+
 	public static PersistentDir of(Path path) {
 		return ImmutablePersistentDir.of(path);
 	}
@@ -47,8 +54,25 @@ public abstract class PersistentDir extends Wrapper<Path> {
 		return userHome(System::getProperty);
 	}
 
+	public static Supplier<PersistentDir> inUserHome(String subDir) {
+		return inUserHome(System::getProperty, subDir);
+	}
+
+	/**
+	 * @see PersistentDir#inUserHome(String)
+	 */
+	@Deprecated
 	public static Supplier<PersistentDir> userHome(String subDir) {
-		return () -> of(userHome().resolve(subDir));
+		return inUserHome(subDir);
+	}
+
+	// VisibleForTesting
+	static Supplier<PersistentDir> inUserHome(Function<String, String> systemGetProperty, String subDir) {
+		return () -> {
+			Path resolved = userHome(systemGetProperty).resolve(subDir);
+			Try.run(() -> Files.createDirectory(resolved));
+			return of(resolved);
+		};
 	}
 
 	// VisibleForTesting
