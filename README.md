@@ -28,15 +28,7 @@ Stable (Maven Central Repository, Released: 28.11.2022 - wait 24hrs for [maven c
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.2.8</version>
-	</dependency>
-
-Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
-
-	<dependency>
-		<groupId>de.flapdoodle.embed</groupId>
-		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>3.2.9-SNAPSHOT</version>
+		<version>3.2.9</version>
 	</dependency>
 
 ### Projects using this Tool
@@ -53,6 +45,10 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 - Embedded Cassandra [com.github.nosan.embedded.cassandra](https://github.com/nosan/embedded-cassandra)
 
 ### Changelog
+
+#### 3.2.9
+
+- fix user.home not set case
 
 #### 3.2.8
 
