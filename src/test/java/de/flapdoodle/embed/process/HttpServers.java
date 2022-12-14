@@ -50,7 +50,7 @@ public class HttpServers {
 				Path resourcePath = Resources.resourcePath(testClass, entry.getValue());
 				byte[] content = Files.readAllBytes(resourcePath);
 				return response(200, "application/octet-stream", content);
-			}).mapCheckedException(RuntimeException::new)::get
+			}).mapToUncheckedException(RuntimeException::new)
 				//.fallbackTo(ex -> { throw new RuntimeException(ex);})
 			));
 

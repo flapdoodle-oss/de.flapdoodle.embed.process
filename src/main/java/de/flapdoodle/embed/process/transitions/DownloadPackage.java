@@ -113,7 +113,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		TempDir temp = lookup.of(tempDirectory());
 
 		URL downloadUrl = Try.supplier(() -> new URL(distPackage.url()))
-			.mapCheckedException(RuntimeException::new)
+			.mapToUncheckedException(RuntimeException::new)
 			.get();
 
 		Optional<Path> archive = downloadCache.archiveFor(downloadUrl, distPackage.archiveType());
@@ -121,7 +121,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 			return State.of(archive.map(Archive::of).get());
 		} else {
 			Path downloadedArchive = Try.supplier(() -> temp.createDirectory(name.value()))
-				.mapCheckedException(cause -> new IllegalStateException("could not create archive path", cause))
+				.mapToUncheckedException(cause -> new IllegalStateException("could not create archive path", cause))
 				.get()
 				.resolve(UUID.randomUUID().toString());
 
@@ -129,11 +129,11 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 					URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, downloadConfig().getUserAgent(), downloadConfig().getTimeoutConfig(),
 						downloadConfig().proxyFactory().map(ProxyFactory::createProxy));
 					UrlStreams.downloadTo(connection, downloadedArchive, UrlStreams.downloadCopyListenerDelegatingTo(progressListener));
-				}).mapCheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
+				}).mapToUncheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
 				.run();
 
 			Path storedArchive = Try.supplier(() -> downloadCache.store(downloadUrl, distPackage.archiveType(), downloadedArchive))
-				.mapCheckedException(cause -> new IllegalArgumentException("could not store downloaded artifact", cause))
+				.mapToUncheckedException(cause -> new IllegalArgumentException("could not store downloaded artifact", cause))
 				.get();
 			
 			return State.of(Archive.of(storedArchive), it -> {

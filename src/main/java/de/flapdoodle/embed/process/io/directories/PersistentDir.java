@@ -69,7 +69,7 @@ public abstract class PersistentDir extends Wrapper<Path> {
 	 */
 	@Deprecated
 	public static Supplier<PersistentDir> userHome(String subDir) {
-		return inUserHome(subDir).mapCheckedException(RuntimeException::new)::get;
+		return inUserHome(subDir).mapToUncheckedException(RuntimeException::new);
 	}
 
 	// VisibleForTesting

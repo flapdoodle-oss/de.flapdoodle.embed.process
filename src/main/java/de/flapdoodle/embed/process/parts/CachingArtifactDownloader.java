@@ -58,7 +58,7 @@ public class CachingArtifactDownloader implements ArtifactPathForUrl {
 				UrlStreams.downloadTo(connection, artifactPath, listener);
 				return ArtifactPath.of(artifactPath);
 			})
-					.mapCheckedException(RuntimeException::new)
+					.mapToUncheckedException(RuntimeException::new)
 					.get();
 		}
 		return ArtifactPath.of(artifactPath);

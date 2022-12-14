@@ -56,7 +56,7 @@ public class RunningProcessImpl implements RunningProcess {
 				onStop.run();
 			} finally {
 				Try.runable(() -> Files.delete(pidFile))
-					.mapCheckedException(RuntimeException::new)
+					.mapException(RuntimeException::new)
 					.run();
 			}
 		}
