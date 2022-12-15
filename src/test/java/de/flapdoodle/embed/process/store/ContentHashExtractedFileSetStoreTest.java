@@ -29,6 +29,8 @@ import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.ImmutableFileSet;
 import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.util.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -39,7 +41,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -96,6 +101,28 @@ class ContentHashExtractedFileSetStoreTest {
 
 		assertThat(readAgain)
 			.contains(stored);
+	}
+
+	@Test
+	public void hashShouldNotChangeIfArchiveIsNotReadInOneGo(@TempDir Path tempDir) throws IOException {
+		byte[] content=new byte[1024*256+123];
+		ThreadLocalRandom.current().nextBytes(content);
+
+		Path archive = tempDir.resolve("archive");
+
+		Files.write(archive, content, StandardOpenOption.CREATE_NEW);
+
+		ImmutableFileSet fileSet = FileSet.builder()
+			.addEntry(FileType.Executable, "foo")
+			.build();
+
+		String oldHash = ContentHashExtractedFileSetStore.hash(archive, fileSet);
+		String newHash1024 = ContentHashExtractedFileSetStore.hash(archive, fileSet, 1024);
+		String newHash123 = ContentHashExtractedFileSetStore.hash(archive, fileSet, 123);
+
+		assertThat(oldHash).isNotNull();
+		assertThat(oldHash).isEqualTo(newHash1024);
+		assertThat(newHash1024).isEqualTo(newHash123);
 	}
 
 	private static void createDir(Path path) throws IOException {
