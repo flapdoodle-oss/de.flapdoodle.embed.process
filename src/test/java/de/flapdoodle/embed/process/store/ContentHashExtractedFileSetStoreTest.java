@@ -104,6 +104,35 @@ class ContentHashExtractedFileSetStoreTest {
 	}
 
 	@Test
+	public void hashShouldBeCached(@TempDir Path tempDir) throws IOException {
+		byte[] content=new byte[1024*256+123];
+		for (int i=0;i<content.length;i++) {
+			content[i]=(byte) i;
+		};
+
+		Path archive = tempDir.resolve("archive");
+		Files.write(archive, content, StandardOpenOption.CREATE_NEW);
+
+		Path cacheDir = tempDir.resolve("cache");
+		Files.createDirectory(cacheDir);
+
+		ImmutableFileSet fileSet = FileSet.builder()
+			.addEntry(FileType.Executable, "foo")
+			.build();
+
+		String hash = ContentHashExtractedFileSetStore.hash(cacheDir, archive, fileSet);
+		assertThat(hash).isEqualTo("715ade7b9214161b8ca25d03b3c0a98fb7f9b891b969f828d50b3e1b4cf28fad");
+
+		String cacheHash = ContentHashExtractedFileSetStore.cacheHash(archive);
+		assertThat(cacheDir.resolve(cacheHash))
+			.exists()
+			.content().isEqualTo(hash);
+
+		String secondHash = ContentHashExtractedFileSetStore.hash(cacheDir, archive, fileSet);
+		assertThat(secondHash).isEqualTo(hash);
+	}
+
+	@Test
 	public void hashShouldNotChangeIfArchiveIsNotReadInOneGo(@TempDir Path tempDir) throws IOException {
 		byte[] content=new byte[1024*256+123];
 		ThreadLocalRandom.current().nextBytes(content);

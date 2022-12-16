@@ -31,12 +31,16 @@ import de.flapdoodle.embed.process.hash.Hasher;
 import de.flapdoodle.embed.process.io.Files;
 import de.flapdoodle.types.Try;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -47,17 +51,22 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 	private static final int HASH_BUFFER_SIZE=1024*1024;
 
 	private final Path basePath;
+	private final Path cachePath;
 
 	public ContentHashExtractedFileSetStore(Path basePath) {
 		this.basePath = basePath;
+		this.cachePath = basePath.resolve("hashes");
 		if (!java.nio.file.Files.exists(basePath)) {
 			Try.run(() -> java.nio.file.Files.createDirectory(basePath));
+		}
+		if (!java.nio.file.Files.exists(cachePath)) {
+			Try.run(() -> java.nio.file.Files.createDirectory(cachePath));
 		}
 	}
 
 	@Override
 	public Optional<ExtractedFileSet> extractedFileSet(Path archive, FileSet fileSet) {
-		String hash = hash(archive, fileSet, HASH_BUFFER_SIZE);
+		String hash = hash(cachePath, archive, fileSet);
 		Path fileSetBasePath = basePath.resolve(hash);
 		if (java.nio.file.Files.isDirectory(fileSetBasePath)) {
 			return Try.supplier(() -> Optional.of(readFileSet(fileSetBasePath, fileSet)))
@@ -70,7 +79,7 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 
 	@Override
 	public ExtractedFileSet store(Path archive, FileSet fileSet, ExtractedFileSet src) throws IOException {
-		String hash = hash(archive, fileSet, HASH_BUFFER_SIZE);
+		String hash = hash(cachePath, archive, fileSet);
 		Path fileSetBasePath = basePath.resolve(hash);
 		Preconditions.checkArgument(!java.nio.file.Files.exists(fileSetBasePath),"hash collision for %s (hash=%s)",archive, hash);
 		java.nio.file.Files.createDirectory(fileSetBasePath);
@@ -109,6 +118,46 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 	}
 
 	// VisibleForTesting
+	static String hash(Path cachePath, Path archive, FileSet fileSet) {
+		Preconditions.checkArgument(java.nio.file.Files.exists(cachePath, LinkOption.NOFOLLOW_LINKS),"cache does not exsist: %s", cachePath);
+		Preconditions.checkArgument(java.nio.file.Files.isDirectory(cachePath, LinkOption.NOFOLLOW_LINKS),"cache is not a directory: %s", cachePath);
+
+		Optional<String> cacheKey = Try.supplier(() -> cacheHash(archive))
+			.mapException(ex -> new IOException("could not create cache key for "+archive, ex))
+			.onCheckedException(Throwable::printStackTrace)
+			.get();
+
+		return hash(cacheKey.map(cachePath::resolve), archive, fileSet);
+	}
+
+	private static String hash(Optional<Path> optCachedHashPath, Path archive, FileSet fileSet) {
+		if (optCachedHashPath.isPresent()) {
+			Path cachedHashPath = optCachedHashPath.get();
+
+			if (java.nio.file.Files.exists(cachedHashPath)) {
+				byte[] hashBytes = Try.supplier(() -> java.nio.file.Files.readAllBytes(cachedHashPath))
+					.mapToUncheckedException(ex -> new RuntimeException("could not read cached key from " + cachedHashPath, ex))
+					.get();
+				return new String(hashBytes, StandardCharsets.UTF_8);
+			} else {
+				String hash = hash(archive, fileSet, HASH_BUFFER_SIZE);
+				Try.run(() -> java.nio.file.Files.write(cachedHashPath, hash.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE_NEW));
+				return hash;
+			}
+		}
+
+		return hash(archive, fileSet, HASH_BUFFER_SIZE);
+	}
+
+	// VisibleForTesting
+	static String cacheHash(Path archive) throws IOException {
+		Hasher cacheHasher = Hasher.instance();
+		cacheHasher.update(archive.toString());
+		cacheHasher.update(java.nio.file.Files.getLastModifiedTime(archive, LinkOption.NOFOLLOW_LINKS).toString());
+		return cacheHasher.hashAsString();
+	}
+
+	// VisibleForTesting
 	@Deprecated
 	static String hash(Path archive, FileSet fileSet) {
 		Hasher digest = Hasher.instance();
@@ -133,20 +182,11 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		digest.update("--".getBytes(StandardCharsets.UTF_8));
 		Try.run(() -> {
 			ByteBuffer buffer = ByteBuffer.allocate(blocksize);
-			byte[] byteBuffer = new byte[blocksize];
 
 			try(SeekableByteChannel channel = java.nio.file.Files.newByteChannel(archive)) {
-				int bytesRead;
-				while ((bytesRead = channel.read(buffer)) > 0) {
+				while (channel.read(buffer) > 0) {
 					buffer.flip();
-					if (bytesRead == blocksize) {
-						buffer.get(byteBuffer);
-						digest.update(byteBuffer);
-					} else {
-						byte[] smallerByteBuffer = new byte[bytesRead];
-						buffer.get(smallerByteBuffer);
-						digest.update(smallerByteBuffer);
-					}
+					digest.update(buffer);
 					buffer.clear();
 				}
 			}
