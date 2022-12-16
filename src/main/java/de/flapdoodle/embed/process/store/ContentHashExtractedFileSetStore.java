@@ -122,7 +122,7 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		Preconditions.checkArgument(java.nio.file.Files.exists(cachePath, LinkOption.NOFOLLOW_LINKS),"cache does not exsist: %s", cachePath);
 		Preconditions.checkArgument(java.nio.file.Files.isDirectory(cachePath, LinkOption.NOFOLLOW_LINKS),"cache is not a directory: %s", cachePath);
 
-		Optional<String> cacheKey = Try.supplier(() -> cacheHash(archive))
+		Optional<String> cacheKey = Try.supplier(() -> cacheHash(archive, fileSet))
 			.mapException(ex -> new IOException("could not create cache key for "+archive, ex))
 			.onCheckedException(Throwable::printStackTrace)
 			.get();
@@ -150,8 +150,14 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 	}
 
 	// VisibleForTesting
-	static String cacheHash(Path archive) throws IOException {
+	static String cacheHash(Path archive, FileSet fileSet) throws IOException {
 		Hasher cacheHasher = Hasher.instance();
+		fileSet.entries().forEach(entry -> {
+			cacheHasher.update(entry.type().name().getBytes(StandardCharsets.UTF_8));
+			cacheHasher.update(entry.destination().getBytes(StandardCharsets.UTF_8));
+			cacheHasher.update(entry.matchingPattern().toString().getBytes(StandardCharsets.UTF_8));
+		});
+		cacheHasher.update("--".getBytes(StandardCharsets.UTF_8));
 		cacheHasher.update(archive.toString());
 		cacheHasher.update(java.nio.file.Files.getLastModifiedTime(archive, LinkOption.NOFOLLOW_LINKS).toString());
 		return cacheHasher.hashAsString();

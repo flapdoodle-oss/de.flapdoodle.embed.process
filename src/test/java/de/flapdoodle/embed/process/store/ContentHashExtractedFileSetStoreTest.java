@@ -123,7 +123,7 @@ class ContentHashExtractedFileSetStoreTest {
 		String hash = ContentHashExtractedFileSetStore.hash(cacheDir, archive, fileSet);
 		assertThat(hash).isEqualTo("715ade7b9214161b8ca25d03b3c0a98fb7f9b891b969f828d50b3e1b4cf28fad");
 
-		String cacheHash = ContentHashExtractedFileSetStore.cacheHash(archive);
+		String cacheHash = ContentHashExtractedFileSetStore.cacheHash(archive, fileSet);
 		assertThat(cacheDir.resolve(cacheHash))
 			.exists()
 			.content().isEqualTo(hash);
