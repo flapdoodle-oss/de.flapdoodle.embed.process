@@ -538,7 +538,7 @@
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.6</version>
         </dependency>
 
         <!-- logging -->
