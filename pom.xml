@@ -406,8 +406,8 @@
     </profiles>
 
     <properties>
-        <junit.version>5.9.1</junit.version>
-        <jna.version>5.12.1</jna.version>
+        <junit.version>5.9.2</junit.version>
+        <jna.version>5.13.0</jna.version>
         <osgi.category>Bundles</osgi.category>
         <osgi.export>
             de.flapdoodle.embed.process;version=${project.version},
@@ -470,13 +470,13 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.23.1</version>
+            <version>3.24.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.flapdoodle.testdoc</groupId>
             <artifactId>de.flapdoodle.testdoc</artifactId>
-            <version>1.4.0</version>
+            <version>1.5.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -538,7 +538,7 @@
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.7</version>
         </dependency>
 
         <!-- logging -->
