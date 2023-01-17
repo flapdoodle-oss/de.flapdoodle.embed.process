@@ -119,6 +119,7 @@ public class ProcessControl {
 				try {
 					returnCode = task.get(100, TimeUnit.MILLISECONDS);
 					stopped = true;
+					return returnCode;
 				}
 				catch (ExecutionException | TimeoutException ex) {
 					logger.debug("try stop", ex);
@@ -129,6 +130,7 @@ public class ProcessControl {
 				try {
 					returnCode = task.get(maxStopTimeoutMillis, TimeUnit.MILLISECONDS);
 					stopped = true;
+					return returnCode;
 				}
 				catch (ExecutionException | TimeoutException ex) {
 					logger.debug("try stop after IO closed", ex);
