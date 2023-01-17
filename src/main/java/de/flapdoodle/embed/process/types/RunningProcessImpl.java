@@ -62,4 +62,7 @@ public class RunningProcessImpl implements RunningProcess {
 		}
 	}
 
+	public boolean isAlive() {
+		return process.isAlive();
+	}
 }

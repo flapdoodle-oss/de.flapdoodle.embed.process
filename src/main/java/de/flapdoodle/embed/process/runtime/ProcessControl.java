@@ -77,6 +77,10 @@ public class ProcessControl {
 		return waitForProcessGotKilled(maxStopTimeoutMillis);
 	}
 
+	public boolean isAlive() {
+		return process.isAlive();
+	}
+	
 	private void closeIOAndDestroy() {
 		if (process != null) {
 			try {
@@ -94,43 +98,52 @@ public class ProcessControl {
 	}
 
 	private Integer stopOrDestroyProcess(long maxStopTimeoutMillis) {
-		Integer returnCode=null;
-		
+		Integer returnCode = null;
+
 		// set back to minimal defaults
-		if (maxStopTimeoutMillis<3000) maxStopTimeoutMillis=MAX_STOP_TIMEOUT_MS;
+		if (maxStopTimeoutMillis < 3000) maxStopTimeoutMillis = MAX_STOP_TIMEOUT_MS;
 
 		try {
-			returnCode=process.exitValue();
-		} catch (IllegalThreadStateException itsx) {
-		    	logger.info("stopOrDestroyProcess: "+itsx.getMessage() +" "+((itsx.getCause()!=null) ? itsx.getCause() : "") );
-			Callable<Integer> callable= process::waitFor;
+			returnCode = process.exitValue();
+		}
+		catch (IllegalThreadStateException itsx) {
+			logger.info("stopOrDestroyProcess: " + itsx.getMessage() + " " + ((itsx.getCause() != null) ? itsx.getCause() : ""));
+			Callable<Integer> callable = process::waitFor;
 
 			FutureTask<Integer> task = new FutureTask<>(callable);
 			new Thread(task).start();
 
-			boolean stopped=false;
+			boolean stopped = false;
 			try {
 
-              try {
-                returnCode = task.get(100, TimeUnit.MILLISECONDS);
-                stopped = true;
-              } catch (ExecutionException | TimeoutException e) {
-              }
+				try {
+					returnCode = task.get(100, TimeUnit.MILLISECONDS);
+					stopped = true;
+				}
+				catch (ExecutionException | TimeoutException ex) {
+					logger.debug("try stop", ex);
+				}
 
-              closeIOAndDestroy();
+				closeIOAndDestroy();
 
-              try {
-                returnCode = task.get(maxStopTimeoutMillis, TimeUnit.MILLISECONDS);
-                stopped = true;
-              } catch (ExecutionException | TimeoutException e) {
-              }
-            } catch (InterruptedException e) {
-			  Thread.currentThread().interrupt();
-            }
-
-          if (!stopped)	{
+				try {
+					returnCode = task.get(maxStopTimeoutMillis, TimeUnit.MILLISECONDS);
+					stopped = true;
+				}
+				catch (ExecutionException | TimeoutException ex) {
+					logger.debug("try stop after IO closed", ex);
+				}
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			} finally {
+				if (!stopped) {
 //				logger.severe(""+runtime.getName()+" NOT exited, thats why we destroy");
-				process.destroy();
+					process.destroy();
+					if (process.isAlive()) {
+						process.destroyForcibly();
+					}
+				}
 			}
 		}
 
