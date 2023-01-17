@@ -145,6 +145,7 @@ public class ProcessControl {
 					if (process.isAlive()) {
 						process.destroyForcibly();
 					}
+					returnCode = -1;
 				}
 			}
 		}
