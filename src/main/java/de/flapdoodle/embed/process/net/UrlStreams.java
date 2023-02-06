@@ -25,7 +25,6 @@ package de.flapdoodle.embed.process.net;
 
 import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.config.TimeoutConfig;
-import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import de.flapdoodle.types.Optionals;
 import de.flapdoodle.types.ThrowingFunction;
 import de.flapdoodle.types.ThrowingSupplier;
@@ -43,7 +42,20 @@ public abstract class UrlStreams {
 	static final int BUFFER_LENGTH = 1024 * 8 * 8;
 	static final int READ_COUNT_MULTIPLIER = 100;
 
-	public static <E extends Exception> void downloadTo(URLConnection connection, Path destination, DownloadCopyListener copyListener) throws IOException {
+	static class Adapter implements UrlDownloadToPath {
+		@Override
+		public void download(URL downloadUrl, Path destination, Optional<Proxy> proxy, String userAgent, TimeoutConfig timeoutConfig,
+			DownloadCopyListener copyListener) throws IOException {
+			URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, userAgent, timeoutConfig,proxy);
+			UrlStreams.downloadTo(connection, destination, copyListener);
+		}
+	}
+
+	public static UrlDownloadToPath asUrlDownloadToPath() {
+		return new Adapter();
+	}
+
+	public static void downloadTo(URLConnection connection, Path destination, UrlDownloadToPath.DownloadCopyListener copyListener) throws IOException {
 		downloadTo(connection, destination, c -> downloadIntoTempFile(c, copyListener));
 	}
 
@@ -54,7 +66,7 @@ public abstract class UrlStreams {
 		Files.delete(tempFile);
 	}
 	
-	protected static Path downloadIntoTempFile(URLConnection connection, DownloadCopyListener copyListener) throws IOException, FileNotFoundException {
+	protected static Path downloadIntoTempFile(URLConnection connection, UrlDownloadToPath.DownloadCopyListener copyListener) throws IOException, FileNotFoundException {
 		Path tempFile = java.nio.file.Files.createTempFile("download", "");
 		boolean downloadSucceeded=false; 
 		try {
@@ -68,7 +80,7 @@ public abstract class UrlStreams {
 		}
 	}
 
-	private static <E extends Exception> void downloadAndCopy(URLConnection connection, ThrowingSupplier<BufferedOutputStream, E> output, DownloadCopyListener copyListener) throws IOException, E {
+	private static <E extends Exception> void downloadAndCopy(URLConnection connection, ThrowingSupplier<BufferedOutputStream, E> output, UrlDownloadToPath.DownloadCopyListener copyListener) throws IOException, E {
 		long length = connection.getContentLengthLong();
 		copyListener.downloaded(connection.getURL(), 0, length);
 		try (BufferedInputStream bis = new BufferedInputStream(connection.getInputStream())) {
@@ -98,27 +110,5 @@ public abstract class UrlStreams {
 		openConnection.setReadTimeout(timeoutConfig.getReadTimeout());
 		return openConnection;
 	}
-	
-	public interface DownloadCopyListener {
-		void downloaded(URL url, long bytesCopied, long contentLength);
-	}
 
-	public static DownloadCopyListener downloadCopyListenerDelegatingTo(ProgressListener progressListener) {
-		return (url, bytesCopied, contentLength) -> {
-			if (bytesCopied == 0) {
-				progressListener.start("download " + url);
-			} else {
-				if (contentLength!=-1L) {
-					if (bytesCopied == contentLength) {
-						progressListener.done("download " + url);
-					} else {
-						int percent = (int) (bytesCopied * 100 / contentLength);
-						progressListener.progress("download " + url, percent);
-					}
-				} else {
-					progressListener.info("download "+url, bytesCopied + " bytes");
-				}
-			}
-		};
-	}
 }

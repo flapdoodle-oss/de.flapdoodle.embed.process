@@ -29,6 +29,7 @@ import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import de.flapdoodle.embed.process.net.ProxyFactory;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.directories.TempDir;
+import de.flapdoodle.embed.process.net.UrlDownloadToPath;
 import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.store.DownloadCache;
 import de.flapdoodle.embed.process.types.Archive;
@@ -38,6 +39,7 @@ import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.naming.HasLabel;
+import de.flapdoodle.reverse.transitions.Start;
 import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 
@@ -96,6 +98,11 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 		return StateID.of(Archive.class);
 	}
 
+	@Value.Default
+	public UrlDownloadToPath urlDownloadToPath() {
+		return UrlStreams.asUrlDownloadToPath();
+	}
+
 	@Override
 	@Value.Auxiliary
 	public final Set<StateID<?>> sources() {
@@ -126,9 +133,17 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 				.resolve(UUID.randomUUID().toString());
 
 			Try.runable(() -> {
-					URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, downloadConfig().getUserAgent(), downloadConfig().getTimeoutConfig(),
-						downloadConfig().proxyFactory().map(ProxyFactory::createProxy));
-					UrlStreams.downloadTo(connection, downloadedArchive, UrlStreams.downloadCopyListenerDelegatingTo(progressListener));
+					urlDownloadToPath().download(
+						downloadUrl,
+						downloadedArchive,
+						downloadConfig().proxyFactory().map(ProxyFactory::createProxy),
+						downloadConfig().getUserAgent(),
+						downloadConfig().getTimeoutConfig(),
+						UrlDownloadToPath.downloadCopyListenerDelegatingTo(progressListener)
+					);
+//					URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, downloadConfig().getUserAgent(), downloadConfig().getTimeoutConfig(),
+//						downloadConfig().proxyFactory().map(ProxyFactory::createProxy));
+//					UrlStreams.downloadTo(connection, downloadedArchive, UrlDownloadToPath.downloadCopyListenerDelegatingTo(progressListener));
 				}).mapToUncheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
 				.run();
 
