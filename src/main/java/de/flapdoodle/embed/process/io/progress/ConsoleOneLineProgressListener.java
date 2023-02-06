@@ -68,7 +68,7 @@ public class ConsoleOneLineProgressListener implements ProgressListener {
 
 		lastPercent = percent;
 
-		System.out.print(sb.toString());
+		System.out.print(sb);
 	}
 
 	@Override
@@ -87,10 +87,11 @@ public class ConsoleOneLineProgressListener implements ProgressListener {
 	}
 
 	static String makeString(char c, int len) {
-		StringBuilder sb = new StringBuilder(len);
-		for (int i = 0; i < len; i++) {
-			sb.append(c);
+		if (len>0) {
+			char[] line = new char[len];
+			for (int i=0;i<len;i++) line[i]=c;
+			return String.copyValueOf(line);
 		}
-		return sb.toString();
+		return "";
 	}
 }
