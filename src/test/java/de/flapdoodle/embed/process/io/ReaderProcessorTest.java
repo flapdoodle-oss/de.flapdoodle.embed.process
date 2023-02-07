@@ -45,7 +45,7 @@ class ReaderProcessorTest {
 
 			writeToThisStream.write("first line".getBytes(StandardCharsets.UTF_8));
 			writeToThisStream.flush();
-			Thread.sleep(100);
+			testee.waitForProcessCalled();
 
 			Assertions.assertThat(testee.blocks()).containsExactly("first line");
 			Assertions.assertThat(testee.processedCalled()).isFalse();
@@ -71,7 +71,9 @@ class ReaderProcessorTest {
 				secondStream.write("second".getBytes(StandardCharsets.UTF_8));
 				firstStream.flush();
 				secondStream.flush();
-				Thread.sleep(10);
+
+				first.waitForProcessCalled();
+				second.waitForProcessCalled();
 
 				Assertions.assertThat(first.blocks()).containsExactly("first");
 				Assertions.assertThat(second.blocks()).containsExactly("second");
@@ -100,11 +102,23 @@ class ReaderProcessorTest {
 			this.processor = new ReaderProcessor(new InputStreamReader(is), new StreamProcessor() {
 				@Override public void process(String block) {
 					blocks.add(block);
+
+					synchronized (blocks) {
+						blocks.notify();
+					}
 				}
 				@Override public void onProcessed() {
 					processedCalled.compareAndSet(false, true);
 				}
 			});
+		}
+
+		public void waitForProcessCalled() throws InterruptedException {
+			if (blocks.isEmpty()) {
+				synchronized (blocks) {
+					blocks.wait(1000);
+				}
+			}
 		}
 
 		public List<String> blocks() {

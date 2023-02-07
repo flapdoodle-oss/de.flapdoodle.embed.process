@@ -26,10 +26,10 @@ package de.flapdoodle.embed.process.transitions;
 import de.flapdoodle.embed.process.config.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
+import de.flapdoodle.embed.process.net.DownloadToPath;
 import de.flapdoodle.embed.process.net.ProxyFactory;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.directories.TempDir;
-import de.flapdoodle.embed.process.net.UrlDownloadToPath;
 import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.store.DownloadCache;
 import de.flapdoodle.embed.process.types.Archive;
@@ -39,12 +39,10 @@ import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.naming.HasLabel;
-import de.flapdoodle.reverse.transitions.Start;
 import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -99,8 +97,8 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 	}
 
 	@Value.Default
-	public UrlDownloadToPath urlDownloadToPath() {
-		return UrlStreams.asUrlDownloadToPath();
+	public DownloadToPath downloadToPath() {
+		return UrlStreams.asDownloadToPath();
 	}
 
 	@Override
@@ -133,17 +131,17 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 				.resolve(UUID.randomUUID().toString());
 
 			Try.runable(() -> {
-					urlDownloadToPath().download(
+					downloadToPath().download(
 						downloadUrl,
 						downloadedArchive,
 						downloadConfig().proxyFactory().map(ProxyFactory::createProxy),
 						downloadConfig().getUserAgent(),
 						downloadConfig().getTimeoutConfig(),
-						UrlDownloadToPath.downloadCopyListenerDelegatingTo(progressListener)
+						DownloadToPath.downloadCopyListenerDelegatingTo(progressListener)
 					);
 //					URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, downloadConfig().getUserAgent(), downloadConfig().getTimeoutConfig(),
 //						downloadConfig().proxyFactory().map(ProxyFactory::createProxy));
-//					UrlStreams.downloadTo(connection, downloadedArchive, UrlDownloadToPath.downloadCopyListenerDelegatingTo(progressListener));
+//					UrlStreams.downloadTo(connection, downloadedArchive, DownloadToPath.downloadCopyListenerDelegatingTo(progressListener));
 				}).mapToUncheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
 				.run();
 

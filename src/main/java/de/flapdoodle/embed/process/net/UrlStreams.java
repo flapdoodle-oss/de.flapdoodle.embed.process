@@ -42,7 +42,7 @@ public abstract class UrlStreams {
 	static final int BUFFER_LENGTH = 1024 * 8 * 8;
 	static final int READ_COUNT_MULTIPLIER = 100;
 
-	static class Adapter implements UrlDownloadToPath {
+	static class Adapter implements DownloadToPath {
 		@Override
 		public void download(URL downloadUrl, Path destination, Optional<Proxy> proxy, String userAgent, TimeoutConfig timeoutConfig,
 			DownloadCopyListener copyListener) throws IOException {
@@ -51,11 +51,11 @@ public abstract class UrlStreams {
 		}
 	}
 
-	public static UrlDownloadToPath asUrlDownloadToPath() {
+	public static DownloadToPath asDownloadToPath() {
 		return new Adapter();
 	}
 
-	public static void downloadTo(URLConnection connection, Path destination, UrlDownloadToPath.DownloadCopyListener copyListener) throws IOException {
+	public static void downloadTo(URLConnection connection, Path destination, DownloadToPath.DownloadCopyListener copyListener) throws IOException {
 		downloadTo(connection, destination, c -> downloadIntoTempFile(c, copyListener));
 	}
 
@@ -66,7 +66,7 @@ public abstract class UrlStreams {
 		Files.delete(tempFile);
 	}
 	
-	protected static Path downloadIntoTempFile(URLConnection connection, UrlDownloadToPath.DownloadCopyListener copyListener) throws IOException, FileNotFoundException {
+	protected static Path downloadIntoTempFile(URLConnection connection, DownloadToPath.DownloadCopyListener copyListener) throws IOException, FileNotFoundException {
 		Path tempFile = java.nio.file.Files.createTempFile("download", "");
 		boolean downloadSucceeded=false; 
 		try {
@@ -80,7 +80,7 @@ public abstract class UrlStreams {
 		}
 	}
 
-	private static <E extends Exception> void downloadAndCopy(URLConnection connection, ThrowingSupplier<BufferedOutputStream, E> output, UrlDownloadToPath.DownloadCopyListener copyListener) throws IOException, E {
+	private static <E extends Exception> void downloadAndCopy(URLConnection connection, ThrowingSupplier<BufferedOutputStream, E> output, DownloadToPath.DownloadCopyListener copyListener) throws IOException, E {
 		long length = connection.getContentLengthLong();
 		copyListener.downloaded(connection.getURL(), 0, length);
 		try (BufferedInputStream bis = new BufferedInputStream(connection.getInputStream())) {

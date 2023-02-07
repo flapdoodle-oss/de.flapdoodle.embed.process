@@ -52,6 +52,9 @@ public abstract class Processes {
 		// Comparing with the string value to avoid a strong dependency on JDK 9
 		String sourceVersion = SourceVersion.latest().toString();
 		switch (sourceVersion) {
+		case "RELEASE_8":
+			PID_HELPER = PidHelper.LEGACY;
+			break;
 		case "RELEASE_9":
 			PID_HELPER = PidHelper.JDK_9;
 			break;
@@ -65,10 +68,9 @@ public abstract class Processes {
 		case "RELEASE_17":
 		case "RELEASE_18":
 		case "RELEASE_19":
+		default:
 			PID_HELPER = PidHelper.JDK_11;
 			break;
-		default:
-			PID_HELPER = PidHelper.LEGACY;
 		}
 	}
 

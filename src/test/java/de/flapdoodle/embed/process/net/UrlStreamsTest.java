@@ -24,7 +24,7 @@
 package de.flapdoodle.embed.process.net;
 
 import de.flapdoodle.embed.process.HttpServers;
-import de.flapdoodle.embed.process.net.UrlDownloadToPath.DownloadCopyListener;
+import de.flapdoodle.embed.process.net.DownloadToPath.DownloadCopyListener;
 import de.flapdoodle.embed.process.runtime.Network;
 import org.junit.Test;
 

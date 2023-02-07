@@ -32,7 +32,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
 
-public interface UrlDownloadToPath {
+public interface DownloadToPath {
 	void download(
 		URL url,
 		Path destination,
