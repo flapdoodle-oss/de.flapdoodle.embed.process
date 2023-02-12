@@ -24,7 +24,7 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.4.4</version>
+		<version>4.5.0</version>
 	</dependency>
 
 ### Projects using this Tool
