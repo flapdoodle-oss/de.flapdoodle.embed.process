@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process;
 
-import de.flapdoodle.embed.process.runtime.Network;
+import de.flapdoodle.net.Net;
 import de.flapdoodle.types.Try;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response;
@@ -44,7 +44,7 @@ public class HttpServers {
 	private static Logger logger= LoggerFactory.getLogger(HttpServers.class);
 
 	public static Server httpServer(Class<?> testClass, Map<String, String> resourcePathMap) throws IOException {
-		int serverPort = Try.get(() -> Network.freeServerPort(Network.getLocalHost()));
+		int serverPort = Try.get(Net::freeServerPort);
 		Map<String, Supplier<Response>> map = resourcePathMap.entrySet().stream()
 			.collect(Collectors.toMap(Map.Entry::getKey, entry -> Try.supplier(() -> {
 				Path resourcePath = Resources.resourcePath(testClass, entry.getValue());

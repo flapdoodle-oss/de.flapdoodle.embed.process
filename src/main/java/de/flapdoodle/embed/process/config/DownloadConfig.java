@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.config;
 
+import de.flapdoodle.embed.process._Refactor;
 import de.flapdoodle.embed.process.net.ProxyFactory;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Default;
@@ -39,6 +40,8 @@ public interface DownloadConfig {
 				return "Mozilla/5.0 (compatible; +https://github.com/flapdoodle-oss/de.flapdoodle.embed.process)";
 		}
 
+		@Deprecated
+		@_Refactor
 		Optional<String> getAuthorization();
 
 		@Default

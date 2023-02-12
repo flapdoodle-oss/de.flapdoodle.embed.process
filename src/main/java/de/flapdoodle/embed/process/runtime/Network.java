@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.runtime;
 
+import de.flapdoodle.net.Net;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,50 +34,29 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
- *
+ * @see Net
  */
+@Deprecated
 public class Network {
-
-	private static final Logger logger = LoggerFactory.getLogger(Network.class);
-	
-	private static final String NO_LOCALHOST_ERROR_MESSAGE = "We could not detect if localhost is IPv4 or IPv6. " +
-			"Sometimes there is no entry for localhost. " +
-			"If 'ping localhost' does not work, it could help to add the right entry in your hosts configuration file.";
-	private static final int IPV4_LENGTH = 4;
 
 	private Network() {
 		throw new IllegalAccessError("singleton");
 	}
 
+	/**
+	 * @see Net#localhostIsIPv6()
+	 */
+	@Deprecated
 	public static boolean localhostIsIPv6() throws UnknownHostException {
-		try {
-			InetAddress addr = getLocalHost();
-			byte[] ipAddr = addr.getAddress();
-			return ipAddr.length > IPV4_LENGTH;
-		} catch (UnknownHostException ux) {
-			logger.error(NO_LOCALHOST_ERROR_MESSAGE, ux);
-			throw ux;
-		}
+		return Net.localhostIsIPv6();
 	}
 
+	/**
+	 * @see Net#getLocalHost()
+	 */
+	@Deprecated
 	public static InetAddress getLocalHost() throws UnknownHostException {
-		InetAddress ret = InetAddress.getLocalHost();
-		// see https://www.linuxtopia.org/online_books/linux_system_administration/debian_linux_guides/debian_linux_reference_guide/ch-gateway.en_009.html
-		// call to getLocalHost() can give 127.0.1.1 which is not the same as localhost and will lead to trouble
-		// if used to connect services
-		if (!ret.isLoopbackAddress() || ret.getHostAddress().equals("127.0.1.1")) {
-			ret = localHostByName();
-		}
-		return ret;
-	}
-
-	private static InetAddress localHostByName() throws UnknownHostException {
-		InetAddress ret;
-		ret = InetAddress.getByName("localhost");
-		if (!ret.isLoopbackAddress()) {
-			logger.error("{} is not a loopback address", ret.getHostAddress());
-		}
-		return ret;
+		return Net.getLocalHost();
 	}
 
 	@Deprecated
