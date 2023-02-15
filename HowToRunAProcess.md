@@ -168,7 +168,7 @@ digraph "sample" {
 
 ```
 
-![dot file](HowToRunAProcess.png)
+![graph](HowToRunAProcess.svg)
 
 ## use a custom class
 
@@ -292,6 +292,6 @@ digraph "process factory sample" {
 
 ```
 
-![dot file](HowToRunAProcessWithFactory.png)
+![graph](HowToRunAProcessWithFactory.svg)
 
 

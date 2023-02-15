@@ -16,7 +16,7 @@ ${genericSample}
 ${genericSample.sample.dot}
 ```
 
-![dot file](HowToRunAProcess.png)
+![graph](${genericSample.sample.dot.svg})
 
 ## use a custom class
 
@@ -30,7 +30,7 @@ ${processFactorySample}
 ${processFactorySample.sample.dot}
 ```
 
-![dot file](HowToRunAProcessWithFactory.png)
+![graph](${processFactorySample.sample.dot.svg})
 
 
 
