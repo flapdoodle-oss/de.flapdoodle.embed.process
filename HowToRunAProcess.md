@@ -70,6 +70,8 @@ TransitionWalker init = transitions.walker();
 
 String dot = Transitions.edgeGraphAsDot("sample", transitions.asGraph());
 recording.output("sample.dot", dot);
+...
+
 
 try (TransitionWalker.ReachedState<Archive> withArchive = init.initState(StateID.of(Archive.class))) {
   try (TransitionWalker.ReachedState<ExtractedFileSet> withFileSet = withArchive.initState(StateID.of(ExtractedFileSet.class))) {
@@ -193,6 +195,8 @@ ProcessFactory processFactory = ProcessFactory.builder()
 TransitionWalker walker = processFactory.walker();
 String dot = Transitions.edgeGraphAsDot("process factory sample", processFactory.transitions().asGraph());
 recording.output("sample.dot", dot);
+...
+
 
 try (TransitionWalker.ReachedState<ExecutedProcess> started = walker.initState(StateID.of(ExecutedProcess.class))) {
   assertThat(started.current().returnCode())

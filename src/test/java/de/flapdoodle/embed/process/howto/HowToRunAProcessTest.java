@@ -53,12 +53,17 @@ import de.flapdoodle.reverse.transitions.Start;
 import de.flapdoodle.testdoc.Recorder;
 import de.flapdoodle.testdoc.Recording;
 import de.flapdoodle.testdoc.TabSize;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.parse.Parser;
 import org.junit.Assume;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -151,6 +156,10 @@ public class HowToRunAProcessTest {
 
 			String dot = Transitions.edgeGraphAsDot("sample", transitions.asGraph());
 			recording.output("sample.dot", dot);
+			recording.end();
+//			recording.file("sample.dot.png", "HowToRunAProcess.png", asPng(dot));
+			recording.file("sample.dot.svg", "HowToRunAProcess.svg", asSvg(dot));
+			recording.begin();
 
 			try (TransitionWalker.ReachedState<Archive> withArchive = init.initState(StateID.of(Archive.class))) {
 				try (TransitionWalker.ReachedState<ExtractedFileSet> withFileSet = withArchive.initState(StateID.of(ExtractedFileSet.class))) {
@@ -162,6 +171,26 @@ public class HowToRunAProcessTest {
 			}
 
 			recording.end();
+		}
+	}
+
+	private byte[] asPng(String dot) throws IOException {
+		try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+			Graphviz.fromString(dot)
+				.width(3200)
+				.render(Format.PNG)
+				.toOutputStream(os);
+			return os.toByteArray();
+		}
+	}
+
+	private byte[] asSvg(String dot) throws IOException {
+		try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+			Graphviz.fromString(dot)
+//				.width(3200)
+				.render(Format.SVG_STANDALONE)
+				.toOutputStream(os);
+			return os.toByteArray();
 		}
 	}
 
@@ -198,6 +227,9 @@ public class HowToRunAProcessTest {
 			TransitionWalker walker = processFactory.walker();
 			String dot = Transitions.edgeGraphAsDot("process factory sample", processFactory.transitions().asGraph());
 			recording.output("sample.dot", dot);
+			recording.end();
+			recording.file("sample.dot.svg", "HowToRunAProcessWithFactory.svg", asSvg(dot));
+			recording.begin();
 
 			try (TransitionWalker.ReachedState<ExecutedProcess> started = walker.initState(StateID.of(ExecutedProcess.class))) {
 				assertThat(started.current().returnCode())
