@@ -28,7 +28,7 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.io.*;
-import de.flapdoodle.os.OS;
+import de.flapdoodle.os.OSType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,12 +163,12 @@ public abstract class Processes {
 	}
 
 	public static boolean tryKillProcess(SupportConfig support,de.flapdoodle.os.Platform platform, StreamProcessor output, Consumer<ProcessControl> beforeStop, long pid) {
-		return platform.operatingSystem() == OS.Windows && ProcessControl
+		return platform.operatingSystem().type() == OSType.Windows && ProcessControl
 			.executeCommandLine(support, asList("taskkill", "/F", "/pid", "" + pid), beforeStop, output, true);
 	}
 
 	private static boolean isUnixLike(de.flapdoodle.os.Platform platform) {
-		return platform.operatingSystem() != OS.Windows;
+		return platform.operatingSystem().type() != OSType.Windows;
 	}
 
 	public static boolean isProcessRunning(de.flapdoodle.os.Platform platform, long pid) {

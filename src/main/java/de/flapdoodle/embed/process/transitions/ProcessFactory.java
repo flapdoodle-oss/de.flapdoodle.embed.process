@@ -38,6 +38,8 @@ import de.flapdoodle.embed.process.store.DownloadCache;
 import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
 import de.flapdoodle.embed.process.store.LocalDownloadCache;
 import de.flapdoodle.embed.process.types.*;
+import de.flapdoodle.os.OS;
+import de.flapdoodle.os.Platform;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.TransitionWalker;
@@ -48,8 +50,11 @@ import org.immutables.value.Value;
 import org.immutables.value.Value.Auxiliary;
 import org.immutables.value.Value.Immutable;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Immutable
 public abstract class ProcessFactory {
@@ -136,10 +141,12 @@ public abstract class ProcessFactory {
 	@Value.Default
 	protected Transition<Distribution> distribution() {
 		return Derive.given(Version.class).state(Distribution.class)
-			.deriveBy(Distribution::detectFor);
+			.deriveBy(version -> Distribution.detectFor(osList().get(), version));
 	}
 
 	protected abstract Function<Distribution, Package> packageInformation();
+
+	protected abstract Supplier<Collection<? extends OS>> osList();
 
 	@Value.Default
 	protected Transition<ExecutedProcess> executer() {

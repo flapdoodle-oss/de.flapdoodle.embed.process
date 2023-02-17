@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.runtime;
 
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.io.Readers;
-import de.flapdoodle.os.OS;
+import de.flapdoodle.os.OSType;
 import de.flapdoodle.os.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class NUMA {
 	private static final Map<Platform, Boolean> NUMA_STATUS_MAP = new HashMap<>();
 
 	public static boolean isNUMAOnce(SupportConfig support, Platform platform) {
-		if (platform.operatingSystem() == OS.Linux) {
+		if (platform.operatingSystem().type() == OSType.Linux) {
 			try {
 				ProcessControl process = ProcessControl
 						.fromCommandLine(support, asList("grep", "NUMA=y", "/boot/config-`uname -r`"), true);

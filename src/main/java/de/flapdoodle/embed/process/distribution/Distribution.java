@@ -23,12 +23,14 @@
  */
 package de.flapdoodle.embed.process.distribution;
 
+import de.flapdoodle.os.OS;
 import de.flapdoodle.os.Platform;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -50,8 +52,8 @@ public abstract class Distribution {
 		return "" + version() + ":" + platform();
 	}
 
-	public static Distribution detectFor(Version version) {
-		List<Platform> platforms = Platform.guess();
+	public static Distribution detectFor(Collection<? extends OS> osList, Version version) {
+		List<Platform> platforms = Platform.guess(osList);
 		if (platforms.isEmpty()) {
 			throw new IllegalArgumentException("could not detect platform");
 		}

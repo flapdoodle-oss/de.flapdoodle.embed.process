@@ -49,7 +49,7 @@ Transitions transitions = Transitions.from(
     .withTransitionLabel("create arguments"),
 
   Derive.given(Version.class).state(Distribution.class)
-    .deriveBy(Distribution::detectFor)
+    .deriveBy(version -> Distribution.detectFor(CommonOS.list(), version))
     .withTransitionLabel("version + platform"),
 
   PackageOfDistribution.with(dist -> Package.builder()
@@ -190,6 +190,7 @@ ProcessFactory processFactory = ProcessFactory.builder()
     .fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
     .url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
     .build())
+  .osList(CommonOS::list)
   .build();
 
 TransitionWalker walker = processFactory.walker();

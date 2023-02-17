@@ -43,6 +43,7 @@ import de.flapdoodle.embed.process.store.ExtractedFileSetStore;
 import de.flapdoodle.embed.process.store.LocalDownloadCache;
 import de.flapdoodle.embed.process.transitions.*;
 import de.flapdoodle.embed.process.types.*;
+import de.flapdoodle.os.CommonOS;
 import de.flapdoodle.os.OS;
 import de.flapdoodle.os.Platform;
 import de.flapdoodle.reverse.StateID;
@@ -84,7 +85,7 @@ public class HowToRunAProcessTest {
 
 	@BeforeEach
 	void skipIfNotLinux() {
-		if (Platform.detect().operatingSystem() != OS.Linux) {
+		if (Platform.detect(CommonOS.list()).operatingSystem() != CommonOS.Linux) {
 			Assume.assumeTrue("works only on linux", true);
 		}
 	}
@@ -135,7 +136,7 @@ public class HowToRunAProcessTest {
 					.withTransitionLabel("create arguments"),
 
 				Derive.given(Version.class).state(Distribution.class)
-					.deriveBy(Distribution::detectFor)
+					.deriveBy(version -> Distribution.detectFor(CommonOS.list(), version))
 					.withTransitionLabel("version + platform"),
 
 				PackageOfDistribution.with(dist -> Package.builder()
@@ -222,6 +223,7 @@ public class HowToRunAProcessTest {
 					.fileSet(FileSet.builder().addEntry(FileType.Executable, "phantomjs").build())
 					.url(serverUrl + "phantomjs-" + dist.version().asInDownloadPath() + "-linux-x86_64.tar.bz2")
 					.build())
+				.osList(CommonOS::list)
 				.build();
 
 			TransitionWalker walker = processFactory.walker();

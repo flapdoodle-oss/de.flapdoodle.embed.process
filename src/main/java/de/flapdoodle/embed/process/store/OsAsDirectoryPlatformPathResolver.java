@@ -23,12 +23,10 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import de.flapdoodle.os.Architecture;
-import de.flapdoodle.os.Distribution;
-import de.flapdoodle.os.OS;
-import de.flapdoodle.os.Platform;
+import de.flapdoodle.os.*;
 
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Optional;
 
 public class OsAsDirectoryPlatformPathResolver implements PlatformPathResolver {
@@ -87,7 +85,7 @@ public class OsAsDirectoryPlatformPathResolver implements PlatformPathResolver {
 	}
 
 	private static String asPath(OS operatingSystem) {
-		switch (operatingSystem) {
+		switch (operatingSystem.type()) {
 			case Windows:
 				return "win";
 			case Linux:
@@ -99,6 +97,6 @@ public class OsAsDirectoryPlatformPathResolver implements PlatformPathResolver {
 			case Solaris:
 				return "solaris";
 		}
-		throw new IllegalArgumentException("Unknown os: " + operatingSystem);
+		throw new IllegalArgumentException("Unknown os type for: " + operatingSystem);
 	}
 }
