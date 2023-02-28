@@ -91,7 +91,7 @@ public class OsAsDirectoryPlatformPathResolver implements PlatformPathResolver {
 			case Linux:
 				return "linux";
 			case OS_X:
-				return "osx";
+				return "macos";
 			case FreeBSD:
 				return "freebsd";
 			case Solaris:
