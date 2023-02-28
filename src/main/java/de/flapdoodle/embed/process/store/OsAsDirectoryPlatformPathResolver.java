@@ -87,7 +87,7 @@ public class OsAsDirectoryPlatformPathResolver implements PlatformPathResolver {
 	private static String asPath(OS operatingSystem) {
 		switch (operatingSystem.type()) {
 			case Windows:
-				return "win";
+				return "windows";
 			case Linux:
 				return "linux";
 			case OS_X:
