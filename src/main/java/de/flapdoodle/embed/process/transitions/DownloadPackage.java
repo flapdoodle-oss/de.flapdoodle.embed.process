@@ -32,6 +32,7 @@ import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.directories.TempDir;
 import de.flapdoodle.embed.process.net.UrlStreams;
 import de.flapdoodle.embed.process.store.DownloadCache;
+import de.flapdoodle.embed.process.store.DownloadCacheGuessStorePath;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;
 import de.flapdoodle.reverse.State;
@@ -42,6 +43,7 @@ import de.flapdoodle.reverse.naming.HasLabel;
 import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -139,10 +141,18 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 						downloadConfig().getTimeoutConfig(),
 						DownloadToPath.downloadCopyListenerDelegatingTo(progressListener)
 					);
-//					URLConnection connection = UrlStreams.urlConnectionOf(downloadUrl, downloadConfig().getUserAgent(), downloadConfig().getTimeoutConfig(),
-//						downloadConfig().proxyFactory().map(ProxyFactory::createProxy));
-//					UrlStreams.downloadTo(connection, downloadedArchive, DownloadToPath.downloadCopyListenerDelegatingTo(progressListener));
-				}).mapToUncheckedException(cause -> new IllegalStateException("could not download "+distPackage.url(), cause))
+				}).mapToUncheckedException(cause -> {
+					String hint="";
+					if (downloadCache instanceof DownloadCacheGuessStorePath) {
+						Path destinationPath = ((DownloadCacheGuessStorePath) downloadCache).archivePath(downloadUrl, distPackage.archiveType());
+						hint=" (if this issue persist, you can download it manually to "+destinationPath+")";
+					}
+
+					if (cause instanceof SocketTimeoutException && cause.getLocalizedMessage().contains("onnect timed out")) {
+						return new IllegalStateException("could not download " + distPackage.url()+", ensure that no firewall or vpn is blocking this connection"+hint, cause);
+					}
+					return new IllegalStateException("could not download " + distPackage.url()+hint, cause);
+				})
 				.run();
 
 			Path storedArchive = Try.supplier(() -> downloadCache.store(downloadUrl, distPackage.archiveType(), downloadedArchive))

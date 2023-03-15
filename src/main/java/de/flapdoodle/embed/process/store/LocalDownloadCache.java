@@ -37,7 +37,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public class LocalDownloadCache implements DownloadCache {
+public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStorePath {
 
 	private final Path baseDir;
 
@@ -49,16 +49,21 @@ public class LocalDownloadCache implements DownloadCache {
 	}
 
 	@Override
+	public Path archivePath(URL url, ArchiveType archiveType) {
+		return resolve(baseDir, url, archiveType);
+	}
+
+	@Override
 	public Optional<Path> archiveFor(URL url, ArchiveType archiveType) {
-		Path arcFile = resolve(baseDir, url, archiveType);
+		Path arcFile = archivePath(url, archiveType);
 		return Files.isReadable(arcFile)
 			? Optional.of(arcFile)
 			: Optional.empty();
 	}
-	
+
 	@Override
 	public Path store(URL url, ArchiveType archiveType, Path archive) throws IOException {
-		Path arcFile = resolve(baseDir, url, archiveType);
+		Path arcFile = archivePath(url, archiveType);
 		Path arcDirectory = arcFile.getParent();
 		Preconditions.checkArgument(arcDirectory!=null,"no parent directory for %s",arcFile);
 		if (!Files.exists(arcDirectory)) {
