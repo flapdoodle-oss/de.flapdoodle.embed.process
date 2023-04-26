@@ -13,7 +13,7 @@
     <groupId>de.flapdoodle.embed</groupId>
     <artifactId>de.flapdoodle.embed.process</artifactId>
     <name>Flapdoodle Embedded Process Util</name>
-    <version>4.6.2</version>
+    <version>4.6.3-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <description>A embedded process starter ...</description>
@@ -40,7 +40,7 @@
         <connection>scm:git:git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</connection>
         <developerConnection>scm:git:git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</developerConnection>
         <url>git@github.com:flapdoodle-oss/de.flapdoodle.embed.process.git</url>
-      <tag>de.flapdoodle.embed.process-4.6.2</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <distributionManagement>
