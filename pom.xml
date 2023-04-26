@@ -406,7 +406,7 @@
     </profiles>
 
     <properties>
-        <junit.version>5.9.2</junit.version>
+        <junit.version>5.9.3</junit.version>
         <jna.version>5.13.0</jna.version>
         <osgi.category>Bundles</osgi.category>
         <osgi.export>
@@ -541,7 +541,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.22</version>
+            <version>1.23.0</version>
         </dependency>
 
         <!-- platform process stuff -->
