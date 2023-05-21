@@ -27,6 +27,8 @@ import de.flapdoodle.embed.process.distribution.ArchiveType;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Parameter;
 
+import java.util.Optional;
+
 @Value.Immutable
 public interface Package {
 	
@@ -39,10 +41,16 @@ public interface Package {
 	@Parameter
 	String url();
 
+	Optional<String> hint();
+
 	static Package of(ArchiveType archiveType, FileSet fileSet, String path) {
 		return ImmutablePackage.of(archiveType, fileSet, path);
 	}
-	
+
+	static Package of(ArchiveType archiveType, FileSet fileSet, String path, String hint) {
+		return ImmutablePackage.of(archiveType, fileSet, path).withHint(hint);
+	}
+
 	static ImmutablePackage.Builder builder() {
 		return ImmutablePackage.builder();
 	}
