@@ -74,7 +74,7 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 		}
 		if (Files.exists(arcFile)) {
 			Preconditions.checkArgument(fileContentIsTheSame(archive, arcFile),"archive for %s:%s already exists with different content (%s)",url,archiveType, arcFile);
-			return Files.copy(archive, arcFile, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+			return arcFile;
 		} else {
 			return Files.copy(archive, arcFile, StandardCopyOption.COPY_ATTRIBUTES);
 		}
