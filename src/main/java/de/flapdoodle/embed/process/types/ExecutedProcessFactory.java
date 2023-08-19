@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011
  *   Michael Mosmann <michael@mosmann.de>
  *   Martin Jöhren <m.joehren@googlemail.com>
