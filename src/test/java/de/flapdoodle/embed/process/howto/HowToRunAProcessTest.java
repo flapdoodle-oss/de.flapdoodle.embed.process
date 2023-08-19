@@ -49,6 +49,7 @@ import de.flapdoodle.os.Platform;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.TransitionWalker;
 import de.flapdoodle.reverse.Transitions;
+import de.flapdoodle.reverse.graph.TransitionGraph;
 import de.flapdoodle.reverse.transitions.Derive;
 import de.flapdoodle.reverse.transitions.Start;
 import de.flapdoodle.testdoc.Recorder;
@@ -155,7 +156,7 @@ public class HowToRunAProcessTest {
 
 			TransitionWalker init = transitions.walker();
 
-			String dot = Transitions.edgeGraphAsDot("sample", transitions.asGraph());
+			String dot = TransitionGraph.edgeGraphAsDot("sample", transitions);
 			recording.output("sample.dot", dot);
 			recording.end();
 //			recording.file("sample.dot.png", "HowToRunAProcess.png", asPng(dot));
@@ -227,7 +228,7 @@ public class HowToRunAProcessTest {
 				.build();
 
 			TransitionWalker walker = processFactory.walker();
-			String dot = Transitions.edgeGraphAsDot("process factory sample", processFactory.transitions().asGraph());
+			String dot = TransitionGraph.edgeGraphAsDot("process factory sample", processFactory.transitions());
 			recording.output("sample.dot", dot);
 			recording.end();
 			recording.file("sample.dot.svg", "HowToRunAProcessWithFactory.svg", asSvg(dot));

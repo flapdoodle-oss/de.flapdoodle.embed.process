@@ -68,7 +68,7 @@ Transitions transitions = Transitions.from(
 
 TransitionWalker init = transitions.walker();
 
-String dot = Transitions.edgeGraphAsDot("sample", transitions.asGraph());
+String dot = TransitionGraph.edgeGraphAsDot("sample", transitions);
 recording.output("sample.dot", dot);
 ...
 
@@ -194,7 +194,7 @@ ProcessFactory processFactory = ProcessFactory.builder()
   .build();
 
 TransitionWalker walker = processFactory.walker();
-String dot = Transitions.edgeGraphAsDot("process factory sample", processFactory.transitions().asGraph());
+String dot = TransitionGraph.edgeGraphAsDot("process factory sample", processFactory.transitions());
 recording.output("sample.dot", dot);
 ...
 
