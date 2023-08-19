@@ -27,8 +27,8 @@ import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.archives.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
-import de.flapdoodle.embed.process.hash.Hasher;
 import de.flapdoodle.embed.process.io.Files;
+import de.flapdoodle.hash.Hasher;
 import de.flapdoodle.types.Try;
 
 import java.io.File;
