@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LocalDownloadCacheTest {
 
@@ -51,8 +52,6 @@ class LocalDownloadCacheTest {
 
 		Path storedArchive = testee.store(url, zip, archive);
 
-		System.out.println("--> "+storedArchive);
-
 		Optional<Path> readBack = testee.archiveFor(url, zip);
 
 		assertThat(readBack)
@@ -61,6 +60,44 @@ class LocalDownloadCacheTest {
 
 		assertThat(storedArchive.toFile())
 			.hasSameBinaryContentAs(archive.toFile());
+	}
+
+	@Test
+	public void storeSameFileMustSucceed(@TempDir Path baseDir) throws URISyntaxException, IOException {
+		LocalDownloadCache testee = new LocalDownloadCache(baseDir);
+
+		URL url=new URL("http://foo/downloads/archive?latest=true");
+
+		ArchiveType zip = ArchiveType.ZIP;
+
+		Path archive = Paths.get(this.getClass().getResource("/archives/sample.zip").toURI());
+
+		Path storedArchive = testee.store(url, zip, archive);
+		Path storedSecondTime = testee.store(url, zip, archive);
+
+		assertThat(storedArchive)
+			.isEqualTo(storedSecondTime);
+
+		assertThat(storedArchive.toFile())
+			.hasSameBinaryContentAs(archive.toFile());
+	}
+
+	@Test
+	public void storeDifferentFileMustFail(@TempDir Path baseDir) throws URISyntaxException, IOException {
+		LocalDownloadCache testee = new LocalDownloadCache(baseDir);
+
+		URL url=new URL("http://foo/downloads/archive?latest=true");
+
+		ArchiveType zip = ArchiveType.ZIP;
+
+		Path archive = Paths.get(this.getClass().getResource("/archives/sample.zip").toURI());
+		Path otherContent = Paths.get(this.getClass().getResource("/archives/sample.tgz").toURI());
+
+		testee.store(url, zip, archive);
+		
+		assertThatThrownBy(() -> testee.store(url, zip, otherContent))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("already exists with different content");
 	}
 
 	@Test

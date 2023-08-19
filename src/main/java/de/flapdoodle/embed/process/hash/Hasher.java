@@ -30,6 +30,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
+@Deprecated
 public class Hasher {
 
 	private final MessageDigest digest;

@@ -30,7 +30,10 @@ import de.flapdoodle.types.Try;
 import org.jheaps.annotations.VisibleForTesting;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.URL;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -69,8 +72,12 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 		if (!Files.exists(arcDirectory)) {
 			Files.createDirectories(arcDirectory);
 		}
-		Preconditions.checkArgument(!Files.exists(arcFile),"archive for %s:%s already exists (%s)",url,archiveType, arcFile);
-		return Files.copy(archive, arcFile, StandardCopyOption.COPY_ATTRIBUTES);
+		if (Files.exists(arcFile)) {
+			Preconditions.checkArgument(fileContentIsTheSame(archive, arcFile),"archive for %s:%s already exists with different content (%s)",url,archiveType, arcFile);
+			return Files.copy(archive, arcFile, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+		} else {
+			return Files.copy(archive, arcFile, StandardCopyOption.COPY_ATTRIBUTES);
+		}
 	}
 
 	@VisibleForTesting
@@ -121,4 +128,20 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 		throw new IllegalArgumentException("Unknown archiveType: "+archiveType);
 	}
 
+	private static boolean fileContentIsTheSame(Path first, Path second) throws IOException {
+		try (RandomAccessFile firstFile = new RandomAccessFile(first.toFile(), "r");
+			RandomAccessFile secondFild = new RandomAccessFile(second.toFile(), "r")) {
+
+			FileChannel ch1 = firstFile.getChannel();
+			FileChannel ch2 = secondFild.getChannel();
+			if (ch1.size() != ch2.size()) {
+				return false;
+			}
+			long size = ch1.size();
+			MappedByteBuffer m1 = ch1.map(FileChannel.MapMode.READ_ONLY, 0L, size);
+			MappedByteBuffer m2 = ch2.map(FileChannel.MapMode.READ_ONLY, 0L, size);
+
+			return m1.equals(m2);
+		}
+	}
 }
