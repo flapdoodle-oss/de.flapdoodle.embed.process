@@ -23,6 +23,7 @@
  */
 package de.flapdoodle.embed.process.types;
 
+import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.io.ProcessOutput;
 import de.flapdoodle.embed.process.io.Processors;
@@ -32,6 +33,7 @@ import de.flapdoodle.embed.process.runtime.ProcessControl;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +63,9 @@ public interface RunningProcess {
 	)
 		throws IOException {
 		Path pidFile = pidFile(workingDir, executable);
+
+		Preconditions.checkArgument(Files.exists(executable, LinkOption.NOFOLLOW_LINKS),"executable at %s does not exist",executable);
+		Preconditions.checkArgument(Files.isExecutable(executable),"executable at %s is not executable",executable);
 
 		List<String> commandLine = Stream
 			.concat(Stream.of(executable.toFile().getAbsolutePath()), arguments.stream())

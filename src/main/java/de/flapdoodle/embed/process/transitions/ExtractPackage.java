@@ -102,6 +102,7 @@ public abstract class ExtractPackage implements Transition<ExtractedFileSet>, Ha
 		return extractedFileSet(dist, archive, destination, store);
 	}
 
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	private State<ExtractedFileSet> extractedFileSet(Package dist, Archive archive, Path destination, Optional<ExtractedFileSetStore> extractedFileSetStore) {
 		if (extractedFileSetStore.isPresent()) {
 			ExtractedFileSetStore store = extractedFileSetStore.get();

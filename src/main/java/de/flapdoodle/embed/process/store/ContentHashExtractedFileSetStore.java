@@ -31,7 +31,6 @@ import de.flapdoodle.embed.process.io.Files;
 import de.flapdoodle.hash.Hasher;
 import de.flapdoodle.types.Try;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
@@ -40,7 +39,6 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -99,6 +97,7 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 					case Executable:
 						if (!java.nio.file.Files.exists(dest.getParent())) java.nio.file.Files.createDirectory(dest.getParent());
 						java.nio.file.Files.copy(src.executable(), dest, StandardCopyOption.COPY_ATTRIBUTES);
+						Preconditions.checkArgument(dest.toFile().setExecutable(true),"could not make %s executable", dest);
 						builder.executable(dest);
 						break;
 					case Library:

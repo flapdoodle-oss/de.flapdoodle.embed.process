@@ -88,6 +88,10 @@ class ContentHashExtractedFileSetStoreTest {
 			.extracting(Path::toString)
 			.isEqualTo("bin/executable");
 
+		assertThat(stored.executable())
+			.isReadable()
+			.isExecutable();
+
 		List<String> libraryFilePaths = stored.libraryFiles()
 			.stream()
 			.map(it -> stored.baseDir().relativize(it))
