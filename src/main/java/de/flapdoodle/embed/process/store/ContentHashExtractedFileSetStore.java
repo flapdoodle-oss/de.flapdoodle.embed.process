@@ -41,6 +41,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,7 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 
 	@Override
 	public Optional<ExtractedFileSet> extractedFileSet(Path archive, FileSet fileSet) {
-		String hash = hash(cachePath, archive, fileSet);
+		String hash = archiveContentAndFileSetDescriptionHash(cachePath, archive, fileSet);
 		Path fileSetBasePath = basePath.resolve(hash);
 		if (java.nio.file.Files.isDirectory(fileSetBasePath)) {
 			return Try.supplier(() -> Optional.of(readFileSet(fileSetBasePath, fileSet)))
@@ -77,11 +78,29 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 
 	@Override
 	public ExtractedFileSet store(Path archive, FileSet fileSet, ExtractedFileSet src) throws IOException {
-		String hash = hash(cachePath, archive, fileSet);
+		String hash = archiveContentAndFileSetDescriptionHash(cachePath, archive, fileSet);
 		Path fileSetBasePath = basePath.resolve(hash);
-		Preconditions.checkArgument(!java.nio.file.Files.exists(fileSetBasePath),"hash collision for %s (hash=%s)",archive, hash);
-		java.nio.file.Files.createDirectory(fileSetBasePath);
-		return makeCopyOf(fileSetBasePath, fileSet, src);
+		Path tempCopyDir = basePath.resolve("store-"+ UUID.randomUUID());
+		Preconditions.checkArgument(!java.nio.file.Files.exists(tempCopyDir), "temp copy directory already exists: %s", tempCopyDir);
+
+		try {
+			java.nio.file.Files.createDirectory(tempCopyDir);
+			makeCopyOf(tempCopyDir, fileSet, src);
+			if (!java.nio.file.Files.exists(fileSetBasePath)) {
+				java.nio.file.Files.move(tempCopyDir, fileSetBasePath, StandardCopyOption.ATOMIC_MOVE);
+				return readFileSet(fileSetBasePath,fileSet);
+			} else {
+				return readFileSet(fileSetBasePath,fileSet);
+			}
+		} finally {
+			if (java.nio.file.Files.exists(tempCopyDir)) {
+				Files.deleteAll(tempCopyDir);
+			}
+		}
+
+//		Preconditions.checkArgument(!java.nio.file.Files.exists(fileSetBasePath),"hash collision for %s (hash=%s)",archive, hash);
+//		java.nio.file.Files.createDirectory(fileSetBasePath);
+//		return makeCopyOf(fileSetBasePath, fileSet, src);
 	}
 	
 	private static ExtractedFileSet makeCopyOf(Path fileSetBasePath, FileSet fileSet, ExtractedFileSet src) throws IOException {
@@ -117,19 +136,19 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 	}
 
 	// VisibleForTesting
-	static String hash(Path cachePath, Path archive, FileSet fileSet) {
+	static String archiveContentAndFileSetDescriptionHash(Path cachePath, Path archive, FileSet fileSet) {
 		Preconditions.checkArgument(java.nio.file.Files.exists(cachePath, LinkOption.NOFOLLOW_LINKS),"cache does not exsist: %s", cachePath);
 		Preconditions.checkArgument(java.nio.file.Files.isDirectory(cachePath, LinkOption.NOFOLLOW_LINKS),"cache is not a directory: %s", cachePath);
 
-		Optional<String> cacheKey = Try.supplier(() -> cacheHash(archive, fileSet))
+		Optional<String> cacheKey = Try.supplier(() -> archiveAndFileSetDescriptionHash(archive, fileSet))
 			.mapException(ex -> new IOException("could not create cache key for "+archive, ex))
 			.onCheckedException(Throwable::printStackTrace)
 			.get();
 
-		return hash(cacheKey.map(cachePath::resolve), archive, fileSet);
+		return readOrCreateArchiveContentAndFileSetDescriptionHash(cacheKey.map(cachePath::resolve), archive, fileSet);
 	}
 
-	private static String hash(Optional<Path> optCachedHashPath, Path archive, FileSet fileSet) {
+	private static String readOrCreateArchiveContentAndFileSetDescriptionHash(Optional<Path> optCachedHashPath, Path archive, FileSet fileSet) {
 		if (optCachedHashPath.isPresent()) {
 			Path cachedHashPath = optCachedHashPath.get();
 
@@ -139,64 +158,50 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 					.get();
 				return new String(hashBytes, StandardCharsets.UTF_8);
 			} else {
-				String hash = hash(archive, fileSet, HASH_BUFFER_SIZE);
+				String hash = archiveContentAndFileSetDescriptionHash(archive, fileSet, HASH_BUFFER_SIZE);
 				Try.run(() -> java.nio.file.Files.write(cachedHashPath, hash.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE_NEW));
 				return hash;
 			}
 		}
 
-		return hash(archive, fileSet, HASH_BUFFER_SIZE);
+		return archiveContentAndFileSetDescriptionHash(archive, fileSet, HASH_BUFFER_SIZE);
 	}
 
 	// VisibleForTesting
-	static String cacheHash(Path archive, FileSet fileSet) throws IOException {
-		Hasher cacheHasher = Hasher.instance();
+	static String archiveAndFileSetDescriptionHash(Path archive, FileSet fileSet) throws IOException {
+		Hasher hasher = Hasher.instance();
 		fileSet.entries().forEach(entry -> {
-			cacheHasher.update(entry.type().name().getBytes(StandardCharsets.UTF_8));
-			cacheHasher.update(entry.destination().getBytes(StandardCharsets.UTF_8));
-			cacheHasher.update(entry.matchingPattern().toString().getBytes(StandardCharsets.UTF_8));
+			hasher.update(entry.type().name().getBytes(StandardCharsets.UTF_8));
+			hasher.update(entry.destination().getBytes(StandardCharsets.UTF_8));
+			hasher.update(entry.matchingPattern().toString().getBytes(StandardCharsets.UTF_8));
 		});
-		cacheHasher.update("--".getBytes(StandardCharsets.UTF_8));
-		cacheHasher.update(archive.toString());
-		cacheHasher.update(java.nio.file.Files.getLastModifiedTime(archive, LinkOption.NOFOLLOW_LINKS).toString());
-		return cacheHasher.hashAsString();
+		hasher.update("--".getBytes(StandardCharsets.UTF_8));
+		hasher.update(archive.toString());
+		hasher.update(java.nio.file.Files.getLastModifiedTime(archive, LinkOption.NOFOLLOW_LINKS).toString());
+		return hasher.hashAsString();
 	}
 
 	// VisibleForTesting
-	@Deprecated
-	static String hash(Path archive, FileSet fileSet) {
-		Hasher digest = Hasher.instance();
+	static String archiveContentAndFileSetDescriptionHash(Path archive, FileSet fileSet, int blocksize) {
+		Hasher hasher = Hasher.instance();
 		fileSet.entries().forEach(entry -> {
-			digest.update(entry.type().name().getBytes(StandardCharsets.UTF_8));
-			digest.update(entry.destination().getBytes(StandardCharsets.UTF_8));
-			digest.update(entry.matchingPattern().toString().getBytes(StandardCharsets.UTF_8));
+			hasher.update(entry.type().name().getBytes(StandardCharsets.UTF_8));
+			hasher.update(entry.destination().getBytes(StandardCharsets.UTF_8));
+			hasher.update(entry.matchingPattern().toString().getBytes(StandardCharsets.UTF_8));
 		});
-		digest.update("--".getBytes(StandardCharsets.UTF_8));
-		digest.update(Try.get(() -> java.nio.file.Files.readAllBytes(archive)));
-		return digest.hashAsString();
-	}
-
-	// VisibleForTesting
-	static String hash(Path archive, FileSet fileSet, int blocksize) {
-		Hasher digest = Hasher.instance();
-		fileSet.entries().forEach(entry -> {
-			digest.update(entry.type().name().getBytes(StandardCharsets.UTF_8));
-			digest.update(entry.destination().getBytes(StandardCharsets.UTF_8));
-			digest.update(entry.matchingPattern().toString().getBytes(StandardCharsets.UTF_8));
-		});
-		digest.update("--".getBytes(StandardCharsets.UTF_8));
+		hasher.update("--".getBytes(StandardCharsets.UTF_8));
 		Try.run(() -> {
 			ByteBuffer buffer = ByteBuffer.allocate(blocksize);
 
 			try(SeekableByteChannel channel = java.nio.file.Files.newByteChannel(archive)) {
 				while (channel.read(buffer) > 0) {
 					buffer.flip();
-					digest.update(buffer);
+					hasher.update(buffer);
 					buffer.clear();
 				}
 			}
 		});
-		return digest.hashAsString();
+		return hasher.hashAsString();
 	}
 
 	private static ExtractedFileSet readFileSet(Path fileSetBasePath, FileSet fileSet) {

@@ -27,6 +27,16 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 		<version>4.8.1</version>
 	</dependency>
 
+### Changelog
+
+#### Unreleased
+
+- fix extract file hash collision in multithreaded situatiations
+
+#### 4.8.1
+
+- all the latest stuff:)
+
 ### Projects using this Tool
 
 - Embedded MongoDB [de.flapdoodle.embed.mongo](https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo)

@@ -28,9 +28,6 @@ import de.flapdoodle.embed.process.archives.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.ImmutableFileSet;
-import de.flapdoodle.embed.process.store.ContentHashExtractedFileSetStore;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.util.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -43,22 +40,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ContentHashExtractedFileSetStoreTest {
 
 	@Test
-	public void cacheFileSet(@TempDir Path temp) throws IOException {
-		Path store = temp.resolve("store");
+	public void cacheFileSet(@TempDir Path tempDir) throws IOException {
+		Path store = tempDir.resolve("store");
 		ContentHashExtractedFileSetStore testee = new ContentHashExtractedFileSetStore(store);
 
-		Path archive = temp.resolve("archive");
+		Path archive = tempDir.resolve("archive");
 		write(archive, "ARCHIVE");
 
-		Path srcBase = temp.resolve("src");
+		Path srcBase = tempDir.resolve("src");
 		createDir(srcBase);
 		createDir(srcBase.resolve("bin"));
 		Path executable = srcBase.resolve("bin").resolve("executable");
@@ -124,15 +119,15 @@ class ContentHashExtractedFileSetStoreTest {
 			.addEntry(FileType.Executable, "foo")
 			.build();
 
-		String hash = ContentHashExtractedFileSetStore.hash(cacheDir, archive, fileSet);
+		String hash = ContentHashExtractedFileSetStore.archiveContentAndFileSetDescriptionHash(cacheDir, archive, fileSet);
 		assertThat(hash).isEqualTo("715ade7b9214161b8ca25d03b3c0a98fb7f9b891b969f828d50b3e1b4cf28fad");
 
-		String cacheHash = ContentHashExtractedFileSetStore.cacheHash(archive, fileSet);
+		String cacheHash = ContentHashExtractedFileSetStore.archiveAndFileSetDescriptionHash(archive, fileSet);
 		assertThat(cacheDir.resolve(cacheHash))
 			.exists()
 			.content().isEqualTo(hash);
 
-		String secondHash = ContentHashExtractedFileSetStore.hash(cacheDir, archive, fileSet);
+		String secondHash = ContentHashExtractedFileSetStore.archiveContentAndFileSetDescriptionHash(cacheDir, archive, fileSet);
 		assertThat(secondHash).isEqualTo(hash);
 	}
 
@@ -149,13 +144,48 @@ class ContentHashExtractedFileSetStoreTest {
 			.addEntry(FileType.Executable, "foo")
 			.build();
 
-		String oldHash = ContentHashExtractedFileSetStore.hash(archive, fileSet);
-		String newHash1024 = ContentHashExtractedFileSetStore.hash(archive, fileSet, 1024);
-		String newHash123 = ContentHashExtractedFileSetStore.hash(archive, fileSet, 123);
+		String newHash1024 = ContentHashExtractedFileSetStore.archiveContentAndFileSetDescriptionHash(archive, fileSet, 1024);
+		String newHash123 = ContentHashExtractedFileSetStore.archiveContentAndFileSetDescriptionHash(archive, fileSet, 123);
 
-		assertThat(oldHash).isNotNull();
-		assertThat(oldHash).isEqualTo(newHash1024);
 		assertThat(newHash1024).isEqualTo(newHash123);
+	}
+
+	@Test
+	public void writeFileSetTwiceShouldOnlyFailIfHashIsDifferent(@TempDir Path tempDir) throws IOException {
+		Path store = tempDir.resolve("store");
+		ContentHashExtractedFileSetStore testee = new ContentHashExtractedFileSetStore(store);
+
+		Path archive = tempDir.resolve("archive");
+		write(archive, "ARCHIVE");
+
+		Path srcBase = tempDir.resolve("src");
+		createDir(srcBase);
+		createDir(srcBase.resolve("bin"));
+		Path executable = srcBase.resolve("bin").resolve("executable");
+		write(executable, "EXE");
+
+		Path libA = srcBase.resolve("libA");
+		write(libA, "LIB-A");
+		createDir(srcBase.resolve("libs"));
+		Path libB = srcBase.resolve("libs").resolve("libB");
+		write(libB, "LIB-B");
+
+		ImmutableExtractedFileSet src = ExtractedFileSet.builder(srcBase)
+			.executable(executable)
+			.addLibraryFiles(libA)
+			.addLibraryFiles(libB)
+			.build();
+
+		ImmutableFileSet fileSet = FileSet.builder()
+			.addEntry(FileType.Executable, "bin/executable")
+			.addEntry(FileType.Library, "libA")
+			.addEntry(FileType.Library, "libs/libB")
+			.build();
+
+		ExtractedFileSet stored = testee.store(archive, fileSet, src);
+		ExtractedFileSet storedAgain = testee.store(archive, fileSet, src);
+
+		assertThat(stored).isEqualTo(storedAgain);
 	}
 
 	private static void createDir(Path path) throws IOException {
