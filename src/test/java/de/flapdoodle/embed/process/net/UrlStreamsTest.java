@@ -23,15 +23,22 @@
  */
 package de.flapdoodle.embed.process.net;
 
+import de.flapdoodle.embed.process.HttpServers;
 import de.flapdoodle.embed.process.config.TimeoutConfig;
+import de.flapdoodle.net.Net;
+import de.flapdoodle.types.Try;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Base64;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UrlStreamsTest {
@@ -45,5 +52,28 @@ class UrlStreamsTest {
 		assertThatThrownBy(() -> connection.getInputStream())
 			.isInstanceOf(SocketTimeoutException.class)
 			.hasMessageContaining("onnect timed out"); // can be 'Connect' or 'connect'
+	}
+
+	@Test
+	void authTest(@TempDir Path tempDir) throws IOException {
+		int serverPort = Try.get(Net::freeServerPort);
+		HttpServers.Server server = HttpServers.httpServer(serverPort, session -> {
+			String auth = session.getHeaders().get("authorization");
+			if (auth.equals("Basic c29tZVVzZXI6aGlzUGFzc3dvcmQ=")) {
+				return Optional.of(HttpServers.response(200,"text/text","ok".getBytes(StandardCharsets.UTF_8)));
+			}
+			return Optional.of(HttpServers.response(200,"text/text",("fail: "+auth).getBytes(StandardCharsets.UTF_8)));
+		});
+
+
+		URL url = new URL(server.serverUrl()
+			.replace("http://","http://someUser:hisPassword@"));
+		URLConnection connection = UrlStreams.urlConnectionOf(url, "test", TimeoutConfig.defaults()
+				.withConnectionTimeout(100)
+			, Optional.empty());
+		UrlStreams.downloadTo(connection, tempDir.resolve("download"), (u, bytesCopied, contentLength) -> {
+			
+		});
+		assertThat(tempDir.resolve("download")).content(StandardCharsets.UTF_8).isEqualTo("ok");
 	}
 }

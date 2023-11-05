@@ -27,10 +27,12 @@ import de.flapdoodle.embed.process.config.TimeoutConfig;
 import de.flapdoodle.net.URLConnections;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.util.Optional;
 
 public abstract class UrlStreams {
@@ -56,6 +58,10 @@ public abstract class UrlStreams {
 		URLConnection openConnection = proxy.isPresent()
 			? URLConnections.urlConnectionOf(url, proxy.get())
 			: URLConnections.urlConnectionOf(url);
+
+		if (url.getUserInfo()!=null) {
+			openConnection.setRequestProperty ("Authorization", "Basic " + new String(Base64.getEncoder().encode(url.getUserInfo().getBytes())));
+		}
 
 		openConnection.setRequestProperty("User-Agent",userAgent);
 		openConnection.setConnectTimeout(timeoutConfig.getConnectionTimeout());

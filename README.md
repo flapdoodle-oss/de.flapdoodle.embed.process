@@ -31,7 +31,8 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 #### Unreleased
 
-- fix extract file hash collision in multithreaded situatiations
+- fix extract file hash collision in multithreaded situations
+- use url user info for basic auth in url connections
 
 #### 4.8.1
 
