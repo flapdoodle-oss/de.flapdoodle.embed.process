@@ -24,12 +24,14 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.8.1</version>
+		<version>4.9.0</version>
 	</dependency>
 
 ### Changelog
 
 #### Unreleased
+
+#### 4.9.0
 
 - fix extract file hash collision in multithreaded situations
 - use url user info for basic auth in url connections
