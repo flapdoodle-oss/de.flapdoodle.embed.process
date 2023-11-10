@@ -9,9 +9,9 @@
 <g id="graph0" class="graph" transform="scale(1.0 1.0) rotate(0.0) translate(4.0 372.0)">
 <title>process factory sample</title>
 <polygon fill="white" stroke="transparent" points="-4,4 -4,-372 2260.47,-372 2260.47,4 -4,4"/>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.Archive -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Archive} -->
 <g id="node1" class="node">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.Archive</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Archive}</title>
 <ellipse fill="none" stroke="black" cx="1398.37" cy="-172" rx="74.99" ry="18"/>
 <text text-anchor="middle" x="1398.37" y="-168.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:Archive</text>
 </g>
@@ -21,15 +21,15 @@
 <polygon fill="none" stroke="black" points="1651.71,-136 1550.71,-136 1550.71,-100 1651.71,-100 1651.71,-136"/>
 <text text-anchor="middle" x="1601.21" y="-114.3" font-family="Times,serif" font-size="14.00">ExtractPackage</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.Archive&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Archive}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
 <g id="edge1" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.Archive&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Archive}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
 <path fill="none" stroke="black" d="M1449.02,-158.65C1476.78,-151.19 1511.56,-141.83 1540.77,-133.98"/>
 <polygon fill="black" stroke="black" points="1541.69,-137.36 1550.44,-131.38 1539.87,-130.6 1541.69,-137.36"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.distribution.Distribution -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.distribution.Distribution} -->
 <g id="node2" class="node">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.distribution.Distribution</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.distribution.Distribution}</title>
 <ellipse fill="none" stroke="black" cx="455.18" cy="-249" rx="89.08" ry="18"/>
 <text text-anchor="middle" x="455.18" y="-245.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:Distribution</text>
 </g>
@@ -39,9 +39,9 @@
 <polygon fill="none" stroke="black" points="676.97,-290 622.97,-290 622.97,-254 676.97,-254 676.97,-290"/>
 <text text-anchor="middle" x="649.97" y="-268.3" font-family="Times,serif" font-size="14.00">Derive</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.distribution.Distribution&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:1 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.distribution.Distribution}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:1 -->
 <g id="edge2" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.distribution.Distribution&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:1</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.distribution.Distribution}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:1</title>
 <path fill="none" stroke="black" d="M532.38,-258.09C560,-261.39 589.94,-264.96 612.56,-267.66"/>
 <polygon fill="black" stroke="black" points="612.37,-271.16 622.72,-268.87 613.2,-264.21 612.37,-271.16"/>
 </g>
@@ -51,33 +51,33 @@
 <polygon fill="none" stroke="black" points="1181.54,-198 1063.54,-198 1063.54,-162 1181.54,-162 1181.54,-198"/>
 <text text-anchor="middle" x="1122.54" y="-176.3" font-family="Times,serif" font-size="14.00">DownloadPackage</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.distribution.Distribution&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.distribution.Distribution}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
 <g id="edge3" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.distribution.Distribution&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.distribution.Distribution}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
 <path fill="none" stroke="black" d="M541.16,-244.2C642.04,-237.98 815.22,-225.68 963.05,-207 992.77,-203.24 1025.43,-197.89 1053.33,-192.94"/>
 <polygon fill="black" stroke="black" points="1054.16,-196.35 1063.38,-191.14 1052.92,-189.46 1054.16,-196.35"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.store.DownloadCache -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.DownloadCache} -->
 <g id="node3" class="node">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.store.DownloadCache</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.DownloadCache}</title>
 <ellipse fill="none" stroke="black" cx="857.76" cy="-126" rx="104.78" ry="18"/>
 <text text-anchor="middle" x="857.76" y="-122.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:DownloadCache</text>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.store.DownloadCache&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.DownloadCache}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
 <g id="edge4" class="edge">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.store.DownloadCache&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.DownloadCache}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
 <path fill="none" stroke="black" d="M925.75,-139.77C964.78,-147.79 1013.88,-157.88 1053.14,-165.94"/>
 <polygon fill="black" stroke="black" points="1052.66,-169.42 1063.16,-168 1054.07,-162.56 1052.66,-169.42"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.types.ExecutedProcess -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ExecutedProcess} -->
 <g id="node4" class="node">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.types.ExecutedProcess</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ExecutedProcess}</title>
 <ellipse fill="none" stroke="black" cx="2150.53" cy="-172" rx="105.88" ry="18"/>
 <text text-anchor="middle" x="2150.53" y="-168.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:ExecutedProcess</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.archives.ExtractedFileSet -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.archives.ExtractedFileSet} -->
 <g id="node5" class="node">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.archives.ExtractedFileSet</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.archives.ExtractedFileSet}</title>
 <ellipse fill="none" stroke="black" cx="1800.15" cy="-118" rx="104.78" ry="18"/>
 <text text-anchor="middle" x="1800.15" y="-114.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:ExtractedFileSet</text>
 </g>
@@ -87,39 +87,39 @@
 <polygon fill="none" stroke="black" points="2008.59,-190 1948.59,-190 1948.59,-154 2008.59,-154 2008.59,-190"/>
 <text text-anchor="middle" x="1978.59" y="-168.3" font-family="Times,serif" font-size="14.00">Execute</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.archives.ExtractedFileSet&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.archives.ExtractedFileSet}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
 <g id="edge5" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.archives.ExtractedFileSet&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.archives.ExtractedFileSet}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
 <path fill="none" stroke="black" d="M1866.45,-132.02C1881.72,-135.79 1897.83,-140.18 1912.59,-145 1921.28,-147.84 1930.45,-151.33 1939.07,-154.84"/>
 <polygon fill="black" stroke="black" points="1937.93,-158.16 1948.51,-158.78 1940.63,-151.7 1937.93,-158.16"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.store.ExtractedFileSetStore -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.ExtractedFileSetStore} -->
 <g id="node6" class="node">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.store.ExtractedFileSetStore</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.ExtractedFileSetStore}</title>
 <ellipse fill="none" stroke="black" cx="1122.54" cy="-18" rx="123.48" ry="18"/>
 <text text-anchor="middle" x="1122.54" y="-14.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:ExtractedFileSetStore</text>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.store.ExtractedFileSetStore&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.ExtractedFileSetStore}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
 <g id="edge6" class="edge">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.store.ExtractedFileSetStore&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.ExtractedFileSetStore}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
 <path fill="none" stroke="black" d="M1225.1,-7.96C1306.45,-3.86 1421.92,-7.09 1514.71,-45 1539.55,-55.15 1562.38,-75.46 1578.18,-92.08"/>
 <polygon fill="black" stroke="black" points="1576.01,-94.89 1585.35,-99.88 1581.16,-90.15 1576.01,-94.89"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.Name -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name} -->
 <g id="node7" class="node">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.Name</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name}</title>
 <ellipse fill="none" stroke="black" cx="857.76" cy="-326" rx="67.69" ry="18"/>
 <text text-anchor="middle" x="857.76" y="-322.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:Name</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.Name&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
 <g id="edge7" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.Name&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
 <path fill="none" stroke="black" d="M916.44,-316.99C932.24,-312.97 948.9,-307.22 963.05,-299 982.89,-287.48 981.42,-276.68 999.05,-262 1025.23,-240.19 1057.32,-218.89 1082.08,-203.46"/>
 <polygon fill="black" stroke="black" points="1084.17,-206.28 1090.84,-198.05 1080.5,-200.32 1084.17,-206.28"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.Name&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
 <g id="edge8" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.Name&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
 <path fill="none" stroke="black" d="M911.6,-315.12C937.84,-309.89 970.05,-303.76 999.05,-299 1113.17,-280.29 1422.68,-299.02 1514.71,-229 1547.03,-204.41 1523.38,-175.04 1550.71,-145 1551.34,-144.3 1552,-143.62 1552.68,-142.95"/>
 <polygon fill="black" stroke="black" points="1555.15,-145.44 1560.56,-136.33 1550.65,-140.08 1555.15,-145.44"/>
 </g>
@@ -129,33 +129,33 @@
 <polygon fill="none" stroke="black" points="1189.54,-344 1055.54,-344 1055.54,-308 1189.54,-308 1189.54,-344"/>
 <text text-anchor="middle" x="1122.54" y="-322.3" font-family="Times,serif" font-size="14.00">create named console</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.Name&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:3 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:3 -->
 <g id="edge9" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.Name&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:3</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:3</title>
 <path fill="none" stroke="black" d="M925.41,-326C961.83,-326 1007.08,-326 1044.95,-326"/>
 <polygon fill="black" stroke="black" points="1045.42,-329.5 1055.42,-326 1045.42,-322.5 1045.42,-329.5"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.config.store.Package -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.store.Package} -->
 <g id="node8" class="node">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.config.store.Package</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.store.Package}</title>
 <ellipse fill="none" stroke="black" cx="857.76" cy="-272" rx="75.29" ry="18"/>
 <text text-anchor="middle" x="857.76" y="-268.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:Package</text>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.config.store.Package&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.store.Package}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
 <g id="edge10" class="edge">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.config.store.Package&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.store.Package}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
 <path fill="none" stroke="black" d="M911.07,-259.18C928.05,-254.17 946.71,-247.75 963.05,-240 980.43,-231.76 981.63,-224.14 999.05,-216 1016.25,-207.97 1035.64,-201.28 1053.84,-195.94"/>
 <polygon fill="black" stroke="black" points="1054.85,-199.29 1063.51,-193.19 1052.94,-192.56 1054.85,-199.29"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.config.store.Package&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.store.Package}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
 <g id="edge11" class="edge">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.config.store.Package&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.store.Package}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
 <path fill="none" stroke="black" d="M928.88,-265.8C1092.95,-251.07 1489.9,-214.1 1514.71,-199 1539.35,-184 1529.43,-164.47 1550.71,-145 1551.82,-143.99 1552.97,-143 1554.15,-142.04"/>
 <polygon fill="black" stroke="black" points="1556.36,-144.76 1562.4,-136.06 1552.25,-139.1 1556.36,-144.76"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.PersistentDir -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.PersistentDir} -->
 <g id="node9" class="node">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.PersistentDir</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.PersistentDir}</title>
 <ellipse fill="none" stroke="black" cx="455.18" cy="-72" rx="92.08" ry="18"/>
 <text text-anchor="middle" x="455.18" y="-68.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:PersistentDir</text>
 </g>
@@ -165,9 +165,9 @@
 <polygon fill="none" stroke="black" points="701.97,-144 597.97,-144 597.97,-108 701.97,-108 701.97,-144"/>
 <text text-anchor="middle" x="649.97" y="-122.3" font-family="Times,serif" font-size="14.00">downloadCache</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.PersistentDir&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:4 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.PersistentDir}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:4 -->
 <g id="edge12" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.PersistentDir&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:4</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.PersistentDir}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:4</title>
 <path fill="none" stroke="black" d="M508.61,-86.68C533.12,-93.55 562.45,-101.77 587.96,-108.91"/>
 <polygon fill="black" stroke="black" points="587.31,-112.36 597.89,-111.69 589.2,-105.62 587.31,-112.36"/>
 </g>
@@ -177,99 +177,99 @@
 <polygon fill="none" stroke="black" points="716.47,-36 583.47,-36 583.47,0 716.47,0 716.47,-36"/>
 <text text-anchor="middle" x="649.97" y="-14.3" font-family="Times,serif" font-size="14.00">extractedFileSetStore</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.PersistentDir&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:5 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.PersistentDir}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:5 -->
 <g id="edge13" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.PersistentDir&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:5</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.PersistentDir}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:5</title>
 <path fill="none" stroke="black" d="M508.61,-57.32C529,-51.6 552.74,-44.95 574.83,-38.77"/>
 <polygon fill="black" stroke="black" points="575.83,-42.12 584.52,-36.05 573.94,-35.38 575.83,-42.12"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessArguments -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessArguments} -->
 <g id="node10" class="node">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessArguments</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessArguments}</title>
 <ellipse fill="none" stroke="black" cx="1800.15" cy="-280" rx="112.38" ry="18"/>
 <text text-anchor="middle" x="1800.15" y="-276.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:ProcessArguments</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessArguments&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessArguments}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
 <g id="edge14" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessArguments&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessArguments}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
 <path fill="none" stroke="black" d="M1881.11,-267.45C1892.18,-263.8 1903.01,-259.09 1912.59,-253 1933.71,-239.58 1951.04,-216.9 1962.47,-198.94"/>
 <polygon fill="black" stroke="black" points="1965.68,-200.42 1967.91,-190.06 1959.7,-196.77 1965.68,-200.42"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.types.ProcessConfig -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ProcessConfig} -->
 <g id="node11" class="node">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.types.ProcessConfig</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ProcessConfig}</title>
 <ellipse fill="none" stroke="black" cx="1800.15" cy="-226" rx="97.48" ry="18"/>
 <text text-anchor="middle" x="1800.15" y="-222.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:ProcessConfig</text>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.types.ProcessConfig&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ProcessConfig}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
 <g id="edge15" class="edge">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.types.ProcessConfig&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ProcessConfig}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
 <path fill="none" stroke="black" d="M1864.69,-212.42C1880.48,-208.55 1897.26,-204.01 1912.59,-199 1921.28,-196.16 1930.45,-192.67 1939.07,-189.16"/>
 <polygon fill="black" stroke="black" points="1940.63,-192.3 1948.51,-185.22 1937.93,-185.84 1940.63,-192.3"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessEnv -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessEnv} -->
 <g id="node12" class="node">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessEnv</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessEnv}</title>
 <ellipse fill="none" stroke="black" cx="1800.15" cy="-172" rx="87.18" ry="18"/>
 <text text-anchor="middle" x="1800.15" y="-168.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:ProcessEnv</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessEnv&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessEnv}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
 <g id="edge16" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessEnv&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessEnv}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
 <path fill="none" stroke="black" d="M1887.3,-172C1905.21,-172 1923.24,-172 1938.42,-172"/>
 <polygon fill="black" stroke="black" points="1938.44,-175.5 1948.44,-172 1938.44,-168.5 1938.44,-175.5"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.io.ProcessOutput -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.ProcessOutput} -->
 <g id="node13" class="node">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.io.ProcessOutput</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.ProcessOutput}</title>
 <ellipse fill="none" stroke="black" cx="1398.37" cy="-326" rx="97.48" ry="18"/>
 <text text-anchor="middle" x="1398.37" y="-322.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:ProcessOutput</text>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.io.ProcessOutput&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.ProcessOutput}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
 <g id="edge17" class="edge">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.io.ProcessOutput&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.ProcessOutput}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
 <path fill="none" stroke="black" d="M1453.88,-340.89C1553.98,-364.84 1769.91,-400.38 1912.59,-307 1949.16,-283.07 1965.72,-232.4 1972.79,-200.4"/>
 <polygon fill="black" stroke="black" points="1976.28,-200.83 1974.84,-190.33 1969.42,-199.43 1976.28,-200.83"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessWorkingDir -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessWorkingDir} -->
 <g id="node14" class="node">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessWorkingDir</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessWorkingDir}</title>
 <ellipse fill="none" stroke="black" cx="1398.37" cy="-72" rx="116.18" ry="18"/>
 <text text-anchor="middle" x="1398.37" y="-68.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:ProcessWorkingDir</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessWorkingDir&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessWorkingDir}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
 <g id="edge18" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessWorkingDir&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessWorkingDir}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
 <path fill="none" stroke="black" d="M1507.31,-65.65C1636.56,-59.81 1844.18,-56.61 1912.59,-91 1935.57,-102.55 1953.12,-126.38 1964.16,-145.22"/>
 <polygon fill="black" stroke="black" points="1961.13,-146.96 1969.05,-153.99 1967.24,-143.55 1961.13,-146.96"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.io.progress.ProgressListener -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.progress.ProgressListener} -->
 <g id="node15" class="node">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.io.progress.ProgressListener</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.progress.ProgressListener}</title>
 <ellipse fill="none" stroke="black" cx="857.76" cy="-180" rx="105.08" ry="18"/>
 <text text-anchor="middle" x="857.76" y="-176.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:ProgressListener</text>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.io.progress.ProgressListener&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.progress.ProgressListener}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
 <g id="edge19" class="edge">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.io.progress.ProgressListener&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.progress.ProgressListener}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
 <path fill="none" stroke="black" d="M963.37,-180C993.58,-180 1025.76,-180 1053.15,-180"/>
 <polygon fill="black" stroke="black" points="1053.4,-183.5 1063.4,-180 1053.4,-176.5 1053.4,-183.5"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.config.SupportConfig -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.SupportConfig} -->
 <g id="node16" class="node">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.config.SupportConfig</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.SupportConfig}</title>
 <ellipse fill="none" stroke="black" cx="1800.15" cy="-26" rx="98.58" ry="18"/>
 <text text-anchor="middle" x="1800.15" y="-22.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:SupportConfig</text>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.config.SupportConfig&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.SupportConfig}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0 -->
 <g id="edge20" class="edge">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.config.SupportConfig&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.SupportConfig}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExecuter:0</title>
 <path fill="none" stroke="black" d="M1873.73,-38.05C1887.59,-42.68 1901.27,-49.11 1912.59,-58 1940.74,-80.12 1958.82,-118.04 1968.59,-144.03"/>
 <polygon fill="black" stroke="black" points="1965.38,-145.44 1972.04,-153.68 1971.97,-143.08 1965.38,-145.44"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir} -->
 <g id="node17" class="node">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir}</title>
 <ellipse fill="none" stroke="black" cx="857.76" cy="-72" rx="79.09" ry="18"/>
 <text text-anchor="middle" x="857.76" y="-68.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:TempDir</text>
 </g>
@@ -279,27 +279,27 @@
 <polygon fill="none" stroke="black" points="1149.54,-90 1095.54,-90 1095.54,-54 1149.54,-54 1149.54,-90"/>
 <text text-anchor="middle" x="1122.54" y="-68.3" font-family="Times,serif" font-size="14.00">Derive</text>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:0 -->
 <g id="edge21" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:0</title>
 <path fill="none" stroke="black" d="M937.25,-72C986.32,-72 1047.22,-72 1085.24,-72"/>
 <polygon fill="black" stroke="black" points="1085.33,-75.5 1095.33,-72 1085.33,-68.5 1085.33,-75.5"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0 -->
 <g id="edge22" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0</title>
 <path fill="none" stroke="black" d="M921.31,-82.91C935.54,-86.81 950.23,-92.04 963.05,-99 982.12,-109.36 980.64,-120.51 999.05,-132 1015.88,-142.5 1035.4,-151.4 1053.83,-158.58"/>
 <polygon fill="black" stroke="black" points="1052.76,-161.92 1063.35,-162.17 1055.23,-155.37 1052.76,-161.92"/>
 </g>
-<!-- &lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0 -->
 <g id="edge23" class="edge">
-<title>&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir}&#45;&gt;de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0</title>
 <path fill="none" stroke="black" d="M914.09,-84.75C939.79,-90.13 970.83,-95.86 999.05,-99 1196.35,-120.96 1432.16,-120.78 1540.46,-119.24"/>
 <polygon fill="black" stroke="black" points="1540.59,-122.74 1550.54,-119.08 1540.48,-115.74 1540.59,-122.74"/>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.distribution.Version -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.distribution.Version} -->
 <g id="node18" class="node">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.distribution.Version</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.distribution.Version}</title>
 <ellipse fill="none" stroke="black" cx="163.44" cy="-249" rx="73.39" ry="18"/>
 <text text-anchor="middle" x="163.44" y="-245.3" font-family="Times,serif" font-size="14.00">&lt;empty&gt;:Version</text>
 </g>
@@ -309,45 +309,45 @@
 <polygon fill="none" stroke="black" points="326.89,-267 272.89,-267 272.89,-231 326.89,-231 326.89,-267"/>
 <text text-anchor="middle" x="299.89" y="-245.3" font-family="Times,serif" font-size="14.00">Derive</text>
 </g>
-<!-- &lt;empty&gt;:interface de.flapdoodle.embed.process.distribution.Version&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:2 -->
+<!-- &lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.distribution.Version}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:2 -->
 <g id="edge24" class="edge">
-<title>&lt;empty&gt;:interface de.flapdoodle.embed.process.distribution.Version&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:2</title>
+<title>&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.distribution.Version}&#45;&gt;de.flapdoodle.reverse.transitions.ImmutableDerive:2</title>
 <path fill="none" stroke="black" d="M237.17,-249C246.04,-249 254.77,-249 262.75,-249"/>
 <polygon fill="black" stroke="black" points="262.76,-252.5 272.76,-249 262.76,-245.5 262.76,-252.5"/>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessWorkingDir -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessWorkingDir} -->
 <g id="edge27" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableDerive:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessWorkingDir</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableDerive:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessWorkingDir}</title>
 <path fill="none" stroke="black" d="M1149.8,-72C1178.29,-72 1225.89,-72 1271.78,-72"/>
 <polygon fill="black" stroke="black" points="1271.85,-75.5 1281.85,-72 1271.85,-68.5 1271.85,-75.5"/>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:1&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.config.store.Package -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:1&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.store.Package} -->
 <g id="edge26" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableDerive:1&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.config.store.Package</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableDerive:1&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.store.Package}</title>
 <path fill="none" stroke="black" d="M677.03,-272C701.05,-272 738.05,-272 772.25,-272"/>
 <polygon fill="black" stroke="black" points="772.28,-275.5 782.28,-272 772.28,-268.5 772.28,-275.5"/>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:2&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.distribution.Distribution -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:2&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.distribution.Distribution} -->
 <g id="edge25" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableDerive:2&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.distribution.Distribution</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableDerive:2&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.distribution.Distribution}</title>
 <path fill="none" stroke="black" d="M326.89,-249C335.31,-249 345.2,-249 355.68,-249"/>
 <polygon fill="black" stroke="black" points="355.89,-252.5 365.89,-249 355.89,-245.5 355.89,-252.5"/>
 </g>
-<!-- de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.Archive -->
+<!-- de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Archive} -->
 <g id="edge28" class="edge">
-<title>de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.Archive</title>
+<title>de.flapdoodle.embed.process.transitions.ImmutableDownloadPackage:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Archive}</title>
 <path fill="none" stroke="black" d="M1181.61,-178.3C1220.06,-177.18 1271.08,-175.69 1313.85,-174.44"/>
 <polygon fill="black" stroke="black" points="1314.08,-177.93 1323.97,-174.14 1313.87,-170.94 1314.08,-177.93"/>
 </g>
-<!-- de.flapdoodle.embed.process.transitions.ImmutableExecuter:0&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.types.ExecutedProcess -->
+<!-- de.flapdoodle.embed.process.transitions.ImmutableExecuter:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ExecutedProcess} -->
 <g id="edge29" class="edge">
-<title>de.flapdoodle.embed.process.transitions.ImmutableExecuter:0&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.types.ExecutedProcess</title>
+<title>de.flapdoodle.embed.process.transitions.ImmutableExecuter:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ExecutedProcess}</title>
 <path fill="none" stroke="black" d="M2008.8,-172C2016.4,-172 2025.06,-172 2034.27,-172"/>
 <polygon fill="black" stroke="black" points="2034.45,-175.5 2044.45,-172 2034.45,-168.5 2034.45,-175.5"/>
 </g>
-<!-- de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.archives.ExtractedFileSet -->
+<!-- de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.archives.ExtractedFileSet} -->
 <g id="edge30" class="edge">
-<title>de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.archives.ExtractedFileSet</title>
+<title>de.flapdoodle.embed.process.transitions.ImmutableExtractPackage:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.archives.ExtractedFileSet}</title>
 <path fill="none" stroke="black" d="M1651.91,-118C1662.22,-118 1673.48,-118 1685.04,-118"/>
 <polygon fill="black" stroke="black" points="1685.26,-121.5 1695.26,-118 1685.26,-114.5 1685.26,-121.5"/>
 </g>
@@ -357,9 +357,9 @@
 <polygon fill="none" stroke="black" points="709.47,-90 590.47,-90 590.47,-54 709.47,-54 709.47,-90"/>
 <text text-anchor="middle" x="649.97" y="-68.3" font-family="Times,serif" font-size="14.00">InitTempDirectory</text>
 </g>
-<!-- de.flapdoodle.embed.process.transitions.ImmutableInitTempDirectory:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir -->
+<!-- de.flapdoodle.embed.process.transitions.ImmutableInitTempDirectory:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir} -->
 <g id="edge31" class="edge">
-<title>de.flapdoodle.embed.process.transitions.ImmutableInitTempDirectory:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.TempDir</title>
+<title>de.flapdoodle.embed.process.transitions.ImmutableInitTempDirectory:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.TempDir}</title>
 <path fill="none" stroke="black" d="M709.67,-72C727.88,-72 748.37,-72 768.14,-72"/>
 <polygon fill="black" stroke="black" points="768.4,-75.5 778.4,-72 768.4,-68.5 768.4,-75.5"/>
 </g>
@@ -369,9 +369,9 @@
 <polygon fill="none" stroke="black" points="676.97,-344 622.97,-344 622.97,-308 676.97,-308 676.97,-344"/>
 <text text-anchor="middle" x="649.97" y="-322.3" font-family="Times,serif" font-size="14.00">Start</text>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableStart:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.Name -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableStart:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name} -->
 <g id="edge32" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableStart:0&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.Name</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableStart:0&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.Name}</title>
 <path fill="none" stroke="black" d="M677.03,-326C702.84,-326 743.62,-326 779.81,-326"/>
 <polygon fill="black" stroke="black" points="779.88,-329.5 789.88,-326 779.88,-322.5 779.88,-329.5"/>
 </g>
@@ -381,9 +381,9 @@
 <polygon fill="none" stroke="black" points="54,-267 0,-267 0,-231 54,-231 54,-267"/>
 <text text-anchor="middle" x="27" y="-245.3" font-family="Times,serif" font-size="14.00">Start</text>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableStart:1&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.distribution.Version -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableStart:1&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.distribution.Version} -->
 <g id="edge37" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableStart:1&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.distribution.Version</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableStart:1&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.distribution.Version}</title>
 <path fill="none" stroke="black" d="M54.24,-249C61.87,-249 70.65,-249 79.82,-249"/>
 <polygon fill="black" stroke="black" points="79.9,-252.5 89.9,-249 79.9,-245.5 79.9,-252.5"/>
 </g>
@@ -393,9 +393,9 @@
 <polygon fill="none" stroke="black" points="1628.21,-44 1574.21,-44 1574.21,-8 1628.21,-8 1628.21,-44"/>
 <text text-anchor="middle" x="1601.21" y="-22.3" font-family="Times,serif" font-size="14.00">Start</text>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableStart:2&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.config.SupportConfig -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableStart:2&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.SupportConfig} -->
 <g id="edge36" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableStart:2&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.config.SupportConfig</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableStart:2&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.config.SupportConfig}</title>
 <path fill="none" stroke="black" d="M1628.36,-26C1644.93,-26 1667.59,-26 1690.99,-26"/>
 <polygon fill="black" stroke="black" points="1691.05,-29.5 1701.05,-26 1691.05,-22.5 1691.05,-29.5"/>
 </g>
@@ -405,9 +405,9 @@
 <polygon fill="none" stroke="black" points="1628.21,-190 1574.21,-190 1574.21,-154 1628.21,-154 1628.21,-190"/>
 <text text-anchor="middle" x="1601.21" y="-168.3" font-family="Times,serif" font-size="14.00">Start</text>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableStart:3&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessEnv -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableStart:3&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessEnv} -->
 <g id="edge35" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableStart:3&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessEnv</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableStart:3&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessEnv}</title>
 <path fill="none" stroke="black" d="M1628.36,-172C1647.74,-172 1675.46,-172 1702.94,-172"/>
 <polygon fill="black" stroke="black" points="1703.04,-175.5 1713.04,-172 1703.04,-168.5 1703.04,-175.5"/>
 </g>
@@ -417,9 +417,9 @@
 <polygon fill="none" stroke="black" points="1628.21,-298 1574.21,-298 1574.21,-262 1628.21,-262 1628.21,-298"/>
 <text text-anchor="middle" x="1601.21" y="-276.3" font-family="Times,serif" font-size="14.00">Start</text>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableStart:4&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessArguments -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableStart:4&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessArguments} -->
 <g id="edge34" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableStart:4&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.types.ProcessArguments</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableStart:4&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.types.ProcessArguments}</title>
 <path fill="none" stroke="black" d="M1628.36,-280C1641.67,-280 1658.89,-280 1677.28,-280"/>
 <polygon fill="black" stroke="black" points="1677.29,-283.5 1687.29,-280 1677.29,-276.5 1677.29,-283.5"/>
 </g>
@@ -429,9 +429,9 @@
 <polygon fill="none" stroke="black" points="326.89,-90 272.89,-90 272.89,-54 326.89,-54 326.89,-90"/>
 <text text-anchor="middle" x="299.89" y="-68.3" font-family="Times,serif" font-size="14.00">Start</text>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableStart:5&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.PersistentDir -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableStart:5&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.PersistentDir} -->
 <g id="edge33" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableStart:5&#45;&gt;&lt;empty&gt;:class de.flapdoodle.embed.process.io.directories.PersistentDir</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableStart:5&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=class de.flapdoodle.embed.process.io.directories.PersistentDir}</title>
 <path fill="none" stroke="black" d="M326.89,-72C334.42,-72 343.13,-72 352.38,-72"/>
 <polygon fill="black" stroke="black" points="352.62,-75.5 362.62,-72 352.62,-68.5 352.62,-75.5"/>
 </g>
@@ -441,27 +441,27 @@
 <polygon fill="none" stroke="black" points="1646.21,-244 1556.21,-244 1556.21,-208 1646.21,-208 1646.21,-244"/>
 <text text-anchor="middle" x="1601.21" y="-222.3" font-family="Times,serif" font-size="14.00">create default</text>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableStart:6&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.types.ProcessConfig -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableStart:6&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ProcessConfig} -->
 <g id="edge38" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableStart:6&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.types.ProcessConfig</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableStart:6&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.types.ProcessConfig}</title>
 <path fill="none" stroke="black" d="M1646.41,-226C1660.21,-226 1676.09,-226 1692.27,-226"/>
 <polygon fill="black" stroke="black" points="1692.37,-229.5 1702.37,-226 1692.37,-222.5 1692.37,-229.5"/>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:3&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.io.ProcessOutput -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:3&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.ProcessOutput} -->
 <g id="edge39" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableDerive:3&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.io.ProcessOutput</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableDerive:3&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.ProcessOutput}</title>
 <path fill="none" stroke="black" d="M1189.83,-326C1219.95,-326 1256.35,-326 1290.21,-326"/>
 <polygon fill="black" stroke="black" points="1290.62,-329.5 1300.62,-326 1290.62,-322.5 1290.62,-329.5"/>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:4&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.store.DownloadCache -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:4&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.DownloadCache} -->
 <g id="edge40" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableDerive:4&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.store.DownloadCache</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableDerive:4&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.DownloadCache}</title>
 <path fill="none" stroke="black" d="M702.1,-126C714.56,-126 728.38,-126 742.49,-126"/>
 <polygon fill="black" stroke="black" points="742.8,-129.5 752.8,-126 742.8,-122.5 742.8,-129.5"/>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:5&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.store.ExtractedFileSetStore -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableDerive:5&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.ExtractedFileSetStore} -->
 <g id="edge41" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableDerive:5&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.store.ExtractedFileSetStore</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableDerive:5&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.store.ExtractedFileSetStore}</title>
 <path fill="none" stroke="black" d="M716.9,-18C787.04,-18 899.91,-18 988.64,-18"/>
 <polygon fill="black" stroke="black" points="988.79,-21.5 998.79,-18 988.79,-14.5 988.79,-21.5"/>
 </g>
@@ -471,9 +471,9 @@
 <polygon fill="none" stroke="black" points="703.47,-198 596.47,-198 596.47,-162 703.47,-162 703.47,-198"/>
 <text text-anchor="middle" x="649.97" y="-176.3" font-family="Times,serif" font-size="14.00">progressListener</text>
 </g>
-<!-- de.flapdoodle.reverse.transitions.ImmutableStart:7&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.io.progress.ProgressListener -->
+<!-- de.flapdoodle.reverse.transitions.ImmutableStart:7&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.progress.ProgressListener} -->
 <g id="edge42" class="edge">
-<title>de.flapdoodle.reverse.transitions.ImmutableStart:7&#45;&gt;&lt;empty&gt;:interface de.flapdoodle.embed.process.io.progress.ProgressListener</title>
+<title>de.flapdoodle.reverse.transitions.ImmutableStart:7&#45;&gt;&lt;empty&gt;:ClassTypeInfo{type=interface de.flapdoodle.embed.process.io.progress.ProgressListener}</title>
 <path fill="none" stroke="black" d="M703.7,-180C715.56,-180 728.6,-180 741.91,-180"/>
 <polygon fill="black" stroke="black" points="742.13,-183.5 752.13,-180 742.13,-176.5 742.13,-183.5"/>
 </g>

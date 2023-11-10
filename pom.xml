@@ -405,7 +405,8 @@
     </profiles>
 
     <properties>
-        <junit.version>5.10.0</junit.version>
+        <junit.version>5.10.1</junit.version>
+        <immutables.version>2.10.0</immutables.version>
         <jna.version>5.13.0</jna.version>
         <osgi.category>Bundles</osgi.category>
         <osgi.export>
@@ -511,7 +512,7 @@
         <dependency>
             <groupId>de.flapdoodle.reverse</groupId>
             <artifactId>de.flapdoodle.reverse</artifactId>
-            <version>1.6.0</version>
+            <version>1.7.0</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>de.flapdoodle.java8</groupId>-->
@@ -521,13 +522,13 @@
         <dependency>
             <groupId>org.immutables</groupId>
             <artifactId>value</artifactId>
-            <version>2.9.3</version>
+            <version>${immutables.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.immutables</groupId>
             <artifactId>builder</artifactId>
-            <version>2.9.3</version>
+            <version>${immutables.version}</version>
             <scope>provided</scope>
         </dependency>
 
