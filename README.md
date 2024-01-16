@@ -31,6 +31,8 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 #### Unreleased
 
+#### 4.10.2
+
 - fix file url handling in LocalDownloadCache
 - dependency updates
 
