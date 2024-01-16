@@ -115,6 +115,60 @@ class LocalDownloadCacheTest {
 	}
 
 	@Test
+	void fileUrls() throws MalformedURLException {
+		assertThat(new URL("file:/c:/some/path").toString())
+			.isEqualTo("file:/c:/some/path");
+		assertThat(new URL("file:///c:/some/path").toString())
+			.isEqualTo("file:/c:/some/path");
+		assertThat(new URL("file:///c:/some/path").toString())
+			.isEqualTo("file:/c:/some/path");
+		assertThat(new URL("file://server/c:/some/path").toString())
+			.isEqualTo("file://server/c:/some/path");
+	}
+
+	@Test
+	void webUrls() throws MalformedURLException {
+		URL withServer = new URL("http://server/some/path");
+		assertThat(withServer.toString())
+			.isEqualTo("http://server/some/path");
+		assertThat(withServer.getHost()).isEqualTo("server");
+
+		URL withoutServer = new URL("http:///some/path");
+		assertThat(withoutServer.toString())
+			.isEqualTo("http:/some/path");
+		assertThat(withoutServer.getHost()).isEqualTo("");
+	}
+
+	@Test
+	void serverPart() throws MalformedURLException {
+		assertThat(LocalDownloadCache.serverPart(new URL("http://server/some/path")))
+			.isEqualTo("http://server");
+		assertThat(LocalDownloadCache.serverPart(new URL("http:///some/path")))
+			.isEqualTo("http:");
+		assertThat(LocalDownloadCache.serverPart(new URL("file://server/c:/some/path")))
+			.isEqualTo("file://server");
+		assertThat(LocalDownloadCache.serverPart(new URL("file:///c:/some/path")))
+			.isEqualTo("file:");
+		assertThat(LocalDownloadCache.serverPart(new URL("file:/c:/some/path")))
+			.isEqualTo("file:");
+	}
+
+	@Test
+	public void hostHashOfLocalFilePath() throws MalformedURLException {
+		URL url=new URL("file:///c:/some/path");
+
+		Path result = LocalDownloadCache.resolve(Paths.get("base"), url, ArchiveType.TGZ);
+
+		assertThat(result.toString())
+			.isEqualTo("base"
+				+ "/file-"
+				+ "/1ec3bfecf409569cee8f7787388bd40c"
+				+ "/c-somepath"
+				+ "/0319b21be38cb136077cc8bf0af6f4807fc71dd203731c3773382309c89c7593"
+				+ "/archive.tgz");
+	}
+
+	@Test
 	public void sanitizeMustFilterUnwantedChars() {
 		String result = LocalDownloadCache.sanitize("ABC?/\\+-");
 

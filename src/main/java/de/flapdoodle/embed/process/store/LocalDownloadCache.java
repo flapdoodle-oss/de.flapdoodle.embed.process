@@ -108,9 +108,12 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 		return UNWANTED_CHARS_MATCHER.matcher(strippedFromPathSeparator).replaceAll("-");
 	}
 
-	private static String serverPart(URL url) {
+	@VisibleForTesting
+	static String serverPart(URL url) {
 		boolean portIsPartOfTheUrl=url.getPort()!=-1 && url.getPort()!=url.getDefaultPort();
-		return url.getProtocol() + "://" + url.getHost() + (portIsPartOfTheUrl ? ":"+url.getPort() : "");
+		return url.getProtocol()
+			+ (url.getHost().isEmpty() ? ":" : "://" + url.getHost())
+			+ (portIsPartOfTheUrl ? ":"+url.getPort() : "");
 	}
 
 	private static String pathPart(URL url) {
