@@ -24,12 +24,14 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.10.2</version>
+		<version>4.10.3</version>
 	</dependency>
 
 ### Changelog
 
 #### Unreleased
+
+#### 4.10.3
 
 - fix basic auth in url handling in LocalDownloadCache
 
