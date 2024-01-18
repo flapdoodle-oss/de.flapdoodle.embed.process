@@ -24,6 +24,7 @@
 package de.flapdoodle.embed.process.store;
 
 import de.flapdoodle.embed.process.distribution.ArchiveType;
+import de.flapdoodle.embed.process.store.LocalDownloadCache.UrlParts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -115,6 +116,35 @@ class LocalDownloadCacheTest {
 	}
 
 	@Test
+	public void hostHashOfBasicAuthUrl() throws MalformedURLException {
+		URL url=new URL("https://user:passwd@foo:1234/some/path?query=123");
+		Path result = LocalDownloadCache.resolve(Paths.get("base"), url, ArchiveType.TGZ);
+
+		assertThat(result.toString())
+			.isEqualTo("base"
+				+ "/https-504ab89dfdb17e6368696198646ff5df-foo-1234"
+				+ "/9e5dd4606fbeb9bc922e9eb71d413bd4"
+				+ "/somepath-query-123"
+				+ "/9d68130d57496404b727f602c611e7ab09c68be55975cca9be0e2c03b5ebb38c"
+				+ "/archive.tgz");
+	}
+
+	@Test
+	public void hostHashOfLocalFilePath() throws MalformedURLException {
+		URL url=new URL("file:///c:/some/path");
+
+		Path result = LocalDownloadCache.resolve(Paths.get("base"), url, ArchiveType.TGZ);
+
+		assertThat(result.toString())
+			.isEqualTo("base"
+				+ "/file-"
+				+ "/1ec3bfecf409569cee8f7787388bd40c"
+				+ "/c-somepath"
+				+ "/0319b21be38cb136077cc8bf0af6f4807fc71dd203731c3773382309c89c7593"
+				+ "/archive.tgz");
+	}
+
+	@Test
 	void fileUrls() throws MalformedURLException {
 		assertThat(new URL("file:/c:/some/path").toString())
 			.isEqualTo("file:/c:/some/path");
@@ -140,32 +170,20 @@ class LocalDownloadCacheTest {
 	}
 
 	@Test
-	void serverPart() throws MalformedURLException {
-		assertThat(LocalDownloadCache.serverPart(new URL("http://server/some/path")))
-			.isEqualTo("http://server");
-		assertThat(LocalDownloadCache.serverPart(new URL("http:///some/path")))
-			.isEqualTo("http:");
-		assertThat(LocalDownloadCache.serverPart(new URL("file://server/c:/some/path")))
-			.isEqualTo("file://server");
-		assertThat(LocalDownloadCache.serverPart(new URL("file:///c:/some/path")))
-			.isEqualTo("file:");
-		assertThat(LocalDownloadCache.serverPart(new URL("file:/c:/some/path")))
-			.isEqualTo("file:");
-	}
+	void parts() throws MalformedURLException {
+		assertThat(LocalDownloadCache.partsOf(new URL("http://server/some/path")))
+			.isEqualTo(UrlParts.of("http",null,"server","/some/path"));
+		assertThat(LocalDownloadCache.partsOf(new URL("http:///some/path")))
+			.isEqualTo(UrlParts.of("http",null,null,"/some/path"));
+		assertThat(LocalDownloadCache.partsOf(new URL("https://username:password@server/some/path")))
+			.isEqualTo(UrlParts.of("https","username:password","server","/some/path"));
 
-	@Test
-	public void hostHashOfLocalFilePath() throws MalformedURLException {
-		URL url=new URL("file:///c:/some/path");
-
-		Path result = LocalDownloadCache.resolve(Paths.get("base"), url, ArchiveType.TGZ);
-
-		assertThat(result.toString())
-			.isEqualTo("base"
-				+ "/file-"
-				+ "/1ec3bfecf409569cee8f7787388bd40c"
-				+ "/c-somepath"
-				+ "/0319b21be38cb136077cc8bf0af6f4807fc71dd203731c3773382309c89c7593"
-				+ "/archive.tgz");
+		assertThat(LocalDownloadCache.partsOf(new URL("file://server/c:/some/path")))
+			.isEqualTo(UrlParts.of("file",null,"server","/c:/some/path"));
+		assertThat(LocalDownloadCache.partsOf(new URL("file:///c:/some/path")))
+			.isEqualTo(UrlParts.of("file",null,null,"/c:/some/path"));
+		assertThat(LocalDownloadCache.partsOf(new URL("file:/c:/some/path")))
+			.isEqualTo(UrlParts.of("file",null,null,"/c:/some/path"));
 	}
 
 	@Test

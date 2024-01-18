@@ -37,6 +37,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -82,10 +83,12 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 
 	@VisibleForTesting
 	static Path resolve(Path base, URL url, ArchiveType archiveType) {
-		String serverPart = serverPart(url);
-		String pathPart = pathPart(url);
+		UrlParts parts = partsOf(url);
 
-		Preconditions.checkArgument(url.toString().equals(serverPart+pathPart),"parts missing: '%s' != '%s'+'%s'",url,serverPart,pathPart);
+		Preconditions.checkArgument(url.toString().equals(parts.asString()),"parts missing: '%s' != '%s'",url,parts);
+
+		String serverPart = parts.serverPart();
+		String pathPart = parts.pathPart();
 
 		return base
 			.resolve(sanitize(serverPart))
@@ -108,16 +111,79 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 		return UNWANTED_CHARS_MATCHER.matcher(strippedFromPathSeparator).replaceAll("-");
 	}
 
-	@VisibleForTesting
-	static String serverPart(URL url) {
-		boolean portIsPartOfTheUrl=url.getPort()!=-1 && url.getPort()!=url.getDefaultPort();
-		return url.getProtocol()
-			+ (url.getHost().isEmpty() ? ":" : "://" + url.getHost())
-			+ (portIsPartOfTheUrl ? ":"+url.getPort() : "");
-	}
-
 	private static String pathPart(URL url) {
 		return url.getPath()+(url.getQuery()!= null ?  "?"+url.getQuery() : "");
+	}
+
+	@VisibleForTesting
+	static UrlParts partsOf(URL url) {
+		boolean portIsPartOfTheUrl = url.getPort() != -1 && url.getPort() != url.getDefaultPort();
+
+		return UrlParts.of(
+			url.getProtocol(),
+			url.getUserInfo(),
+			url.getHost().isEmpty() ? null : url.getHost() + (portIsPartOfTheUrl ? ":" + url.getPort() : ""),
+			pathPart(url));
+	}
+
+	@VisibleForTesting
+	static class UrlParts {
+		final String protocol;
+		final String userInfo;
+		final String host;
+		final String path;
+		final String hashedUserInfo;
+
+		private UrlParts(String protocol, String userInfo, String host, String path) {
+			this.protocol = protocol;
+			this.userInfo = userInfo;
+			this.host = host;
+			this.path = path;
+			this.hashedUserInfo = userInfo != null
+				? Hasher.md5Instance().update(userInfo).hashAsString()
+				: null;
+		}
+		
+		@VisibleForTesting
+		static UrlParts of(String protocol, String userInfo, String host, String path) {
+			return new UrlParts(protocol, userInfo, host, path);
+		}
+
+		@Override
+		public String toString() {
+			return "UrlParts{" +
+				"protocol='" + protocol + '\'' +
+				", userInfo='" + userInfo + '\'' +
+				", host='" + host + '\'' +
+				", path='" + path + '\'' +
+				'}';
+		}
+
+		public String asString() {
+			return protocol + (host == null ? ":" : "://" + (userInfo != null ? userInfo + "@" : "") + host) + path;
+		}
+
+		public String serverPart() {
+			return protocol + (host == null ? ":" : "://" + (hashedUserInfo != null ? hashedUserInfo + "@" : "") + host);
+		}
+
+		public String pathPart() {
+			return path;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			UrlParts urlParts = (UrlParts) o;
+			return Objects.equals(protocol, urlParts.protocol) && Objects.equals(userInfo, urlParts.userInfo) && Objects.equals(host,
+				urlParts.host) && Objects.equals(path, urlParts.path);
+		}
+		
+		@Override
+		public int hashCode() {
+			return Objects.hash(protocol, userInfo, host, path);
+		}
 	}
 
 	private static String asExtension(ArchiveType archiveType) {
