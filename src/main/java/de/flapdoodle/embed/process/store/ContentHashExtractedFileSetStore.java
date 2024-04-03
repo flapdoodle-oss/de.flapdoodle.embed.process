@@ -86,11 +86,13 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		try {
 			java.nio.file.Files.createDirectory(tempCopyDir);
 			makeCopyOf(tempCopyDir, fileSet, src);
-			if (!java.nio.file.Files.exists(fileSetBasePath)) {
-				java.nio.file.Files.move(tempCopyDir, fileSetBasePath, StandardCopyOption.ATOMIC_MOVE);
-				return readFileSet(fileSetBasePath,fileSet);
-			} else {
-				return readFileSet(fileSetBasePath,fileSet);
+			synchronized (this) {
+				if (!java.nio.file.Files.exists(fileSetBasePath)) {
+					java.nio.file.Files.move(tempCopyDir, fileSetBasePath, StandardCopyOption.ATOMIC_MOVE);
+					return readFileSet(fileSetBasePath, fileSet);
+				} else {
+					return readFileSet(fileSetBasePath, fileSet);
+				}
 			}
 		} finally {
 			if (java.nio.file.Files.exists(tempCopyDir)) {
@@ -148,15 +150,12 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		return readOrCreateArchiveContentAndFileSetDescriptionHash(cacheKey.map(cachePath::resolve), archive, fileSet);
 	}
 
-	private static String readOrCreateArchiveContentAndFileSetDescriptionHash(Optional<Path> optCachedHashPath, Path archive, FileSet fileSet) {
+	private static synchronized String readOrCreateArchiveContentAndFileSetDescriptionHash(Optional<Path> optCachedHashPath, Path archive, FileSet fileSet) {
 		if (optCachedHashPath.isPresent()) {
 			Path cachedHashPath = optCachedHashPath.get();
 
 			if (java.nio.file.Files.exists(cachedHashPath)) {
-				byte[] hashBytes = Try.supplier(() -> java.nio.file.Files.readAllBytes(cachedHashPath))
-					.mapToUncheckedException(ex -> new RuntimeException("could not read cached key from " + cachedHashPath, ex))
-					.get();
-				return new String(hashBytes, StandardCharsets.UTF_8);
+				return readHash(cachedHashPath);
 			} else {
 				String hash = archiveContentAndFileSetDescriptionHash(archive, fileSet, HASH_BUFFER_SIZE);
 				Try.run(() -> java.nio.file.Files.write(cachedHashPath, hash.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE_NEW));
@@ -165,6 +164,13 @@ public class ContentHashExtractedFileSetStore implements ExtractedFileSetStore {
 		}
 
 		return archiveContentAndFileSetDescriptionHash(archive, fileSet, HASH_BUFFER_SIZE);
+	}
+
+	private static String readHash(Path cachedHashPath) {
+		byte[] hashBytes = Try.supplier(() -> java.nio.file.Files.readAllBytes(cachedHashPath))
+			.mapToUncheckedException(ex -> new RuntimeException("could not read cached key from " + cachedHashPath, ex))
+			.get();
+		return new String(hashBytes, StandardCharsets.UTF_8);
 	}
 
 	// VisibleForTesting

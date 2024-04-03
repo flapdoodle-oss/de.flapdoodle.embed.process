@@ -39,6 +39,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,7 +95,7 @@ class ContentHashExtractedFileSetStoreTest {
 			.collect(Collectors.toList());
 
 		assertThat(libraryFilePaths)
-			.containsExactly("libA","libs/libB");
+			.containsExactly("libA", "libs/libB");
 
 		Optional<ExtractedFileSet> readAgain = testee.extractedFileSet(archive, fileSet);
 
@@ -104,10 +105,11 @@ class ContentHashExtractedFileSetStoreTest {
 
 	@Test
 	public void hashShouldBeCached(@TempDir Path tempDir) throws IOException {
-		byte[] content=new byte[1024*256+123];
-		for (int i=0;i<content.length;i++) {
-			content[i]=(byte) i;
-		};
+		byte[] content = new byte[1024 * 256 + 123];
+		for (int i = 0; i < content.length; i++) {
+			content[i] = (byte) i;
+		}
+		;
 
 		Path archive = tempDir.resolve("archive");
 		Files.write(archive, content, StandardOpenOption.CREATE_NEW);
@@ -133,7 +135,7 @@ class ContentHashExtractedFileSetStoreTest {
 
 	@Test
 	public void hashShouldNotChangeIfArchiveIsNotReadInOneGo(@TempDir Path tempDir) throws IOException {
-		byte[] content=new byte[1024*256+123];
+		byte[] content = new byte[1024 * 256 + 123];
 		ThreadLocalRandom.current().nextBytes(content);
 
 		Path archive = tempDir.resolve("archive");
@@ -151,7 +153,7 @@ class ContentHashExtractedFileSetStoreTest {
 	}
 
 	@Test
-	public void writeFileSetTwiceShouldOnlyFailIfHashIsDifferent(@TempDir Path tempDir) throws IOException {
+	public void writeArchiveTwiceShouldOnlyFailIfHashIsDifferent(@TempDir Path tempDir) throws IOException {
 		Path store = tempDir.resolve("store");
 		ContentHashExtractedFileSetStore testee = new ContentHashExtractedFileSetStore(store);
 
@@ -186,6 +188,68 @@ class ContentHashExtractedFileSetStoreTest {
 		ExtractedFileSet storedAgain = testee.store(archive, fileSet, src);
 
 		assertThat(stored).isEqualTo(storedAgain);
+	}
+
+	@Test
+	public void writeFileSetTwiceShouldOnlyFailIfHashIsDifferent(@TempDir Path tempDir) throws IOException, InterruptedException {
+		Path store = tempDir.resolve("store");
+		ContentHashExtractedFileSetStore testee = new ContentHashExtractedFileSetStore(store);
+
+		Path archive = tempDir.resolve("archive");
+		write(archive, "ARCHIVE");
+
+		Path srcBase = tempDir.resolve("src");
+		createDir(srcBase);
+		createDir(srcBase.resolve("bin"));
+		Path executable = srcBase.resolve("bin").resolve("executable");
+		write(executable, "EXE");
+
+		Path libA = srcBase.resolve("libA");
+		write(libA, "LIB-A");
+		createDir(srcBase.resolve("libs"));
+		Path libB = srcBase.resolve("libs").resolve("libB");
+		write(libB, "LIB-B");
+
+		ImmutableExtractedFileSet src = ExtractedFileSet.builder(srcBase)
+			.executable(executable)
+			.addLibraryFiles(libA)
+			.addLibraryFiles(libB)
+			.build();
+
+		ImmutableFileSet fileSet = FileSet.builder()
+			.addEntry(FileType.Executable, "bin/executable")
+			.addEntry(FileType.Library, "libA")
+			.addEntry(FileType.Library, "libs/libB")
+			.build();
+
+		AtomicReference<ExtractedFileSet> stored = new AtomicReference<>();// testee.store(archive, fileSet, src);
+		AtomicReference<ExtractedFileSet> storedAgain = new AtomicReference<>(); //testee.store(archive, fileSet, src);
+		AtomicReference<IOException> exception = new AtomicReference<>();
+
+		Thread t1 = new Thread(() -> {
+			try {
+				stored.set(testee.store(archive, fileSet, src));
+			}
+			catch (IOException e) {
+				exception.set(e);
+			}
+		});
+		Thread t2 = new Thread(() -> {
+			try {
+				storedAgain.set(testee.store(archive, fileSet, src));
+			}
+			catch (IOException e) {
+				exception.set(e);
+			}
+		});
+
+		t1.start();
+		t2.start();
+		t1.join();
+		t2.join();
+
+		assertThat(exception.get()).isNull();
+		assertThat(stored.get()).isEqualTo(storedAgain.get());
 	}
 
 	private static void createDir(Path path) throws IOException {
