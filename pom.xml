@@ -129,7 +129,7 @@
                     <dependency>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>extra-enforcer-rules</artifactId>
-                        <version>1.7.0</version>
+                        <version>1.8.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -404,8 +404,8 @@
     </profiles>
 
     <properties>
-        <junit.version>5.10.1</junit.version>
-        <immutables.version>2.10.0</immutables.version>
+        <junit.version>5.10.2</junit.version>
+        <immutables.version>2.10.1</immutables.version>
         <jna.version>5.14.0</jna.version>
         <osgi.category>Bundles</osgi.category>
         <osgi.export>
@@ -475,7 +475,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.25.1</version>
+            <version>3.25.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -535,7 +535,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.26.0</version>
+            <version>1.26.1</version>
         </dependency>
 
         <!-- platform process stuff -->
@@ -559,7 +559,7 @@
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os</artifactId>
-            <version>1.5.3</version>
+            <version>1.5.4</version>
             <scope>test</scope>
         </dependency>
 

@@ -31,6 +31,8 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 #### Unreleased
 
+- fileset store concurrency bug fix
+
 #### 4.10.3
 
 - fix basic auth in url handling in LocalDownloadCache
