@@ -31,6 +31,8 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 #### Unreleased
 
+#### 4.10.4
+
 - fileset store concurrency bug fix
 
 #### 4.10.3
