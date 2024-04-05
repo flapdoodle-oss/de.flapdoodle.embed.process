@@ -30,7 +30,8 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 ### Changelog
 
 #### Unreleased
-
+                       
+- slf4j/log4j log bug fix
 
 #### 4.10.5
 

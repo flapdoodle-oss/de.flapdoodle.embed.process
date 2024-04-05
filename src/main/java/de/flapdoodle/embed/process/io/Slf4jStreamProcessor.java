@@ -37,7 +37,7 @@ public class Slf4jStreamProcessor implements StreamProcessor {
     }
 
     public void process(String line) {
-        level.log(logger, stripLineEndings(line));
+        level.log(logger, "{}", stripLineEndings(line));
     }
 
     public void onProcessed() {
