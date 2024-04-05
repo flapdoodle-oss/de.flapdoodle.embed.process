@@ -24,12 +24,15 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.10.4</version>
+		<version>4.10.5</version>
 	</dependency>
 
 ### Changelog
 
 #### Unreleased
+
+
+#### 4.10.5
 
 - cached file set race condition bugfix
 
