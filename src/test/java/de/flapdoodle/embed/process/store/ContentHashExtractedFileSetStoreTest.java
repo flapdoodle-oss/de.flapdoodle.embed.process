@@ -28,6 +28,9 @@ import de.flapdoodle.embed.process.archives.ImmutableExtractedFileSet;
 import de.flapdoodle.embed.process.config.store.FileSet;
 import de.flapdoodle.embed.process.config.store.FileType;
 import de.flapdoodle.embed.process.config.store.ImmutableFileSet;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -38,13 +41,17 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ContentHashExtractedFileSetStoreTest {
+
+	@BeforeAll
+	static void before() {
+		Assertions.setMaxStackTraceElementsDisplayed(40);
+	}
 
 	@Test
 	public void cacheFileSet(@TempDir Path tempDir) throws IOException {
@@ -124,32 +131,13 @@ class ContentHashExtractedFileSetStoreTest {
 		String hash = ContentHashExtractedFileSetStore.archiveContentAndFileSetDescriptionHash(cacheDir, archive, fileSet);
 		assertThat(hash).isEqualTo("715ade7b9214161b8ca25d03b3c0a98fb7f9b891b969f828d50b3e1b4cf28fad");
 
-		String cacheHash = ContentHashExtractedFileSetStore.archiveAndFileSetDescriptionHash(archive, fileSet);
+		String cacheHash = ExtractedFileSets.archiveAndFileSetDescriptionHash(archive, fileSet);
 		assertThat(cacheDir.resolve(cacheHash))
 			.exists()
 			.content().isEqualTo(hash);
 
 		String secondHash = ContentHashExtractedFileSetStore.archiveContentAndFileSetDescriptionHash(cacheDir, archive, fileSet);
 		assertThat(secondHash).isEqualTo(hash);
-	}
-
-	@Test
-	public void hashShouldNotChangeIfArchiveIsNotReadInOneGo(@TempDir Path tempDir) throws IOException {
-		byte[] content = new byte[1024 * 256 + 123];
-		ThreadLocalRandom.current().nextBytes(content);
-
-		Path archive = tempDir.resolve("archive");
-
-		Files.write(archive, content, StandardOpenOption.CREATE_NEW);
-
-		ImmutableFileSet fileSet = FileSet.builder()
-			.addEntry(FileType.Executable, "foo")
-			.build();
-
-		String newHash1024 = ContentHashExtractedFileSetStore.archiveContentAndFileSetDescriptionHash(archive, fileSet, 1024);
-		String newHash123 = ContentHashExtractedFileSetStore.archiveContentAndFileSetDescriptionHash(archive, fileSet, 123);
-
-		assertThat(newHash1024).isEqualTo(newHash123);
 	}
 
 	@Test
