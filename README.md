@@ -24,13 +24,15 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.10.5</version>
+		<version>4.11.0</version>
 	</dependency>
 
 ### Changelog
 
 #### Unreleased
                        
+#### 4.11.0
+
 - slf4j/log4j log bug fix
 
 #### 4.10.5
