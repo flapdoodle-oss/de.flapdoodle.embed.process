@@ -475,7 +475,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.25.3</version>
+            <version>3.26.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -535,7 +535,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.26.1</version>
+            <version>1.26.2</version>
         </dependency>
 
         <!-- platform process stuff -->
@@ -554,12 +554,12 @@
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os-api</artifactId>
-            <version>1.4.1</version>
+            <version>1.5.0</version>
         </dependency>
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os</artifactId>
-            <version>1.5.5</version>
+            <version>1.6.0</version>
             <scope>test</scope>
         </dependency>
 
