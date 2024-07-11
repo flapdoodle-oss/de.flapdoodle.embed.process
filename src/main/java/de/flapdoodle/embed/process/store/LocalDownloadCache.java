@@ -69,15 +69,23 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 	public Path store(URL url, ArchiveType archiveType, Path archive) throws IOException {
 		Path arcFile = archivePath(url, archiveType);
 		Path arcDirectory = arcFile.getParent();
-		Preconditions.checkArgument(arcDirectory!=null,"no parent directory for %s",arcFile);
+		checkArgument(arcDirectory!=null,"no parent directory for %s",arcFile);
 		if (!Files.exists(arcDirectory)) {
 			Files.createDirectories(arcDirectory);
 		}
 		if (Files.exists(arcFile)) {
-			Preconditions.checkArgument(fileContentIsTheSame(archive, arcFile),"archive for %s:%s already exists with different content (%s)",url,archiveType, arcFile);
+			checkArgument(fileContentIsTheSame(archive, arcFile),"archive for %s:%s already exists with different content (%s)",url,archiveType, arcFile);
 			return arcFile;
 		} else {
 			return Files.copy(archive, arcFile, StandardCopyOption.COPY_ATTRIBUTES);
+		}
+	}
+	
+	static void checkArgument(boolean expression, String errorMessage, Object... args) throws IOException  {
+		try {
+			Preconditions.checkArgument(expression, errorMessage, args);
+		} catch (RuntimeException ex) {
+			throw new IOException(ex.getLocalizedMessage(), ex);
 		}
 	}
 

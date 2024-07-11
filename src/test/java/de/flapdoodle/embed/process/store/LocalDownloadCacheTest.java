@@ -97,6 +97,9 @@ class LocalDownloadCacheTest {
 		testee.store(url, zip, archive);
 		
 		assertThatThrownBy(() -> testee.store(url, zip, otherContent))
+			.isInstanceOf(IOException.class)
+			.hasMessageContaining("already exists with different content")
+			.cause()
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("already exists with different content");
 	}

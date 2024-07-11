@@ -45,6 +45,7 @@ import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.types.Pair;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -86,8 +87,43 @@ class DownloadPackageTest {
 				.hasSameBinaryContentAs(Resources.resourcePath(getClass(),"/archives/sample.zip"));
 		}
 	}
-	private static Pair<StateID<DownloadCache>, State<DownloadCache>> downloadCache(Path tempDir) {
-		return state(DownloadCache.class, new StoreArchiveInPath(tempDir.resolve("cachedArtifact.zip")));
+
+	@Test
+	void storeArchiveFailMustFailWithMessage(@TempDir Path tempDir) throws IOException, URISyntaxException  {
+		Map<String, String> map=new LinkedHashMap<>();
+		map.put("/archive.zip","/archives/sample.zip");
+
+		DownloadCache failOnStoring = new DownloadCache() {
+			@Override
+			public Optional<Path> archiveFor(URL url, ArchiveType archiveType) {
+				return Optional.empty();
+			}
+			@Override
+			public Path store(URL url, ArchiveType archiveType, Path archive) throws IOException {
+				throw new IOException("could not store archive");
+			}
+		};
+
+		try (HttpServers.Server server = HttpServers.httpServer(getClass(), map)) {
+			ImmutableDownloadPackage testee = DownloadPackage.withDefaults();
+			StateLookup statelookup = stateLookupOf(
+				distribution(),
+				packageOf(server.serverUrl() + "/archive.zip"),
+				state(DownloadCache.class, failOnStoring),
+				state(ProgressListener.class, new StandardConsoleProgressListener()),
+				state(Name.class, Name.of("noop")),
+				state(de.flapdoodle.embed.process.io.directories.TempDir.class,
+					de.flapdoodle.embed.process.io.directories.TempDir.of(tempDir))
+			);
+
+			assertThatThrownBy(() -> testee.result(statelookup))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessageContaining("could not store downloaded artifact")
+				.hasCauseInstanceOf(IOException.class)
+				.cause()
+				.hasMessageContaining("could not store archive");
+
+		}
 	}
 
 	@Test
@@ -119,11 +155,17 @@ class DownloadPackageTest {
 			.cause()
 			.hasMessageContaining("connect timed out");
 	}
+
+	private static Pair<StateID<DownloadCache>, State<DownloadCache>> downloadCache(Path tempDir) {
+		return state(DownloadCache.class, new StoreArchiveInPath(tempDir.resolve("cachedArtifact.zip")));
+	}
+
 	private static Pair<StateID<Package>, State<Package>> packageOf(String url) {
 		return state(Package.class, Package.of(ArchiveType.ZIP, FileSet.builder()
 			.addEntry(FileType.Executable, "noop")
 			.build(), url));
 	}
+
 	private static Pair<StateID<Distribution>, State<Distribution>> distribution() {
 		return state(Distribution.class, Distribution.detectFor(CommonOS.list(), Version.of("noop")));
 	}
