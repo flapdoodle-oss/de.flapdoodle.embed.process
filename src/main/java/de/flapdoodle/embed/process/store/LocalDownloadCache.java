@@ -25,15 +25,19 @@ package de.flapdoodle.embed.process.store;
 
 import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
+import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.hash.Hasher;
 import de.flapdoodle.types.Try;
 import org.jheaps.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.URL;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -42,6 +46,8 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStorePath {
+
+	private static final Logger logger = LoggerFactory.getLogger(LocalDownloadCache.class);
 
 	private final Path baseDir;
 
@@ -71,13 +77,24 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 		Path arcDirectory = arcFile.getParent();
 		checkArgument(arcDirectory!=null,"no parent directory for %s",arcFile);
 		if (!Files.exists(arcDirectory)) {
+			logger.debug("creating archive directory {}", arcDirectory);
 			Files.createDirectories(arcDirectory);
 		}
 		if (Files.exists(arcFile)) {
+			logger.debug("archive file already exist {}", arcFile);
 			checkArgument(fileContentIsTheSame(archive, arcFile),"archive for %s:%s already exists with different content (%s)",url,archiveType, arcFile);
+			logger.debug("archive file content matches {} == {}", arcFile, archive);
 			return arcFile;
 		} else {
-			return Files.copy(archive, arcFile, StandardCopyOption.COPY_ATTRIBUTES);
+			try {
+				logger.debug("copy archive {} to store location {}", archive, arcFile);
+				return Files.copy(archive, arcFile, StandardCopyOption.COPY_ATTRIBUTES);
+			} catch (FileAlreadyExistsException fx) {
+				logger.debug("copy failed, archive already exist: {}", arcFile);
+				checkArgument(fileContentIsTheSame(archive, arcFile),"archive for %s:%s already exists with different content (%s)",url,archiveType, arcFile);
+				logger.debug("archive file content matches {} == {}", arcFile, archive);
+				return arcFile;
+			}
 		}
 	}
 	

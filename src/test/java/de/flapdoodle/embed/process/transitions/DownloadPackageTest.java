@@ -38,6 +38,7 @@ import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 import de.flapdoodle.embed.process.store.DownloadCache;
 import de.flapdoodle.embed.process.store.DownloadCacheGuessStorePath;
+import de.flapdoodle.embed.process.store.LocalDownloadCache;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;
 import de.flapdoodle.os.CommonOS;
@@ -46,6 +47,7 @@ import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.types.Pair;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -56,6 +58,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -85,6 +88,47 @@ class DownloadPackageTest {
 			assertThat(result.value().value())
 				.isReadable()
 				.hasSameBinaryContentAs(Resources.resourcePath(getClass(),"/archives/sample.zip"));
+		}
+	}
+
+	@Test
+	void successfullyDownloadPackageEvenWithMassiveParallelAccessToArtifactStorage(@TempDir Path tempDir)
+		throws IOException, URISyntaxException, ExecutionException, InterruptedException {
+		Map<String, String> map=new LinkedHashMap<>();
+		map.put("/archive.zip","/archives/sample.zip");
+
+		try (HttpServers.Server server = HttpServers.httpServer(getClass(), map)) {
+			ImmutableDownloadPackage testee = DownloadPackage.withDefaults();
+			StateLookup statelookup = stateLookupOf(
+				distribution(),
+				packageOf(server.serverUrl() + "/archive.zip"),
+				state(DownloadCache.class, new LocalDownloadCache(tempDir)),
+				state(ProgressListener.class, new StandardConsoleProgressListener()),
+				state(Name.class, Name.of("noop")),
+				state(de.flapdoodle.embed.process.io.directories.TempDir.class,
+					de.flapdoodle.embed.process.io.directories.TempDir.of(tempDir))
+			);
+
+			ExecutorService executor = Executors.newFixedThreadPool(10);
+
+			Path expected = Resources.resourcePath(getClass(), "/archives/sample.zip");
+
+			Callable<Boolean> task = () -> {
+				State<Archive> result = testee.result(statelookup);
+				assertThat(result.value().value())
+					.isReadable()
+					.hasSameBinaryContentAs(expected);
+				return true;
+			};
+
+			List<Future<Boolean>> futures = new ArrayList<>();
+			for (int i = 0; i < 10; i++) {
+				futures.add(executor.submit(task));
+			}
+
+			for (Future<Boolean> future : futures) {
+				assertThat(future.get()).isTrue();
+			}
 		}
 	}
 
