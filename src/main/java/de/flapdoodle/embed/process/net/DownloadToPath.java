@@ -36,6 +36,7 @@ public interface DownloadToPath {
 	void download(
 		URL url,
 		Path destination,
+		@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 		Optional<Proxy> proxy,
 
 		String userAgent,

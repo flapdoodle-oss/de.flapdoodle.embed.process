@@ -27,7 +27,6 @@ import de.flapdoodle.embed.process.config.DownloadConfig;
 import de.flapdoodle.embed.process.config.store.Package;
 import de.flapdoodle.embed.process.io.progress.ProgressListener;
 import de.flapdoodle.embed.process.net.DownloadToPath;
-import de.flapdoodle.embed.process.net.ProxyFactory;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.directories.TempDir;
 import de.flapdoodle.embed.process.net.UrlStreams;
@@ -35,6 +34,7 @@ import de.flapdoodle.embed.process.store.DownloadCache;
 import de.flapdoodle.embed.process.store.DownloadCacheGuessStorePath;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;
+import de.flapdoodle.net.ProxyFactory;
 import de.flapdoodle.reverse.State;
 import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
@@ -136,7 +136,7 @@ public abstract class DownloadPackage implements Transition<Archive>, HasLabel {
 					downloadToPath().download(
 						downloadUrl,
 						downloadedArchive,
-						downloadConfig().proxyFactory().map(ProxyFactory::createProxy),
+						downloadConfig().proxyFactory().map(ProxyFactory::create),
 						downloadConfig().getUserAgent(),
 						downloadConfig().getTimeoutConfig(),
 						DownloadToPath.downloadCopyListenerDelegatingTo(progressListener)
