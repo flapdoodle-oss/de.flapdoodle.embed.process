@@ -43,6 +43,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStorePath {
@@ -87,8 +88,11 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 			return arcFile;
 		} else {
 			try {
-				logger.debug("copy archive {} to store location {}", archive, arcFile);
-				return Files.copy(archive, arcFile, StandardCopyOption.COPY_ATTRIBUTES);
+				Path tmpFile = arcFile.getParent().resolve(UUID.randomUUID().toString());
+				logger.debug("copy archive {} to temp file {}", archive, tmpFile);
+				Files.copy(archive, tmpFile, StandardCopyOption.COPY_ATTRIBUTES);
+				logger.debug("move temp file {} to store location {}", tmpFile, arcFile);
+				return Files.move(tmpFile, arcFile, StandardCopyOption.ATOMIC_MOVE);
 			} catch (FileAlreadyExistsException fx) {
 				logger.debug("copy failed, archive already exist: {}", arcFile);
 				checkArgument(fileContentIsTheSame(archive, arcFile),"archive for %s:%s already exists with different content (%s)",url,archiveType, arcFile);
