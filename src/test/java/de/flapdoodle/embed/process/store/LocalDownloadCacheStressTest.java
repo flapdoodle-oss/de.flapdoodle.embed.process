@@ -4,19 +4,19 @@ import de.flapdoodle.embed.process.distribution.ArchiveType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class LocalDownloadCacheStressTest {
 
@@ -40,23 +40,46 @@ public class LocalDownloadCacheStressTest {
 		URL url=new URL("http://foo/downloads/archive?latest=true");
 		ArchiveType zip = ArchiveType.ZIP;
 
-		ExecutorService executorService = Executors.newFixedThreadPool(2);
+		ExecutorService executorService = Executors.newFixedThreadPool(4);
 		Future<Path> first = executorService.submit(() -> testee.store(url, zip, archive));
 		Future<Path> second = executorService.submit(() -> testee.store(url, zip, archive));
+		Future<Path> third = executorService.submit(() -> testee.store(url, zip, archive));
 
 //		Path storedArchive = testee.store(url, zip, archive);
 		Path storedArchive = first.get();
 		Path storedSecondCall = second.get();
+		Path storedThirdCall = third.get();
 
 		Optional<Path> readBack = testee.archiveFor(url, zip);
 
 		assertThat(readBack)
 			.isPresent()
 			.contains(storedArchive)
-			.contains(storedSecondCall);
+			.contains(storedSecondCall)
+			.contains(storedThirdCall);
 
 		assertThat(storedArchive.toFile())
 			.hasSameBinaryContentAs(archive.toFile());
+	}
 
+	@Test
+	public void copyAndMoveMustCleanup(@TempDir Path baseDir) throws IOException, URISyntaxException {
+		Path store = Files.createDirectory(baseDir.resolve("store"));
+		Path archive = Paths.get(this.getClass().getResource("/archives/sample.zip").toURI());
+
+		Path destination = LocalDownloadCache.copyAndMove(archive, store.resolve("archive.zip"));
+
+		assertThat(destination.toFile())
+			.hasSameBinaryContentAs(archive.toFile());
+
+		assertThatThrownBy(() -> LocalDownloadCache.copyAndMove(archive, store.resolve("archive.zip")))
+			.isInstanceOf(FileAlreadyExistsException.class);
+
+		try(Stream<Path> storedFiles = Files.list(store)) {
+			Set<String> names = storedFiles.map(it -> it.getFileName().toString()).collect(Collectors.toSet());
+			assertThat(names)
+				.hasSize(1)
+				.containsExactly("archive.zip");
+		}
 	}
 }

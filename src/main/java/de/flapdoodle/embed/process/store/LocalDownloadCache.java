@@ -25,7 +25,6 @@ package de.flapdoodle.embed.process.store;
 
 import de.flapdoodle.checks.Preconditions;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
-import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.hash.Hasher;
 import de.flapdoodle.types.Try;
 import org.jheaps.annotations.VisibleForTesting;
@@ -37,10 +36,7 @@ import java.io.RandomAccessFile;
 import java.net.URL;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -88,11 +84,7 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 			return arcFile;
 		} else {
 			try {
-				Path tmpFile = arcFile.getParent().resolve(UUID.randomUUID().toString());
-				logger.debug("copy archive {} to temp file {}", archive, tmpFile);
-				Files.copy(archive, tmpFile, StandardCopyOption.COPY_ATTRIBUTES);
-				logger.debug("move temp file {} to store location {}", tmpFile, arcFile);
-				return Files.move(tmpFile, arcFile, StandardCopyOption.ATOMIC_MOVE);
+				return copyAndMove(archive, arcFile);
 			} catch (FileAlreadyExistsException fx) {
 				logger.debug("copy failed, archive already exist: {}", arcFile);
 				checkArgument(fileContentIsTheSame(archive, arcFile),"archive for %s:%s already exists with different content (%s)",url,archiveType, arcFile);
@@ -101,7 +93,24 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 			}
 		}
 	}
-	
+
+	static Path copyAndMove(Path archive, Path destination) throws IOException {
+		Path tmpFile = destination.getParent().resolve(UUID.randomUUID().toString());
+		try {
+			logger.debug("copy archive {} to temp file {}", archive, tmpFile);
+			Files.copy(archive, tmpFile, StandardCopyOption.COPY_ATTRIBUTES);
+			logger.debug("move temp file {} to store location {}", tmpFile, destination);
+			if (Files.exists(destination, LinkOption.NOFOLLOW_LINKS)) {
+				throw new FileAlreadyExistsException("what?");
+			}
+			// Files.move does not always throw an exception if file already exists.. hmm
+			return Files.move(tmpFile, destination, StandardCopyOption.ATOMIC_MOVE);
+		} finally {
+			logger.debug("remove temp file {} if exists", tmpFile);
+			Files.deleteIfExists(tmpFile);
+		}
+	}
+
 	static void checkArgument(boolean expression, String errorMessage, Object... args) throws IOException  {
 		try {
 			Preconditions.checkArgument(expression, errorMessage, args);
