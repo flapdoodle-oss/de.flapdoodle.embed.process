@@ -24,12 +24,16 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.15.0</version>
+		<version>4.15.1</version>
 	</dependency>
 
 ### Changelog
 
 #### Unreleased
+
+#### 4.15.0
+
+- fix LocalDownloadCache bug
 
 #### 4.15.0
 
