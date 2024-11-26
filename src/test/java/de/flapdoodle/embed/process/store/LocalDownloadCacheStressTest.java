@@ -82,4 +82,23 @@ public class LocalDownloadCacheStressTest {
 				.containsExactly("archive.zip");
 		}
 	}
+
+	@Test
+	public void moveDoesNotFailIfFileAlreadyExistsOnAtomicMove(@TempDir Path baseDir) throws IOException, URISyntaxException {
+		Path source = baseDir.resolve("source");
+		Path destination = baseDir.resolve("destination");
+
+		Files.write(source, "hello".getBytes(), StandardOpenOption.CREATE_NEW);
+		Files.write(destination, "world".getBytes(), StandardOpenOption.CREATE_NEW);
+
+		assertThat(source).exists();
+		assertThat(destination).exists()
+			.hasContent("world");
+
+		Files.move(source, destination, StandardCopyOption.ATOMIC_MOVE);
+
+		assertThat(source).doesNotExist();
+		assertThat(destination).exists()
+			.hasContent("hello");
+	}
 }
