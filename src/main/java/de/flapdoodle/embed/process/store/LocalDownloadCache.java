@@ -51,7 +51,13 @@ public class LocalDownloadCache implements DownloadCache, DownloadCacheGuessStor
 	public LocalDownloadCache(Path baseDir) {
 		this.baseDir = baseDir;
 		if (!java.nio.file.Files.exists(baseDir)) {
-			Try.run(() -> java.nio.file.Files.createDirectory(baseDir));
+			Try.run(() -> {
+				try {
+					Files.createDirectory(baseDir);
+				} catch (FileAlreadyExistsException e) {
+					// ignore this exception as it is what we wanted in the first place:)
+				}
+			});
 		}
 	}
 
