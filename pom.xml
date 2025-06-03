@@ -43,22 +43,33 @@
       <tag>HEAD</tag>
   </scm>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+<!--    <distributionManagement>-->
+<!--        <snapshotRepository>-->
+<!--            <id>ossrh</id>-->
+<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--        </snapshotRepository>-->
+<!--        <repository>-->
+<!--            <id>ossrh</id>-->
+<!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+<!--        </repository>-->
+<!--    </distributionManagement>-->
     
     <!-- https://docs.sonatype.org/display/Repository/Central+Sync+Requirements
     https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide 
     https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven -->
     <build>
         <plugins>
+            <!-- https://central.sonatype.org/publish/publish-portal-maven/ -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.7.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
@@ -404,7 +415,7 @@
     </profiles>
 
     <properties>
-        <junit.version>5.12.1</junit.version>
+        <junit.version>5.13.0</junit.version>
         <immutables.version>2.10.1</immutables.version>
         <jna.version>5.17.0</jna.version>
         <osgi.category>Bundles</osgi.category>
@@ -447,6 +458,18 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -475,13 +498,13 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.27.2</version>
+            <version>3.27.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.flapdoodle.testdoc</groupId>
             <artifactId>de.flapdoodle.testdoc</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -511,7 +534,7 @@
         <dependency>
             <groupId>de.flapdoodle.reverse</groupId>
             <artifactId>de.flapdoodle.reverse</artifactId>
-            <version>1.9.0</version>
+            <version>1.9.1</version>
         </dependency>
         <dependency>
             <groupId>org.immutables</groupId>
@@ -554,27 +577,15 @@
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os-api</artifactId>
-            <version>1.7.0</version>
+            <version>1.7.1</version>
         </dependency>
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os</artifactId>
-            <version>1.9.1</version>
+            <version>1.9.2</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
-            <scope>test</scope>
-        </dependency>
 
     </dependencies>
 </project>
