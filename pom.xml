@@ -416,7 +416,7 @@
 
     <properties>
         <junit.version>5.13.0</junit.version>
-        <immutables.version>2.10.1</immutables.version>
+        <immutables.version>2.11.1</immutables.version>
         <jna.version>5.17.0</jna.version>
         <osgi.category>Bundles</osgi.category>
         <osgi.export>
@@ -553,12 +553,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.16.0</version>
+            <version>3.18.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.27.1</version>
+            <version>1.28.0</version>
         </dependency>
 
         <!-- platform process stuff -->
