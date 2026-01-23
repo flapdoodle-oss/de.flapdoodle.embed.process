@@ -99,7 +99,7 @@ public class HowToRunAProcessTest {
 			recording.begin();
 
 			Transitions transitions = Transitions.from(
-				InitTempDirectory.with(temp),
+				InitTempDirectory.with(temp).withForceDelete(true),
 
 				Derive.given(TempDir.class)
 					.state(ProcessWorkingDir.class)
@@ -213,6 +213,7 @@ public class HowToRunAProcessTest {
 			Version.GenericVersion version = Version.of("2.1.1");
 
 			ProcessFactory processFactory = ProcessFactory.builder()
+				.initTempDirectory(InitTempDirectory.withPlatformTempRandomSubDir().withForceDelete(true))
 				.version(version)
 				.persistentBaseDir(Start.to(PersistentDir.class)
 					.initializedWith(PersistentDir.of(tempDir)))

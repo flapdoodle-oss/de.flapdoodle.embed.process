@@ -23,6 +23,8 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
+import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.embed.process.io.Files;
 import de.flapdoodle.embed.process.io.directories.TempDir;
 import de.flapdoodle.embed.process.io.directories.UUIDNaming;
 import de.flapdoodle.reverse.State;
@@ -30,11 +32,13 @@ import de.flapdoodle.reverse.StateID;
 import de.flapdoodle.reverse.StateLookup;
 import de.flapdoodle.reverse.Transition;
 import de.flapdoodle.reverse.naming.HasLabel;
+import de.flapdoodle.types.Try;
 import org.immutables.value.Value;
 
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Value.Immutable
 public abstract class InitTempDirectory implements Transition<TempDir>, HasLabel {
@@ -44,8 +48,18 @@ public abstract class InitTempDirectory implements Transition<TempDir>, HasLabel
 	}
 
 	@Value.Default
-	protected TempDir tempDir() {
-		return TempDir.platformTempDir().get();
+	protected Supplier<TempDir> tempDirFactory() {
+		return () -> TempDir.platformTempDir().get();
+	}
+
+	@Value.Default
+	protected boolean deleteIfEmpty() {
+		return false;
+	}
+
+	@Value.Default
+	protected boolean forceDelete() {
+		return false;
 	}
 
 	@Override
@@ -60,7 +74,18 @@ public abstract class InitTempDirectory implements Transition<TempDir>, HasLabel
 
 	@Override
 	public State<TempDir> result(StateLookup lookup) {
-		return State.of(tempDir());
+		return State.of(tempDirFactory().get(), it -> {
+			Try.run(() -> {
+				if (forceDelete()) {
+					Files.deleteAll(it.value());
+				} else {
+					if (deleteIfEmpty()) {
+						Preconditions.checkArgument(Files.isEmptyDirectory(it.value()), "temp directory %s is not empty, (forceDelete=%s)", it.value(), forceDelete());
+						Files.deleteAll(it.value());
+					}
+				}
+			});
+		});
 	}
 
 	public static ImmutableInitTempDirectory withPlatformTemp() {
@@ -73,13 +98,14 @@ public abstract class InitTempDirectory implements Transition<TempDir>, HasLabel
 
 	public static ImmutableInitTempDirectory with(Path path) {
 		return builder()
-			.tempDir(TempDir.of(path))
+			.tempDirFactory(() -> TempDir.of(path))
 			.build();
 	}
 
 	public static ImmutableInitTempDirectory withPlatformTempRandomSubDir() {
 		return builder()
-			.tempDir(TempDir.platformTempSubDir(new UUIDNaming()).get())
+			.tempDirFactory(TempDir.platformTempSubDir(new UUIDNaming()))
+			.deleteIfEmpty(true)
 			.build();
 	}
 }

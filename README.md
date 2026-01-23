@@ -31,6 +31,8 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 #### Unreleased
 
+- delete temp dir on shutdown                       
+
 #### 4.17.0
 
 - dependency updates, commons.lang to 3.18.0 

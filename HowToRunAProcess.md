@@ -11,7 +11,7 @@ This is an generic way to start an process.
 ```java
 
 Transitions transitions = Transitions.from(
-  InitTempDirectory.with(temp),
+  InitTempDirectory.with(temp).withForceDelete(true),
 
   Derive.given(TempDir.class)
     .state(ProcessWorkingDir.class)
@@ -179,6 +179,7 @@ This is one way to bundle common stuff and only specialize on the differences.
 Version.GenericVersion version = Version.of("2.1.1");
 
 ProcessFactory processFactory = ProcessFactory.builder()
+  .initTempDirectory(InitTempDirectory.withPlatformTempRandomSubDir().withForceDelete(true))
   .version(version)
   .persistentBaseDir(Start.to(PersistentDir.class)
     .initializedWith(PersistentDir.of(tempDir)))

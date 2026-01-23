@@ -23,10 +23,12 @@
  */
 package de.flapdoodle.embed.process.nio.directories;
 
+import de.flapdoodle.embed.process.io.Files;
 import de.flapdoodle.embed.process.io.directories.TempDir;
 import de.flapdoodle.embed.process.io.directories.UUIDNaming;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -44,12 +46,14 @@ class TempDirTest {
 	}
 
 	@Test
-	public void parentOfSubDirIsPlatformTemp() {
+	public void parentOfSubDirIsPlatformTemp() throws IOException {
 		TempDir result = TempDir.platformTempSubDir(new UUIDNaming()).get();
 
 		assertThat(result)
 			.extracting(TempDir::value)
 			.extracting(Path::getParent)
 			.isEqualTo(Paths.get(System.getProperty("java.io.tmpdir")));
+
+		Files.deleteAll(result.value());
 	}
 }

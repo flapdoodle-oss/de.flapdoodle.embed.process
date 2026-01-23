@@ -23,6 +23,8 @@
  */
 package de.flapdoodle.embed.process.io;
 
+import de.flapdoodle.checks.Preconditions;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +43,16 @@ public abstract class Files {
 			walk.sorted(Comparator.reverseOrder())
 				.map(Path::toFile)
 				.forEach(File::delete);
+		}
+	}
+
+
+	public static boolean isEmptyDirectory(Path directory) throws IOException {
+		java.nio.file.Files.isDirectory(directory);
+		Preconditions.checkArgument(java.nio.file.Files.isDirectory(directory), "Is not a directory %s", directory);
+		Preconditions.checkArgument(java.nio.file.Files.exists(directory), "directory %s does not exist", directory);
+		try (Stream<Path> list = java.nio.file.Files.list(directory)) {
+			return !list.findAny().isPresent();
 		}
 	}
 
@@ -64,5 +76,4 @@ public abstract class Files {
 			}
 		}
 	}
-
 }
