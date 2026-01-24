@@ -31,7 +31,8 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 #### Unreleased
 
-- delete temp dir on shutdown                       
+- delete temp dir on shutdown      
+- dependency updates
 
 #### 4.17.0
 
