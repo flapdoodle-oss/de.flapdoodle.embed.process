@@ -24,12 +24,14 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.17.0</version>
+		<version>4.18.0</version>
 	</dependency>
 
 ### Changelog
 
 #### Unreleased
+
+#### 4.18.0
 
 - delete temp dir on shutdown      
 - dependency updates
