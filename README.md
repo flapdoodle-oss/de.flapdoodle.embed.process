@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/flapdoodle-oss/de.flapdoodle.embed.process.svg)](https://travis-ci.org/flapdoodle-oss/de.flapdoodle.embed.process)
 [![Maven Central](https://img.shields.io/maven-central/v/de.flapdoodle.embed/de.flapdoodle.embed.process.svg)](https://maven-badges.herokuapp.com/maven-central/de.flapdoodle.embed/de.flapdoodle.embed.process)
+[![libs.tech recommends](https://libs.tech/project/5412556/badge.svg)](https://libs.tech/project/5412556/de.flapdoodle.embed.process)
 # Organisation Flapdoodle OSS
 
 We are a github organisation. You are invited to participate.
