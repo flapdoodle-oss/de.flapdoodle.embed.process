@@ -24,12 +24,14 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.process</artifactId>
-		<version>4.18.0</version>
+		<version>5.0.0</version>
 	</dependency>
 
 ### Changelog
 
 #### Unreleased
+
+#### 5.0.0
 
 - switch to flapdoodle commons
 - dep updates
