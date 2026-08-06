@@ -31,7 +31,8 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 #### Unreleased
 
-- switch to flapdoodle commons                    
+- switch to flapdoodle commons
+- dep updates
 
 #### 4.18.0
 
