@@ -24,10 +24,10 @@
 package de.flapdoodle.embed.process.transitions;
 
 import de.flapdoodle.embed.process.io.directories.TempDir;
-import de.flapdoodle.reverse.StateID;
-import de.flapdoodle.reverse.TearDownException;
-import de.flapdoodle.reverse.TransitionWalker;
-import de.flapdoodle.reverse.Transitions;
+import de.flapdoodle.commons.reverse.StateID;
+import de.flapdoodle.commons.reverse.TearDownException;
+import de.flapdoodle.commons.reverse.TransitionWalker;
+import de.flapdoodle.commons.reverse.Transitions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

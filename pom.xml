@@ -76,6 +76,8 @@
                 <version>2.17.1</version>
                 <configuration>
                     <generateBackupPoms>false</generateBackupPoms>
+                    <ignoredVersions>(?i).*-(alpha|beta|m|rc)([-.]?\d+)?</ignoredVersions>
+                    <processDependencyManagement>false</processDependencyManagement>
                 </configuration>
             </plugin>
 
@@ -140,7 +142,7 @@
                     <dependency>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>extra-enforcer-rules</artifactId>
-                        <version>1.11.0</version>
+                        <version>1.12.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -171,7 +173,7 @@
                         <exclude>**/examples/**</exclude>
                     </excludes>
                     <systemPropertyVariables>
-                        <de.flapdoodle.testdoc.destination>${project.basedir}</de.flapdoodle.testdoc.destination>
+                        <de.flapdoodle.commons.testdoc.destination>${project.basedir}</de.flapdoodle.commons.testdoc.destination>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -418,6 +420,7 @@
         <junit.version>5.14.1</junit.version>
         <immutables.version>2.12.1</immutables.version>
         <jna.version>5.18.1</jna.version>
+        <flapdoodle-commons.version>1.4.1</flapdoodle-commons.version>
         <osgi.category>Bundles</osgi.category>
         <osgi.export>
             de.flapdoodle.embed.process;version=${project.version},
@@ -498,13 +501,13 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.27.3</version>
+            <version>3.27.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>de.flapdoodle.testdoc</groupId>
-            <artifactId>de.flapdoodle.testdoc</artifactId>
-            <version>1.6.2</version>
+            <groupId>de.flapdoodle.commons</groupId>
+            <artifactId>de.flapdoodle.commons.testdoc</artifactId>
+            <version>${flapdoodle-commons.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -532,9 +535,19 @@
 
         <!-- common -->
         <dependency>
-            <groupId>de.flapdoodle.reverse</groupId>
-            <artifactId>de.flapdoodle.reverse</artifactId>
-            <version>1.9.1</version>
+            <groupId>de.flapdoodle.commons</groupId>
+            <artifactId>de.flapdoodle.commons.net</artifactId>
+            <version>${flapdoodle-commons.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.commons</groupId>
+            <artifactId>de.flapdoodle.commons.hash</artifactId>
+            <version>${flapdoodle-commons.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.commons</groupId>
+            <artifactId>de.flapdoodle.commons.reverse</artifactId>
+            <version>${flapdoodle-commons.version}</version>
         </dependency>
         <dependency>
             <groupId>org.immutables</groupId>
@@ -582,7 +595,7 @@
         <dependency>
             <groupId>de.flapdoodle</groupId>
             <artifactId>de.flapdoodle.os</artifactId>
-            <version>1.10.1</version>
+            <version>1.11.1</version>
             <scope>test</scope>
         </dependency>
 

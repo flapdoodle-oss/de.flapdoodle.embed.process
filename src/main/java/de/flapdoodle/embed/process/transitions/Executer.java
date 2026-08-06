@@ -27,10 +27,10 @@ import de.flapdoodle.embed.process.archives.ExtractedFileSet;
 import de.flapdoodle.embed.process.config.SupportConfig;
 import de.flapdoodle.embed.process.io.ProcessOutput;
 import de.flapdoodle.embed.process.types.*;
-import de.flapdoodle.reverse.State;
-import de.flapdoodle.reverse.StateID;
-import de.flapdoodle.reverse.StateLookup;
-import de.flapdoodle.reverse.naming.HasLabel;
+import de.flapdoodle.commons.reverse.State;
+import de.flapdoodle.commons.reverse.StateID;
+import de.flapdoodle.commons.reverse.StateLookup;
+import de.flapdoodle.commons.reverse.naming.HasLabel;
 import org.immutables.builder.Builder;
 import org.immutables.value.Value;
 

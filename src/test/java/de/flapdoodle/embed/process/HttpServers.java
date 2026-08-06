@@ -23,8 +23,8 @@
  */
 package de.flapdoodle.embed.process;
 
-import de.flapdoodle.net.Net;
-import de.flapdoodle.types.Try;
+import de.flapdoodle.commons.net.Net;
+import de.flapdoodle.commons.types.Try;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response;
 import fi.iki.elonen.NanoHTTPD.Response.Status;

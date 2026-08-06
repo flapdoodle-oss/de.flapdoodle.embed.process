@@ -24,7 +24,7 @@
 package de.flapdoodle.embed.process.net;
 
 import de.flapdoodle.embed.process.config.TimeoutConfig;
-import de.flapdoodle.net.URLConnections;
+import de.flapdoodle.commons.net.URLConnections;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

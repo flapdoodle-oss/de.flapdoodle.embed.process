@@ -25,7 +25,7 @@ package de.flapdoodle.embed.process.types;
 
 import de.flapdoodle.embed.process.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
-import de.flapdoodle.types.Try;
+import de.flapdoodle.commons.types.Try;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

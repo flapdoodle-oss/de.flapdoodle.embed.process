@@ -24,7 +24,7 @@
 package de.flapdoodle.embed.process.config;
 
 import de.flapdoodle.embed.process._Refactor;
-import de.flapdoodle.net.ProxyFactory;
+import de.flapdoodle.commons.net.ProxyFactory;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Default;
 

@@ -23,10 +23,10 @@
  */
 package de.flapdoodle.embed.process.store;
 
-import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.commons.checks.Preconditions;
 import de.flapdoodle.embed.process.distribution.ArchiveType;
-import de.flapdoodle.hash.Hasher;
-import de.flapdoodle.types.Try;
+import de.flapdoodle.commons.hash.Hasher;
+import de.flapdoodle.commons.types.Try;
 import org.jheaps.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

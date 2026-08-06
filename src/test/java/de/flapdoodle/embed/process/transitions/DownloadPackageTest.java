@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
-import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.commons.checks.Preconditions;
 import de.flapdoodle.embed.process.HttpServers;
 import de.flapdoodle.embed.process.Resources;
 import de.flapdoodle.embed.process.config.DownloadConfig;
@@ -42,10 +42,10 @@ import de.flapdoodle.embed.process.store.LocalDownloadCache;
 import de.flapdoodle.embed.process.types.Archive;
 import de.flapdoodle.embed.process.types.Name;
 import de.flapdoodle.os.CommonOS;
-import de.flapdoodle.reverse.State;
-import de.flapdoodle.reverse.StateID;
-import de.flapdoodle.reverse.StateLookup;
-import de.flapdoodle.types.Pair;
+import de.flapdoodle.commons.reverse.State;
+import de.flapdoodle.commons.reverse.StateID;
+import de.flapdoodle.commons.reverse.StateLookup;
+import de.flapdoodle.commons.types.Pair;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

@@ -23,16 +23,16 @@
  */
 package de.flapdoodle.embed.process.transitions;
 
-import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.commons.checks.Preconditions;
 import de.flapdoodle.embed.process.io.Files;
 import de.flapdoodle.embed.process.io.directories.TempDir;
 import de.flapdoodle.embed.process.io.directories.UUIDNaming;
-import de.flapdoodle.reverse.State;
-import de.flapdoodle.reverse.StateID;
-import de.flapdoodle.reverse.StateLookup;
-import de.flapdoodle.reverse.Transition;
-import de.flapdoodle.reverse.naming.HasLabel;
-import de.flapdoodle.types.Try;
+import de.flapdoodle.commons.reverse.State;
+import de.flapdoodle.commons.reverse.StateID;
+import de.flapdoodle.commons.reverse.StateLookup;
+import de.flapdoodle.commons.reverse.Transition;
+import de.flapdoodle.commons.reverse.naming.HasLabel;
+import de.flapdoodle.commons.types.Try;
 import org.immutables.value.Value;
 
 import java.nio.file.Path;

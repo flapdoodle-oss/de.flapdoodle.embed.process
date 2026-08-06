@@ -24,9 +24,9 @@
 package de.flapdoodle.embed.process.transitions;
 
 import de.flapdoodle.embed.process.io.Files;
-import de.flapdoodle.reverse.State;
-import de.flapdoodle.types.ThrowingFunction;
-import de.flapdoodle.types.Try;
+import de.flapdoodle.commons.reverse.State;
+import de.flapdoodle.commons.types.ThrowingFunction;
+import de.flapdoodle.commons.types.Try;
 
 import java.nio.file.Path;
 import java.util.function.Function;

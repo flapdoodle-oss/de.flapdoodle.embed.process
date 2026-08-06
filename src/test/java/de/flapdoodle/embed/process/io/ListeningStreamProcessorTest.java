@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process.io;
 
-import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.commons.checks.Preconditions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

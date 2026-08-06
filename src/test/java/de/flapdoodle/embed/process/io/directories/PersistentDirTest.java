@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process.io.directories;
 
-import de.flapdoodle.types.ThrowingSupplier;
+import de.flapdoodle.commons.types.ThrowingSupplier;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

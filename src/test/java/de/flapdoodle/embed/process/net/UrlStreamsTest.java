@@ -25,8 +25,8 @@ package de.flapdoodle.embed.process.net;
 
 import de.flapdoodle.embed.process.HttpServers;
 import de.flapdoodle.embed.process.config.TimeoutConfig;
-import de.flapdoodle.net.Net;
-import de.flapdoodle.types.Try;
+import de.flapdoodle.commons.net.Net;
+import de.flapdoodle.commons.types.Try;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

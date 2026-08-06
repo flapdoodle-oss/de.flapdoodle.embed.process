@@ -23,7 +23,7 @@
  */
 package de.flapdoodle.embed.process.archives;
 
-import de.flapdoodle.checks.Preconditions;
+import de.flapdoodle.commons.checks.Preconditions;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
 import java.io.*;
