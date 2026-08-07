@@ -1,8 +1,10 @@
-[![Build Status](https://travis-ci.org/flapdoodle-oss/de.flapdoodle.embed.process.svg)](https://travis-ci.org/flapdoodle-oss/de.flapdoodle.embed.process)
-[![Maven Central](https://img.shields.io/maven-central/v/de.flapdoodle.embed/de.flapdoodle.embed.process.svg)](https://maven-badges.herokuapp.com/maven-central/de.flapdoodle.embed/de.flapdoodle.embed.process)
 # Organisation Flapdoodle OSS
 
 We are a github organisation. You are invited to participate.
+
+## Upcoming changes
+
+We are moving to [Codeberg](https://codeberg.org/flapdoodle-oss/de.flapdoodle.embed.process).
 
 # Embedded Process Util
 
@@ -19,6 +21,7 @@ We use http://www.apache.org/licenses/LICENSE-2.0
 
 ### Maven
 
+![Maven Central](https://img.shields.io/maven-central/v/de.flapdoodle.embed/de.flapdoodle.embed.process.svg)
 [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.process/maven-metadata.xml)
 
 	<dependency>
